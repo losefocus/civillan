@@ -1,0 +1,19 @@
+.sidebar-container {
+  background: #fff;
+  transition: width .6s;
+  &.is-active {
+    width: 64px !important;
+  }
+}
+
+.el-menu-item.is-active {
+  color: #fff !important;
+}
+
+.nest-menu .el-submenu>.el-submenu__title,
+.el-submenu .el-menu-item {
+  background-color: #fff !important;
+  &:hover {
+    background: #fff !important;
+  }
+}
