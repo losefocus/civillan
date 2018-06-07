@@ -383,7 +383,7 @@ export default {
     // 删除单个文件
     deletes(row) {
       this.$confirm(
-        "此操作将永久删除该文件, 是否继续?",
+        "此操作将永久删除该文件(文件名:" + row.name + "), 是否继续?",
         "提示",
         {
           confirmButtonText: "确定",
