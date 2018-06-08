@@ -52,6 +52,7 @@ router.beforeEach((to, from, next) => {
       if (store.getters.roles.length === 0) {
         store.dispatch('GetUserInfo').then(res => {
           const roles = res.roles
+          // const roles = res.data.result.roles
           next({ ...to,
             replace: true
           })

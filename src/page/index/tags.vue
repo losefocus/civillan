@@ -9,7 +9,7 @@
           <i class="el-icon-close tag-close" @click.stop="closeTag(item)" v-if="item.close"></i>
         </div>
       </div>
-      <el-dropdown class="tags-menu pull-right">
+      <el-dropdown class="tags-menu pull-right" trigger="click">
         <el-button type="primary" size="mini">
           更多
           <i class="el-icon-arrow-down el-icon--right"></i>

@@ -29,7 +29,7 @@ export default {
   components: {
     top,
     tags,
-    sidebar
+    sidebar,
   },
   name: "index",
   data() {

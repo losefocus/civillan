@@ -29,9 +29,15 @@
         </template>
       </el-table-column>
 
-      <el-table-column align="center" label="所属部门" show-overflow-tooltip>
+      <!-- <el-table-column align="center" label="所属部门" show-overflow-tooltip>
         <template slot-scope="scope">
           <span>{{scope.row.deptName}} </span>
+        </template>
+      </el-table-column> -->
+
+      <el-table-column align="center" label="所属分组" show-overflow-tooltip>
+        <template slot-scope="scope">
+          <span>{{scope.row.groupName}} </span>
         </template>
       </el-table-column>
 
@@ -84,13 +90,18 @@
           <el-input type="password" v-model="form.password"></el-input>
         </el-form-item>
 
-        <el-form-item label="所属部门" prop="deptName">
+        <!-- <el-form-item label="所属部门" prop="deptName">
           <el-input v-model="form.deptName" placeholder="选择部门" @focus="handleDept()" readonly></el-input>
           <input type="hidden" v-model="form.deptId" />
+        </el-form-item> -->
+
+        <el-form-item label="所属分组" prop="groupName">
+          <el-input v-model="form.groupName" placeholder="选择分组" @focus="handleDept()" readonly></el-input>
+          <input type="hidden" v-model="form.group" />
         </el-form-item>
 
-        <el-form-item label="角色" prop="role">
-          <el-select class="filter-item" v-model="role" placeholder="请选择" multiple>
+        <el-form-item label="角色" prop="roleDesc">
+          <el-select class="filter-item" v-model="roleDesc" placeholder="请选择" multiple >
             <el-option v-for="item in rolesOptions" :key="item.roleId" :label="item.roleDesc" :value="item.roleId" :disabled="isDisabled[item.status]">
               <span style="float: left">{{ item.roleDesc }}</span>
               <span style="float: right; color: #8492a6; font-size: 13px">{{ item.roleCode }}</span>
@@ -118,7 +129,8 @@
 
 <script>
 import { fetchList, getObj, addObj, putObj, delObj } from "@/api/user";
-import { deptRoleList, fetchDeptTree } from "@/api/role";
+import { roleList, fetchDeptTree } from "@/api/role";
+import { fetchTree } from "@/api/group";
 import waves from "@/directive/waves/index.js"; // 水波纹指令
 // import { parseTime } from '@/utils'
 import { mapGetters } from "vuex";
@@ -150,12 +162,14 @@ export default {
         page_size: 20
       },
       role: [],
+      roleDesc:[],
       form: {
         username: undefined,
         password: undefined,
         status: undefined,
-        deptId: undefined,
-        mobile: undefined
+        mobile: undefined,
+        group:undefined,
+        groupName:undefined,
       },
       rules: {
         username: [
@@ -184,10 +198,10 @@ export default {
             trigger: "blur"
           }
         ],
-        deptId: [
+        groupName: [
           {
             required: true,
-            message: "请选择部门",
+            message: "请选择分组",
             trigger: "blur"
           }
         ],
@@ -263,15 +277,21 @@ export default {
     },
     getNodeData(data) {
       this.dialogDeptVisible = false;
-      this.form.deptId = data.id;
-      this.form.deptName = data.name;
-      deptRoleList(data.id).then(response => {
-        this.rolesOptions = response.data;
+      this.form.group = data.id;
+      this.form.groupName = data.name;
+      roleList().then(response => {
+        this.rolesOptions = response.data.result;
       });
     },
     handleDept() {
-      fetchDeptTree().then(response => {
+      
+      // fetchDeptTree().then(response => {
+      //   this.treeDeptData = response.data.result;
+      //   this.dialogDeptVisible = true;
+      // });
+      fetchTree().then(response => {
         this.treeDeptData = response.data.result;
+        console.log(this.treeDeptData)
         this.dialogDeptVisible = true;
       });
     },
@@ -294,16 +314,20 @@ export default {
     },
     handleUpdate(row) {
       getObj(row.id).then(response => {
+        console.log(response.data.result)
         this.form = response.data.result;
+        // this.form.groupName = row.groupName
         this.dialogFormVisible = true;
         this.dialogStatus = "update";
         this.role = [];
+        this.roleDesc = [];
         for (var i = 0; i < row.roleList.length; i++) {
-          this.role[i] = row.roleList[i].roleId;
+          this.role[i] = row.roleList[i].roleId ;
+          this.roleDesc[i] = row.roleList[i].roleDesc;
         }
-        deptRoleList(response.data.result.deptId).then(response => {
-          console.log(response.data)
-          this.rolesOptions = response.data;
+        console.log(response)
+        roleList().then(response => {
+          this.rolesOptions = response.data.result;
         });
       });
     },
@@ -355,7 +379,7 @@ export default {
     },
     deletes(row) {
       this.$confirm(
-        "此操作将永久删除该用户(用户名:" + row.username + "), 是否继续?",
+        "此操作将永久删除该角色(角色名:" + row.username + "), 是否继续?",
         "提示",
         {
           confirmButtonText: "确定",
@@ -364,14 +388,23 @@ export default {
         }
       ).then(() => {
         delObj(row.id)
-          .then(() => {
-            this.getList();
-            this.$notify({
-              title: "成功",
-              message: "删除成功",
-              type: "success",
-              duration: 2000
-            });
+          .then((res) => {
+            if(res.data.success == false){
+              this.$notify({
+                title: "失败",
+                message: res.data.message,
+                type: "error",
+                duration: 2000
+              });
+            }else{
+              this.getList();
+              this.$notify({
+                title: "成功",
+                message: "删除成功",
+                type: "success",
+                duration: 2000
+              });
+            }
           })
           .cache(() => {
             this.$notify({
@@ -389,9 +422,11 @@ export default {
         username: "",
         password: "",
         role: [],
+        roleDesc:[],
         status: "",
-        deptId: "",
-        mobile: ""
+        mobile: "",
+        group:'',
+        groupName:'',
       };
     }
   }

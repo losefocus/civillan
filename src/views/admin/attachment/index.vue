@@ -67,7 +67,7 @@
 
       <el-table-column align="center" label="上传时间">
         <template slot-scope="scope">
-          <span>{{scope.row.createAt | parseTime('{y}-{m}-{d} {h}:{i}')}}</span>
+          <span>{{scope.row.createdAt | parseTime('{y}-{m}-{d} {h}:{i}')}}</span>
         </template>
       </el-table-column>
 
@@ -86,7 +86,7 @@
 
     </el-table>
 
-    <div v-show="!listLoading" class="pagination-container">
+    <!-- <div v-show="!listLoading" class="pagination-container">
       <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="listQuery.page_index" :page-sizes="[10,20,30, 50]" :page-size="listQuery.page_size" layout="total, sizes, prev, pager, next, jumper" :total="total">
       </el-pagination>
     </div>
@@ -134,23 +134,23 @@
         <el-button v-if="dialogStatus=='create'" type="primary" @click="create('form')">确 定</el-button>
         <el-button v-else type="primary" @click="update('form')">修 改</el-button>
       </div>
-    </el-dialog>
+    </el-dialog> -->
   </div>
 </template>
 
 <script>
-import { fetchList, getObj, addObj, putObj, delObj } from "@/api/attachment";
-import { deptRoleList, fetchDeptTree } from "@/api/role";
+import { fetchList, getObj, addObj, putObj, delObj ,delObj_query} from "@/api/attachment";
+// import { deptRoleList, fetchDeptTree } from "@/api/role";
 import waves from "@/directive/waves/index.js"; // 水波纹指令
 // import { parseTime } from '@/utils'
 import { mapGetters } from "vuex";
-import ElRadioGroup from "element-ui/packages/radio/src/radio-group";
-import ElOption from "element-ui/packages/select/src/option";
+// import ElRadioGroup from "element-ui/packages/radio/src/radio-group";
+// import ElOption from "element-ui/packages/select/src/option";
 
 export default {
   components: {
-    ElOption,
-    ElRadioGroup
+    // ElOption,
+    // ElRadioGroup
   },
   name: "table_user",
   directives: {
@@ -288,98 +288,98 @@ export default {
         this.listLoading = false;
       });
     },
-    getNodeData(data) {
-      this.dialogDeptVisible = false;
-      this.form.deptId = data.id;
-      this.form.deptName = data.name;
-      deptRoleList(data.id).then(response => {
-        this.rolesOptions = response.data;
-      });
-    },
-    handleDept() {
-      fetchDeptTree().then(response => {
-        this.treeDeptData = response.data.result;
-        this.dialogDeptVisible = true;
-      });
-    },
-    handleFilter() {
-      this.listQuery.page_index = 1;
-      this.getList();
-    },
-    handleSizeChange(val) {
-      this.listQuery.page_size = val;
-      this.getList();
-    },
-    handleCurrentChange(val) {
-      this.listQuery.page_index = val;
-      this.getList();
-    },
-    handleCreate() {
-      this.resetTemp();
-      this.dialogStatus = "create";
-      this.dialogFormVisible = true;
-    },
-    handleUpdate(row) {
-      getObj(row.id).then(response => {
-        this.form = response.data.result;
-        this.dialogFormVisible = true;
-        this.dialogStatus = "update";
-        this.role = [];
-        for (var i = 0; i < row.roleList.length; i++) {
-          this.role[i] = row.roleList[i].roleId;
-        }
-        deptRoleList(response.data.result.deptId).then(response => {
-          console.log(response.data)
-          this.rolesOptions = response.data;
-        });
-      });
-    },
-    create(formName) {
-      const set = this.$refs;
-      this.form.role = this.role;
-      set[formName].validate(valid => {
-        if (valid) {
-          addObj(this.form).then(() => {
-            this.dialogFormVisible = false;
-            this.getList();
-            this.$notify({
-              title: "成功",
-              message: "创建成功",
-              type: "success",
-              duration: 2000
-            });
-          });
-        } else {
-          return false;
-        }
-      });
-    },
-    cancel(formName) {
-      this.dialogFormVisible = false;
-      this.$refs[formName].resetFields();
-    },
-    update(formName) {
-      const set = this.$refs;
-      this.form.role = this.role;
-      set[formName].validate(valid => {
-        if (valid) {
-          this.dialogFormVisible = false;
-          this.form.password = undefined;
-          putObj(this.form).then(() => {
-            this.dialogFormVisible = false;
-            this.getList();
-            this.$notify({
-              title: "成功",
-              message: "修改成功",
-              type: "success",
-              duration: 2000
-            });
-          });
-        } else {
-          return false;
-        }
-      });
-    },
+    // getNodeData(data) {
+    //   this.dialogDeptVisible = false;
+    //   this.form.deptId = data.id;
+    //   this.form.deptName = data.name;
+    //   deptRoleList(data.id).then(response => {
+    //     this.rolesOptions = response.data;
+    //   });
+    // },
+    // handleDept() {
+    //   fetchDeptTree().then(response => {
+    //     this.treeDeptData = response.data.result;
+    //     this.dialogDeptVisible = true;
+    //   });
+    // },
+    // handleFilter() {
+    //   this.listQuery.page_index = 1;
+    //   this.getList();
+    // },
+    // handleSizeChange(val) {
+    //   this.listQuery.page_size = val;
+    //   this.getList();
+    // },
+    // handleCurrentChange(val) {
+    //   this.listQuery.page_index = val;
+    //   this.getList();
+    // },
+    // handleCreate() {
+    //   this.resetTemp();
+    //   this.dialogStatus = "create";
+    //   this.dialogFormVisible = true;
+    // },
+    // handleUpdate(row) {
+    //   getObj(row.id).then(response => {
+    //     this.form = response.data.result;
+    //     this.dialogFormVisible = true;
+    //     this.dialogStatus = "update";
+    //     this.role = [];
+    //     for (var i = 0; i < row.roleList.length; i++) {
+    //       this.role[i] = row.roleList[i].roleId;
+    //     }
+    //     deptRoleList(response.data.result.deptId).then(response => {
+    //       console.log(response.data)
+    //       this.rolesOptions = response.data.result;
+    //     });
+    //   });
+    // },
+    // create(formName) {
+    //   const set = this.$refs;
+    //   this.form.role = this.role;
+    //   set[formName].validate(valid => {
+    //     if (valid) {
+    //       addObj(this.form).then(() => {
+    //         this.dialogFormVisible = false;
+    //         this.getList();
+    //         this.$notify({
+    //           title: "成功",
+    //           message: "创建成功",
+    //           type: "success",
+    //           duration: 2000
+    //         });
+    //       });
+    //     } else {
+    //       return false;
+    //     }
+    //   });
+    // },
+    // cancel(formName) {
+    //   this.dialogFormVisible = false;
+    //   this.$refs[formName].resetFields();
+    // },
+    // update(formName) {
+    //   const set = this.$refs;
+    //   this.form.role = this.role;
+    //   set[formName].validate(valid => {
+    //     if (valid) {
+    //       this.dialogFormVisible = false;
+    //       this.form.password = undefined;
+    //       putObj(this.form).then(() => {
+    //         this.dialogFormVisible = false;
+    //         this.getList();
+    //         this.$notify({
+    //           title: "成功",
+    //           message: "修改成功",
+    //           type: "success",
+    //           duration: 2000
+    //         });
+    //       });
+    //     } else {
+    //       return false;
+    //     }
+    //   });
+    // },
     // 删除单个文件
     deletes(row) {
       this.$confirm(
@@ -430,7 +430,7 @@ export default {
             type: "warning"
           }
         ).then(() => {
-          delObj(ids)
+          delObj_query(ids)
             .then(() => {
               this.getList();
               this.$notify({
@@ -451,17 +451,17 @@ export default {
         });
       }
     },
-    resetTemp() {
-      this.form = {
-        id: undefined,
-        username: "",
-        password: "",
-        role: [],
-        status: "",
-        deptId: "",
-        mobile: ""
-      };
-    }
+    // resetTemp() {
+    //   this.form = {
+    //     id: undefined,
+    //     username: "",
+    //     password: "",
+    //     role: [],
+    //     status: "",
+    //     deptId: "",
+    //     mobile: ""
+    //   };
+    // }
   }
 };
 </script>

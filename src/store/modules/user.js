@@ -41,7 +41,11 @@ const user = {
     }) || '',
     refresh_token: getStore({
       name: 'refresh_token'
+    }) || '',
+    userName: getStore({
+      name: 'userName'
     }) || ''
+
   },
   actions: {
     // 根据用户名登录
@@ -54,6 +58,7 @@ const user = {
         loginByUsername(userInfo.username, userInfo.password, userInfo.code, userInfo.randomStr).then(response => {
           const data = response.data.result
           setToken(data.access_token)
+          commit('SET_USER_NAME', userInfo.username)
           commit('SET_ACCESS_TOKEN', data.access_token)
           commit('SET_REFRESH_TOKEN', data.refresh_token)
           commit('CLEAR_LOCK')
@@ -102,8 +107,8 @@ const user = {
       dispatch
     }) {
       return new Promise((resolve, reject) => {
-        getUserInfo(state.token).then(response => {
-          console.log(response)
+        console.log(state.userName)
+        getUserInfo(state.userName).then(response => {
           const data = response.data.result
           commit('SET_ROLES', data.roles)
           commit('SET_USER_INFO', data.sysUser)
@@ -163,7 +168,6 @@ const user = {
     }) {
       return new Promise(resolve => {
         GetMenu().then((res) => {
-          console.log(res)
           const data = res.data.result
           data.forEach(ele => {
             ele.children.forEach(child => {
@@ -228,7 +232,15 @@ const user = {
         content: state.permissions,
         type: 'session'
       })
-    }
+    },
+    SET_USER_NAME: (state, userName) => {
+      state.userName = userName
+      setStore({
+        name: 'userName',
+        content: state.userName,
+        type: 'session'
+      })
+    },
   }
 }
 export default user

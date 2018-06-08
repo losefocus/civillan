@@ -28,8 +28,8 @@
         <img class="top-userImg" :src="userInfo.avatar">
       </el-tooltip>
       <el-dropdown trigger="click">
-        <span class="el-dropdown-link">
-          {{userInfo.username}}
+        <span class="el-dropdown-link" style="cursor: pointer;">
+          {{userName}}
           <i class="el-icon-arrow-down el-icon--right"></i>
         </span>
         <el-dropdown-menu slot="dropdown">
@@ -39,12 +39,7 @@
           <el-dropdown-item>
             <router-link to="/info/index">用户资料</router-link>
           </el-dropdown-item>
-          <!--<el-dropdown-item>-->
-            <!--<a href="https://gitee.com/log4j/pig" target="_blank">pig地址</a>-->
-          <!--</el-dropdown-item>-->
-          <!--<el-dropdown-item>-->
-            <!--<a href="https://gitee.com/smallweigit/avue" target="_blank">avue地址</a>-->
-          <!--</el-dropdown-item>-->
+
           <el-dropdown-item @click.native="logout" divided>退出系统</el-dropdown-item>
         </el-dropdown-menu>
       </el-dropdown>
@@ -67,10 +62,12 @@ export default {
   created() {},
   mounted() {
     listenfullscreen(this.setScreen);
+    console.log(this.userInfo)
   },
   computed: {
     ...mapState({
-      userInfo: state => state.user.userInfo
+      userInfo: state => state.user.userInfo,
+      userName: state => state.user.userName
     }),
     ...mapGetters(["isFullScren", "isCollapse"])
   },
@@ -85,6 +82,7 @@ export default {
       this.$store.commit("SET_FULLSCREN");
     },
     logout() {
+      console.log(this.userInfo)
       this.$confirm("是否退出系统, 是否继续?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
@@ -100,6 +98,8 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-
+.top-item{
+  cursor: pointer;
+}
 </style>
 
