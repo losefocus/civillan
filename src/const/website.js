@@ -1,6 +1,6 @@
 export default {
   title: "Civillan",
-  logo: "Civillan",
+  logo: "CV",
   author: "后台管理系统",
   whiteList: ["/login", "/404", "/401", "/lock"],
   info: {

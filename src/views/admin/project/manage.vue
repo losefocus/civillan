@@ -2,6 +2,7 @@
     <div class="app-container calendar-list-container">
         <div class="filter-container">
             <el-button @click="toProjectIndex" size="small" >返回</el-button>
+            <span>{{viewData.name}}</span>
             <el-radio-group v-model="tabView" size="small" style="margin-bottom: 30px;" class="pull-right">
                 <el-radio-button label="info">基本信息</el-radio-button>
                 <el-radio-button label="org">机构设置</el-radio-button>
@@ -33,21 +34,31 @@ export default {
         equ,
         doc,
     },
+    props:['viewData'],
     data(){
         return {
             tabView:'info'
         }
     },
-    created() {},
+    created() {
+    },
     mounted() {
 
     },
-    computed: {},
+    computed: {
+        getViewData(){
+            return this.viewData
+        }
+    },
     methods:{
         toProjectIndex(){
             this.$parent.showView = 'index'
         },
+    },
+    watch:{
+        getViewData(val){
 
+        }
     }
 }
 </script>
