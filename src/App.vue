@@ -62,4 +62,27 @@ export default {
 .el-submenu__title:focus, .el-submenu__title:hover{
   background-color: #e4e4e4 !important;
 }
+.el-table__expanded-cell[class*=cell]{
+  padding: 0;
+  padding-left: 47px
+}
+#subTable{
+  border-top: none;
+  border-bottom: none;
+}
+#subTable tr:last-child td{
+  border-bottom: none !important;
+}
+#subTable .lastTd{
+  border-right:none !important;
+}
+#subTable .el-table__header-wrapper{
+  display: none
+}
+.el-table__expanded-cell{
+  border-right: none !important;
+}
+#subTable.el-table::before{
+  height: 0 !important;
+}
 </style>

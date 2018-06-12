@@ -11,18 +11,19 @@
  */
 
 
-let baseUrl = '';
+let baseUrl = 'http://test1.iot.v/';
 // let iconfontVersion = ['567566_r22zi6t8noas8aor', '599693_0b5sleso3f1j1yvi'];
 // let iconfontUrl = `//at.acodelicdn.com/t/font_$key.css`;
-let iconfontVersion = ['567566_r22zi6t8noas8aor','599693_0b5sleso3f1j1yvi', '667895_xte3dcfrvbo6r'];
+let iconfontVersion = ['567566_r22zi6t8noas8aor','599693_0b5sleso3f1j1yvi', '667895_xte3dcfrvbo6r','701851_cl7p02iyhr7wrk9'];
 let iconfontUrl = `//at.alicdn.com/t/font_$key.css`;
 let codeUrl = `/admin/code`
+console.log(process)
 if (process.env.NODE_ENV == 'development') {
-  //  baseUrl = `http://test1.iot.v/`
-  baseUrl = `http://192.168.0.33:9999/`
+   baseUrl = `http://test1.iot.v/`
+  // baseUrl = `http://192.168.0.33:9999/`
 } else if (process.env.NODE_ENV == 'production') {
-  // baseUrl = `http://test1.iot.v/`
-  baseUrl = `http://192.168.0.33:9999/`
+  baseUrl = `http://test1.iot.v/`
+  // baseUrl = `http://192.168.0.33:9999/`
 }
 
 export {

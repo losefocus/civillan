@@ -62,7 +62,6 @@ export default {
   created() {},
   mounted() {
     listenfullscreen(this.setScreen);
-    console.log(this.userInfo)
   },
   computed: {
     ...mapState({
@@ -82,7 +81,6 @@ export default {
       this.$store.commit("SET_FULLSCREN");
     },
     logout() {
-      console.log(this.userInfo)
       this.$confirm("是否退出系统, 是否继续?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
