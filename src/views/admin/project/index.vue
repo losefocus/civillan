@@ -243,8 +243,8 @@ export default {
                 thumbnailUrl:'',
                 imageName:'',
                 position:'',
-                comment:'123',
-                status:false,
+                comment:'',
+                status:0,
                 fileList: []
             },
             headers:{Authorization: "Bearer " + getToken()},
@@ -338,6 +338,7 @@ export default {
                     addObj(formData).then(response => {
                         this.createLoading = false
                         this.getList()
+                        this.resetForm(formName)
                     })
                 }
             });

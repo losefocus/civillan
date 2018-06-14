@@ -1,8 +1,8 @@
 <template>
     <div style="padding:20px;border:1px solid #dcdfe6">
         <div class="filter-container">
-            <el-button class="filter-item" style="" @click="handleCreate" size="small" type="primary" icon="edit" >添加机构
-            </el-button>
+            <!-- <el-button class="filter-item" style="" @click="handleCreate" size="small" type="primary" icon="edit" >添加机构
+            </el-button> -->
             <el-button class="filter-item" style="" @click="toProjectMap"  size="small" type="primary" icon="edit" >机构类型
             </el-button>
         </div>
@@ -43,6 +43,7 @@
     </div>
 </template>
 <script>
+import { fetchList,addObj,delObj,editObj} from "@/api/project";
 export default {
     props:['projectInfo'],
     data(){

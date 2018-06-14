@@ -33,6 +33,7 @@
     </div>
 </template>
 <script>
+import { fetchList,addObj,delObj,editObj} from "@/api/project_org";
 export default {
     props:['projectInfo'],
     data(){
@@ -60,8 +61,11 @@ export default {
                     { required: true, message: '请输入备注', trigger: 'blur' }
                 ]
             },
-            addNewForm:{},
+            addNewForm:{
+
+            },
             parentIdOptions:[],
+            createLoading: true,
         }
     },
     created() {},
@@ -72,7 +76,25 @@ export default {
     methods:{
         selectParentId(){},
         selectAdminer(){},
-        submitForm(formName){}
+        submitForm(formName){
+            this.$refs[formName].validate((valid) => {
+                if (valid) {
+                    
+                    this.addNewForm.projectId = this.projectInfo.id
+                    this.addNewForm.status = this.addNewForm.status?1:0
+                    console.log(this.addNewForm)
+                    // this.createLoading = true
+                    // let formData = Object.assign({}, this.addNewForm);
+                    // formData.beginAt = Math.round(new Date(formData.tm[0]).getTime()/1000);
+                    // formData.endAt = Math.round(new Date(formData.tm[1]).getTime()/1000);
+                    // formData.adminer = formData.adminer.toString()
+                    // formData.status = formData.status?1:0
+                    addObj(this.addNewForm).then(response => {
+                        this.createLoading = false
+                    })
+                }
+            });
+        }
     }
 }
 </script>
