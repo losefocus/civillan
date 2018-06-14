@@ -50,6 +50,9 @@ const common = {
     }
   },
   mutations: {
+    SET_COLLAPSE_:(state, action)=>{
+      state.isCollapse = action
+    },
     SET_COLLAPSE: (state, action) => {
       state.isCollapse = !state.isCollapse
     },

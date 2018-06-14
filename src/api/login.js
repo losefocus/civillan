@@ -7,10 +7,6 @@ export const loginByUsername = (username, password, code, randomStr) => {
   var scope = 'server'
   return request({
     url:'/admin/user/login',
-    // url: '/auth/oauth/token',
-    // headers: {
-    //   'Authorization': 'Basic cGlnOnBpZw=='
-    // },
     method: 'post',
     params: { username, password, randomStr, code }  //,grant_type , scope
   })

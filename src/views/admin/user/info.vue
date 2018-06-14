@@ -20,7 +20,7 @@
               <el-input v-model="userInfo.mobile" placeholder="验证码登录使用"></el-input>
             </el-form-item>
             <el-form-item label="头像">
-              <my-upload field="file" @crop-upload-success="cropUploadSuccess" v-model="show" :width="300" :height="300" url="/admin/user/upload" :headers="headers" img-format="png"></my-upload>
+              <my-upload field="uploadFile" @crop-upload-success="cropUploadSuccess" v-model="show" :width="300" :height="300" url="/file/attachment/upload" :headers="headers" img-format="png" :params="params"></my-upload>
               <img :src="userInfo.avatar">
               <el-button type="primary" @click="toggleShow" size="mini">选择
                 <i class="el-icon-upload el-icon--right"></i>
@@ -78,6 +78,10 @@ export default {
       show: false,
       headers: {
         Authorization: "Bearer " + getToken()
+      },
+      params:{
+        'component' :'project',
+        filename:'aa'
       },
       ruleForm2: {
         password: "",

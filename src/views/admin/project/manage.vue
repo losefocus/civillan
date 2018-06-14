@@ -1,6 +1,7 @@
 <template>
-    <div class="app-container calendar-list-container">
-        <div class="filter-container">
+    <div class=" clearfix">
+        <div class="pull-left" :class="{containers:tabView != 'info',containers_:tabView === 'info'}">
+            <div class="filter-container">
             <el-button @click="toProjectIndex" size="small" >返回</el-button>
             <span>{{viewData.name}}</span>
             <el-radio-group v-model="tabView" size="small" style="margin-bottom: 30px;" class="pull-right">
@@ -10,13 +11,21 @@
                 <el-radio-button label="equ">设备管理</el-radio-button>
                 <el-radio-button label="doc">文档资料</el-radio-button>
             </el-radio-group>
+            </div>
+            <div style="padding-top:20px;">
+                <info v-if="tabView === 'info'" :project-info="viewData"></info>
+                <org v-if="tabView === 'org'" :project-info="viewData"></org>
+                <per v-if="tabView === 'per'" :project-info="viewData"></per>
+                <equ v-if="tabView === 'equ'" :project-info="viewData"></equ>
+                <doc v-if="tabView === 'doc'" :project-info="viewData"></doc>
+            </div>
         </div>
-        <div>
-            <info v-if="tabView === 'info'"></info>
-            <org v-if="tabView === 'org'"></org>
-            <per v-if="tabView === 'per'"></per>
-            <equ v-if="tabView === 'equ'"></equ>
-            <doc v-if="tabView === 'doc'"></doc>
+        <div class="pull-right addNewContainer" v-if="tabView != 'info'">
+            <!-- <add-info v-if="tabView === 'info'"></add-info> -->
+            <add-org v-if="tabView === 'org'" :project-info="viewData"></add-org>
+            <add-per v-if="tabView === 'per'" :project-info="viewData"></add-per>
+            <add-equ v-if="tabView === 'equ'" :project-info="viewData"></add-equ>
+            <add-doc v-if="tabView === 'doc'" :project-info="viewData"></add-doc>
         </div>
     </div>
 </template>
@@ -26,6 +35,12 @@ import org from "./manageView/org";
 import per from "./manageView/per";
 import equ from "./manageView/equ";
 import doc from "./manageView/doc";
+import addInfo from "./manageView/addInfo";
+import addOrg from "./manageView/addOrg";
+import addPer from "./manageView/addPer";
+import addEqu from "./manageView/addEqu";
+import addDoc from "./manageView/addDoc";
+
 export default {
     components:{
         info,
@@ -33,6 +48,11 @@ export default {
         per,
         equ,
         doc,
+        addInfo,
+        addOrg,
+        addPer,
+        addEqu,
+        addDoc
     },
     props:['viewData'],
     data(){
@@ -63,5 +83,15 @@ export default {
 }
 </script>
 <style scoped>
-
+.containers{
+    width: calc(100% - 320px)
+}
+.containers_{
+    width:100%
+}
+.addNewContainer{
+    width: 260px;
+    border: 1px solid #dcdfe6;
+    padding: 10px 20px 0 20px
+}
 </style>

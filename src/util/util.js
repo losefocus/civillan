@@ -74,7 +74,7 @@ export const encryption = (params) => {
  * 设置浏览器头部标题
  */
 export const setTitle = function (title) {
-  title = title ? `${title}——Civilaan 智慧云平台管理系统` : 'Civilaan 智慧云平台管理系统';
+  title = title ? `${title}——Civillan 智慧云平台管理系统` : 'Civillan 智慧云平台管理系统';
   window.document.title = title
 }
 /**

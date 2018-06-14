@@ -63,8 +63,8 @@ export default {
   background-color: #e4e4e4 !important;
 }
 .el-table__expanded-cell[class*=cell]{
-  padding: 0;
-  padding-left: 47px
+  padding: 0 !important;
+  padding-left: 47px !important;
 }
 #subTable{
   border-top: none;
@@ -85,4 +85,8 @@ export default {
 #subTable.el-table::before{
   height: 0 !important;
 }
+.addNewProject .el-form-item__error{
+    padding-top: 0 !important
+}
+
 </style>

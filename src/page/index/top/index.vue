@@ -39,7 +39,6 @@
           <el-dropdown-item>
             <router-link to="/info/index">用户资料</router-link>
           </el-dropdown-item>
-
           <el-dropdown-item @click.native="logout" divided>退出系统</el-dropdown-item>
         </el-dropdown-menu>
       </el-dropdown>
@@ -59,9 +58,17 @@ export default {
     return {};
   },
   filters: {},
-  created() {},
+  created() {this.initCollapse()},
   mounted() {
     listenfullscreen(this.setScreen);
+    window.onresize = () =>{
+      var docWidth = document.body.clientWidth;
+      if(docWidth <= 1400){
+        this.$store.commit("SET_COLLAPSE_",true);
+      }else{
+        this.$store.commit("SET_COLLAPSE_",false);
+      }
+    }
   },
   computed: {
     ...mapState({
@@ -70,7 +77,15 @@ export default {
     }),
     ...mapGetters(["isFullScren", "isCollapse"])
   },
-  methods: {
+  methods: { 
+    initCollapse(){
+      var docWidth = document.body.clientWidth;
+      if(docWidth <= 1400){
+        this.$store.commit("SET_COLLAPSE_",true);
+      }else{
+        this.$store.commit("SET_COLLAPSE_",false);
+      }
+    },
     showCollapse() {
       this.$store.commit("SET_COLLAPSE");
     },

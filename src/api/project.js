@@ -1,6 +1,6 @@
 import request from '@/router/axios'
 
-/* 列表 */
+/* 项目列表 */
 export function fetchList(query) {
     return request({
       url: '/project/project/list',
@@ -9,20 +9,44 @@ export function fetchList(query) {
     })
   }
 
-  export function fetchRoleList(query) {
+  /* 管理员列表 */
+  export function fetchAdminList() {
     return request({
-      url: '/project/project_role/list',
+      url: '/admin/user/list',
       method: 'get',
-      params: query
+      
     })
   }
-// export function fetchList(query) {
-//     return request({
-//       url: '/project/project/list',
-//       method: 'get',
-//       params: query,
-//       headers: {
-//           'Content-Type': 'application/json; charset=UTF-8'
-//         }
-//     })
-//   }
+ /* 图片上传 */
+export function uploadImg(obj) {
+  return request({
+    url: '/file/attachment/upload',
+    method: 'post',
+    // headers:{'Content-Type':'multipart/form-data'},
+    data: obj
+  })
+}
+/* 新增 */
+export function addObj(obj) {
+  return request({
+    url: '/project/project/add',
+    method: 'post',
+    data: obj
+  })
+}
+
+/* 删除 */
+export function delObj(id) {
+  return request({
+    url: '/project/project/delete?project_id=' + id,
+    method: 'post'
+  })
+}
+/* 修改 */
+export function editObj(obj) {
+  return request({
+    url: '/project/project/edit',
+    method: 'post',
+    data: obj
+  })
+}

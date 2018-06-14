@@ -11,7 +11,7 @@
  */
 
 
-let baseUrl = 'http://test1.iot.v/';
+let baseUrl = '';
 // let iconfontVersion = ['567566_r22zi6t8noas8aor', '599693_0b5sleso3f1j1yvi'];
 // let iconfontUrl = `//at.acodelicdn.com/t/font_$key.css`;
 let iconfontVersion = ['567566_r22zi6t8noas8aor','599693_0b5sleso3f1j1yvi', '667895_xte3dcfrvbo6r','701851_cl7p02iyhr7wrk9'];

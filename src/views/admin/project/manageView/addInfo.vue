@@ -1,6 +1,6 @@
 <template>
-    <div>
-        info
+    <div >
+        addinfo
     </div>
 </template>
 <script>
@@ -17,7 +17,7 @@ export default {
     },
     computed: {},
     methods:{
-
+        
     }
 }
 </script>
