@@ -1,20 +1,21 @@
 <template>
     <div class="app-container calendar-list-container" >
-        <div v-show="showView === 'index'">
-            <div class="filter-container">
-                <!-- <el-button class="filter-item" style="" size="small" type="primary" icon="edit" v-if="roleProject_btn_add">添加项目
-                </el-button> -->
-                <el-button class="filter-item" style="" @click="toProjectMap"  size="small" type="primary" icon="edit" >项目地图
-                </el-button>
-                <div class="pull-right">
-                    <el-input @keyup.enter.native="handleFilter" style="width: 200px;" size="small" class="filter-item" placeholder="项目名称" v-model="addNewForm.keyword">
-                    </el-input>
-                    <el-button class="filter-item" type="primary" v-waves icon="search" size="small" @click="handleFilter">搜索</el-button>
+        <div v-show="showView === 'index'"  class="clearfix">
+            <div class="pull-left"  style="width:calc(100% - 320px)">
+                <div class="filter-container">
+                    <!-- <el-button class="filter-item" style="" size="small" type="primary" icon="edit" v-if="roleProject_btn_add">添加项目
+                    </el-button> -->
+                    <el-button class="filter-item" style="" @click="toProjectMap"  size="small" type="primary" icon="edit" >项目地图
+                    </el-button>
+                    <div class="pull-right">
+                        <el-input @keyup.enter.native="handleFilter" style="width: 200px;" size="small" suffix-icon="el-icon-search" class="filter-item" placeholder="项目搜索" v-model="addNewForm.keyword">
+                        </el-input>
+                        <!-- <el-button class="filter-item" type="primary" v-waves icon="search" size="small" @click="handleFilter">搜索</el-button> -->
+                    </div>
                 </div>
-            </div>
-            <div class="clearfix" v-loading="listLoading">
-                <div class="pull-left" style="width:calc(100% - 320px)">
-                    <el-table :data="list" element-loading-text="给我一点时间" border fit highlight-current-row style="width: 99%;margin-bottom:10px">
+            
+                <div v-loading="listLoading" >
+                    <el-table :data="list" element-loading-text="给我一点时间" border fit highlight-current-row style="width: 100%;margin-bottom:10px">
                         <el-table-column type="expand">
                             <template slot-scope="scope">
                                 <el-table :data="scope.row.children" v-if="scope.row.children.length != 0" border ref="subTable" id="subTable">
@@ -97,79 +98,79 @@
                         </el-pagination>
                     </div>
                 </div>
-                <div class="pull-right addNewProject">
-                    <h3>添加项目</h3>
-                    <el-form label-width="65px" :model="addNewForm" :rules="rules" ref="addNewForm">
-                        <el-form-item label="上级" prop="parentId">
-                            <el-select v-model="addNewForm.parentId" size="small" placeholder="请选择" @change="selectParentId">
-                                <el-option
-                                v-for="item in parentIdOptions"
-                                :key="item.value"
-                                :label="item.label"
-                                :value="item.value">
-                                </el-option>
-                            </el-select>
-                        </el-form-item>
-                        <el-form-item label="名称" prop="name">
-                            <el-input v-model="addNewForm.name" size="small" placeholder="请输入内容"></el-input>
-                        </el-form-item>
-                        <el-form-item label="工期" prop="tm">
-                            <el-date-picker
-                            style="width:195px"
-                            size="small"
-                            v-model="addNewForm.tm"
-                            type="daterange"
-                            range-separator="至"
-                            start-placeholder="开始日期"
-                            end-placeholder="结束日期"
-                            format="yy-MM-dd"
-                            value-format="yyyy-MM-dd">
-                            </el-date-picker>
-                        </el-form-item>
-                        <el-form-item label="管理员" prop="adminer">
-                            <el-select v-model="addNewForm.adminer" size="small" placeholder="请选择" @change="selectAdminer">
-                                <el-option
-                                v-for="item in adminerOptions"
-                                :key="item.value"
-                                :label="item.label"
-                                :value="item.value">
-                                </el-option>
-                            </el-select>                        
-                        </el-form-item>
-                        <el-form-item label="图片" prop="thumbnailPath">
-                            <el-upload
-                            class="upload-demo"
-                            ref="upload"
-                            :headers="headers"
-                            action="/file/attachment/upload"
-                            :limit="10"
-                            :data="params"
-                            name="uploadFile"
-                            :show-file-list ="false"
-                            :on-success="uploadSuccess"
-                            :file-list="addNewForm.fileList"
-                            :auto-upload="true">
-                                <el-button slot="trigger" size="small" type="primary">选取</el-button>
-                                <el-input v-model="addNewForm.imageName" style="width:135px" size="small" placeholder="请选取图片"></el-input>
-                            </el-upload>
-                        </el-form-item>
-                        <el-form-item label="位置" prop="position">
-                            <el-input v-model="addNewForm.position" size="small" placeholder="请输入内容"></el-input>
-                        </el-form-item>
-                        <el-form-item label="备注" prop="comment">
-                            <el-input
-                            type="textarea"
-                            :autosize="{ minRows: 2, maxRows: 4}"
-                            placeholder="请输入内容"
-                            v-model="addNewForm.comment">
-                            </el-input>
-                        </el-form-item>
-                        <el-form-item>
-                            <el-checkbox label="已启用" v-model="addNewForm.status" size="small"></el-checkbox>
-                            <el-button type="primary" class="pull-right" @click="submitForm('addNewForm')" size="small" :loading="createLoading" style="width:100px;">保存</el-button>
-                        </el-form-item>
-                    </el-form>
-                </div>
+            </div>
+            <div class="pull-right addNewProject">
+                <h3>添加项目</h3>
+                <el-form label-width="65px" :model="addNewForm" :rules="rules" ref="addNewForm">
+                    <el-form-item label="上级" prop="parentId">
+                        <el-select v-model="addNewForm.parentId" size="small" placeholder="请选择" @change="selectParentId">
+                            <el-option
+                            v-for="item in parentIdOptions"
+                            :key="item.value"
+                            :label="item.label"
+                            :value="item.value">
+                            </el-option>
+                        </el-select>
+                    </el-form-item>
+                    <el-form-item label="名称" prop="name">
+                        <el-input v-model="addNewForm.name" size="small" placeholder="请输入内容"></el-input>
+                    </el-form-item>
+                    <el-form-item label="工期" prop="tm">
+                        <el-date-picker
+                        style="width:195px"
+                        size="small"
+                        v-model="addNewForm.tm"
+                        type="daterange"
+                        range-separator="至"
+                        start-placeholder="开始日期"
+                        end-placeholder="结束日期"
+                        format="yy-MM-dd"
+                        value-format="yyyy-MM-dd">
+                        </el-date-picker>
+                    </el-form-item>
+                    <el-form-item label="管理员" prop="adminer">
+                        <el-select v-model="addNewForm.adminer" size="small" placeholder="请选择" @change="selectAdminer">
+                            <el-option
+                            v-for="item in adminerOptions"
+                            :key="item.value"
+                            :label="item.label"
+                            :value="item.value">
+                            </el-option>
+                        </el-select>                        
+                    </el-form-item>
+                    <el-form-item label="图片" prop="thumbnailPath">
+                        <el-upload
+                        class="upload-demo"
+                        ref="upload"
+                        :headers="headers"
+                        action="/file/attachment/upload"
+                        :limit="10"
+                        :data="params"
+                        name="uploadFile"
+                        :show-file-list ="false"
+                        :on-success="uploadSuccess"
+                        :file-list="addNewForm.fileList"
+                        :auto-upload="true">
+                            <el-button slot="trigger" size="small" type="primary">选取</el-button>
+                            <el-input v-model="addNewForm.imageName" style="width:135px" size="small" placeholder="请选取图片"></el-input>
+                        </el-upload>
+                    </el-form-item>
+                    <el-form-item label="位置" prop="position">
+                        <el-input v-model="addNewForm.position" size="small" placeholder="请输入内容"></el-input>
+                    </el-form-item>
+                    <el-form-item label="备注" prop="comment">
+                        <el-input
+                        type="textarea"
+                        :autosize="{ minRows: 2, maxRows: 4}"
+                        placeholder="请输入内容"
+                        v-model="addNewForm.comment">
+                        </el-input>
+                    </el-form-item>
+                    <el-form-item>
+                        <el-checkbox label="已启用" v-model="addNewForm.status" size="small"></el-checkbox>
+                        <el-button type="primary" class="pull-right" @click="submitForm('addNewForm')" size="small" :loading="createLoading" style="width:90px;">保存</el-button>
+                    </el-form-item>
+                </el-form>
             </div>
         </div>
         <div v-show="showView === 'mapView'">
@@ -183,7 +184,7 @@
 
 <script>
 import { getToken } from "@/util/auth";
-import { fetchList,fetchAdminList,addObj,uploadImg,delObj,editObj} from "@/api/project";
+import { fetchList,fetchAdminList,addObj,uploadImg,delObj} from "@/api/project";
 import { mapGetters } from "vuex";
 import waves from "@/directive/waves/index.js";
 import mapView from "./map";
@@ -267,7 +268,6 @@ export default {
         //管理员列表
         getRoleList(){
             fetchAdminList().then(response => {
-                console.log(response)
                 let datas = response.data.result.items;
                 let options = []
                 for (let i=0; i<datas.length; i++) {
@@ -295,7 +295,6 @@ export default {
             let options = []
             options.push({value:0,label:'无'})
             for (let i=0; i<treeArray.length; i++) {
-                console.log("parentId" in treeArray[i])
                 if("parentId" in treeArray[i] && treeArray[i].parentId == 0){
                     treeArray[i].children = [];
                     tmpMap[treeArray[i].id]= treeArray[i]; 

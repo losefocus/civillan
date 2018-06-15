@@ -238,13 +238,10 @@ export const findByvalue = (dic, value) => {
 /**
  * 根据字典的value查找对应的index
  */
-export const findArray = (dic, value) => {
-  for (let i = 0; i < dic.length; i++) {
-    if (dic[i].value === value) {
-      return i
-    }
-  }
-  return -1
+export const getBoolean = (val) => {
+  // if(val === 1) return true
+  // else return false
+  return (val === 1)?true:false
 }
 
 /**
@@ -255,4 +252,15 @@ export const randomLenNum = (len, date) => {
   random = Math.ceil(Math.random() * 100000000000000).toString().substr(0, typeof len === 'number' ? len : 4)
   if (date) random = random + Date.now()
   return random
+}
+
+/**
+ * 根据0,1返回true,false
+ */export const findArray = (dic, value) => {
+  for (let i = 0; i < dic.length; i++) {
+    if (dic[i].value === value) {
+      return i
+    }
+  }
+  return -1
 }

@@ -107,7 +107,6 @@ const user = {
       dispatch
     }) {
       return new Promise((resolve, reject) => {
-        console.log(state.userName)
         getUserInfo(state.userName).then(response => {
           const data = response.data.result
           commit('SET_ROLES', data.roles)

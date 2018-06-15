@@ -28,6 +28,9 @@ const common = {
       name: 'lockPasswd'
     }) || '',
     website: website,
+    typeOptions: getStore({
+      name: 'typeOptions'
+    }) || [],
   },
   actions: {
     // 获取字典公用类
@@ -50,6 +53,9 @@ const common = {
     }
   },
   mutations: {
+    SET_TYPEOPTIONS:(state, action)=>{
+      state.typeOptions = action
+    },
     SET_COLLAPSE_:(state, action)=>{
       state.isCollapse = action
     },

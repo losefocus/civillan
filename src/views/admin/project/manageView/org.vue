@@ -3,7 +3,7 @@
         <div class="filter-container">
             <!-- <el-button class="filter-item" style="" @click="handleCreate" size="small" type="primary" icon="edit" >添加机构
             </el-button> -->
-            <el-button class="filter-item" style="" @click="toProjectMap"  size="small" type="primary" icon="edit" >机构类型
+            <el-button class="filter-item" style="" @click="objectTypeVisible = true"  size="small" type="primary" icon="edit" >机构类型
             </el-button>
         </div>
         <el-table :data="list" v-loading="listLoading" element-loading-text="给我一点时间" border fit highlight-current-row style="width: 99%;">
@@ -29,30 +29,95 @@
             </el-table-column>
             <el-table-column align="center" label="状态">
                 <template slot-scope="scope">
-                    <span>{{scope.row.status}}</span>
+                    <span>{{(scope.row.status == 1)?'已启用':'未启用'}}</span>
                 </template>
             </el-table-column>
             <el-table-column align="center" label="操作" width="260">
                 <template slot-scope="scope" >
-                    <el-button size="small" type="success" plain @click="perManage(scope.row)">人员管理</el-button>
-                    <el-button size="small" type="success" plain @click="editOrg(scope.row)">修改</el-button>
-                    <el-button size="small" type="success" plain @click="deleteOrg(scope.row)">删除</el-button>
+                    <el-button size="small" type="success" plain @click="updateOrg(scope.row)">修改</el-button>
+                    <el-button size="small" type="danger" plain @click="deleteOrg(scope.row)">删除</el-button>
                 </template>
             </el-table-column>
         </el-table> 
+
+        <el-dialog id="orgType" title="机构类型"  :visible.sync="objectTypeVisible" width='680px'>
+            <div>
+                项 目 : {{projectInfo.name}} 
+            </div>
+            <el-form :model="orgTypeForm" class="clearfix" ref="orgTypeForm">
+                <el-form-item label="名称" style="width: 140px">
+                    <el-input v-model="orgTypeForm.name" style="width:90px;" size="small" auto-complete="off"></el-input>
+                </el-form-item>
+                <el-form-item label="别名" style="width: 140px">
+                    <el-input v-model="orgTypeForm.alias" style="width:90px;" size="small" auto-complete="off"></el-input>
+                </el-form-item>
+                <el-form-item label="排序" style="width: 140px">
+                    <el-input v-model="orgTypeForm.sort" type="number" style="width:90px;" size="small" auto-complete="off"></el-input>
+                </el-form-item>
+                <el-form-item >
+                    <el-checkbox v-model="orgTypeForm.status" >已启用</el-checkbox>
+                </el-form-item>
+                <el-form-item  style="width: 140px">
+                    <div v-show="addOrEdit == 'add'">
+                        <el-button size="small" type="primary" @click="addType">添加</el-button>
+                    </div>
+                   <div v-show="addOrEdit == 'edit'">
+                        <el-button size="small" type="primary" @click="handleUpdateType('orgTypeForm')">保存</el-button>
+                        <el-button size="small" type="info" @click="cancelEdit('orgTypeForm')">取消</el-button>
+                   </div>
+                </el-form-item>
+            </el-form>
+            <el-table :data="orgTypeList" element-loading-text="给我一点时间" stripe border fit highlight-current-row style="width: 99%;">
+                <el-table-column align="center" label="类型名称">
+                    <template slot-scope="scope">
+                        <span>{{scope.row.name}}</span>
+                    </template>
+                </el-table-column>
+                <el-table-column align="center" label="别名">
+                    <template slot-scope="scope">
+                        <span>{{scope.row.alias}}</span>
+                    </template>
+                </el-table-column>
+                <el-table-column align="center" label="排序">
+                    <template slot-scope="scope">
+                        <span>{{scope.row.sort}}</span>
+                    </template>
+                </el-table-column>
+                <el-table-column align="center" label="状态">
+                    <template slot-scope="scope">
+                        <span>{{(scope.row.status == 1)?'已启用':'未启用'}}</span>
+                    </template>
+                </el-table-column>
+                <el-table-column align="center" label="操作" width="160">
+                    <template slot-scope="scope">
+                        <el-button size="small" type="success" plain @click="editType(scope.row)">修改</el-button>
+                        <el-button size="small" type="danger" plain @click="deleteType(scope.row)">删除</el-button>
+                    </template>
+                </el-table-column>
+            </el-table>
+        </el-dialog>
     </div>
 </template>
 <script>
-import { fetchList,addObj,delObj,editObj} from "@/api/project";
+import { fetchList,delObj,updateObj,fetchTypeList,addObjType,updateObjType,delObjType} from "@/api/project_org";
+// import { getBoolean } from '@/utils'
 export default {
     props:['projectInfo'],
     data(){
         return {
             listLoading:false,
-            list:[{}]
+            list:[],
+            objectTypeVisible:false,
+            orgTypeForm:{},
+            orgTypeList:[],
+            addOrEdit:'add',
+            
         }
     },
-    created() {},
+    created() {
+        this.getOrgList()
+        this.getTypeList()
+    },
     mounted() {
 
     },
@@ -61,21 +126,135 @@ export default {
         handleCreate(){
 
         },
-        toProjectMap(){
-
+        // 得到机构列表
+        getOrgList(){
+            this.listLoading = true
+            let data = {projectId:this.projectInfo.id}
+            fetchList(data).then(res => {
+                this.list = res.data.result.items
+                this.listLoading = false
+            })
         },
-        perManage(){
-
+        // 修改机构
+        updateOrg(row){
+            this.$parent.$refs.addOrg.flag = 'updata'
+            this.$parent.$refs.addOrg.addNewForm = Object.assign({},row)
+            this.$parent.$refs.addOrg.addNewForm.status = (row.status == 1)?true:false
         },
-        editOrg(){
-
+        // 删除机构
+        deleteOrg(row){
+            this.$confirm(
+                "此操作将永久删除该机构类型(类型名:" + row.name + "), 是否继续?",
+                "提示",
+                {
+                confirmButtonText: "确定",
+                cancelButtonText: "取消",
+                type: "warning"
+                }
+            ).then(() => {
+                delObj(row.id).then(res => {
+                    if(res.data.success == true){
+                        this.getOrgList()
+                        this.$notify({
+                            title: "成功",
+                            message: "删除成功",
+                            type: "success",
+                            duration: 2000
+                        });
+                    }
+                })
+            })
+        
         },
-        deleteOrg(){
-
-        }
+        // 得到机构类型列表
+        getTypeList(){            
+            fetchTypeList(this.projectInfo.id).then(res=>{
+                this.orgTypeList = res.data.result.items
+                let orgTypeOptions = []
+                this.orgTypeList.forEach(element => {
+                    element.value = element.id
+                    element.label = element.name
+                    orgTypeOptions.push(element)
+                });
+                this.$store.commit("SET_TYPEOPTIONS",orgTypeOptions);
+            })
+        },
+        // 添加机构类型
+        addType(){
+            let data = Object.assign({}, this.orgTypeForm);
+            data.projectId = this.projectInfo.id
+            data.sort = (Number(data.sort)<=0)?0:Number(data.sort)
+            data.status = data.status?1:0
+            addObjType(data).then(res=>{
+                if(res.data.success == true){
+                    this.getTypeList()
+                    this.$refs.orgTypeForm.resetFields();
+                    this.$notify({
+                        title: "成功",
+                        message: "添加成功",
+                        type: "success",
+                        duration: 2000
+                    });
+                }
+            })
+        },
+        // 删除机构类型
+        deleteType(row){
+            this.$confirm(
+                "此操作将永久删除该机构类型(类型名:" + row.name + "), 是否继续?",
+                "提示",
+                {
+                confirmButtonText: "确定",
+                cancelButtonText: "取消",
+                type: "warning"
+                }
+            ).then(() => {
+                delObjType(row.id).then(res => {
+                    if(res.data.success == true){
+                        this.getTypeList()
+                    }
+                })
+            })
+            
+        },
+        editType(row){
+            this.addOrEdit = 'edit'
+            this.orgTypeForm= Object.assign({}, row);
+            this.orgTypeForm.status = (this.orgTypeForm.status == 1)?true:false
+        },
+        // 修改机构类型
+        handleUpdateType(formName){
+            let data = Object.assign({}, this.orgTypeForm);
+            data.sort = (Number(data.sort)<=0)?0:Number(data.sort)
+            data.status = data.status?1:0
+            delete data.value
+            delete data.label
+            updateObjType(data).then(res => {
+                if(res.data.success == true){
+                    this.getTypeList()
+                    this.orgTypeForm = {}
+                    this.addOrEdit = 'add'
+                    this.$notify({
+                        title: "成功",
+                        message: "修改成功",
+                        type: "success",
+                        duration: 2000
+                    });
+                }
+            })
+        },
+        cancelEdit(formName){
+            this.addOrEdit = 'add',
+            this.orgTypeForm = {}
+            // this.$refs[formName].resetFields();
+        },
+        
     }
 }
 </script>
 <style scoped>
-
+.el-form-item{
+    float: left;
+    width:80px
+}
 </style>

@@ -14,18 +14,18 @@
             </div>
             <div style="padding-top:20px;">
                 <info v-if="tabView === 'info'" :project-info="viewData"></info>
-                <org v-if="tabView === 'org'" :project-info="viewData"></org>
-                <per v-if="tabView === 'per'" :project-info="viewData"></per>
-                <equ v-if="tabView === 'equ'" :project-info="viewData"></equ>
-                <doc v-if="tabView === 'doc'" :project-info="viewData"></doc>
+                <org v-if="tabView === 'org'" :project-info="viewData" ref="org"></org>
+                <per v-if="tabView === 'per'" :project-info="viewData" ref="per"></per>
+                <equ v-if="tabView === 'equ'" :project-info="viewData" ref="equ"></equ>
+                <doc v-if="tabView === 'doc'" :project-info="viewData" ref="doc"></doc>
             </div>
         </div>
         <div class="pull-right addNewContainer" v-if="tabView != 'info'">
             <!-- <add-info v-if="tabView === 'info'"></add-info> -->
-            <add-org v-if="tabView === 'org'" :project-info="viewData"></add-org>
-            <add-per v-if="tabView === 'per'" :project-info="viewData"></add-per>
-            <add-equ v-if="tabView === 'equ'" :project-info="viewData"></add-equ>
-            <add-doc v-if="tabView === 'doc'" :project-info="viewData"></add-doc>
+            <add-org v-if="tabView === 'org'" :project-info="viewData" ref="addOrg"></add-org>
+            <add-per v-if="tabView === 'per'" :project-info="viewData" ref="addPer"></add-per>
+            <add-equ v-if="tabView === 'equ'" :project-info="viewData" ref="addEqu"></add-equ>
+            <add-doc v-if="tabView === 'doc'" :project-info="viewData" ref="addDoc"></add-doc>
         </div>
     </div>
 </template>

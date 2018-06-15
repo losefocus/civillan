@@ -26,7 +26,7 @@ export function delObj(id) {
   })
 }
 /* 修改 */
-export function editObj(obj) {
+export function updateObj(obj) {
   return request({
     url: '/project/project_user/edit',
     method: 'post',
