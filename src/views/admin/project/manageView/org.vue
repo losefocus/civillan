@@ -90,7 +90,7 @@
                 </el-table-column>
                 <el-table-column align="center" label="操作" width="160">
                     <template slot-scope="scope">
-                        <el-button size="small" type="success" plain @click="editType(scope.row)">修改</el-button>
+                        <el-button size="small" type="success" plain @click="updateType(scope.row)">修改</el-button>
                         <el-button size="small" type="danger" plain @click="deleteType(scope.row)">删除</el-button>
                     </template>
                 </el-table-column>
@@ -133,6 +133,13 @@ export default {
             fetchList(data).then(res => {
                 this.list = res.data.result.items
                 this.listLoading = false
+                let organOptions = []
+                this.list.forEach(element => {
+                    element.value = element.id
+                    element.label = element.name
+                    organOptions.push(element)
+                });
+                this.$store.commit("SET_ORGANOPTIONS",organOptions);
             })
         },
         // 修改机构
@@ -217,7 +224,7 @@ export default {
             })
             
         },
-        editType(row){
+        updateType(row){
             this.addOrEdit = 'edit'
             this.orgTypeForm= Object.assign({}, row);
             this.orgTypeForm.status = (this.orgTypeForm.status == 1)?true:false

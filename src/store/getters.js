@@ -16,6 +16,8 @@ const getters = {
   menu: state => state.user.menu,
   errLog: state => state.errLog.errLog,
   userName: state => state.user.userName,
-  typeOptions: state => state.common.typeOptions
+  typeOptions: state => state.common.typeOptions,
+  organOptions: state => state.common.organOptions,
+  roleOptions: state => state.common.roleOptions,
 }
 export default getters

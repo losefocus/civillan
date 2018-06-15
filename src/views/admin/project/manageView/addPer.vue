@@ -1,14 +1,14 @@
 <template>
     <div>
-        <h3>添加人员</h3>
-        <el-form label-width="65px" :model="addNewForm"  ref="addNewForm">
+        <h3>{{flag == 'add'?'添加':'修改'}}人员</h3>
+        <el-form label-width="65px" :model="form"  ref="forms">
             <el-form-item label="项目">
                 <el-input v-model="projectInfo.name" size="small" placeholder="请输入内容" disabled></el-input>
             </el-form-item>
             <el-form-item label="机构" prop="organId">
-                <el-select v-model="addNewForm.organId" size="small" placeholder="请选择" @change="selectOrganId">
+                <el-select v-model="form.organId" size="small" placeholder="请选择">
                     <el-option
-                    v-for="item in organIdOptions"
+                    v-for="item in organOptions"
                     :key="item.value"
                     :label="item.label"
                     :value="item.value">
@@ -16,9 +16,9 @@
                 </el-select>
             </el-form-item>
             <el-form-item label="角色" prop="roleId">
-                <el-select v-model="addNewForm.roleId" size="small" placeholder="请选择" @change="selectRoleId">
+                <el-select v-model="form.roleId" size="small" placeholder="请选择">
                     <el-option
-                    v-for="item in roleIdOptions"
+                    v-for="item in roleOptions"
                     :key="item.value"
                     :label="item.label"
                     :value="item.value">
@@ -26,34 +26,39 @@
                 </el-select>
             </el-form-item>
             <el-form-item label="姓名" prop="name">
-                <el-input v-model="addNewForm.name" size="small" placeholder="请输入内容"></el-input>
+                <el-input v-model="form.name" size="small" placeholder="请输入内容"></el-input>
             </el-form-item>
             <el-form-item label="电话" prop="phone">
-                <el-input v-model="addNewForm.phone" size="small" placeholder="请输入内容"></el-input>
+                <el-input v-model="form.phone" size="small" placeholder="请输入内容"></el-input>
             </el-form-item>
             <el-form-item label="登录名" prop="username">
-                <el-input v-model="addNewForm.username" size="small" placeholder="请输入内容"></el-input>
+                <el-input v-model="form.username" size="small" placeholder="请输入内容"></el-input>
             </el-form-item>
             <el-form-item label="密码" prop="password">
-                <el-input v-model="addNewForm.password" size="small" placeholder="请输入内容"></el-input>
+                <el-input v-model="form.password" size="small" placeholder="请输入内容"></el-input>
             </el-form-item>
             <el-form-item label="备注" prop="comment">
                 <el-input
                 type="textarea"
                 :autosize="{ minRows: 2, maxRows: 4}"
                 placeholder="请输入内容"
-                v-model="addNewForm.comment">
+                v-model="form.comment">
                 </el-input>
             </el-form-item>
             <el-form-item>
-                <el-checkbox label="已启用" v-model="addNewForm.status" size="small"></el-checkbox>
-                <el-button type="primary" class="pull-right" @click="create('addNewForm')" size="small" style="width:100px;">保持</el-button>
+                <el-checkbox label="已启用" v-model="form.status" size="small"></el-checkbox>
+                <el-button v-if="flag == 'add'" type="primary" :loading="createLoading" class="pull-right" @click="submitForm('forms')" size="small" style="width:90px;">添加</el-button>
+                <div v-else class="clearfix">
+                    <el-button  type="primary" :loading="createLoading" class="pull-left" @click="updataForm('forms')" size="small" style="width:90px;">保存</el-button>
+                    <el-button  type="info" class="pull-right" @click="cancel('forms')" size="small" style="width:90px;">取消</el-button>
+                </div>            
             </el-form-item>
         </el-form>
     </div>
 </template>
 <script>
-import { addObj} from "@/api/project_per";
+import { mapGetters } from "vuex";
+import { fetchOrganList,addObj,} from "@/api/project_per";
 export default {
     props:['projectInfo'],
     data(){
@@ -81,24 +86,41 @@ export default {
                     { required: true, message: '请输入备注', trigger: 'blur' }
                 ]
             },
-            addNewForm:{},
-            organIdOptions:[],
-            roleIdOptions:[],
+            form:{},
+            flag:'add',
+            organOptions:[],
+            createLoading:false
         }
     },
-    created() {console.log(this.projectInfo)},
+    created() {
+        this.getOrganOptions()
+    },
     mounted() {
 
     },
-    computed: {},
+    computed: {
+        ...mapGetters(["roleOptions"]),
+    },
     methods:{
-        selectOrganId(){},
-        selectRoleId(){},
-        create(formName){
+        getOrganOptions(){
+            fetchOrganList(this.projectInfo.id).then(res => {
+                let data = res.data.result.items
+                let array = []
+                data.forEach(element => {
+                    element.value = element.id
+                    element.label = element.name
+                    array.push(element)
+                });
+                this.organOptions = array
+                // this.$store.commit("SET_ORGANOPTIONS",organOptions);
+            })
+        },
+        submitForm(formName){
+            console.log(this.form)
             this.$refs[formName].validate(valid => {
                 if (valid) {
                     addObj(this.form).then(() => {
-                        this.$parent.getList();
+                        this.$parent.$refs.per.getOrgList()
                         this.$notify({
                         title: "成功",
                         message: "创建成功",

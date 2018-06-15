@@ -31,6 +31,12 @@ const common = {
     typeOptions: getStore({
       name: 'typeOptions'
     }) || [],
+    organOptions: getStore({
+      name: 'organOptions'
+    }) || [],
+    roleOptions: getStore({
+      name: 'roleOptions'
+    }) || [],
   },
   actions: {
     // 获取字典公用类
@@ -53,6 +59,16 @@ const common = {
     }
   },
   mutations: {
+
+    // 机构类型
+    SET_ROLEOPTIONS:(state, action)=>{
+      state.roleOptions = action
+    },
+    // 机构
+    SET_ORGANOPTIONS:(state, action)=>{
+      state.organOptions = action
+    },
+    // 机构类型
     SET_TYPEOPTIONS:(state, action)=>{
       state.typeOptions = action
     },
