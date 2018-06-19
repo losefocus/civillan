@@ -8,7 +8,7 @@
                     <el-button class="filter-item" style="" @click="toProjectMap"  size="small" type="primary" icon="edit" >项目地图
                     </el-button>
                     <div class="pull-right">
-                        <el-input @keyup.enter.native="handleFilter" style="width: 200px;" size="small" suffix-icon="el-icon-search" class="filter-item" placeholder="项目搜索" v-model="addNewForm.keyword">
+                        <el-input @keyup.enter.native="handleFilter" style="width: 200px;" size="small" suffix-icon="el-icon-search" class="filter-item" placeholder="项目搜索" v-model="listQuery.keyword">
                         </el-input>
                         <!-- <el-button class="filter-item" type="primary" v-waves icon="search" size="small" @click="handleFilter">搜索</el-button> -->
                     </div>
@@ -224,7 +224,6 @@ export default {
             sys_user_upd:true,
             sys_user_del:true,
             listQuery: {
-                keyword:'',
                 page_index: 1,
                 page_size: 20
             },
@@ -281,7 +280,7 @@ export default {
         getList(){
             //console.log(this.listQuery)
             // this.listLoading = true
-            fetchList().then(response => {
+            fetchList(this.listQuery).then(response => {
                 let datas = response.data.result.items;
                 this.list = this.arrayToJson(datas);
                 this.total = response.data.result.total;

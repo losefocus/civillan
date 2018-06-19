@@ -3,7 +3,7 @@
         <div class="filter-container">
             <el-button class="filter-item" style="" @click="objectTypeVisible = true" size="small" type="primary" icon="edit" >角色管理</el-button>
         </div>
-        <el-table :data="list" v-loading="listLoading" element-loading-text="给我一点时间" border fit highlight-current-row style="width: 99%;">
+        <el-table :data="list" v-loading="listLoading" element-loading-text="给我一点时间" border fit highlight-current-row style="width: 99%;margin-bottom:10px">
             <el-table-column align="center" label="姓名">
                 <template slot-scope="scope">
                     <span>{{scope.row.name}}</span>
@@ -11,33 +11,37 @@
             </el-table-column>
             <el-table-column align="center" label="电话">
                 <template slot-scope="scope">
-                    <span>{{scope.row.name}}</span>
+                    <span>{{scope.row.phone}}</span>
                 </template>
             </el-table-column>
             <el-table-column align="center" label="登录名">
                 <template slot-scope="scope">
-                    <span>{{scope.row.beginAt}}</span>
+                    <span>{{scope.row.username}}</span>
                 </template>
             </el-table-column>
             <el-table-column align="center" label="所在机构">
                 <template slot-scope="scope">
-                    <span>{{scope.row.endAt}}</span>
+                    <span>{{scope.row.organId}}</span>
                 </template>
             </el-table-column>
             <el-table-column align="center" label="状态">
                 <template slot-scope="scope">
-                    <span>{{scope.row.adminer}}</span>
+                    <span>{{(scope.row.status === 1)?'已启用':'未启用'}}</span>
                 </template>
             </el-table-column>
             <el-table-column align="center" label="操作" width="180">
                 <template slot-scope="scope" >
-                    <el-button size="small" type="success" plain @click="editOrg(scope.row)">修改</el-button>
-                    <el-button size="small" type="danger" plain @click="deleteOrg(scope.row)">删除</el-button>
+                    <el-button size="small" type="success" plain @click="editPer(scope.row)">修改</el-button>
+                    <el-button size="small" type="danger" plain @click="deletePer(scope.row)">删除</el-button>
                 </template>
             </el-table-column>
         </el-table>
+        <div v-show="!listLoading" class="pagination-container">
+            <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="listQuery.page_index" :page-sizes="[10,20,30, 50]" :page-size="listQuery.page_size" layout="total, sizes, prev, pager, next, jumper" :total="total">
+            </el-pagination>
+        </div>
 
-        <el-dialog id="orgType" title="角色管理"  :visible.sync="objectTypeVisible" width='680px'>
+        <el-dialog id="orgType" title="角色管理"  :visible.sync="objectTypeVisible" width='690px'>
             <div>
                 项 目 : {{projectInfo.name}} 
             </div>
@@ -51,63 +55,78 @@
                 <el-form-item >
                     <el-checkbox v-model="roleForm.available" >已启用</el-checkbox>
                 </el-form-item>
-                <el-form-item  style="width: 140px">
+                <el-form-item  style="width: 150px">
                     <div v-show="flag == 'add'">
-                        <el-button size="small" type="primary" @click="addRole">添加</el-button>
+                        <el-button size="small" type="primary" @click="addRole('roleForm')" :loading="createdRoleLoading">添加</el-button>
                     </div>
                    <div v-show="flag == 'edit'">
-                        <el-button size="small" type="primary" @click="handleUpdateRole('roleForm')">保存</el-button>
+                        <el-button size="small" type="primary" @click="handleUpdateRole('roleForm')" :loading="createdRoleLoading">保存</el-button>
                         <el-button size="small" type="info" @click="cancelUpdate('roleForm')">取消</el-button>
                    </div>
                 </el-form-item>
             </el-form>
-            <el-table :data="roleList" element-loading-text="给我一点时间" stripe border fit highlight-current-row style="width: 99%;">
-                <el-table-column align="center" label="角色">
-                    <template slot-scope="scope">
-                        <span>{{scope.row.role}}</span>
-                    </template>
-                </el-table-column>
-                <el-table-column align="center" label="描述">
-                    <template slot-scope="scope">
-                        <span>{{scope.row.description}}</span>
-                    </template>
-                </el-table-column>
-                <el-table-column align="center" label="创建时间">
-                    <template slot-scope="scope">
-                        <span>{{scope.row.createdAt | parseTime('{y}-{m}-{d}')}}</span>
-                    </template>
-                </el-table-column>
-                <el-table-column align="center" label="状态">
-                    <template slot-scope="scope">
-                        <span>{{(scope.row.available == 1)?'已启用':'未启用'}}</span>
-                    </template>
-                </el-table-column>
-                <el-table-column align="center" label="操作" width="160">
-                    <template slot-scope="scope">
-                        <el-button size="small" type="success" plain @click="updateRole(scope.row)">修改</el-button>
-                        <el-button size="small" type="danger" plain @click="deleteRole(scope.row)">删除</el-button>
-                    </template>
-                </el-table-column>
-            </el-table>
+            <div v-loading="roleListLoading">
+                <el-table :data="roleList" element-loading-text="给我一点时间" stripe border fit highlight-current-row style="width: 99%;margin-bottom:10px">
+                    <el-table-column align="center" label="角色">
+                        <template slot-scope="scope">
+                            <span>{{scope.row.role}}</span>
+                        </template>
+                    </el-table-column>
+                    <el-table-column align="center" label="描述">
+                        <template slot-scope="scope">
+                            <span>{{scope.row.description}}</span>
+                        </template>
+                    </el-table-column>
+                    <el-table-column align="center" label="创建时间">
+                        <template slot-scope="scope">
+                            <span>{{scope.row.createdAt | parseTime('{y}-{m}-{d}')}}</span>
+                        </template>
+                    </el-table-column>
+                    <el-table-column align="center" label="状态">
+                        <template slot-scope="scope">
+                            <span>{{(scope.row.available == 1)?'已启用':'未启用'}}</span>
+                        </template>
+                    </el-table-column>
+                    <el-table-column align="center" label="操作" width="160">
+                        <template slot-scope="scope">
+                            <el-button size="small" type="success" plain @click="updateRole(scope.row)">修改</el-button>
+                            <el-button size="small" type="danger" plain @click="deleteRole(scope.row)">删除</el-button>
+                        </template>
+                    </el-table-column>
+                </el-table>
+                <div v-show="!roleListLoading" class="pagination-container">
+                    <el-pagination @size-change="handleSizeChange_role" @current-change="handleCurrentChange_role" :current-page.sync="roleListQuery.page_index" :page-sizes="[10,20,30, 50]" :page-size="roleListQuery.page_size" layout="total, sizes, prev, pager, next, jumper" :total="roleTotal">
+                    </el-pagination>
+                </div>
+            </div>
+            
         </el-dialog>
     </div>
 </template>
 <script>
-import { fetchUserList,fetchRoleList,addRoleObj,delRoleObj} from "@/api/project_per";
+import { fetchUserList,delObj,fetchRoleList,addRoleObj,delRoleObj,updateRoleObj} from "@/api/project_per";
 export default {
     props:['projectInfo'],
     data(){
         return {
             listLoading:false,
+            roleListLoading:false,
             list:[{}],
             listQuery: {
                 page_index: 1,
                 page_size: 20
             },
+            total:null,
             objectTypeVisible:false,
             roleForm:{},
-            roleList:[{}],
-            flag:'add'
+            roleList:[],
+            roleListQuery: {
+                page_index: 1,
+                page_size: 20
+            },
+            roleTotal:null,
+            flag:'add',
+            createdRoleLoading:false
         }
     },
     created() {
@@ -119,10 +138,21 @@ export default {
     computed: {},
     methods:{ 
         getList(){
+            this.listLoading = true
             this.listQuery.projectId = this.projectInfo.id
             fetchUserList(this.listQuery).then(res => {
-                console.log(res)
+                this.list = res.data.result.items
+                this.total = res.data.result.total
+                this.listLoading = false
             })
+        },
+        handleSizeChange(val) {
+            this.listQuery.page_size = val;
+            this.getList();
+        },
+        handleCurrentChange(val) {
+            this.listQuery.page_index = val;
+            this.getList();
         },
         handleCreate(){
 
@@ -133,43 +163,105 @@ export default {
         perManage(){
 
         },
-        editOrg(){
+        editPer(){
 
         },
-        deleteOrg(){
-
+        deletePer(row){
+            this.$confirm(
+                "此操作将永久删除该机构类型(类型名:" + row.name + "), 是否继续?",
+                "提示",
+                {
+                confirmButtonText: "确定",
+                cancelButtonText: "取消",
+                type: "warning"
+                }
+            ).then(() => {
+                delObj(row.id).then(res => {
+                    this.getList()
+                })
+            })
+            
         },
         getRoleList(){
-            this.listQuery.projectId = this.projectInfo.id
-            fetchRoleList(this.listQuery).then(res => {
+            this.roleListQuery.projectId = this.projectInfo.id
+            this.roleListLoading = true
+            fetchRoleList(this.roleListQuery).then(res => {
                 this.roleList = res.data.result.items
+                this.roleTotal = res.data.result.total
                 let roleOptions = []
                 this.roleList.forEach(element => {
                     element.value = element.id
-                    element.label = element.name
+                    element.label = element.role
                     roleOptions.push(element)
                 });
                 this.$store.commit("SET_ROLEOPTIONS",roleOptions);
+                this.roleListLoading = false
             })
         },
-        addRole(){
+        handleSizeChange_role(val) {
+            this.roleListQuery.page_size = val;
+            this.getRoleList();
+        },
+        handleCurrentChange_role(val) {
+            this.roleListQuery.page_index = val;
+            this.getRoleList();
+        },
+        addRole(formName){
             let data = Object.assign({}, this.roleForm);
             data.available = data.available?1:0
             data.projectId = this.projectInfo.id
-            console.log(data)
-            addRoleObj(data).then( res => {
-
+            this.$refs[formName].validate((valid) => {
+                if (valid) {
+                    this.createdRoleLoading = true
+                    addRoleObj(data).then( res => {
+                        if(res.data.success == true){
+                            this.getRoleList()
+                            this.$refs.roleForm.resetFields();
+                            this.$notify({
+                                title: "成功",
+                                message: "添加成功",
+                                type: "success",
+                                duration: 2000
+                            });
+                            this.createdRoleLoading = false
+                        }
+                    })
+                }
             })
         },
-        updateRole(){
+        updateRole(row){
             this.flag = 'edit'
+            this.roleForm= Object.assign({}, row);
+            this.roleForm.available = (this.roleForm.available == 1)?true:false
         },
-        handleUpdateRole(){
-
+        handleUpdateRole(formName){
+            let data = Object.assign({}, this.roleForm);
+            data.available = data.available?1:0
+            delete data.label
+            delete data.value
+            this.$refs[formName].validate((valid) => {
+                if (valid) {
+                    this.createdRoleLoading = true
+                    console.log(data)
+                    updateRoleObj(data).then( res => {
+                        if(res.data.success == true){
+                            this.getRoleList()
+                            this.$refs.roleForm.resetFields();
+                            this.$notify({
+                                title: "修改",
+                                message: "修改成功",
+                                type: "success",
+                                duration: 2000
+                            });
+                            this.createdRoleLoading = false
+                        }
+                    })
+                }
+            })
         },
         deleteRole(row){
             this.$confirm(
-                "此操作将永久删除该角色(角色名:" + row.name + "), 是否继续?",
+                "此操作将永久删除该角色(角色名:" + row.role + "), 是否继续?",
                 "提示",
                 {
                 confirmButtonText: "确定",
@@ -178,7 +270,7 @@ export default {
                 }
             ).then(() => {
                 delRoleObj(row.id).then(res => {
-
+                    this.getRoleList()
                 })
             })
             

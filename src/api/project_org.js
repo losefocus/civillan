@@ -36,10 +36,11 @@ export function updateObj(obj) {
 }
 
 /* 类型列表 */
-export function fetchTypeList(id) {
+export function fetchTypeList(query) {
   return request({
-    url: '/project/project_organ/list_organ_type?projectId='+id,
+    url: '/project/project_organ/list_organ_type',
     method: 'get',
+    params: query
   })
 }
 

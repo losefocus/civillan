@@ -116,11 +116,14 @@ export default {
             })
         },
         submitForm(formName){
-            console.log(this.form)
+            let data = Object.assign({},this.form)
+            data.projectId = this.projectInfo.id
+            data.status = data.status?1:0
+            delete data.roleId
             this.$refs[formName].validate(valid => {
                 if (valid) {
-                    addObj(this.form).then(() => {
-                        this.$parent.$refs.per.getOrgList()
+                    addObj(data).then(() => {
+                        this.$parent.$refs.per.getList()
                         this.$notify({
                         title: "成功",
                         message: "创建成功",

@@ -29,7 +29,7 @@ export function fetchOrganList(id) {
 /* 删除 */
 export function delObj(id) {
   return request({
-    url: '/project/project_user/delete?id=' + id,
+    url: '/project/project_user/delete?project_user_id=' + id,
     method: 'post'
   })
 }
@@ -73,5 +73,14 @@ export function delRoleObj(id) {
   return request({
     url: '/project/project_role/delete?project_role_id=' + id,
     method: 'post'
+  })
+}
+
+/* 修改角色 */
+export function updateRoleObj(obj) {
+  return request({
+    url: '/project/project_role/edit',
+    method: 'post',
+    data: obj
   })
 }

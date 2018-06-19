@@ -103,9 +103,9 @@ export default {
                     this.addNewForm.status = this.addNewForm.status?1:0
                     this.createLoading = true
                     addObj(this.addNewForm).then(response => {
-                        this.createLoading = false
-                        this.$parent.$refs.org.getOrgList()
+                        this.$parent.$refs.org.getList()
                         this.$refs[formName].resetFields()
+                        this.createLoading = false
                     })
                 }
             });
@@ -114,10 +114,10 @@ export default {
             this.$refs[formName].validate((valid) => {
                 if (valid) {
                     this.addNewForm.status = this.addNewForm.status?1:0
-                    // this.createLoading = true
+                    this.createLoading = true
                     updateObj(this.addNewForm).then(response => {
                         this.createLoading = false
-                        this.$parent.$refs.org.getOrgList()
+                        this.$parent.$refs.org.getList()
                         this.$refs[formName].resetFields()
                     })
                 }
