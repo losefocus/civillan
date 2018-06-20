@@ -1,7 +1,7 @@
 <template>
     <div>
         <h3>添加机构</h3>
-        <el-form label-width="65px" :model="form"  ref="form">
+        <el-form label-width="40px" :model="form"  ref="form">
             <el-form-item label="项目" >
                 <el-input v-model="projectInfo.name" size="small" placeholder="请输入内容" disabled></el-input>
             </el-form-item>
@@ -19,19 +19,18 @@
             </el-form-item>
             <el-form-item label="图片" prop="thumbnailPath">
                 <el-upload
-                class="upload-demo"
-                ref="upload"
-                :headers="headers"
-                action="/file/attachment/upload"
-                :limit="10"
-                :data="params"
-                name="uploadFile"
-                :show-file-list ="false"
-                :on-success="uploadSuccess"
-                :file-list="form.fileList"
-                :auto-upload="true">
-                    <el-button slot="trigger" size="small" type="primary">选取</el-button>
-                    <el-input v-model="form.imageName" style="width:135px" size="small" placeholder="请选取图片"></el-input>
+                    class="avatar-uploader"
+                    ref="upload"
+                    :headers="headers"
+                    action="/file/attachment/upload"
+                    :limit="10"
+                    :data="params"
+                    name="uploadFile"
+                    :show-file-list="false"
+                    :on-success="uploadSuccess"
+                    :auto-upload="true">
+                    <img v-if="form.thumbnailUrl!='' && form.thumbnailUrl!=undefined" :src="form.thumbnailUrl+form.thumbnailPath" class="avatar">
+                    <i v-else class="el-icon-plus avatar-uploader-icon"></i>
                 </el-upload>
             </el-form-item>
             <el-form-item label="备注" prop="comment">
@@ -82,6 +81,14 @@ export default {
                     { required: true, message: '请输入备注', trigger: 'blur' }
                 ]
             },
+            listLoading:false,
+            createLoading:false,
+            listQuery:{
+                page_index:1,
+                page_size:20,
+            },
+            list:[],
+            total:null,
             form:{
                 parentId:null,
                 name:'',
@@ -95,11 +102,11 @@ export default {
                 status:0,
                 fileList: []
             },
-            parentIdOptions:[],
-            createLoading:false,
-            flag:'add',
+            imageName:'',
+            fileList:[],
             headers:{Authorization: "Bearer " + getToken()},
             params:{component :'project'},
+            flag:'add'
         }
     },
     created() {},
@@ -132,5 +139,44 @@ export default {
 }
 </script>
 <style scoped>
-
+.avatar-uploader{
+     height: 218px;
+}
+.avatar-uploader .el-upload {
+    border: 1px dashed #d9d9d9;
+    border-radius: 6px;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+  }
+.avatar-uploader .el-upload:hover {
+    border-color: #409EFF;
+}
+.avatar-uploader-icon {
+    font-size: 28px;
+    color: #8c939d;
+    width: 218px;
+    height: 218px;
+    line-height: 218px;
+    text-align: center;
+    border: 1px solid #dcdfe6;
+    border-radius: 4px;
+}
+.avatar {
+    width: 218px;
+    height: 218px;
+    display: block;
+    border-radius: 4px;
+}
+.el-form-item{
+    margin-bottom: 15px
+}
+.addNewProject{
+    width: 260px;
+    border: 1px solid #ebeef5;
+    padding: 10px 20px 0 20px
+}
+.el-form-item__error{
+    padding-top: 0 !important
+}
 </style>

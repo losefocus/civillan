@@ -48,7 +48,7 @@
                     <el-button size="small" type="success" plain @click="perManage(scope.row)">报警</el-button>
                     <el-button size="small" type="success" plain @click="editOrg(scope.row)">通知</el-button>
                     <el-button size="small" type="success" plain @click="deleteOrg(scope.row)">修改</el-button>
-                    <el-button size="small" type="success" plain @click="deleteOrg(scope.row)">删除</el-button>
+                    <el-button size="small" type="danger" plain @click="deleteOrg(scope.row)">删除</el-button>
                 </template>
             </el-table-column>
         </el-table>

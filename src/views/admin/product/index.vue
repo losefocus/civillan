@@ -78,21 +78,6 @@
                         <el-input v-model="form.category" size="small" placeholder="请输入内容"></el-input>
                     </el-form-item>
                     <el-form-item label="图片">
-                        <!-- <el-upload
-                        class="upload-demo"
-                        ref="upload"
-                        :headers="headers"
-                        action="/file/attachment/upload"
-                        :limit="10"
-                        :data="params"
-                        name="uploadFile"
-                        :show-file-list ="false"
-                        :on-success="uploadSuccess"
-                        :file-list="fileList"
-                        :auto-upload="true">
-                            <el-button slot="trigger" size="small" type="primary">选取</el-button>
-                            <el-input v-model="imageName" style="width:135px" size="small" placeholder="请选取图片"></el-input>
-                        </el-upload> -->
                         <el-upload
                         class="avatar-uploader"
                         ref="upload"
@@ -139,7 +124,7 @@ export default {
                 page_index:1,
                 page_size:20,
             },
-            list:[{}],
+            list:[],
             total:null,
             form:{
                 name:'',
@@ -205,7 +190,6 @@ export default {
         updataForm(formName){
             let data = Object.assign({},this.form)
             data.status = data.status?1:0
-            console.log(data)
             updataObj(data).then(res => {
                 console.log(res)
                 this.getList();
@@ -278,6 +262,7 @@ export default {
     width: 203px;
     height: 203px;
     display: block;
+    border-radius: 4px;
   }
 
 .el-form-item{
