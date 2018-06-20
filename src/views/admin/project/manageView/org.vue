@@ -63,7 +63,7 @@
                 </el-form-item>
                 <el-form-item  style="width: 150px">
                     <div v-show="addOrEdit == 'add'">
-                        <el-button size="small" type="primary" @click="addType" :loading="createLoading">添加</el-button>
+                        <el-button size="small" type="primary" @click="addType('orgTypeForm')" :loading="createLoading">添加</el-button>
                     </div>
                    <div v-show="addOrEdit == 'edit'">
                         <el-button size="small" type="primary" @click="handleUpdateType('orgTypeForm')" :loading="createLoading">保存</el-button>
@@ -71,7 +71,7 @@
                    </div>
                 </el-form-item>
             </el-form>
-            <div v-show="!typelListLoading">
+            <div v-loading="typelListLoading">
                 <el-table :data="orgTypeList"  element-loading-text="给我一点时间" stripe border fit highlight-current-row style="width: 99%;">
                     <el-table-column align="center" label="类型名称">
                         <template slot-scope="scope">
@@ -207,6 +207,7 @@ export default {
         // 得到机构类型列表
         getTypeList(){       
             this.typeListQuery.projectId = this.projectInfo.id     
+            this.typelListLoading = true
             fetchTypeList(this.typeListQuery).then(res=>{
                 this.orgTypeList = res.data.result.items
                 this.typeTotal = res.data.result.total
@@ -217,6 +218,7 @@ export default {
                     orgTypeOptions.push(element)
                 });
                 this.$store.commit("SET_TYPEOPTIONS",orgTypeOptions);
+                this.typelListLoading = false
             })
         },
         handleSizeChange_type(val) {
@@ -228,13 +230,16 @@ export default {
             this.getTypeList();
         },
         // 添加机构类型
-        addType(){
+        addType(formName){
             let data = Object.assign({}, this.orgTypeForm);
             data.projectId = this.projectInfo.id
             data.sort = (Number(data.sort)<=0)?0:Number(data.sort)
             data.status = data.status?1:0
+            console.log(data)
             this.$refs[formName].validate((valid) => {
+                console.log(valid)
                 if (valid) {
+                    // console.log(1231231)
                     this.createLoading = true
                     addObjType(data).then(res=>{
                         if(res.data.success == true){
@@ -303,6 +308,7 @@ export default {
         cancelEdit(formName){
             this.addOrEdit = 'add',
             this.orgTypeForm = {}
+            this.createdRoleLoading = false
             // this.$refs[formName].resetFields();
         },
         

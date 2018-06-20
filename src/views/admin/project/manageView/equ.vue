@@ -1,10 +1,8 @@
 <template>
     <div style="padding:20px;border:1px solid #dcdfe6">
         <div class="filter-container">
-            <el-button class="filter-item" style="" @click="handleCreate" size="small" type="primary" icon="edit" >添加设备
-            </el-button>
-            <el-button class="filter-item" style="" @click="handleCreate" size="small" type="primary" icon="edit" >分组管理
-            </el-button>
+            <!-- <el-button class="filter-item" style="" @click="handleCreate" size="small" type="primary" icon="edit" >添加设备</el-button> -->
+            <el-button class="filter-item" style="" @click="handleCreate" size="small" type="primary" icon="edit" >分组管理</el-button>
         </div>
         <el-table :data="list" v-loading="listLoading" element-loading-text="给我一点时间" border fit highlight-current-row style="width: 99%;">
             <el-table-column align="center" label="名称">

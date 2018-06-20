@@ -1,12 +1,12 @@
 <template>
     <div>
         <h3>{{flag == 'add'?'添加':'修改'}}人员</h3>
-        <el-form label-width="65px" :model="form"  ref="forms">
+        <el-form label-width="80px" :model="form" :rules="rules"  ref="forms">
             <el-form-item label="项目">
                 <el-input v-model="projectInfo.name" size="small" placeholder="请输入内容" disabled></el-input>
             </el-form-item>
             <el-form-item label="机构" prop="organId">
-                <el-select v-model="form.organId" size="small" placeholder="请选择">
+                <el-select v-model="form.organId" size="small" placeholder="请选择" @change="change1()">
                     <el-option
                     v-for="item in organOptions"
                     :key="item.value"
@@ -16,7 +16,7 @@
                 </el-select>
             </el-form-item>
             <el-form-item label="角色" prop="roleId">
-                <el-select v-model="form.roleId" size="small" placeholder="请选择">
+                <el-select v-model="form.roleId" size="small" placeholder="请选择" @change="change2()">
                     <el-option
                     v-for="item in roleOptions"
                     :key="item.value"
@@ -35,7 +35,10 @@
                 <el-input v-model="form.username" size="small" placeholder="请输入内容"></el-input>
             </el-form-item>
             <el-form-item label="密码" prop="password">
-                <el-input v-model="form.password" size="small" placeholder="请输入内容"></el-input>
+                <el-input v-model="form.password" type="password" size="small" placeholder="请输入内容"></el-input>
+            </el-form-item>
+            <el-form-item label="确认密码" prop="password2">
+                <el-input v-model="form.password2" type="password" size="small" placeholder="请输入内容"></el-input>
             </el-form-item>
             <el-form-item label="备注" prop="comment">
                 <el-input
@@ -47,10 +50,10 @@
             </el-form-item>
             <el-form-item>
                 <el-checkbox label="已启用" v-model="form.status" size="small"></el-checkbox>
-                <el-button v-if="flag == 'add'" type="primary" :loading="createLoading" class="pull-right" @click="submitForm('forms')" size="small" style="width:90px;">添加</el-button>
+                <el-button v-if="flag == 'add'" type="primary" :loading="createLoading" class="pull-right" @click="submitForm('forms')" size="small" style="width:85px;">添加</el-button>
                 <div v-else class="clearfix">
-                    <el-button  type="primary" :loading="createLoading" class="pull-left" @click="updataForm('forms')" size="small" style="width:90px;">保存</el-button>
-                    <el-button  type="info" class="pull-right" @click="cancel('forms')" size="small" style="width:90px;">取消</el-button>
+                    <el-button  type="primary" :loading="createLoading" class="pull-left" @click="updataForm('forms')" size="small" style="width:85px;">保存</el-button>
+                    <el-button  type="info" class="pull-right" @click="cancel('forms')" size="small" style="width:85px;">取消</el-button>
                 </div>            
             </el-form-item>
         </el-form>
@@ -58,32 +61,70 @@
 </template>
 <script>
 import { mapGetters } from "vuex";
+import { isvalidatemobile } from "@/util/validate";
 import { fetchOrganList,addObj,} from "@/api/project_per";
 export default {
     props:['projectInfo'],
     data(){
+        var reg = 11 && /^((13|14|15|17|18)[0-9]{1}\d{8})$/;
+        var validataPhone = (rule, value, callback) => {
+            if (value === '' || value== undefined) {
+                callback(new Error('请输入手机号码'));
+            }else {
+                if (!reg.test(value)) {
+                    callback(new Error('请输入正确的手机号码'));
+                }
+                callback();
+            }
+        };
+        var validatePass = (rule, value, callback) => {
+            if (value === '' || value== undefined) {
+                callback(new Error('请输入密码'));
+            } else {
+                if (this.form.password2 !== '') {
+                    this.$refs.form.validateField('password2');
+                }
+                callback();
+            }
+        };
+        var validatePass2 = (rule, value, callback) => {
+            if (value === '' || value== undefined) {
+                callback(new Error('请确认密码'));
+            } else if (value !== this.form.password) {
+                callback(new Error('两次输入密码不一致!'));
+            } else {
+                callback();
+            }
+        };
         return {
             rules: {
-                parentId: [
-                    { required: false, message: '请选择父级项目', trigger: 'change' },
+                organId: [
+                    { required: true, message: '请选择机构', trigger: 'change' },
+                ],
+                roleId: [
+                    { required: true, message: '请选择角色', trigger: 'change' }
                 ],
                 name: [
-                    { required: true, message: '请输入项目名称', trigger: 'blur' }
+                    { required: true, message: '请输入姓名', trigger: 'blur' },
+                    { min: 3, max: 20, message: "长度在 3 到 20 个字符", trigger: "blur"}
                 ],
-                tm: [
-                    { required: true, message: '请选择工期', trigger: 'blur' }
+                phone: [
+                     { validator: validataPhone, trigger: 'blur' ,required: true},
                 ],
-                adminer: [
-                    { required: true, message: '请选择管理员', trigger: 'change' }
+                username: [
+                    { required: true, message: '请输入用户名', trigger: 'blur' },
+                    { min: 3, max: 20, message: "长度在 3 到 20 个字符", trigger: "blur"}
                 ],
-                thumbnailPath: [
-                    { required: true, message: '请添加图片', trigger: 'blur' }
+                password: [
+                    { validator: validatePass, trigger: 'blur' ,required: true},
+                    // { min: 6, max: 20, message: "长度在 6 到 20 个字符", trigger: "blur"}
                 ],
-                position: [
-                    { required: true, message: '请选择位置', trigger: 'blur' }
+                password2: [
+                    { validator: validatePass2, trigger: 'blur' ,required: true},
+                    // { min: 6, max: 20, message: "长度在 6 到 20 个字符", trigger: "blur"}
                 ],
                 comment: [
-                    { required: true, message: '请输入备注', trigger: 'blur' }
+                    { required: false, message: '请输入备注', trigger: 'blur' }
                 ]
             },
             form:{},
@@ -102,6 +143,12 @@ export default {
         ...mapGetters(["roleOptions"]),
     },
     methods:{
+        change1(){
+            console.log(this.form.organId)
+        },
+        change2(){
+            console.log(this.form.roleId)
+        },
         getOrganOptions(){
             fetchOrganList(this.projectInfo.id).then(res => {
                 let data = res.data.result.items
@@ -116,26 +163,55 @@ export default {
             })
         },
         submitForm(formName){
+            
             let data = Object.assign({},this.form)
             data.projectId = this.projectInfo.id
             data.status = data.status?1:0
-            delete data.roleId
             this.$refs[formName].validate(valid => {
                 if (valid) {
-                    addObj(data).then(() => {
-                        this.$parent.$refs.per.getList()
-                        this.$notify({
-                        title: "成功",
-                        message: "创建成功",
-                        type: "success",
-                        duration: 2000
-                        });
-                    });
+                    console.log(isvalidatemobile(data.phone))
+                    data.projectOrgan ={id:data.organId} 
+                    delete data.password2
+                    delete data.organId
+                    // delete data.roleId
+                    console.log(data)
+                    // this.createLoading = true
+                    // addObj(data).then(() => {
+                    //     this.$parent.$refs.per.getList()
+                    //     this.form = {}
+                    //     this.$notify({
+                    //     title: "成功",
+                    //     message: "创建成功",
+                    //     type: "success",
+                    //     duration: 2000
+                    //     });
+                    //     this.createLoading = false
+                    // });
                 } else {
                     return false;
                 }
             });
-        }
+        },
+        updataForm(formName){
+            this.$refs[formName].validate((valid) => {
+                if (valid) {
+                    this.form.status = this.form.status?1:0
+                    delete this.form.password2
+                    this.createLoading = true
+                    updateObj(this.form).then(response => {
+                        this.createLoading = false
+                        this.$parent.$refs.per.getList()
+                        this.form = {}
+                    })
+                }
+            });
+        },
+        cancel(formName){
+            this.flag = 'add'
+            this.form = {}
+            this.createLoading = false
+        },
+
     }
 }
 </script>

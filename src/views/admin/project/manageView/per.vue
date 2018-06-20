@@ -21,7 +21,7 @@
             </el-table-column>
             <el-table-column align="center" label="所在机构">
                 <template slot-scope="scope">
-                    <span>{{scope.row.organId}}</span>
+                    <span>{{scope.row.projectOrgan.name}}</span>
                 </template>
             </el-table-column>
             <el-table-column align="center" label="状态">
@@ -31,7 +31,7 @@
             </el-table-column>
             <el-table-column align="center" label="操作" width="180">
                 <template slot-scope="scope" >
-                    <el-button size="small" type="success" plain @click="editPer(scope.row)">修改</el-button>
+                    <el-button size="small" type="success" plain @click="updatePer(scope.row)">修改</el-button>
                     <el-button size="small" type="danger" plain @click="deletePer(scope.row)">删除</el-button>
                 </template>
             </el-table-column>
@@ -122,7 +122,7 @@ export default {
             roleList:[],
             roleListQuery: {
                 page_index: 1,
-                page_size: 20
+                page_size: 10
             },
             roleTotal:null,
             flag:'add',
@@ -163,8 +163,14 @@ export default {
         perManage(){
 
         },
-        editPer(){
-
+        updatePer(row){
+            this.$parent.$refs.addPer.flag = 'updata'
+            this.$parent.$refs.addPer.form = Object.assign({},row)
+            this.$parent.$refs.addPer.form.status = (this.$parent.$refs.addPer.form.status == 1)?true:false
+            this.$parent.$refs.addPer.form.organId = this.$parent.$refs.addPer.form.projectOrgan.id
+            this.$parent.$refs.addPer.form.password2 = this.$parent.$refs.addPer.form.password
+            // this.$parent.$refs.addPer.form.password2 = this.$parent.$refs.addPer.form.password
+            // this.$parent.$refs.addPer.form.roleId = null
         },
         deletePer(row){
             this.$confirm(
@@ -216,7 +222,7 @@ export default {
                     addRoleObj(data).then( res => {
                         if(res.data.success == true){
                             this.getRoleList()
-                            this.$refs.roleForm.resetFields();
+                            this.roleForm = {};
                             this.$notify({
                                 title: "成功",
                                 message: "添加成功",
@@ -242,7 +248,6 @@ export default {
             this.$refs[formName].validate((valid) => {
                 if (valid) {
                     this.createdRoleLoading = true
-                    console.log(data)
                     updateRoleObj(data).then( res => {
                         if(res.data.success == true){
                             this.getRoleList()
@@ -278,6 +283,7 @@ export default {
         cancelUpdate(){
             this.flag = 'add'
             this.roleForm = {}
+            this.createdRoleLoading = false
         }
     }
 }

@@ -228,14 +228,14 @@ export default {
                 page_size: 20
             },
             listLoading:false,
-            list:[{children:[{name:'123'}]}],
+            list:[],
             total:null,
             showView:'index',
             viewData:null,
             parentIdOptions:[],
             adminerOptions:[],
             addNewForm:{
-                parentId:0,
+                parentId:null,
                 name:'',
                 tm:'',
                 adminer:'',
@@ -279,7 +279,7 @@ export default {
         //项目列表
         getList(){
             //console.log(this.listQuery)
-            // this.listLoading = true
+            this.listLoading = true
             fetchList(this.listQuery).then(response => {
                 let datas = response.data.result.items;
                 this.list = this.arrayToJson(datas);
