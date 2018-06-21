@@ -28,7 +28,16 @@ export function addObj(obj) {
 /* 删除 */
 export function delObj(id) {
   return request({
-    url: '/device/device/delete?device_id=' + id,
+    url: '/device/device/delete?project_device_id=' + id,
     method: 'post'
+  })
+}
+
+/* 编辑 */
+export function updataObj(obj) {
+  return request({
+    url: '/device/device/edit',
+    method: 'post',
+    data: obj
   })
 }
