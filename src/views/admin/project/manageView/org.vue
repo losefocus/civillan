@@ -62,10 +62,10 @@
                     <el-checkbox v-model="orgTypeForm.status" >已启用</el-checkbox>
                 </el-form-item>
                 <el-form-item  style="width: 150px">
-                    <div v-show="addOrEdit == 'add'">
+                    <div v-show="flag == 'add'">
                         <el-button size="small" type="primary" @click="addType('orgTypeForm')" :loading="createLoading">添加</el-button>
                     </div>
-                   <div v-show="addOrEdit == 'edit'">
+                   <div v-show="flag == 'edit'">
                         <el-button size="small" type="primary" @click="handleUpdateType('orgTypeForm')" :loading="createLoading">保存</el-button>
                         <el-button size="small" type="info" @click="cancelEdit('orgTypeForm')">取消</el-button>
                    </div>
@@ -122,7 +122,7 @@ export default {
             objectTypeVisible:false,
             orgTypeForm:{},
             orgTypeList:[],
-            addOrEdit:'add',
+            flag:'add',
             listQuery: {
                 page_index: 1,
                 page_size: 20
@@ -175,7 +175,7 @@ export default {
         },
         // 修改机构
         updateOrg(row){
-            this.$parent.$refs.addOrg.flag = 'updata'
+            this.$parent.$refs.addOrg.flag = 'update'
             this.$parent.$refs.addOrg.addNewForm = Object.assign({},row)
             this.$parent.$refs.addOrg.addNewForm.status = (row.status == 1)?true:false
         },
@@ -278,7 +278,7 @@ export default {
             
         },
         updateType(row){
-            this.addOrEdit = 'edit'
+            this.flag = 'edit'
             this.orgTypeForm= Object.assign({}, row);
             this.orgTypeForm.status = (this.orgTypeForm.status == 1)?true:false
         },
@@ -294,7 +294,7 @@ export default {
                 if(res.data.success == true){
                     this.getTypeList()
                     this.orgTypeForm = {}
-                    this.addOrEdit = 'add'
+                    this.flag = 'add'
                     this.$notify({
                         title: "成功",
                         message: "修改成功",
@@ -306,7 +306,7 @@ export default {
             })
         },
         cancelEdit(formName){
-            this.addOrEdit = 'add',
+            this.flag = 'add',
             this.orgTypeForm = {}
             this.createdRoleLoading = false
             // this.$refs[formName].resetFields();

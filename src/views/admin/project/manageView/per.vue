@@ -60,8 +60,8 @@
                         <el-button size="small" type="primary" @click="addRole('roleForm')" :loading="createdRoleLoading">添加</el-button>
                     </div>
                    <div v-show="flag == 'edit'">
-                        <el-button size="small" type="primary" @click="handleUpdateRole('roleForm')" :loading="createdRoleLoading">保存</el-button>
-                        <el-button size="small" type="info" @click="cancelUpdate('roleForm')">取消</el-button>
+                        <el-button size="small" type="primary" @click="handleEditRole('roleForm')" :loading="createdRoleLoading">保存</el-button>
+                        <el-button size="small" type="info" @click="cancelEdit('roleForm')">取消</el-button>
                    </div>
                 </el-form-item>
             </el-form>
@@ -154,23 +154,12 @@ export default {
             this.listQuery.page_index = val;
             this.getList();
         },
-        handleCreate(){
-
-        },
-        toProjectMap(){
-
-        },
-        perManage(){
-
-        },
         updatePer(row){
-            this.$parent.$refs.addPer.flag = 'updata'
+            this.$parent.$refs.addPer.flag = 'edit'
             this.$parent.$refs.addPer.form = Object.assign({},row)
-            this.$parent.$refs.addPer.form.status = (this.$parent.$refs.addPer.form.status == 1)?true:false
-            this.$parent.$refs.addPer.form.organId = this.$parent.$refs.addPer.form.projectOrgan.id
+            this.$parent.$refs.addPer.form.status = (row.status == 1)?true:false
             this.$parent.$refs.addPer.form.password2 = this.$parent.$refs.addPer.form.password
-            // this.$parent.$refs.addPer.form.password2 = this.$parent.$refs.addPer.form.password
-            // this.$parent.$refs.addPer.form.roleId = null
+            console.log(row)
         },
         deletePer(row){
             this.$confirm(
@@ -240,7 +229,7 @@ export default {
             this.roleForm= Object.assign({}, row);
             this.roleForm.available = (this.roleForm.available == 1)?true:false
         },
-        handleUpdateRole(formName){
+        handleEditRole(formName){
             let data = Object.assign({}, this.roleForm);
             data.available = data.available?1:0
             delete data.label
@@ -251,7 +240,7 @@ export default {
                     updateRoleObj(data).then( res => {
                         if(res.data.success == true){
                             this.getRoleList()
-                            this.$refs.roleForm.resetFields();
+                            this.cancelEdit();
                             this.$notify({
                                 title: "修改",
                                 message: "修改成功",
@@ -280,7 +269,7 @@ export default {
             })
             
         },
-        cancelUpdate(){
+        cancelEdit(){
             this.flag = 'add'
             this.roleForm = {}
             this.createdRoleLoading = false
