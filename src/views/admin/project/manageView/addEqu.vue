@@ -5,8 +5,8 @@
             <el-form-item label="项目" >
                 <el-input v-model="projectInfo.name" size="small" placeholder="请输入内容" disabled></el-input>
             </el-form-item>
-            <el-form-item label="型号" prop="productId">
-                <el-select v-model="form.productId" size="small" placeholder="请选择">
+            <el-form-item label="型号" prop="productId_alias">
+                <el-select v-model="productId_alias" size="small" placeholder="请选择">
                     <el-option
                     v-for="item in productOptions"
                     :key="item.value"
@@ -61,7 +61,7 @@
 </template>
 <script>
 import { getToken } from "@/util/auth";
-import {addObj,fetchProductList} from "@/api/project_equ";
+import {addObj,fetchProductList,updataObj} from "@/api/project_equ";
 export default {
     props:['projectInfo'],
     data(){
@@ -111,6 +111,7 @@ export default {
                     id:''
                 }
             },
+            productId_alias:'',
             imageName:'',
             fileList:[],
             headers:{Authorization: "Bearer " + getToken()},
@@ -148,21 +149,55 @@ export default {
             data.projectId = this.projectInfo.id
             data.status = data.status?1:0
             data.deviceGroup.id = 1
-            let id_alias = data.productId.split(',')
-            data.productId = id_alias[0],
-            data.alias = id_alias[1],
+            data.productId = productId_alias.split(',')[0],
+            data.alias = productId_alias.split(',')[1],
             data.protocol = "string",
             data.passage = "string",
             addObj(data).then( res => {
                 console.log(res)
+                this.createLoading = false
+                this.$parent.$refs.equ.getList()
+                this.resetTemp()
             })
         },
         updataForm(formName){
-
+            this.$refs[formName].validate((valid) => {
+                if (valid) {
+                    this.form.status = this.form.status?1:0
+                    this.form.productId = this.productId_alias.split(',')[0],
+                    this.form.alias = this.productId_alias.split(',')[1],
+                    console.log(this.form)
+                    this.createLoading = true
+                    updataObj(this.form).then(response => {
+                        this.createLoading = false
+                        this.$parent.$refs.equ.getList()
+                        this.resetTemp()
+                    })
+                }
+            });
         },
         cancel(formName){
-
+            this.flag = 'add'
+            this.resetTemp()
+            this.createLoading = false
         },
+        resetTemp() {
+            this.form={
+                projectId:'',
+                productId:'',
+                alias:'',
+                name:'',
+                firmware:'',
+                thumbnailPath:'',
+                thumbnailBaseUrl:'',
+                comment:'',
+                status:0,
+                deviceGroup:{
+                    id:''
+                }
+            }
+            this.productId_alias = ''
+        }
     }
 }
 </script>
