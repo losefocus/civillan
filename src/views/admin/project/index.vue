@@ -217,7 +217,7 @@ export default {
                     { required: true, message: '请选择位置', trigger: 'blur' }
                 ],
                 comment: [
-                    { required: true, message: '请输入备注', trigger: 'blur' }
+                    { required: false, message: '请输入备注', trigger: 'blur' }
                 ]
             },
             roleProject_btn_add:true,
