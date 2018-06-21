@@ -1,6 +1,5 @@
 <template>
-    <div class="app-container calendar-list-container clearfix" >
-        
+    <div class="app-container calendar-list-container clearfix" id="product">
         <div class="filter-container">
             <el-button class="filter-item" style="" size="small" type="primary" icon="edit" >添加产品</el-button>
             <el-button class="filter-item" style="" size="small" type="primary" icon="edit" >分类管理</el-button>
@@ -53,8 +52,8 @@
                     
                     <el-table-column align="center" label="操作" width="350">
                         <template slot-scope="pro">
-                            <el-button size="small" type="success" plain @click="toInfo(pro.row)">变量模板</el-button>
-                            <el-button size="small" type="success" plain @click="toInfo(pro.row)">报警模板</el-button>
+                            <el-button size="small" type="success" plain @click="variableTemplate(pro.row)">变量模板</el-button>
+                            <el-button size="small" type="success" plain @click="alarmTemplat(pro.row)">报警模板</el-button>
                             <el-button size="small" type="success" plain @click="updataProduct(pro.row)">修改</el-button>
                             <el-button size="small" type="danger" plain @click="delProduct(pro.row)">删除</el-button>
                         </template>
@@ -97,7 +96,7 @@
                         <el-checkbox v-model="form.status">已启用</el-checkbox>                    
                     </el-form-item>
                     <el-form-item v-if="flag == 'add'">
-                        <el-button type="primary" @click="submitForm('form')" size="small" :loading="createLoading" style="width:90px;">保存</el-button>
+                        <el-button type="primary" @click="submitForm('form')" size="small" :loading="createLoading" style="width:90px;">添加</el-button>
                     </el-form-item>
                     <el-form-item v-else>
                         <el-button type="primary" @click="updataForm('form')" size="small" :loading="createLoading" style="width:90px;">保存</el-button>
@@ -106,13 +105,24 @@
                 </el-form>
             </div>
         </div>
-        
+        <el-dialog id="variable" title="变量模板"  :visible.sync="variableTemplateVisible" width='690px'>
+            <variable :product-info="productData"></variable>
+        </el-dialog>
+        <el-dialog id="alarm" title="报警模板"  :visible.sync="alarmTemplatVisible" width='690px'>
+            <alarm :product-info="productData"></alarm>
+        </el-dialog>
     </div>
 </template>
 <script>
+import variable from "./variable";
+import alarm from "./alarm";
 import { getToken} from "@/util/auth";
 import { fetchList,addObj,delObj,updataObj} from "@/api/product";
 export default {
+    components:{
+        variable,
+        alarm,
+    },
     data(){
         return {
             rules:{
@@ -138,7 +148,10 @@ export default {
             fileList:[],
             headers:{Authorization: "Bearer " + getToken()},
             params:{component :'project'},
-            flag:'add'
+            flag:'add',
+            variableTemplateVisible:false,
+            alarmTemplatVisible:false,
+            productData:null,
         }
     },
     created() {
@@ -149,15 +162,6 @@ export default {
     },
     computed: {},
     methods:{
-        handleSizeChange(){
-            this.listQuery.page_size = val;
-            this.getList();
-        },
-        handleCurrentChange(){
-            this.listQuery.page_index = val;
-            this.getList();
-        },
-        toInfo(){},
         getList(){
             this.listLoading = true
             fetchList(this.listQuery).then(res => {
@@ -165,6 +169,14 @@ export default {
                 this.total = res.data.result.total
                 this.listLoading = false
             })
+        },
+        handleSizeChange(){
+            this.listQuery.page_size = val;
+            this.getList();
+        },
+        handleCurrentChange(){
+            this.listQuery.page_index = val;
+            this.getList();
         },
         delProduct(row){
             this.$confirm(
@@ -180,7 +192,6 @@ export default {
                     this.getList();
                 })
             })
-            
         },
         updataProduct(row){
             this.flag = 'updata'
@@ -191,13 +202,11 @@ export default {
             let data = Object.assign({},this.form)
             data.status = data.status?1:0
             updataObj(data).then(res => {
-                console.log(res)
                 this.getList();
                 this.resetTemp()
                 this.flag = 'add'
                 this.createLoading = false
             })
-            
         },
         cancelForm(formName){
             this.resetTemp()
@@ -230,6 +239,16 @@ export default {
                 thumbnailUrl:'',
                 status:false
             }
+        },
+        //变量模板
+        variableTemplate(row){
+            this.variableTemplateVisible = true
+            this.productData = row
+        },
+        //报警模板
+        alarmTemplat(row){
+            this.alarmTemplatVisible = true
+            this.productData = row
         }
     }
 }
@@ -274,6 +293,9 @@ export default {
     padding: 10px 20px 0 20px
 }
 .el-form-item__error{
+    padding-top: 0 !important
+}
+.el-dialog__body{
     padding-top: 0 !important
 }
 </style>

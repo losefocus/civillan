@@ -91,4 +91,7 @@ export default {
 #orgType .el-dialog__body{
     padding-top: 0 !important
 }
+#product .el-dialog__body{
+    padding-top: 0 !important
+}
 </style>

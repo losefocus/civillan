@@ -55,6 +55,11 @@
                 </template>
             </el-table-column>
         </el-table>
+
+        <!-- <div v-show="!roleListLoading" class="pagination-container">
+            <el-pagination @size-change="handleSizeChange_role" @current-change="handleCurrentChange_role" :current-page.sync="roleListQuery.page_index" :page-sizes="[10,20,30, 50]" :page-size="roleListQuery.page_size" layout="total, sizes, prev, pager, next, jumper" :total="roleTotal">
+            </el-pagination>
+        </div> -->
     </div>
 </template>
 <script>
