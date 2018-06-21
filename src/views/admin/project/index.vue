@@ -278,7 +278,6 @@ export default {
         },
         //项目列表
         getList(){
-            //console.log(this.listQuery)
             this.listLoading = true
             fetchList(this.listQuery).then(response => {
                 let datas = response.data.result.items;

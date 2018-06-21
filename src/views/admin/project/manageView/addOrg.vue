@@ -9,7 +9,6 @@
                 <el-input v-model="addNewForm.name" size="small" placeholder="请输入内容"></el-input>
             </el-form-item>
             <el-form-item label="类型" prop="typeId">
-                <!-- <el-input v-model="addNewForm.typeId" size="small" placeholder="请输入内容"></el-input> -->
                 <el-select v-model="addNewForm.typeId" placeholder="请选择">
                     <el-option
                     v-for="item in typeOptions"
