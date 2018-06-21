@@ -5,8 +5,8 @@
             <el-form-item label="项目">
                 <el-input v-model="projectInfo.name" size="small" placeholder="请输入内容" disabled></el-input>
             </el-form-item>
-            <el-form-item label="机构" prop="organId">
-                <el-select v-model="form.organId" size="small" placeholder="请选择" @change="change1()">
+            <el-form-item label="机构" prop="projectOrgan.id">
+                <el-select v-model="form.projectOrgan.id" size="small" placeholder="请选择" @change="change1()">
                     <el-option
                     v-for="item in organOptions"
                     :key="item.value"
@@ -15,8 +15,8 @@
                     </el-option>
                 </el-select>
             </el-form-item>
-            <el-form-item label="角色" prop="roleId">
-                <el-select v-model="form.roleId" size="small" placeholder="请选择" @change="change2()">
+            <el-form-item label="角色" prop="userRole.roleId">
+                <el-select v-model="form.userRole.roleId" size="small" placeholder="请选择" @change="change2()">
                     <el-option
                     v-for="item in roleOptions"
                     :key="item.value"
@@ -52,7 +52,7 @@
                 <el-checkbox label="已启用" v-model="form.status" size="small"></el-checkbox>
                 <el-button v-if="flag == 'add'" type="primary" :loading="createLoading" class="pull-right" @click="submitForm('forms')" size="small" style="width:85px;">添加</el-button>
                 <div v-else class="clearfix">
-                    <el-button  type="primary" :loading="createLoading" class="pull-left" @click="updataForm('forms')" size="small" style="width:85px;">保存</el-button>
+                    <el-button  type="primary" :loading="createLoading" class="pull-left" @click="updateForm('forms')" size="small" style="width:85px;">保存</el-button>
                     <el-button  type="info" class="pull-right" @click="cancel('forms')" size="small" style="width:85px;">取消</el-button>
                 </div>            
             </el-form-item>
@@ -61,8 +61,7 @@
 </template>
 <script>
 import { mapGetters } from "vuex";
-import { isvalidatemobile } from "@/util/validate";
-import { fetchOrganList,addObj,} from "@/api/project_per";
+import { fetchOrganList,addObj,updateObj} from "@/api/project_per";
 export default {
     props:['projectInfo'],
     data(){
@@ -82,7 +81,7 @@ export default {
                 callback(new Error('请输入密码'));
             } else {
                 if (this.form.password2 !== '') {
-                    this.$refs.form.validateField('password2');
+                    this.$refs.forms.validateField('password2');
                 }
                 callback();
             }
@@ -98,10 +97,10 @@ export default {
         };
         return {
             rules: {
-                organId: [
+                "projectOrgan.id": [
                     { required: true, message: '请选择机构', trigger: 'change' },
                 ],
-                roleId: [
+                "userRole.roleId": [
                     { required: true, message: '请选择角色', trigger: 'change' }
                 ],
                 name: [
@@ -116,18 +115,21 @@ export default {
                     { min: 3, max: 20, message: "长度在 3 到 20 个字符", trigger: "blur"}
                 ],
                 password: [
-                    { validator: validatePass, trigger: 'blur' ,required: true},
+                    { validator: validatePass, trigger: 'blur' ,required: false}
                     // { min: 6, max: 20, message: "长度在 6 到 20 个字符", trigger: "blur"}
                 ],
                 password2: [
-                    { validator: validatePass2, trigger: 'blur' ,required: true},
+                    { validator: validatePass2, trigger: 'blur' ,required: false}
                     // { min: 6, max: 20, message: "长度在 6 到 20 个字符", trigger: "blur"}
                 ],
                 comment: [
                     { required: false, message: '请输入备注', trigger: 'blur' }
                 ]
             },
-            form:{},
+            form:{
+                projectOrgan : {id:null} ,
+                userRole: {roleId:null}
+            },
             flag:'add',
             organOptions:[],
             createLoading:false
@@ -163,53 +165,54 @@ export default {
             })
         },
         submitForm(formName){
-            
             let data = Object.assign({},this.form)
-            data.projectId = this.projectInfo.id
-            data.status = data.status?1:0
             this.$refs[formName].validate(valid => {
                 if (valid) {
-                    console.log(isvalidatemobile(data.phone))
-                    data.projectOrgan ={id:data.organId} 
+                    data.projectId = this.projectInfo.id
+                    data.status = data.status?1:0
                     delete data.password2
-                    delete data.organId
-                    // delete data.roleId
-                    console.log(data)
-                    // this.createLoading = true
-                    // addObj(data).then(() => {
-                    //     this.$parent.$refs.per.getList()
-                    //     this.form = {}
-                    //     this.$notify({
-                    //     title: "成功",
-                    //     message: "创建成功",
-                    //     type: "success",
-                    //     duration: 2000
-                    //     });
-                    //     this.createLoading = false
-                    // });
+                    this.createLoading = true
+                    addObj(data).then(() => {
+                        this.$parent.$refs.per.getList()
+                        this.resetTemp()
+                        this.$notify({
+                            title: "成功",
+                            message: "创建成功",
+                            type: "success",
+                            duration: 2000
+                        });
+                    });
                 } else {
                     return false;
                 }
             });
         },
-        updataForm(formName){
+        updateForm(formName){
             this.$refs[formName].validate((valid) => {
                 if (valid) {
-                    this.form.status = this.form.status?1:0
-                    delete this.form.password2
+                    let data = Object.assign({},this.form)
+                    data.status = this.form.status?1:0
+                    delete data.password2
+                    delete data.organId
+                    delete data.roleId
                     this.createLoading = true
-                    updateObj(this.form).then(response => {
-                        this.createLoading = false
+                    updateObj(data).then(response => {
                         this.$parent.$refs.per.getList()
-                        this.form = {}
+                        this.resetTemp()
                     })
                 }
             });
         },
         cancel(formName){
             this.flag = 'add'
-            this.form = {}
+            this.resetTemp()
+        },
+        resetTemp() {
             this.createLoading = false
+            this.form={
+                projectOrgan: {id:null} ,
+                userRole: {roleId:null}
+            }
         },
 
     }
