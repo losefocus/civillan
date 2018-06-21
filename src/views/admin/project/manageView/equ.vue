@@ -58,7 +58,7 @@
     </div>
 </template>
 <script>
-import {fetchList,delObj} from "@/api/project_equ";
+import {fetchList,delObj,updataObj} from "@/api/project_equ";
 export default {
     props:['projectInfo'],
     data(){
@@ -119,6 +119,19 @@ export default {
                 })
             })
         },
+        updataEqu(row){
+            console.log(row)
+            this.$parent.$refs.addEqu.flag = 'updata'
+            this.$parent.$refs.addEqu.form = Object.assign({},row)
+            this.$parent.$refs.addEqu.form.status = row.status === 1?true:false
+            this.$parent.$refs.addEqu.productId_alias = row.productId+','+row.alias
+        },
+        handleUpdataEqu(){
+            
+            updataObj().then(res => {
+                console.log(res)
+            })
+        },
         perManage(){
 
         },
@@ -127,7 +140,8 @@ export default {
         },
         deleteOrg(){
 
-        }
+        },
+        
     }
 }
 </script>
