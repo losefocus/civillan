@@ -1,6 +1,6 @@
 import request from '@/router/axios'
 
-/* 项目列表 */
+/* 产品列表 */
 export function fetchList(query) {
     return request({
       url: '/product/product/list',
@@ -27,7 +27,7 @@ export function delObj(id) {
   })
 }
 
-/* 删除 */
+/* 编辑 */
 export function updataObj(obj) {
   return request({
     url: '/product/product/edit' ,
