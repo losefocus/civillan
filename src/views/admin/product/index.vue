@@ -18,7 +18,7 @@
                             <span>{{scope.row.name}}</span>
                         </template>
                     </el-table-column>
-                    <el-table-column align="center" label="别名/型号" >
+                    <el-table-column align="center" label="别名/型号" width="85">
                         <template slot-scope="scope">
                             <span>{{scope.row.alias}}</span>
                         </template>
