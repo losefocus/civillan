@@ -40,7 +40,7 @@
                 <el-checkbox label="已启用" v-model="addNewForm.status" size="small"></el-checkbox>
                 <el-button v-if="flag == 'add'" type="primary" :loading="createLoading" class="pull-right" @click="submitForm('addNewForm')" size="small" style="width:90px;">添加</el-button>
                 <div v-else class="clearfix">
-                    <el-button  type="primary" :loading="createLoading" class="pull-left" @click="updataForm('addNewForm')" size="small" style="width:90px;">保存</el-button>
+                    <el-button  type="primary" :loading="createLoading" class="pull-left" @click="updateForm('addNewForm')" size="small" style="width:90px;">保存</el-button>
                     <el-button  type="info" class="pull-right" @click="cancel('addNewForm')" size="small" style="width:90px;">取消</el-button>
                 </div>
             </el-form-item>
@@ -109,7 +109,7 @@ export default {
                 }
             });
         },
-        updataForm(formName){
+        updateForm(formName){
             this.$refs[formName].validate((valid) => {
                 if (valid) {
                     this.addNewForm.status = this.addNewForm.status?1:0
@@ -117,14 +117,15 @@ export default {
                     updateObj(this.addNewForm).then(response => {
                         this.createLoading = false
                         this.$parent.$refs.org.getList()
-                        this.$refs[formName].resetFields()
+                        this.addNewForm = {}
+                        this.flag = 'add'
                     })
                 }
             });
         },
         cancel(formName){
             this.flag = 'add'
-            this.$refs[formName].resetFields()
+            this.addNewForm = {}
         },
     }
 }
