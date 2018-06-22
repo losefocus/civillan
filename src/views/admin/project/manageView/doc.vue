@@ -1,66 +1,59 @@
 <template>
     <div style="padding:20px;border:1px solid #dcdfe6">
-        <div class="filter-container">
+        <!-- <div class="filter-container">
             <el-button class="filter-item" style="" @click="handleCreate" size="small" type="primary" icon="edit" >分组管理</el-button>
-        </div>
-        <el-table :data="list" v-loading="listLoading" element-loading-text="给我一点时间" border fit highlight-current-row style="width: 99%;">
-            <el-table-column align="center" label="名称">
+        </div> -->
+        <el-table :data="list" v-loading="listLoading" element-loading-text="给我一点时间" border fit highlight-current-row style="width: 99%;margin-bottom:10px;">
+            <el-table-column align="center" label="标题">
                 <template slot-scope="scope">
                     <span>{{scope.row.name}}</span>
                 </template>
             </el-table-column>
-            <el-table-column align="center" label="所在分组">
+            <el-table-column align="center" label="文件类型">
                 <template slot-scope="scope">
-                    <span>{{scope.row.deviceGroup.name}}</span>
+                    <span>{{scope.row.extension}}</span>
                 </template>
             </el-table-column>
-            <el-table-column align="center" label="key">
+            <!-- <el-table-column align="center" label="权限">
                 <template slot-scope="scope">
                     <el-tooltip class="item" effect="dark" :content="scope.row.key" placement="top">
-                        <el-button size="small">key</el-button>
+                        <el-button size="small">复制</el-button>
                     </el-tooltip>
                 </template>
-            </el-table-column>
-            <el-table-column align="center" label="secret">
-                <template slot-scope="scope">
-                    <el-tooltip class="item" effect="dark" :content="scope.row.secret" placement="top">
-                        <el-button size="small">secret</el-button>
-                    </el-tooltip>
-                </template>
-            </el-table-column>
-            <el-table-column align="center" label="固件版本">
-                <template slot-scope="scope">
-                    <span>{{scope.row.firmware}}</span>
-                </template>
-            </el-table-column>
-            <el-table-column align="center" label="激活日期" width="100">
+            </el-table-column> -->
+            <el-table-column align="center" label="上传时间">
                 <template slot-scope="scope">
                     <span>{{scope.row.createdAt | parseTime('{y}-{m}-{d}')}}</span>
                 </template>
             </el-table-column>
-            <el-table-column align="center" label="状态">
+            <el-table-column align="center" label="上传用户">
                 <template slot-scope="scope">
-                    <span>{{(scope.row.status == 1)?'已启用':'未启用'}}</span>
+                    <span>{{adminerHash[scope.row.createdBy]}}</span>
                 </template>
             </el-table-column>
-            <el-table-column align="center" label="操作" width="500">
+            <el-table-column align="center" label="操作" width="250">
                 <template slot-scope="scope" >
-                    <el-button size="small" type="success" plain @click="editOrg(scope.row)">通知</el-button>
-                    <el-button size="small" type="success" plain @click="updataEqu(scope.row)">修改</el-button>
-                    <el-button size="small" type="danger" plain @click="deleteEqu(scope.row)">删除</el-button>
+                    <a href="http://www.w3school.com.cn/i/w3school_logo_white.gif" download="w3logo" style="display:block;width:50px;height:50px;background:red"></a>
+                    <el-button size="small" type="success" plain @click="editOrg(scope.row)"><a :href="scope.row.fileBaseUrl+scope.row.filePath" download="w3logo" target="_blank">下载</a></el-button>
+                    <el-button size="small" type="success" plain @click="updataDoc(scope.row)">修改</el-button>
+                    <el-button size="small" type="danger" plain @click="deleteDoc(scope.row)">删除</el-button>
                 </template>
             </el-table-column>
         </el-table>
+
+        <div v-show="!listLoading" class="pagination-container">
+            <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="listQuery.page_index" :page-sizes="[10,20,30, 50]" :page-size="listQuery.page_size" layout="total, sizes, prev, pager, next, jumper" :total="total">
+            </el-pagination>
+        </div>
     </div>
 </template>
 <script>
-import {fetchList,delObj,updataObj} from "@/api/project_equ";
+import {fetchList,delObj,updataObj} from "@/api/project_doc";
 export default {
     props:['projectInfo'],
     data(){
         return {
             listLoading:false,
-            roleListLoading:false,
             list:[{}],
             listQuery: {
                 page_index: 1,
@@ -68,15 +61,9 @@ export default {
             },
             total:null,
             objectTypeVisible:false,
-            roleForm:{},
-            roleList:[],
-            roleListQuery: {
-                page_index: 1,
-                page_size: 10
-            },
-            roleTotal:null,
             flag:'add',
-            createdRoleLoading:false
+            createdLoading:false,
+            adminerHash:this.$parent.$parent.adminerHash
         }
     },
     created() {
@@ -91,7 +78,7 @@ export default {
 
         },
         getList(){
-            this.listLoading = true
+            // this.listLoading = true
             this.listQuery.projectId = this.projectInfo.id
             fetchList(this.listQuery).then(res => {
                 console.log(res)
@@ -100,9 +87,17 @@ export default {
                 this.listLoading = false
             })
         },
-        deleteEqu(row){
+        handleSizeChange(val) {
+            this.listQuery.page_size = val;
+            this.getList();
+        },
+        handleCurrentChange(val) {
+            this.listQuery.page_index = val;
+            this.getList();
+        },
+        deleteDoc(row){
             this.$confirm(
-                "此操作将永久删除该设备(设备名:" + row.name + "), 是否继续?",
+                "此操作将永久删除该文件(文件名:" + row.name + "), 是否继续?",
                 "提示",
                 {
                 confirmButtonText: "确定",
@@ -112,21 +107,20 @@ export default {
             ).then(() => {
                 delObj(row.id).then(res => {
                     this.getList()
+                    this.$parent.$parent.alertNotify('删除')
                 })
             })
         },
-        updataEqu(row){
+        updataDoc(row){
             console.log(row)
-            this.$parent.$refs.addEqu.flag = 'updata'
-            this.$parent.$refs.addEqu.form = Object.assign({},row)
-            this.$parent.$refs.addEqu.form.status = row.status === 1?true:false
-            this.$parent.$refs.addEqu.productId_alias = row.productId+','+row.alias
+            this.$parent.$refs.addDoc.flag = 'updata'
+            this.$parent.$refs.addDoc.form = Object.assign({},row)
+            this.$parent.$refs.addDoc.form.status = (row.status === 1)?true:false
+            // this.$parent.$refs.addDoc.productId_alias = row.productId+','+row.alias
         },
-        handleUpdataEqu(){
+        handleUpdataDoc(){
             
-            updataObj().then(res => {
-                console.log(res)
-            })
+            
         },
         perManage(){
 

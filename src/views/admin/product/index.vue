@@ -106,18 +106,32 @@
             </div>
         </div>
         <el-dialog id="variable" title="变量模板"  :visible.sync="variableTemplateVisible" width='690px'>
-            <variable :product-info="productData"></variable>
+            <!-- <variable :product-info="productData" :template-info="templateData"></variable> -->
+            <div class="clearfix">
+                <div >
+                    产 品 : {{productData.name}} 
+                </div>
+                <el-input style="padding:20px 0" type="textarea" :rows="10" placeholder="请输入内容" v-model="templateData.content"></el-input>
+                <el-button class="pull-right" size="small" type="success" @click="setTemplate" :loading="tempCreateloading">保存</el-button>
+            </div>
         </el-dialog>
-        <el-dialog id="alarm" title="报警模板"  :visible.sync="alarmTemplatVisible" width='690px'>
-            <alarm :product-info="productData"></alarm>
-        </el-dialog>
+        <!-- <el-dialog id="alarm" title="报警模板"  :visible.sync="alarmTemplatVisible" width='690px'>
+            <alarm :product-info="productData" :template-info="templateData"></alarm>
+            <div class="clearfix" v-loading="temploading">
+                <div >
+                    产 品 : {{productData.name}} 
+                </div>
+                <el-input style="padding:20px 0" type="textarea" :rows="10" placeholder="请输入内容" v-model="templateData.content"></el-input>
+                <el-button class="pull-right" size="small" type="success">保存</el-button>
+            </div>
+        </el-dialog> -->
     </div>
 </template>
 <script>
 import variable from "./variable";
 import alarm from "./alarm";
 import { getToken} from "@/util/auth";
-import { fetchList,addObj,delObj,updataObj} from "@/api/product";
+import { fetchList,addObj,delObj,updataObj,get_templateObj,set_templateObj} from "@/api/product";
 export default {
     components:{
         variable,
@@ -151,11 +165,16 @@ export default {
             flag:'add',
             variableTemplateVisible:false,
             alarmTemplatVisible:false,
-            productData:null,
+            productData:{name:null},
+            templateData:{content:''},
+            temploading:false,
+            tempCreateloading:false
         }
     },
     created() {
         this.getList()
+        let aa = '{"status" : 0 ,"msg"    : "SUCCESS","data"   :[{"id"    : 1 ,"name"  : "xiaohong"},{"id"    : 2,"name":"xiaoming"}]}'
+        // console.log(JSON.stringify())
     },
     mounted() {
         
@@ -190,6 +209,12 @@ export default {
             ).then(() => {
                 delObj(row.id).then(res => {
                     this.getList();
+                    this.$notify({
+                        title: "成功",
+                        message: "删除成功",
+                        type: "success",
+                        duration: 2000
+                    });
                 })
             })
         },
@@ -206,6 +231,12 @@ export default {
                 this.resetTemp()
                 this.flag = 'add'
                 this.createLoading = false
+                this.$notify({
+                    title: "成功",
+                    message: "修改成功",
+                    type: "success",
+                    duration: 2000
+                });
             })
         },
         cancelForm(formName){
@@ -222,6 +253,12 @@ export default {
                 this.getList();
                 this.createLoading = false;
                 this.resetTemp()
+                this.$notify({
+                    title: "成功",
+                    message: "添加成功",
+                    type: "success",
+                    duration: 2000
+                });
             })
         },
         uploadSuccess(response, file, fileList){
@@ -242,13 +279,50 @@ export default {
         },
         //变量模板
         variableTemplate(row){
+            let id
+            row.productTemplate.forEach(element => {
+                if(element.type === 1)id = element.id
+            });
+            this.getContent(id)
             this.variableTemplateVisible = true
             this.productData = row
+            
+            
         },
         //报警模板
         alarmTemplat(row){
             this.alarmTemplatVisible = true
             this.productData = row
+            let id
+            row.productTemplate.forEach(element => {
+                if(element.type === 2)id = element.id
+            });
+            this.getContent(id)
+        },
+        getContent(id){          
+            this.temploading = true
+            get_templateObj(id).then(res => {
+                this.templateData = res.data.result
+                // this.templateData.content = ('content' in res.data.result)?JSON.stringify(res.data.result.content):''
+                this.temploading = false
+            })
+        },
+        setTemplate(){
+            let data = this.templateData
+            // data.content = eval('(' + data.content + ')')
+            delete data.handler
+            delete data.hibernateLazyInitializer
+            this.tempCreateloading = true
+            set_templateObj(data).then(res => {
+                this.variableTemplateVisible = false
+                this.$notify({
+                    title: "成功",
+                    message: "保存成功",
+                    type: "success",
+                    duration: 2000
+                });
+                this.tempCreateloading = false
+            })
         }
     }
 }

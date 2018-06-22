@@ -15,8 +15,8 @@
                     </el-option>
                 </el-select>
             </el-form-item>
-            <el-form-item label="角色" prop="userRole.roleId">
-                <el-select v-model="form.userRole.roleId" size="small" placeholder="请选择" @change="change2()">
+            <el-form-item label="角色" prop="userRole">
+                <el-select v-model="role" multiple  size="small" placeholder="请选择" @change="selectRole()">
                     <el-option
                     v-for="item in roleOptions"
                     :key="item.value"
@@ -95,13 +95,21 @@ export default {
                 callback();
             }
         };
+        var validataroleId = (rule, value, callback) => {
+            if(value.length == 0){
+                callback(new Error('请选择角色'));
+            }else{
+                callback()
+            }
+        }
         return {
             rules: {
                 "projectOrgan.id": [
                     { required: true, message: '请选择机构', trigger: 'change' },
                 ],
-                "userRole.roleId": [
-                    { required: true, message: '请选择角色', trigger: 'change' }
+                userRole: [
+                    // { required: false, message: '请选择角色', trigger: 'change' }
+                    { validator: validataroleId, trigger: 'change' ,required: true},
                 ],
                 name: [
                     { required: true, message: '请输入姓名', trigger: 'blur' },
@@ -115,11 +123,11 @@ export default {
                     { min: 3, max: 20, message: "长度在 3 到 20 个字符", trigger: "blur"}
                 ],
                 password: [
-                    { validator: validatePass, trigger: 'blur' ,required: false}
+                    { validator: validatePass, trigger: 'blur' ,required: true}
                     // { min: 6, max: 20, message: "长度在 6 到 20 个字符", trigger: "blur"}
                 ],
                 password2: [
-                    { validator: validatePass2, trigger: 'blur' ,required: false}
+                    { validator: validatePass2, trigger: 'blur' ,required: true}
                     // { min: 6, max: 20, message: "长度在 6 到 20 个字符", trigger: "blur"}
                 ],
                 comment: [
@@ -128,8 +136,8 @@ export default {
             },
             form:{
                 projectOrgan : {id:null} ,
-                userRole: {roleId:null}
             },
+            role:[],
             flag:'add',
             organOptions:[],
             createLoading:false
@@ -146,10 +154,14 @@ export default {
     },
     methods:{
         change1(){
-            console.log(this.form.organId)
+            //console.log(this.form.organId)
         },
-        change2(){
-            console.log(this.form.roleId)
+        selectRole(){
+            let array = []
+            this.role.forEach(element => {
+                array.push({roleId:element})
+            });
+            this.form.userRole = array
         },
         getOrganOptions(){
             fetchOrganList(this.projectInfo.id).then(res => {
@@ -175,12 +187,7 @@ export default {
                     addObj(data).then(() => {
                         this.$parent.$refs.per.getList()
                         this.resetTemp()
-                        this.$notify({
-                            title: "成功",
-                            message: "创建成功",
-                            type: "success",
-                            duration: 2000
-                        });
+                        this.$parent.$parent.alertNotify('添加')
                     });
                 } else {
                     return false;
@@ -193,12 +200,12 @@ export default {
                     let data = Object.assign({},this.form)
                     data.status = this.form.status?1:0
                     delete data.password2
-                    delete data.organId
-                    delete data.roleId
                     this.createLoading = true
+                    console.log(data)
                     updateObj(data).then(response => {
                         this.$parent.$refs.per.getList()
                         this.resetTemp()
+                        this.$parent.$parent.alertNotify('修改')
                     })
                 }
             });
@@ -211,8 +218,8 @@ export default {
             this.createLoading = false
             this.form={
                 projectOrgan: {id:null} ,
-                userRole: {roleId:null}
             }
+            this.role = []
         },
 
     }

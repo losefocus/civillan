@@ -3,7 +3,7 @@
         <div class="filter-container">
             <el-button class="filter-item" style="" @click="handleCreate" size="small" type="primary" icon="edit" >分组管理</el-button>
         </div>
-        <el-table :data="list" v-loading="listLoading" element-loading-text="给我一点时间" border fit highlight-current-row style="width: 99%;">
+        <el-table :data="list" v-loading="listLoading" element-loading-text="给我一点时间" border fit highlight-current-row style="width: 99%;margin-bottom:10px">
             <el-table-column align="center" label="名称">
                 <template slot-scope="scope">
                     <span>{{scope.row.name}}</span>
@@ -56,10 +56,10 @@
             </el-table-column>
         </el-table>
 
-        <!-- <div v-show="!roleListLoading" class="pagination-container">
-            <el-pagination @size-change="handleSizeChange_role" @current-change="handleCurrentChange_role" :current-page.sync="roleListQuery.page_index" :page-sizes="[10,20,30, 50]" :page-size="roleListQuery.page_size" layout="total, sizes, prev, pager, next, jumper" :total="roleTotal">
+        <div v-show="!listLoading" class="pagination-container">
+            <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="listQuery.page_index" :page-sizes="[10,20,30, 50]" :page-size="listQuery.page_size" layout="total, sizes, prev, pager, next, jumper" :total="total">
             </el-pagination>
-        </div> -->
+        </div>
     </div>
 </template>
 <script>
@@ -69,23 +69,14 @@ export default {
     data(){
         return {
             listLoading:false,
-            roleListLoading:false,
             list:[{}],
             listQuery: {
                 page_index: 1,
                 page_size: 20
             },
             total:null,
-            objectTypeVisible:false,
-            roleForm:{},
-            roleList:[],
-            roleListQuery: {
-                page_index: 1,
-                page_size: 10
-            },
-            roleTotal:null,
             flag:'add',
-            createdRoleLoading:false
+            createdLoading:false
         }
     },
     created() {
@@ -103,11 +94,18 @@ export default {
             this.listLoading = true
             this.listQuery.projectId = this.projectInfo.id
             fetchList(this.listQuery).then(res => {
-                console.log(res)
                 this.list = res.data.result.items
                 this.total = res.data.result.total
                 this.listLoading = false
             })
+        },
+        handleSizeChange(val) {
+            this.listQuery.page_size = val;
+            this.getList();
+        },
+        handleCurrentChange(val) {
+            this.listQuery.page_index = val;
+            this.getList();
         },
         deleteEqu(row){
             this.$confirm(
@@ -121,6 +119,7 @@ export default {
             ).then(() => {
                 delObj(row.id).then(res => {
                     this.getList()
+                    this.$parent.$parent.alertNotify('删除')
                 })
             })
         },
@@ -134,7 +133,7 @@ export default {
         handleUpdataEqu(){
             
             updataObj().then(res => {
-                console.log(res)
+                this.$parent.$parent.alertNotify('修改')
             })
         },
         perManage(){

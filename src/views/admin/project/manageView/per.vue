@@ -24,6 +24,11 @@
                     <span>{{scope.row.projectOrgan.name}}</span>
                 </template>
             </el-table-column>
+            <!-- <el-table-column align="center" label="角色">
+                <template slot-scope="scope">
+                    <span>{{scope.row.userRole.roleId}}</span>
+                </template>
+            </el-table-column> -->
             <el-table-column align="center" label="状态">
                 <template slot-scope="scope">
                     <span>{{(scope.row.status === 1)?'已启用':'未启用'}}</span>
@@ -111,7 +116,7 @@ export default {
         return {
             listLoading:false,
             roleListLoading:false,
-            list:[{}],
+            list:[],
             listQuery: {
                 page_index: 1,
                 page_size: 20
@@ -159,7 +164,10 @@ export default {
             this.$parent.$refs.addPer.form = Object.assign({},row)
             this.$parent.$refs.addPer.form.status = (row.status == 1)?true:false
             this.$parent.$refs.addPer.form.password2 = this.$parent.$refs.addPer.form.password
-            console.log(row)
+            this.$parent.$refs.addPer.role = new Array()
+            row.userRole.forEach(element => {
+                this.$parent.$refs.addPer.role.push(element.roleId)
+            });
         },
         deletePer(row){
             this.$confirm(
@@ -173,6 +181,8 @@ export default {
             ).then(() => {
                 delObj(row.id).then(res => {
                     this.getList()
+                    this.getTypeList()
+                    this.$parent.$parent.alertNotify('删除')
                 })
             })
             
@@ -212,12 +222,7 @@ export default {
                         if(res.data.success == true){
                             this.getRoleList()
                             this.roleForm = {};
-                            this.$notify({
-                                title: "成功",
-                                message: "添加成功",
-                                type: "success",
-                                duration: 2000
-                            });
+                            this.$parent.$parent.alertNotify('添加')
                             this.createdRoleLoading = false
                         }
                     })
@@ -241,12 +246,7 @@ export default {
                         if(res.data.success == true){
                             this.getRoleList()
                             this.cancelEdit();
-                            this.$notify({
-                                title: "修改",
-                                message: "修改成功",
-                                type: "success",
-                                duration: 2000
-                            });
+                            this.$parent.$parent.alertNotify('修改')
                             this.createdRoleLoading = false
                         }
                     })
@@ -265,6 +265,7 @@ export default {
             ).then(() => {
                 delRoleObj(row.id).then(res => {
                     this.getRoleList()
+                    this.$parent.$parent.alertNotify('删除')
                 })
             })
             

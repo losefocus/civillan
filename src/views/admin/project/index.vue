@@ -102,8 +102,8 @@
             <div class="pull-right addNewProject">
                 <h3>添加项目</h3>
                 <el-form label-width="65px" :model="addNewForm" :rules="rules" ref="addNewForm">
-                    <el-form-item label="上级" prop="parentId">
-                        <el-select v-model="addNewForm.parentId" size="small" placeholder="请选择" @change="selectParentId">
+                    <el-form-item label="上级" prop="parentId" >
+                        <el-select v-model="addNewForm.parentId" size="small" :loading='listLoading' placeholder="请选择">
                             <el-option
                             v-for="item in parentIdOptions"
                             :key="item.value"
@@ -129,7 +129,7 @@
                         </el-date-picker>
                     </el-form-item>
                     <el-form-item label="管理员" prop="adminer">
-                        <el-select v-model="addNewForm.adminer" size="small" placeholder="请选择" @change="selectAdminer">
+                        <el-select v-model="addNewForm.adminer" size="small" placeholder="请选择" :loading="adminerOptionsloading" @change="selectAdminer">
                             <el-option
                             v-for="item in adminerOptions"
                             :key="item.value"
@@ -168,7 +168,7 @@
                     </el-form-item>
                     <el-form-item>
                         <el-checkbox label="已启用" v-model="addNewForm.status" size="small"></el-checkbox>
-                        <el-button type="primary" class="pull-right" @click="submitForm('addNewForm')" size="small" :loading="createLoading" style="width:90px;">保存</el-button>
+                        <el-button type="primary" class="pull-right" @click="submitForm('addNewForm')" size="small" :loading="createLoading" style="width:90px;">添加</el-button>
                     </el-form-item>
                 </el-form>
             </div>
@@ -234,8 +234,9 @@ export default {
             viewData:null,
             parentIdOptions:[],
             adminerOptions:[],
+            adminerOptionsloading:false,
             addNewForm:{
-                parentId:null,
+                parentId:0,
                 name:'',
                 tm:'',
                 adminer:'',
@@ -266,6 +267,7 @@ export default {
     methods:{
         //管理员列表
         getRoleList(){
+            this.adminerOptionsloading = true
             fetchAdminList().then(response => {
                 let datas = response.data.result.items;
                 let options = []
@@ -274,6 +276,7 @@ export default {
                     this.adminerHash[datas[i].id] = datas[i].username
                 } 
                 this.adminerOptions = options
+                this.adminerOptionsloading = false
             })
         },
         //项目列表
@@ -336,6 +339,7 @@ export default {
                         this.createLoading = false
                         this.getList()
                         this.resetForm(formName)
+                        this.alertNotify('添加')
                     })
                 }
             });
@@ -352,8 +356,8 @@ export default {
                 }
             ).then(() => {
                 delObj(row.id).then(response => {
-                    console.log(response)
                     this.getList()
+                    this.alertNotify('删除')
                 })
             })
             
@@ -407,13 +411,15 @@ export default {
             this.$refs.proManage.tabView = 'doc'
             this.viewData = row
         },
-        addNewProject(){
-            
-        },
-        selectParentId(){
-            console.log(this.addNewForm.parentId)
-        },
-        selectAdminer(){}
+        selectAdminer(){},
+        alertNotify(str){
+            this.$notify({
+                title: str,
+                message: str+"成功",
+                type: "success",
+                duration: 2000
+            });
+        }
     }
 }
 </script>

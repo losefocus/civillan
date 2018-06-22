@@ -3,28 +3,38 @@ import request from '@/router/axios'
 /* 列表 */
 export function fetchList(query) {
     return request({
-      url: '/project/project/list',
+      url: '/project/project_file/list',
       method: 'get',
       params: query
     })
   }
 
-  /* 所以管理员列表 */
-  export function fetchRoleList() {
-    return request({
-      url: '/project/project_role/list',
-      method: 'get',
-    })
-  }
 
   /* 新增 */
   export function addObj(obj) {
     return request({
-      url: '/project/project/add',
+      url: '/project/project_file/add',
       method: 'post',
       data: obj
     })
   }
+
+/* 删除 */
+export function delObj(id) {
+  return request({
+    url: '/project/project_file/delete?project_file_id=' + id,
+    method: 'post'
+  })
+}
+
+  /* 编辑 */
+export function updataObj(obj) {
+  return request({
+    url: '/project/project_file/edit',
+    method: 'post',
+    data: obj
+  })
+}
 
   /* 图片上传 */
   export function uploadImg(obj) {

@@ -72,7 +72,7 @@
                 </el-form-item>
             </el-form>
             <div v-loading="typelListLoading">
-                <el-table :data="orgTypeList"  element-loading-text="给我一点时间" stripe border fit highlight-current-row style="width: 99%;">
+                <el-table :data="orgTypeList"  element-loading-text="给我一点时间" stripe border fit highlight-current-row style="width: 99%;margin-bottom:10px">
                     <el-table-column align="center" label="类型名称">
                         <template slot-scope="scope">
                             <span>{{scope.row.name}}</span>
@@ -193,12 +193,7 @@ export default {
                 delObj(row.id).then(res => {
                     if(res.data.success == true){
                         this.getList()
-                        this.$notify({
-                            title: "成功",
-                            message: "删除成功",
-                            type: "success",
-                            duration: 2000
-                        });
+                        this.$parent.$parent.alertNotify('删除')
                     }
                 })
             })
@@ -235,9 +230,7 @@ export default {
             data.projectId = this.projectInfo.id
             data.sort = (Number(data.sort)<=0)?0:Number(data.sort)
             data.status = data.status?1:0
-            console.log(data)
             this.$refs[formName].validate((valid) => {
-                console.log(valid)
                 if (valid) {
                     // console.log(1231231)
                     this.createLoading = true
@@ -245,12 +238,7 @@ export default {
                         if(res.data.success == true){
                             this.getTypeList()
                             this.$refs.orgTypeForm.resetFields();
-                            this.$notify({
-                                title: "成功",
-                                message: "添加成功",
-                                type: "success",
-                                duration: 2000
-                            });
+                            this.$parent.$parent.alertNotify('添加')
                             this.createLoading = false
                         }
                     })
@@ -272,6 +260,7 @@ export default {
                 delObjType(row.id).then(res => {
                     if(res.data.success == true){
                         this.getTypeList()
+                        this.$parent.$parent.alertNotify('删除')
                     }
                 })
             })
@@ -295,12 +284,7 @@ export default {
                     this.getTypeList()
                     this.orgTypeForm = {}
                     this.flag = 'add'
-                    this.$notify({
-                        title: "成功",
-                        message: "修改成功",
-                        type: "success",
-                        duration: 2000
-                    });
+                    this.$parent.$parent.alertNotify('修改')
                     this.createLoading = false
                 }
             })
@@ -308,9 +292,12 @@ export default {
         cancelEdit(formName){
             this.flag = 'add',
             this.orgTypeForm = {}
-            this.createdRoleLoading = false
+            this.createLoading = false
             // this.$refs[formName].resetFields();
         },
+        resetType(){
+            this.orgTypeForm = {}
+        }
         
     }
 }

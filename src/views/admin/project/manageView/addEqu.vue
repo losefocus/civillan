@@ -1,6 +1,6 @@
 <template>
     <div>
-        <h3>添加机构</h3>
+        <h3>{{flag == 'add'?'添加':'修改'}}设备</h3>
         <el-form label-width="40px" :model="form"  ref="form">
             <el-form-item label="项目" >
                 <el-input v-model="projectInfo.name" size="small" placeholder="请输入内容" disabled></el-input>
@@ -55,7 +55,8 @@
                 <div v-else class="clearfix">
                     <el-button  type="primary" :loading="createLoading" class="pull-left" @click="updataForm('form')" size="small" style="width:85px;">保存</el-button>
                     <el-button  type="info" class="pull-right" @click="cancel('form')" size="small" style="width:85px;">取消</el-button>
-                </div>                 </el-form-item>
+                </div>                 
+            </el-form-item>
         </el-form>
     </div>
 </template>
@@ -158,6 +159,7 @@ export default {
                 this.createLoading = false
                 this.$parent.$refs.equ.getList()
                 this.resetTemp()
+                this.$parent.$parent.alertNotify('添加')
             })
         },
         updataForm(formName){
@@ -172,6 +174,7 @@ export default {
                         this.createLoading = false
                         this.$parent.$refs.equ.getList()
                         this.resetTemp()
+                        this.$parent.$parent.alertNotify('修改')
                     })
                 }
             });

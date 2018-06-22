@@ -105,6 +105,7 @@ export default {
                         this.$parent.$refs.org.getList()
                         this.$refs[formName].resetFields()
                         this.createLoading = false
+                        this.$parent.$parent.alertNotify('添加')
                     })
                 }
             });
@@ -119,6 +120,7 @@ export default {
                         this.$parent.$refs.org.getList()
                         this.addNewForm = {}
                         this.flag = 'add'
+                        this.$parent.$parent.alertNotify('修改')
                     })
                 }
             });
@@ -126,6 +128,7 @@ export default {
         cancel(formName){
             this.flag = 'add'
             this.addNewForm = {}
+            this.createLoading = false
         },
     }
 }
