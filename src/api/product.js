@@ -35,3 +35,20 @@ export function updataObj(obj) {
     data: obj
   })
 }
+
+/* 获取模板信息 */
+export function get_templateObj(id) {
+  return request({
+    url: '/product/product/get_template?product_template_id=' + id,
+    method: 'get',
+  })
+}
+
+/* 添加/修改模板信息 */
+export function set_templateObj(obj) {
+  return request({
+    url: '/product/product/set_template' ,
+    method: 'post',
+    data: obj
+  })
+}
