@@ -1,0 +1,30 @@
+image: docker-node
+
+before_script:
+  - mkdir ~/.ssh/
+  - echo -e "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCyo7io9U1SpjPaU2mq7Pf/045MTyNK/hsz+2aBs957+jazYETteoQuSA/HsS9pk0pkJvqgGOzwPvAwSaJifsW4ad9XDXPa1sC4FjmN2gCcn1DD1U/rfuBsxMo8lUClliPMCxR8Go4gOAeuCcva8UTOGuqX/da6rbbSQQGzza1ElIpgsacM0xfaXfnQ/LXlLGIK+NWsP2KcNaIUlJvKUTaSu3uL4ooXP0/lulgNKzVfOE0LEVSjOIvj0zbG1dwlr3YoQqqtPJ2dSanV4x/aHlf6VDy93kbEWPI2QzwJ/53Phn4JQ6+3lc1aertlu4m7j6obS0T4w31cu2UWfcbvkkBb test@test1-debian" > ~/.ssh/id_rsa.pub
+  - echo -e "-----BEGIN RSA PRIVATE KEY-----\nMIIEpAIBAAKCAQEAsqO4qPVNUqYz2lNpquz3/9OOTE8jSv4bM/tmgbPee/o2s2BE\n7XqELkgPx7EvaZNKZCb6oBjs8D7wMEmiYn7FuGnfVw1z2tbAuBY5jdoAnJ9Qw9VP\n637gbMTKPJVApZYjzAsUfBqOIDgHrgnL2vFEzhrql/3Wuq220kEBs82tRJSKYLGn\nDNMX2l350Py15SxiCvjVrD9inDWiFJSbylE2krt7i+KKFz9P5bpYDSs1XzhNCxFU\noziL49M2xtXcJa92KEKqrTydnUmp1eMf2h5X+lQ8vd5GxFjyNkM8Cf+dz4Z+CUOv\nt5XNWnq7ZbuJu4+qG0tE+MN9XLtlFn3G75JAWwIDAQABAoIBAHBVvD2jZChhE6Jr\nabtuoNVjN8yMx2jVOk4J/X/6mCHmSpeqJi4gKRbhgerVZTdCxDkOufQLOJQrP+dd\nppvBlJxPF38qmnw3J6GbeD3XpSLYnHVJoqQ4ePBtH6/RO4HlVEVvgkY4fL+N/GZZ\nCrR3nAjvrC5AFdP2gUzeTC/BWwAQSks8oRW6nJRg7werkW4P+XsFkvQ/n1fMXPBP\nFpgb/j3siI8+NF10CRwyV35QBYhFyMV7uUxBFjId9QpNkz28sREk7Wl7HWW9rFDm\nS0eEIWoO7nJCbznFvQuDhUdLTbry/AKKEnBSjQ0qnEdJSSpm309o7qv6WzwrS1p5\n2cnR6CECgYEA7LxvnXzEc3I1uxNUWiXYm/PqxhU+fj5mqIEYjv01c0HWzQSHMRKo\np+QMhP4IkEMq2OdmGveLAsFb/kH8dAS7MF7UxlzvB8lg6P1d1e6mj2euItJxylaI\nKb5ibIPtcQzqvWSEw4pT33HGDTH/tP1jsEutEqEblf3Mnx3odm+MXh8CgYEAwS0M\nUNv97jvlIvucOeU8OLdTJgP3jVSd7A4a4TMQpEUflDEx1KJwmXHXpOObLeqC+V/L\nu58KbIQDvI4TfWCWjoDDjIOI2ka7ysTGnFnxIY/KDUo1yc04+XWDoQRqQGZ4hpdX\nGuyZYfjCVmFq+cRbxWTsQN9QmIpAGdgNBrsi3kUCgYEA6K/OhV09OrvnVBmLr4/D\neIYnHMuEwVFUVguNt/3pq3/rQVhSCUntvBfKtm16vVFHrCrFkXv+hpbHdQImwWJl\nGwYa3V47E8w8FMX0lXIdBJdD8bYnYlnrPByFYWPK3nNzxvQmCozMI7QQlqeuTpdA\nhOfdFZKFKshrd3pOIxtBPMECgYEAk/aDVnQK3i12ZwM+OIJDTFXvFFE5jkFf7O0o\n3ZGVj516gLHlry70/DNcr2m+9L6Jr6UWkhFRlKjRi91vRDt1VpV+MuSVMEu5j6iF\nUED8F27hnqhW5smQeFLwjaaqE8XpT34gM/lByu8VO8DGhaVHfby90Tq7qvtJ+gGo\niJ1SKdkCgYBrw/DGd5KIay4kPM9Mp0uu6gVZ3ZCfgh5EjzY6GPJTLFR6T2RbLJci\nimvG9uBIKo9t+W/zrUtNThtBHgwGx591+WW+IXNMftZEltlCASH9l/KqTR6Yvw+k\nwpz6rqyn6hLx496fLFZ3r2JY+AE8VafCinH6KXZGYKy4JziYz2diSA==\n-----END RSA PRIVATE KEY-----" > ~/.ssh/id_rsa
+  - chmod 700 ~/.ssh/id_rsa
+  - echo -e "|1|CQiEn9gHp/Nuc0lA5aYhaXrVYQ4=|qCkCeVmOTGGVBA4AfEtBcZqWeqc= ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBIBIfrzIDFNLPB9GGNVO1ELnos/UdVQV3A1BoGTxZmcqQV9ZtEmvftrsL4vfNCDg5a9zHRLRHZT7OayOsv5jNpA=\n|1|+yjfmlf9MH7d8n02zo77GMLlCns=|R5FsqL4Nbe6m25zUpuLPHRuk0Tg= ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBIBIfrzIDFNLPB9GGNVO1ELnos/UdVQV3A1BoGTxZmcqQV9ZtEmvftrsL4vfNCDg5a9zHRLRHZT7OayOsv5jNpA=" > ~/.ssh/known_hosts
+stages:
+  - deploy
+
+maven-build:
+  stage: deploy
+  only:
+    - master
+  script:
+    - npm install -g cnpm --registry=https://registry.npm.taobao.org
+    - cnpm install
+    - cnpm run build
+    # 启动
+    - docker build -t="civillan-background-web" .
+    - ssh test@test1.iot.v -tt docker stop civillan-background-web
+    - ssh test@test1.iot.v -tt docker rm civillan-background-web
+    - ssh test@test1.iot.v -tt docker run -p 9991:8080 --name civillan-background-web -d civillan-background-web
+
+    #清除临时文件
+    - ssh test@test1.iot.v -tt docker rm $(docker ps -q -f status=exited -f name=runner)
+    - ssh test@test1.iot.v -tt docker rmi $(docker images -q -f dangling=true)
+  tags:
+      - dockersock
