@@ -78,7 +78,11 @@ const device = {
     SET_NOTIFYLIST:(state, action)=>{
       state.notifyList = action
     },
-    // 报警下拉选项
+    // 报警选项
+    SET_ALARMOPTIONS:(state, action)=>{
+      state.alarmOptions = action
+    },
+    // 选项
     SET_ALARMOPTIONS:(state, action)=>{
       state.alarmOptions = action
     },
