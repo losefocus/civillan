@@ -19,5 +19,11 @@ const getters = {
   typeOptions: state => state.common.typeOptions,
   organOptions: state => state.common.organOptions,
   roleOptions: state => state.common.roleOptions,
+  configList: state => state.device.configList,
+  certiList: state => state.device.certiList,
+  sensorList: state => state.device.sensorList,
+  alarmList: state => state.device.alarmList,
+  notifyList: state => state.device.notifyList,
+  alarmOptions: state => state.device.alarmOptions,
 }
 export default getters

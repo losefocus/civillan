@@ -41,3 +41,44 @@ export function updataObj(obj) {
     data: obj
   })
 }
+
+/* 配置信息 */
+export function getConfigObj(query) {
+  return request({
+    url: '/device/device_config/list',
+    method: 'get',
+    params: query
+  })
+}
+/* 证书信息 */
+// export function getSensorObj(id) {
+//   return request({
+//     url: '/device/device_sensor/list?deviceId=' + id,
+//     method: 'get',
+//     params: query
+//   })
+// }
+/* 变量信息 */
+export function getSensorObj(query) {
+  return request({
+    url: '/device/device_sensor/list',
+    method: 'get',
+    params: query
+  })
+}
+/* 报警信息 */
+export function getAlarmObj(query) {
+  return request({
+    url: '/device/device_alarm/list',
+    method: 'get',
+    params: query
+  })
+}
+/* 通知信息 */
+export function getNotifyObj(query) {
+  return request({
+    url: '/device/device_notify/list',
+    method: 'get',
+    params: query
+  })
+}

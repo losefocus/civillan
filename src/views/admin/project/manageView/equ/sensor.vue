@@ -1,23 +1,34 @@
 <template>
     <div>
         <div>设 备 : {{dataInfo.name}}</div>
-        <el-form :model="form" class="clearfix" ref="form" label-width="70px">
-            <el-form-item label="配置名称" style="width: 325px">
-                <el-input v-model="form.name" size="small" auto-complete="off" style="width:240px"></el-input>
+        <el-form :model="form" class="clearfix" ref="form" label-width="50px">
+            <el-form-item label="名称" style="width: 163px">
+                <el-input v-model="form.name" size="small" auto-complete="off"></el-input>
             </el-form-item>
-            <el-form-item label="配置项" style="width: 325px;">
-                <el-input v-model="form.key" size="small" auto-complete="off"  style="width:255px"></el-input>
+            <el-form-item label="标识" style="width: 162px">
+                <el-input v-model="form.label" size="small" auto-complete="off"></el-input>
             </el-form-item>
-            <el-form-item label="配置内容" style="width: 650px">
-                <el-input v-model="form.value" type="textarea" :rows="2"  style="width:580px" size="small" auto-complete="off"></el-input>
+            <el-form-item label="排序" style="width: 163px">
+                <el-input v-model="form.sort" size="small" auto-complete="off"></el-input>
             </el-form-item>
+            <el-form-item label="类型" style="width: 162px">
+                <el-select v-model="form.type" placeholder="请选择" size="small">
+                    <el-option
+                    v-for="item in options"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value">
+                    </el-option>
+                </el-select>
+            </el-form-item>
+            
             <el-form-item  :style="flag == 'add'?'width: 140px':'width: 220px'" class="pull-right" style="padding-top:5px">
                 <div v-if="flag == 'add'">
                     <el-button size="small" type="primary" class="pull-right" @click="handleAdd('form')" :loading="createdLoading">添加</el-button>
                 </div>
-                <div v-else>
+                <div v-else >
                     <el-button size="small" type="info" class="pull-right" style="margin-left:10px" @click="cancelEdit('form')">取消</el-button>
-                    <el-button size="small" type="primary" class="pull-right"  @click="handleEdit('form')" :loading="createdLoading">保存</el-button>
+                    <el-button size="small" type="primary" class="pull-right" @click="handleEdit('form')" :loading="createdLoading">保存</el-button>
                 </div>
             </el-form-item>
             <el-form-item class="pull-right">
@@ -25,20 +36,20 @@
             </el-form-item>
         </el-form>
         <div v-loading="listLoading">
-            <el-table :data="configList" element-loading-text="给我一点时间" stripe border fit highlight-current-row style="width: 100%;margin-bottom:10px">
-                <el-table-column align="center" label="配置名称">
+            <el-table :data="sensorList" element-loading-text="给我一点时间" stripe border fit highlight-current-row style="width: 100%;margin-bottom:10px">
+                <el-table-column align="center" label="变量">
                     <template slot-scope="scope">
                         <span>{{scope.row.name}}</span>
                     </template>
                 </el-table-column>
-                <el-table-column align="center" label="配置项">
+                <el-table-column align="center" label="标识">
                     <template slot-scope="scope">
-                        <span>{{scope.row.key}}</span>
+                        <span>{{scope.row.label}}</span>
                     </template>
                 </el-table-column>
-                <el-table-column align="center" label="配置内容">
+                <el-table-column align="center" label="排序">
                     <template slot-scope="scope">
-                        <span>{{scope.row.value}}</span>
+                        <span>{{scope.row.sort}}</span>
                     </template>
                 </el-table-column>
                 <el-table-column align="center" label="状态" >
@@ -62,7 +73,7 @@
 </template>
 <script>
 import { mapGetters } from "vuex";
-import {addObj,delObj,editObj} from "@/api/project/config";
+import {addObj,delObj,editObj} from "@/api/project/sensor";
 
 export default {
     props:['dataInfo'],
@@ -70,9 +81,26 @@ export default {
         return {
             listLoading:false,
             createdLoading:false,
+            options:[
+                {
+                    value: 'bool',
+                    label: 'bool'
+                },{
+                    value: 'float',
+                    label: 'float'
+                },{
+                    value: 'integer',
+                    label: 'integer'
+                },{
+                    value: 'char',
+                    label: 'char'
+                },
+            ],
             form:{
                 name:'',
-                key:'',
+                label:'',
+                sort:'',
+                type:'',
                 status:''
             },
             flag:'add',
@@ -91,7 +119,7 @@ export default {
 
     },
     computed: {
-        ...mapGetters(["configList"]),
+        ...mapGetters(["sensorList"]),
     },
     methods:{
         handleCurrentChange(){},
@@ -106,7 +134,7 @@ export default {
         },
         deleteList(row){
             this.$confirm(
-                "此操作将永久删除该配置(配置名:" + row.name + "), 是否继续?",
+                "此操作将永久删除该变量(变量名:" + row.title + "), 是否继续?",
                 "提示",
                 {
                 confirmButtonText: "确定",
@@ -115,19 +143,20 @@ export default {
                 }
             ).then(() => {
                 delObj(row.id).then(res => {
-                    this.$parent.$parent.getConfigList(this.listQuery)
+                    this.$parent.$parent.getSensorList(this.listQuery)
                     this.$parent.$parent.$parent.$parent.alertNotify('删除')
                 })
             })
+            
         },
         handleAdd(){
             let data = Object.assign({},this.form)
-            // data.sort = parseInt(data.sort)
+            data.sort = parseInt(data.sort)
             data.status = data.status?1:0
             data.deviceId = this.dataInfo.id
             this.createdLoading = true
             addObj(data).then(res => {
-                this.$parent.$parent.getConfigList(this.listQuery)
+                this.$parent.$parent.getSensorList(this.listQuery)
                 this.$parent.$parent.$parent.$parent.alertNotify('添加')
                 this.resetTem()
             })
@@ -137,7 +166,7 @@ export default {
             let data = Object.assign({},this.form)
             data.status = data.status?1:0
             editObj(data).then(res => {
-                this.$parent.$parent.getConfigList(this.listQuery)
+                this.$parent.$parent.getSensorList(this.listQuery)
                 this.$parent.$parent.$parent.$parent.alertNotify('修改')
                 this.resetTem()
             })
@@ -149,7 +178,9 @@ export default {
         resetTem(){
             this.form={
                 name:'',
-                key:'',
+                label:'',
+                sort:'',
+                type:'',
                 status:''
             }
             this.createdLoading = false

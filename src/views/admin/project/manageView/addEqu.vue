@@ -118,7 +118,7 @@ export default {
             headers:{Authorization: "Bearer " + getToken()},
             params:{component :'project'},
             flag:'add',
-            productOptions:[]
+            productOptions:[],
         }
     },
     created() {
@@ -143,6 +143,7 @@ export default {
                     let item = {value:ele.id +','+ele.alias, label:ele.alias}
                     this.productOptions.push(item)
                 });
+                console.log(this.productOptions)
             })
         },
         submitForm(formName){
@@ -150,12 +151,11 @@ export default {
             data.projectId = this.projectInfo.id
             data.status = data.status?1:0
             data.deviceGroup.id = 1
-            data.productId = productId_alias.split(',')[0],
-            data.alias = productId_alias.split(',')[1],
+            data.productId = this.productId_alias.split(',')[0],
+            data.alias = this.productId_alias.split(',')[1],
             data.protocol = "string",
             data.passage = "string",
             addObj(data).then( res => {
-                console.log(res)
                 this.createLoading = false
                 this.$parent.$refs.equ.getList()
                 this.resetTemp()

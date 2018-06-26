@@ -2,14 +2,48 @@
     <div>
         <div>设 备 : {{dataInfo.name}}</div>
         <el-form :model="form" class="clearfix" ref="form" label-width="70px">
-            <el-form-item label="配置名称" style="width: 325px">
-                <el-input v-model="form.name" size="small" auto-complete="off" style="width:240px"></el-input>
+            <el-form-item label="报警标题" style="width: 650px">
+                <el-select v-model="form.alarmId" placeholder="请选择" size="small">
+                    <el-option
+                    v-for="item in alarmOptions"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value">
+                    </el-option>
+                </el-select>
             </el-form-item>
-            <el-form-item label="配置项" style="width: 325px;">
-                <el-input v-model="form.key" size="small" auto-complete="off"  style="width:255px"></el-input>
+            <el-form-item label="报警人员" style="width: 650px">
+                <el-select v-model="form.alarmId" placeholder="请选择" size="small">
+                    <el-option
+                    v-for="item in alarmOptions"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value">
+                    </el-option>
+                </el-select>
             </el-form-item>
-            <el-form-item label="配置内容" style="width: 650px">
-                <el-input v-model="form.value" type="textarea" :rows="2"  style="width:580px" size="small" auto-complete="off"></el-input>
+            <el-form-item label="报警周期" style="width: 310px;">
+                <el-select v-model="form.cycle" placeholder="请选择" size="small">
+                    <el-option
+                    v-for="item in options"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value">
+                    </el-option>
+                </el-select>
+            </el-form-item>
+            <el-form-item label="通知类型" style="width: 310px;margin-left:30px">
+                <el-select v-model="form.notifyTypes" placeholder="请选择" size="small">
+                    <el-option
+                    v-for="item in typeOptions"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value">
+                    </el-option>
+                </el-select>
+            </el-form-item>
+            <el-form-item label="备注" style="width: 650px">
+                <el-input v-model="form.comment" type="textarea" :rows="2" size="small" auto-complete="off"></el-input>
             </el-form-item>
             <el-form-item  :style="flag == 'add'?'width: 140px':'width: 220px'" class="pull-right" style="padding-top:5px">
                 <div v-if="flag == 'add'">
@@ -17,7 +51,7 @@
                 </div>
                 <div v-else>
                     <el-button size="small" type="info" class="pull-right" style="margin-left:10px" @click="cancelEdit('form')">取消</el-button>
-                    <el-button size="small" type="primary" class="pull-right"  @click="handleEdit('form')" :loading="createdLoading">保存</el-button>
+                    <el-button size="small" type="primary" class="pull-right" @click="handleEdit('form')" :loading="createdLoading">保存</el-button>
                 </div>
             </el-form-item>
             <el-form-item class="pull-right">
@@ -25,27 +59,27 @@
             </el-form-item>
         </el-form>
         <div v-loading="listLoading">
-            <el-table :data="configList" element-loading-text="给我一点时间" stripe border fit highlight-current-row style="width: 100%;margin-bottom:10px">
-                <el-table-column align="center" label="配置名称">
+            <el-table :data="notifyList" element-loading-text="给我一点时间" stripe border fit highlight-current-row style="width: 100%;margin-bottom:10px">
+                <el-table-column align="center" label="用户">
                     <template slot-scope="scope">
-                        <span>{{scope.row.name}}</span>
+                        <span>{{scope.row.title}}</span>
                     </template>
                 </el-table-column>
-                <el-table-column align="center" label="配置项">
+                <el-table-column align="center" label="报警方式">
                     <template slot-scope="scope">
-                        <span>{{scope.row.key}}</span>
+                        <span>{{scope.row.triggerMessage}}</span>
                     </template>
                 </el-table-column>
-                <el-table-column align="center" label="配置内容">
+                <el-table-column align="center" label="频率">
                     <template slot-scope="scope">
-                        <span>{{scope.row.value}}</span>
+                        <span>{{scope.row.recoverMessage}}</span>
                     </template>
                 </el-table-column>
-                <el-table-column align="center" label="状态" >
+                <!-- <el-table-column align="center" label="状态" >
                     <template slot-scope="scope">
                         <span>{{(scope.row.status == 1)?'已启用':'未启用'}}</span>
                     </template>
-                </el-table-column>
+                </el-table-column> -->
                 <el-table-column align="center" label="操作" width="160" style="float:right">
                     <template slot-scope="scope">
                         <el-button size="small" type="success" plain @click="updateList(scope.row)">修改</el-button>
@@ -62,7 +96,7 @@
 </template>
 <script>
 import { mapGetters } from "vuex";
-import {addObj,delObj,editObj} from "@/api/project/config";
+import {getAlarmObj,addObj,delObj,editObj} from "@/api/project/notify";
 
 export default {
     props:['dataInfo'],
@@ -70,9 +104,44 @@ export default {
         return {
             listLoading:false,
             createdLoading:false,
+            options:[
+                {
+                    value: 0,
+                    label: '从不通知'
+                },{
+                    value: 1,
+                    label: '仅一次'
+                },{
+                    value: 5,
+                    label: '每隔5分钟'
+                },{
+                    value: 30,
+                    label: '每隔30分钟'
+                },{
+                    value: 60,
+                    label: '每隔1小时'
+                },{
+                    value: 1440,
+                    label: '每隔1天'
+                }
+            ],
+            typeOptions:[
+                {
+                    value: 'sms',
+                    label: '手机短信'
+                },{
+                    value: 'wechart',
+                    label: '微信'
+                },{
+                    value: 'email',
+                    label: '电子邮件'
+                }
+            ],
             form:{
-                name:'',
-                key:'',
+                alarmId:'',
+                cycle:'',
+                notifyTypes:'',
+                comment:'',
                 status:''
             },
             flag:'add',
@@ -86,18 +155,27 @@ export default {
         }
     },
     created() {
+        this.getAlarmList()
     },
     mounted() {
 
     },
     computed: {
-        ...mapGetters(["configList"]),
+        ...mapGetters(["notifyList","alarmOptions"]),
     },
     methods:{
         handleCurrentChange(){},
         handleSizeChange(){},
-        getContent(){
-            
+        getAlarmList(){
+            getAlarmObj(this.dataInfo.id).then(res => {
+                let options = []
+                let data = res.data.result.items
+                data.forEach(element => {
+                    let ele = {value:element.id,label:element.title}
+                    options.push(ele)
+                });
+                this.$store.commit("SET_ALARMOPTIONS",options);
+            })
         },
         updateList(row){
             this.flag = 'edit'
@@ -115,19 +193,19 @@ export default {
                 }
             ).then(() => {
                 delObj(row.id).then(res => {
-                    this.$parent.$parent.getConfigList(this.listQuery)
+                    this.$parent.$parent.getNotifyList(this.listQuery)
                     this.$parent.$parent.$parent.$parent.alertNotify('删除')
                 })
             })
         },
         handleAdd(){
             let data = Object.assign({},this.form)
-            // data.sort = parseInt(data.sort)
             data.status = data.status?1:0
             data.deviceId = this.dataInfo.id
+            delete data.comment
             this.createdLoading = true
             addObj(data).then(res => {
-                this.$parent.$parent.getConfigList(this.listQuery)
+                this.$parent.$parent.getNotifyList(this.listQuery)
                 this.$parent.$parent.$parent.$parent.alertNotify('添加')
                 this.resetTem()
             })
@@ -137,7 +215,7 @@ export default {
             let data = Object.assign({},this.form)
             data.status = data.status?1:0
             editObj(data).then(res => {
-                this.$parent.$parent.getConfigList(this.listQuery)
+                this.$parent.$parent.getNotifyList(this.listQuery)
                 this.$parent.$parent.$parent.$parent.alertNotify('修改')
                 this.resetTem()
             })
@@ -148,8 +226,10 @@ export default {
         },
         resetTem(){
             this.form={
-                name:'',
-                key:'',
+                alarmId:'',
+                cycle:'',
+                notifyTypes:'',
+                comment:'',
                 status:''
             }
             this.createdLoading = false
