@@ -128,12 +128,16 @@ export default {
 
         },
         getList(){
-            
             this.listQuery.projectId = this.projectInfo.id
             fetchList(this.listQuery).then(res => {
                 this.list = res.data.result.items
                 this.total = res.data.result.total
                 this.listLoading = false
+                let options = []
+                res.data.result.items.forEach(element => {
+                    let ele = {value:element.id,label:element.name}
+                    options.push(ele)
+                });
             })
         },
         handleSizeChange(val) {
@@ -162,7 +166,6 @@ export default {
             })
         },
         updataEqu(row){
-            console.log(row)
             this.$parent.$refs.addEqu.flag = 'updata'
             this.$parent.$refs.addEqu.form = Object.assign({},row)
             this.$parent.$refs.addEqu.form.status = row.status === 1?true:false

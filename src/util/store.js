@@ -15,8 +15,8 @@ export const setStore = (params) => {
     type: type,
     datetime: new Date().getTime()
   }
-  if (type) window.sessionStorage.setItem(name, JSON.stringify(obj))
-  else window.localStorage.setItem(name, JSON.stringify(obj))
+  if (type) sessionStorage.setItem(name, JSON.stringify(obj))
+  else localStorage.setItem(name, JSON.stringify(obj))
 }
 /**
  * 获取localStorage
@@ -28,8 +28,8 @@ export const getStore = (params) => {
   } = params
   let obj = {}
   let content
-  obj = window.localStorage.getItem(name)
-  if (validatenull(obj)) obj = window.sessionStorage.getItem(name)
+  obj = localStorage.getItem(name)
+  if (validatenull(obj)) obj = sessionStorage.getItem(name)
   if (validatenull(obj)) return
   obj = JSON.parse(obj)
   if (obj.dataType === 'string') {
@@ -50,6 +50,6 @@ export const removeStore = params => {
   let {
     name
   } = params
-  window.localStorage.removeItem(name)
-  window.sessionStorage.removeItem(name)
+  localStorage.removeItem(name)
+  sessionStorage.removeItem(name)
 }

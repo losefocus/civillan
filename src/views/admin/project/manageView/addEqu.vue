@@ -143,7 +143,6 @@ export default {
                     let item = {value:ele.id +','+ele.alias, label:ele.alias}
                     this.productOptions.push(item)
                 });
-                console.log(this.productOptions)
             })
         },
         submitForm(formName){
