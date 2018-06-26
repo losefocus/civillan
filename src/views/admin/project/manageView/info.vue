@@ -1,6 +1,6 @@
 <template>
-    <div>
-        info
+    <div style="width:100%;height:100%;background:red">
+        
     </div>
 </template>
 <script>
@@ -11,7 +11,9 @@ export default {
             
         }
     },
-    created() {},
+    created() {
+        console.log(123)
+    },
     mounted() {
 
     },

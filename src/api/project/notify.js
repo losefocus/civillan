@@ -1,6 +1,6 @@
 import request from '@/router/axios'
   
-  /* 获取 */
+  /* 获取报警选项 */
 export function getAlarmObj(id) {
   return request({
     url: '/device/device_alarm/list?deviceId=' + id,
@@ -8,6 +8,23 @@ export function getAlarmObj(id) {
   })
 }
 
+  /* 获取人员选项 */
+export function getUserObj(query) {
+  return request({
+    url: '/device/device_notify/get_filter_user',
+    method: 'get',
+    params: query
+  })
+}
+
+/* 通知信息 */
+export function getObj(query) {
+  return request({
+    url: '/device/device_notify/list',
+    method: 'get',
+    params: query
+  })
+}
   /* 添加 */
   export function addObj(obj) {
     return request({

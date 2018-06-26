@@ -25,7 +25,7 @@
             </el-form-item>
         </el-form>
         <div v-loading="listLoading">
-            <el-table :data="configList" element-loading-text="给我一点时间" stripe border fit highlight-current-row style="width: 100%;margin-bottom:10px">
+            <el-table :data="list" element-loading-text="给我一点时间" stripe border fit highlight-current-row style="width: 100%;margin-bottom:10px">
                 <el-table-column align="center" label="配置名称">
                     <template slot-scope="scope">
                         <span>{{scope.row.name}}</span>
@@ -62,7 +62,7 @@
 </template>
 <script>
 import { mapGetters } from "vuex";
-import {addObj,delObj,editObj} from "@/api/project/config";
+import {getObj,addObj,delObj,editObj} from "@/api/project/config";
 
 export default {
     props:['dataInfo'],
@@ -86,6 +86,7 @@ export default {
         }
     },
     created() {
+        this.getList()
     },
     mounted() {
 
@@ -94,10 +95,22 @@ export default {
         ...mapGetters(["configList"]),
     },
     methods:{
-        handleCurrentChange(){},
-        handleSizeChange(){},
-        getContent(){
-            
+        handleSizeChange(val) {
+            this.listQuery.page_size = val;
+            this.getList();
+        },
+        handleCurrentChange(val) {
+            this.listQuery.page_index = val;
+            this.getList();
+        },
+        getList(){
+            this.resetTem()
+            this.listLoading = true
+            getObj(this.listQuery).then(res => {
+                this.list = res.data.result.items
+                this.total = res.data.result.total
+                this.listLoading = false
+            })
         },
         updateList(row){
             this.flag = 'edit'
@@ -115,7 +128,7 @@ export default {
                 }
             ).then(() => {
                 delObj(row.id).then(res => {
-                    this.$parent.$parent.getConfigList(this.listQuery)
+                    this.getList(this.listQuery)
                     this.$parent.$parent.$parent.$parent.alertNotify('删除')
                 })
             })
@@ -127,7 +140,7 @@ export default {
             data.deviceId = this.dataInfo.id
             this.createdLoading = true
             addObj(data).then(res => {
-                this.$parent.$parent.getConfigList(this.listQuery)
+                this.getList(this.listQuery)
                 this.$parent.$parent.$parent.$parent.alertNotify('添加')
                 this.resetTem()
             })
@@ -137,7 +150,7 @@ export default {
             let data = Object.assign({},this.form)
             data.status = data.status?1:0
             editObj(data).then(res => {
-                this.$parent.$parent.getConfigList(this.listQuery)
+                this.getList(this.listQuery)
                 this.$parent.$parent.$parent.$parent.alertNotify('修改')
                 this.resetTem()
             })

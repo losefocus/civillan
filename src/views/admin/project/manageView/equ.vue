@@ -61,19 +61,19 @@
             </el-pagination>
         </div>
         <el-dialog title="设备配置"  :visible.sync="configVisible" width='690px'>
-            <config :data-info="dataInfo" ref="config"></config>
+            <config v-if="configVisible" :data-info="dataInfo" ref="config"></config>
         </el-dialog>
         <el-dialog title="证书管理"  :visible.sync="certiVisible" width='690px'>
-            <certi :data-info="dataInfo" ref="certi"></certi>
+            <certi v-if="certiVisible" :data-info="dataInfo" ref="certi"></certi>
         </el-dialog>
         <el-dialog title="变量管理"  :visible.sync="sensorVisible" width='690px'>
-            <sensor :data-info="dataInfo" ref="sensor"></sensor>
+            <sensor v-if="sensorVisible" :data-info="dataInfo" ref="sensor"></sensor>
         </el-dialog>
         <el-dialog title="报警管理"  :visible.sync="alarmVisible" width='690px'>
-            <alarm :data-info="dataInfo" ref="alarm"></alarm>
+            <alarm v-if="alarmVisible" :data-info="dataInfo" ref="alarm"></alarm>
         </el-dialog>
         <el-dialog title="通知管理"  :visible.sync="notifyVisible" width='690px'>
-            <notify :data-info="dataInfo" ref="notify"></notify>
+            <notify v-if="notifyVisible" :data-info="dataInfo" ref="notify"></notify>
         </el-dialog>
     </div>
 </template>
@@ -128,6 +128,7 @@ export default {
 
         },
         getList(){
+            this.listLoading = true
             this.listQuery.projectId = this.projectInfo.id
             fetchList(this.listQuery).then(res => {
                 this.list = res.data.result.items
@@ -138,7 +139,7 @@ export default {
                     let ele = {value:element.id,label:element.name}
                     options.push(ele)
                 });
-                
+
             })
         },
         handleSizeChange(val) {
@@ -190,100 +191,29 @@ export default {
         handleConfig(row){
             this.configVisible = true
             this.dataInfo = row
-            
-            this.listInfoQuery.deviceId = row.id
-            setTimeout(()=>{
-                this.getConfigList(this.listInfoQuery)
-            },50)
-        },
-        getConfigList(obj){
-            this.$refs.config.listLoading = true
-            this.$refs.config.cancelEdit()
-            getConfigObj(obj).then(res => {
-                this.$store.commit("SET_CONFIGLIST",res.data.result.items);
-                this.$refs.config.total = res.data.result.total
-                this.$refs.config.listLoading = false
-            })
         },
         //证书
         handleCerti(row){
             this.certiVisible = true
             this.dataInfo = row
-            this.listInfoQuery.deviceId = row.id
-            setTimeout(()=>{
-                this.getCertiList(this.listInfoQuery)
-            },50)
-        },
-        getCertiList(obj){
-            this.$refs.certi.listLoading = true
-            this.$refs.certi.cancelEdit()
-            getSensorObj(obj).then(res => {
-                this.$store.commit("SET_CERTILIST",res.data.result.items);
-                this.$refs.certi.total = res.data.result.total
-                this.$refs.certi.listLoading = false
-            })
         },
         //变量
         handleSensor(row){
             this.sensorVisible = true
             this.dataInfo = row
-            this.listInfoQuery.deviceId = row.id
-            setTimeout(()=>{
-                this.getSensorList(this.listInfoQuery)
-            },50)
-        },
-        getSensorList(obj){
-            this.$refs.sensor.listLoading = true
-            this.$refs.sensor.cancelEdit()
-            getSensorObj(obj).then(res => {
-                this.$store.commit("SET_SENSORLIST",res.data.result.items);
-                this.$refs.sensor.total = res.data.result.total
-                this.$refs.sensor.listLoading = false
-            })
         },
         //报警
         handleAlarm(row){
             this.alarmVisible = true
             this.dataInfo = row
-            this.listInfoQuery.deviceId = row.id
-            setTimeout(()=>{
-                this.getAlarmList(this.listInfoQuery)
-            },50)
-        },
-        getAlarmList(obj){
-            this.$refs.alarm.listLoading = true
-            this.$refs.alarm.cancelEdit()
-            getAlarmObj(obj).then(res => {
-                this.$store.commit("SET_ALARMLIST",res.data.result.items);
-                this.$refs.alarm.total = res.data.result.total
-                this.$refs.alarm.listLoading = false
-                
-                let alarmOptions = []
-                res.data.result.items.forEach(element => {
-                    let ele = {value:element.id,label:element.title}
-                    alarmOptions.push(ele)
-                });
-                this.$store.commit("SET_ALARMOPTIONS",alarmOptions);
-            })
         },
         //通知
         handleNotify(row){
             this.notifyVisible = true
             this.dataInfo = row
-            this.listInfoQuery.deviceId = row.id
-            setTimeout(()=>{
-                this.getNotifyList(this.listInfoQuery)
-            },50)
         },
-        getNotifyList(obj){
-            this.$refs.notify.listLoading = true
-            this.$refs.notify.cancelEdit()
-            getNotifyObj(obj).then(res => {
-                this.$store.commit("SET_NOTIFYLIST",res.data.result.items);
-                this.$refs.notify.total = res.data.result.total
-                this.$refs.notify.listLoading = false
-            })
-        },
+    },
+    watch:{
     }
 }
 </script>

@@ -22,5 +22,7 @@ export default {
 }
 </script>
 <style scoped>
-
+.el-form-item{
+    margin-bottom: 15px
+}
 </style>

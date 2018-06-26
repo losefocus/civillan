@@ -54,7 +54,7 @@ export default {
     data(){
         return {
             listLoading:false,
-            list:[{}],
+            list:[],
             listQuery: {
                 page_index: 1,
                 page_size: 20
@@ -78,10 +78,9 @@ export default {
 
         },
         getList(){
-            // this.listLoading = true
+            this.listLoading = true
             this.listQuery.projectId = this.projectInfo.id
             fetchList(this.listQuery).then(res => {
-                console.log(res)
                 this.list = res.data.result.items
                 this.total = res.data.result.total
                 this.listLoading = false

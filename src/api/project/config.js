@@ -1,5 +1,14 @@
 import request from '@/router/axios'
 
+/* 配置信息 */
+export function getObj(query) {
+  return request({
+    url: '/device/device_config/list',
+    method: 'get',
+    params: query
+  })
+}
+
   /* 添加 */
   export function addObj(obj) {
     return request({

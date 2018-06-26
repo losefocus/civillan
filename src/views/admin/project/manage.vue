@@ -1,5 +1,5 @@
 <template>
-    <div class=" clearfix">
+    <div class=" clearfix projectManage" >
         <div class="pull-left" :class="{containers:tabView != 'info',containers_:tabView === 'info'}">
             <div class="filter-container">
             <el-button @click="toProjectIndex" size="small" >返回</el-button>
@@ -21,7 +21,6 @@
             </div>
         </div>
         <div class="pull-right addNewContainer" v-if="tabView != 'info'">
-            <!-- <add-info v-if="tabView === 'info'"></add-info> -->
             <add-org v-if="tabView === 'org'" :project-info="viewData" ref="addOrg"></add-org>
             <add-per v-if="tabView === 'per'" :project-info="viewData" ref="addPer"></add-per>
             <add-equ v-if="tabView === 'equ'" :project-info="viewData" ref="addEqu"></add-equ>
@@ -73,6 +72,7 @@ export default {
     methods:{
         toProjectIndex(){
             this.$parent.showView = 'index'
+            this.tabView = null
         },
     },
     watch:{
