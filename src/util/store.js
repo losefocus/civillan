@@ -28,7 +28,7 @@ export const getStore = (params) => {
   } = params
   let obj = {}
   let content
-  obj = localStorage.getItem(name)
+  obj = sessionStorage.getItem(name)
   if (validatenull(obj)) obj = sessionStorage.getItem(name)
   if (validatenull(obj)) return
   obj = JSON.parse(obj)
