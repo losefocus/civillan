@@ -37,6 +37,9 @@ const common = {
     roleOptions: getStore({
       name: 'roleOptions'
     }) || [],
+    adminerHash: getStore({
+      name: 'adminerHash'
+    }) || [],
   },
   actions: {
     // 获取字典公用类
@@ -59,8 +62,11 @@ const common = {
     }
   },
   mutations: {
-
-    // 机构类型
+    // 管理员选项
+    SET_ADMINERHASH:(state, action)=>{
+      state.adminerHash = action
+    },
+    // 角色选项
     SET_ROLEOPTIONS:(state, action)=>{
       state.roleOptions = action
     },
