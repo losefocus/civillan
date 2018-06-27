@@ -1,16 +1,15 @@
 <template>
-    <div class="app-container calendar-list-container" >
+    <div class="app-container calendar-list-container">
         <div v-show="showView === 'index'"  class="clearfix">
             <div class="pull-left"  style="width:calc(100% - 320px)">
                 <div class="filter-container">
-                    <!-- <el-button class="filter-item" style="" size="small" type="primary" icon="edit" v-if="roleProject_btn_add">添加项目
+                    <!-- <el-button class="filter-item" style="" size="small" type="primary" icon="edit" >添加项目
                     </el-button> -->
                     <el-button class="filter-item" style="" @click="toProjectMap"  size="small" type="primary" icon="edit" >项目地图
                     </el-button>
                     <div class="pull-right">
                         <el-input @keyup.enter.native="handleFilter" style="width: 200px;" size="small" suffix-icon="el-icon-search" class="filter-item" placeholder="项目搜索" v-model="listQuery.keyword">
                         </el-input>
-                        <!-- <el-button class="filter-item" type="primary" v-waves icon="search" size="small" @click="handleFilter">搜索</el-button> -->
                     </div>
                 </div>
             
@@ -18,7 +17,7 @@
                     <el-table :data="list" element-loading-text="给我一点时间" border fit highlight-current-row style="width: 100%;margin-bottom:10px">
                         <el-table-column type="expand">
                             <template slot-scope="scope">
-                                <el-table :data="scope.row.children" v-if="scope.row.children.length != 0" border ref="subTable" id="subTable">
+                                <el-table :data="scope.row.children"  style="background:red" v-if="scope.row.children.length != 0" border ref="subTable" id="subTable">
                                     <el-table-column align="center" label="缩略图">
                                         <template slot-scope="pro">
                                             <img style="width:50px;height:50px" :src="pro.row.thumbnailUrl+pro.row.thumbnailPath" :alt="pro.row.name">
@@ -44,14 +43,23 @@
                                             {{adminerHash[pro.row.adminer]}}
                                         </template>
                                     </el-table-column>      
-                                    <el-table-column align="center" label="操作"  width="430" class-name="lastTd">
+                                    <el-table-column align="center" label="操作" class-name="lastTd">
                                         <template slot-scope="pro">
-                                            <el-button size="small" type="success" plain @click="toInfo(pro.row)">信息</el-button>
-                                            <el-button size="small" type="success" plain @click="toOrg(pro.row)">机构</el-button>
-                                            <el-button size="small" type="success" plain @click="toPer(pro.row)">人员</el-button>
-                                            <el-button size="small" type="success" plain @click="toEqu(pro.row)">设备</el-button>
-                                            <el-button size="small" type="success" plain @click="toDoc(pro.row)">文档</el-button>
-                                            <el-button size="small" type="danger" plain @click="delProject(pro.row)">删除</el-button>
+                                            <el-dropdown trigger="click" @command="handleCommand">
+                                                <el-button type="primary" size="small">
+                                                    操作<i class="el-icon-arrow-down el-icon--right"></i>
+                                                </el-button>
+                                                <el-dropdown-menu slot="dropdown">
+                                                    <el-dropdown-item v-for="(item,index) in btnList" 
+                                                    :key="index" 
+                                                    v-if="item.flag"
+                                                    :command="composeValue(item.value,pro.row)">
+                                                    {{item.label}}
+                                                    </el-dropdown-item>
+                                                    <el-dropdown-item divided v-if="project_btn_del" :command="composeValue('del',pro.row)">删除</el-dropdown-item>
+                                                </el-dropdown-menu>
+                                            </el-dropdown>
+                                            <!-- <el-button size="small" type="danger" plain @click="delProject(pro.row)">删除</el-button> -->
                                         </template>
                                     </el-table-column>
                                 </el-table>
@@ -82,14 +90,23 @@
                                 <span>{{adminerHash[scope.row.adminer]}}</span>
                             </template>
                         </el-table-column>
-                        <el-table-column align="center" label="操作" width="430">
+                        <el-table-column align="center" label="操作">
                             <template slot-scope="pro" v-if="pro.row.children.length === 0">
-                                <el-button size="small" type="success" plain @click="toInfo(pro.row)">信息</el-button>
-                                <el-button size="small" type="success" plain @click="toOrg(pro.row)">机构</el-button>
-                                <el-button size="small" type="success" plain @click="toPer(pro.row)">人员</el-button>
-                                <el-button size="small" type="success" plain @click="toEqu(pro.row)">设备</el-button>
-                                <el-button size="small" type="success" plain @click="toDoc(pro.row)">文档</el-button>
-                                <el-button size="small" type="danger" plain @click="delProject(pro.row)">删除</el-button>
+                                <el-dropdown trigger="click" @command="handleCommand">
+                                    <el-button type="primary" size="small">
+                                        操作<i class="el-icon-arrow-down el-icon--right"></i>
+                                    </el-button>
+                                    <el-dropdown-menu slot="dropdown">
+                                        <el-dropdown-item v-for="(item,index) in btnList" 
+                                        :key="index" 
+                                        v-if="item.flag"
+                                        :command="composeValue(item.value,pro.row)">
+                                        {{item.label}}
+                                        </el-dropdown-item>
+                                        <el-dropdown-item divided v-if="project_btn_del" :command="composeValue('del',pro.row)">删除</el-dropdown-item>
+                                    </el-dropdown-menu>
+                                </el-dropdown>
+                                <!-- <el-button size="small" type="danger" plain @click="delProject(pro.row)" v-if="project_btn_del">删除</el-button> -->
                             </template>
                         </el-table-column>
                     </el-table>    
@@ -168,7 +185,7 @@
                     </el-form-item>
                     <el-form-item>
                         <el-checkbox label="已启用" v-model="addNewForm.status" size="small"></el-checkbox>
-                        <el-button type="primary" class="pull-right" @click="submitForm('addNewForm')" size="small" :loading="createLoading" style="width:90px;">添加</el-button>
+                        <el-button type="primary" class="pull-right" @click="submitForm('addNewForm')" size="small" :loading="createLoading" style="width:90px;" :disabled="!project_btn_add">添加</el-button>
                     </el-form-item>
                 </el-form>
             </div>
@@ -220,7 +237,6 @@ export default {
                     { required: false, message: '请输入备注', trigger: 'blur' }
                 ]
             },
-            roleProject_btn_add:true,
             sys_user_upd:true,
             sys_user_del:true,
             listQuery: {
@@ -230,6 +246,34 @@ export default {
             listLoading:false,
             list:[],
             total:null,
+            btnList:[
+                {
+                    value:'info',
+                    label:'信息',
+                    btn:'project_btn_info',
+                    flag:false
+                },{
+                    value:'org',
+                    label:'机构',
+                    btn:'project_btn_institutions',
+                    flag:false
+                },{
+                    value:'per',
+                    label:'人员',
+                    btn:'project_btn_personnel',
+                    flag:false
+                },{
+                    value:'equ',
+                    label:'设备',
+                    btn:'project_btn_device',
+                    flag:false
+                },{
+                    value:'doc',
+                    label:'文档',
+                    btn:'project_btn_doc',
+                    flag:false
+                },
+            ],
             showView:'index',
             viewData:null,
             parentIdOptions:[],
@@ -251,18 +295,26 @@ export default {
             headers:{Authorization: "Bearer " + getToken()},
             params:{component :'project'},
             createLoading:false,
-            adminerHash:{}
+            project_btn_add:false,
+            project_btn_edit :false,
+            project_btn_del :false,
         }
     },
     created() {
         this.getList();
         this.getRoleList();
+        this.project_btn_add = this.permissions["project_btn_add"];
+        this.project_btn_edit = this.permissions["project_btn_edit"];
+        this.project_btn_del = this.permissions["project_btn_del"];
+        this.btnList.forEach(element => {
+            element.flag = this.permissions[element.btn]
+        });
     },
     mounted() {
 
     },
     computed: {
-        ...mapGetters(["permissions"])
+        ...mapGetters(["permissions","adminerHash"])
     },
     methods:{
         //管理员列表
@@ -271,11 +323,13 @@ export default {
             fetchAdminList().then(response => {
                 let datas = response.data.result.items;
                 let options = []
+                let hash ={}
                 for (let i=0; i<datas.length; i++) {
                     options.push({value:datas[i].id,label:datas[i].username}) 
-                    this.adminerHash[datas[i].id] = datas[i].username
+                    hash[datas[i].id] = datas[i].username
                 } 
                 this.adminerOptions = options
+                this.$store.commit("SET_ADMINERHASH",hash);
                 this.adminerOptionsloading = false
             })
         },
@@ -381,8 +435,23 @@ export default {
         toProjectMap(){ 
             this.showView = 'mapView'
         },
+        handleCommand(command){
+            if(command.value == 'del') this.delProject(command.row)
+            else{
+                this.showView = 'manage'
+                this.$refs.proManage.tabView = command.value
+                this.viewData = command.row
+            }
+        },
+        composeValue(item,row){
+             return {
+                'value': item,
+                'row': row
+            }
+        },
         //信息
         toInfo(row){
+            console.log(row)
             this.showView = 'manage'
             this.$refs.proManage.tabView = 'info'
             this.viewData = row

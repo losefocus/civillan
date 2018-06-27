@@ -32,10 +32,10 @@
                     <span>{{(scope.row.status == 1)?'已启用':'未启用'}}</span>
                 </template>
             </el-table-column>
-            <el-table-column align="center" label="操作" width="260">
+            <el-table-column align="center" label="操作" min-width ="150">
                 <template slot-scope="scope" >
                     <el-button size="small" type="success" plain @click="updateOrg(scope.row)">修改</el-button>
-                    <el-button size="small" type="danger" plain @click="deleteOrg(scope.row)">删除</el-button>
+                    <el-button size="small" type="danger" plain @click="deleteOrg(scope.row)" style="margin-left:0px">删除</el-button>
                 </template>
             </el-table-column>
         </el-table> 
@@ -93,10 +93,10 @@
                             <span>{{(scope.row.status == 1)?'已启用':'未启用'}}</span>
                         </template>
                     </el-table-column>
-                    <el-table-column align="center" label="操作" width="160">
+                    <el-table-column align="center" label="操作" width="150">
                         <template slot-scope="scope">
                             <el-button size="small" type="success" plain @click="updateType(scope.row)">修改</el-button>
-                            <el-button size="small" type="danger" plain @click="deleteType(scope.row)">删除</el-button>
+                            <el-button size="small" type="danger" plain @click="deleteType(scope.row)" style="margin-left:0px">删除</el-button>
                         </template>
                     </el-table-column>
                 </el-table>
@@ -156,13 +156,6 @@ export default {
                 this.list = res.data.result.items
                 this.total = res.data.result.total
                 this.listLoading = false
-                // let organOptions = []
-                // this.list.forEach(element => {
-                //     element.value = element.id
-                //     element.label = element.name
-                //     organOptions.push(element)
-                // });
-                // this.$store.commit("SET_ORGANOPTIONS",organOptions);
             })
         },
         handleSizeChange(val) {
@@ -232,7 +225,6 @@ export default {
             data.status = data.status?1:0
             this.$refs[formName].validate((valid) => {
                 if (valid) {
-                    // console.log(1231231)
                     this.createLoading = true
                     addObjType(data).then(res=>{
                         if(res.data.success == true){
@@ -293,7 +285,6 @@ export default {
             this.flag = 'add',
             this.orgTypeForm = {}
             this.createLoading = false
-            // this.$refs[formName].resetFields();
         },
         resetType(){
             this.orgTypeForm = {}

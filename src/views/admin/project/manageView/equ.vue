@@ -43,15 +43,25 @@
                     <span>{{(scope.row.status == 1)?'已启用':'未启用'}}</span>
                 </template>
             </el-table-column>
-            <el-table-column align="center" label="操作" width="500">
+            <el-table-column align="center" label="操作">
                 <template slot-scope="scope" >
-                    <el-button size="small" type="success" plain @click="handleConfig(scope.row)">配置</el-button>
-                    <el-button size="small" type="success" plain @click="handleCerti(scope.row)">证书</el-button>
-                    <el-button size="small" type="success" plain @click="handleSensor(scope.row)">变量</el-button>
-                    <el-button size="small" type="success" plain @click="handleAlarm(scope.row)">报警</el-button>
-                    <el-button size="small" type="success" plain @click="handleNotify(scope.row)">通知</el-button>
-                    <el-button size="small" type="success" plain @click="updataEqu(scope.row)">修改</el-button>
-                    <el-button size="small" type="danger" plain @click="deleteEqu(scope.row)">删除</el-button>
+                    <el-dropdown trigger="click" @command="handleCommand">
+                        <el-button type="primary" size="small">
+                            操作<i class="el-icon-arrow-down el-icon--right"></i>
+                        </el-button>
+                        <el-dropdown-menu slot="dropdown">
+                            <el-dropdown-item v-for="(item,index) in btnList" 
+                            :key="index" 
+                            v-if="item.flag"
+                            :command="composeValue(item.value,scope.row)">
+                            {{item.label}}
+                            </el-dropdown-item>
+                            <el-dropdown-item divided v-if="device_btn_edit" :command="composeValue('edit',scope.row)">修改</el-dropdown-item>
+                            <el-dropdown-item v-if="device_btn_del" :command="composeValue('del',scope.row)">删除</el-dropdown-item>
+                        </el-dropdown-menu>
+                    </el-dropdown>
+                    <!-- <el-button size="small" type="success" plain @click="updataEqu(scope.row)" style="margin-left:0px" v-if="device_btn_edit">修改</el-button>
+                    <el-button size="small" type="danger" plain @click="deleteEqu(scope.row)" style="margin-left:0px" v-if="device_btn_del">删除</el-button> -->
                 </template>
             </el-table-column>
         </el-table>
@@ -83,6 +93,7 @@ import certi from "./equ/certificate";
 import sensor from "./equ/sensor";
 import alarm from "./equ/alarm";
 import notify from "./equ/notify";
+import { mapGetters } from "vuex";
 import {fetchList,delObj,updataObj,getConfigObj,getSensorObj,getAlarmObj,getNotifyObj} from "@/api/project_equ";
 export default {
     components:{
@@ -102,6 +113,34 @@ export default {
                 page_size: 20
             },
             total:null,
+            btnList:[
+                {
+                    value:'configVisible',
+                    label:'配置',
+                    btn:'device_btn_config',
+                    flag:false
+                },{
+                    value:'certiVisible',
+                    label:'证书',
+                    btn:'device_btn_certificate',
+                    flag:false
+                },{
+                    value:'sensorVisible',
+                    label:'变量',
+                    btn:'device_btn_variable',
+                    flag:false
+                },{
+                    value:'alarmVisible',
+                    label:'报警',
+                    btn:'device_btn_alert',
+                    flag:false
+                },{
+                    value:'notifyVisible',
+                    label:'通知',
+                    btn:'device_btn_notice',
+                    flag:false
+                },
+            ],
             flag:'add',
             createdLoading:false,
             configVisible:false,//配置
@@ -113,16 +152,26 @@ export default {
             listInfoQuery:{
                 page_index: 1,
                 page_size: 20
-            }
+            },
+            device_btn_edit :false,
+            device_btn_del :false,
+
         }
     },
     created() {
         this.getList()
+        this.device_btn_edit = this.permissions["device_btn_edit"];
+        this.device_btn_del = this.permissions["device_btn_del"];
+        this.btnList.forEach(element => {
+            element.flag = this.permissions[element.btn]
+        });
     },
     mounted() {
 
     },
-    computed: {},
+    computed: {
+        ...mapGetters(["permissions"])
+    },
     methods:{
         handleCreate(){
 
@@ -178,39 +227,19 @@ export default {
                 this.$parent.$parent.alertNotify('修改')
             })
         },
-        perManage(){
-
+        handleCommand(command){
+            if(command.value == 'edit') this.updataEqu(command.row)
+            else if(command.value == 'del') this.deleteEqu(command.row)
+            else{
+                this[command.value] = true
+                this.dataInfo = command.row
+            }
         },
-        editOrg(){
-
-        },
-        deleteOrg(){
-
-        },
-        //配置
-        handleConfig(row){
-            this.configVisible = true
-            this.dataInfo = row
-        },
-        //证书
-        handleCerti(row){
-            this.certiVisible = true
-            this.dataInfo = row
-        },
-        //变量
-        handleSensor(row){
-            this.sensorVisible = true
-            this.dataInfo = row
-        },
-        //报警
-        handleAlarm(row){
-            this.alarmVisible = true
-            this.dataInfo = row
-        },
-        //通知
-        handleNotify(row){
-            this.notifyVisible = true
-            this.dataInfo = row
+        composeValue(item,row){
+             return {
+                'value': item,
+                'row': row
+            }
         },
     },
     watch:{

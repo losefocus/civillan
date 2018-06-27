@@ -37,7 +37,7 @@
             <el-table-column align="center" label="操作" width="180">
                 <template slot-scope="scope" >
                     <el-button size="small" type="success" plain @click="updatePer(scope.row)">修改</el-button>
-                    <el-button size="small" type="danger" plain @click="deletePer(scope.row)">删除</el-button>
+                    <el-button size="small" type="danger" plain @click="deletePer(scope.row)" style="margin-left:0px">删除</el-button>
                 </template>
             </el-table-column>
         </el-table>
@@ -95,7 +95,7 @@
                     <el-table-column align="center" label="操作" width="160">
                         <template slot-scope="scope">
                             <el-button size="small" type="success" plain @click="updateRole(scope.row)">修改</el-button>
-                            <el-button size="small" type="danger" plain @click="deleteRole(scope.row)">删除</el-button>
+                            <el-button size="small" type="danger" plain @click="deleteRole(scope.row)" style="margin-left:0px">删除</el-button>
                         </template>
                     </el-table-column>
                 </el-table>

@@ -1,5 +1,5 @@
 <template>
-    <div style="width:100%;height:100%;background:red">
+    <div style="width:100%;height:100px;background:red">
         
     </div>
 </template>
@@ -12,7 +12,7 @@ export default {
         }
     },
     created() {
-        console.log(123)
+        
     },
     mounted() {
 

@@ -51,7 +51,7 @@
             </el-form-item>
             <el-form-item>
                 <el-checkbox label="已启用" v-model="form.status" size="small"></el-checkbox>
-                <el-button v-if="flag == 'add'" type="primary" :loading="createLoading" class="pull-right" @click="submitForm('form')" size="small" style="width:85px;">添加</el-button>
+                <el-button v-if="flag == 'add'" type="primary" :loading="createLoading" class="pull-right" @click="submitForm('form')" size="small" style="width:85px;" :disabled="!device_btn_add">添加</el-button>
                 <div v-else class="clearfix">
                     <el-button  type="primary" :loading="createLoading" class="pull-left" @click="updataForm('form')" size="small" style="width:85px;">保存</el-button>
                     <el-button  type="info" class="pull-right" @click="cancel('form')" size="small" style="width:85px;">取消</el-button>
@@ -61,6 +61,7 @@
     </div>
 </template>
 <script>
+import { mapGetters } from "vuex";
 import { getToken } from "@/util/auth";
 import {addObj,fetchProductList,updataObj} from "@/api/project_equ";
 export default {
@@ -119,15 +120,19 @@ export default {
             params:{component :'project'},
             flag:'add',
             productOptions:[],
+            device_btn_add :false,
         }
     },
     created() {
         this.getProductList()
+        this.device_btn_add = this.permissions["device_btn_add"];
     },
     mounted() {
 
     },
-    computed: {},
+    computed: {
+        ...mapGetters(["permissions"])
+    },
     methods:{
         uploadSuccess(response, file, fileList){
             this.form.thumbnailPath = response.result.path

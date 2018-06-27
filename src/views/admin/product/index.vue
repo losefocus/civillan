@@ -54,8 +54,8 @@
                         <template slot-scope="pro">
                             <el-button size="small" type="success" plain @click="variableTemplate(pro.row)">变量模板</el-button>
                             <el-button size="small" type="success" plain @click="alarmTemplat(pro.row)">报警模板</el-button>
-                            <el-button size="small" type="success" plain @click="updataProduct(pro.row)">修改</el-button>
-                            <el-button size="small" type="danger" plain @click="delProduct(pro.row)">删除</el-button>
+                            <el-button size="small" type="success" plain @click="updataProduct(pro.row)" v-if="product_btn_edit" >修改</el-button>
+                            <el-button size="small" type="danger" plain @click="delProduct(pro.row)" v-if="product_btn_del">删除</el-button>
                         </template>
                     </el-table-column>
                 </el-table>    
@@ -96,7 +96,7 @@
                         <el-checkbox v-model="form.status">已启用</el-checkbox>                    
                     </el-form-item>
                     <el-form-item v-if="flag == 'add'">
-                        <el-button type="primary" @click="submitForm('form')" size="small" :loading="createLoading" style="width:90px;">添加</el-button>
+                        <el-button type="primary" @click="submitForm('form')" size="small" :loading="createLoading" style="width:90px;" :disabled="!product_btn_add" >添加</el-button>
                     </el-form-item>
                     <el-form-item v-else>
                         <el-button type="primary" @click="updataForm('form')" size="small" :loading="createLoading" style="width:90px;">保存</el-button>
@@ -128,6 +128,7 @@
     </div>
 </template>
 <script>
+import { mapGetters } from "vuex";
 import variable from "./variable";
 import alarm from "./alarm";
 import { getToken} from "@/util/auth";
@@ -168,18 +169,24 @@ export default {
             productData:{name:null},
             templateData:{content:''},
             temploading:false,
-            tempCreateloading:false
+            tempCreateloading:false,
+            product_btn_add:false,
+            product_btn_edit:false,
+            product_btn_del:false,
         }
     },
     created() {
         this.getList()
-        let aa = '{"status" : 0 ,"msg"    : "SUCCESS","data"   :[{"id"    : 1 ,"name"  : "xiaohong"},{"id"    : 2,"name":"xiaoming"}]}'
-        // console.log(JSON.stringify())
+        this.product_btn_add = this.permissions["product_btn_add"];
+        this.product_btn_edit = this.permissions["product_btn_edit"];
+        this.product_btn_del = this.permissions["product_btn_del"];
     },
     mounted() {
         
     },
-    computed: {},
+    computed: {
+        ...mapGetters(["permissions"])
+    },
     methods:{
         getList(){
             this.listLoading = true
