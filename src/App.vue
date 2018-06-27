@@ -82,6 +82,9 @@ export default {
 .el-table__expanded-cell{
   border-right: none !important;
 }
+.el-table__expanded-cell .el-table th,.el-table__expanded-cell .el-table tr{
+  background: #f7f7f7
+}
 #subTable.el-table::before{
   height: 0 !important;
 }
