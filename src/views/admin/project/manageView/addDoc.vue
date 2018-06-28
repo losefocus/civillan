@@ -1,7 +1,7 @@
 <template>
     <div>
         <h3>{{flag == 'add'?'添加':'修改'}}文件</h3>
-        <el-form label-width="65px" :model="form" ref="form" :rules="rules">
+        <el-form label-width="60px" :model="form" ref="form" :rules="rules">
             <el-form-item label="项目" prop="parentId">
                 <el-input v-model="projectInfo.name" size="small" placeholder="请输入内容" disabled></el-input>
             </el-form-item>

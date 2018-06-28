@@ -119,9 +119,9 @@
             </div>
             <div class="pull-right addNewProject">
                 <h3>添加项目</h3>
-                <el-form label-width="65px" :model="addNewForm" :rules="rules" ref="addNewForm">
+                <el-form label-width="65px" :model="form" :rules="rules" ref="form">
                     <el-form-item label="上级" prop="parentId" >
-                        <el-select v-model="addNewForm.parentId" size="small" :loading='listLoading' placeholder="请选择">
+                        <el-select v-model="form.parentId" size="small" :loading='listLoading' placeholder="请选择">
                             <el-option
                             v-for="item in parentIdOptions"
                             :key="item.value"
@@ -131,13 +131,13 @@
                         </el-select>
                     </el-form-item>
                     <el-form-item label="名称" prop="name">
-                        <el-input v-model="addNewForm.name" size="small" placeholder="请输入内容"></el-input>
+                        <el-input v-model="form.name" size="small" placeholder="请输入内容"></el-input>
                     </el-form-item>
                     <el-form-item label="工期" prop="tm">
                         <el-date-picker
                         style="width:195px"
                         size="small"
-                        v-model="addNewForm.tm"
+                        v-model="form.tm"
                         type="daterange"
                         range-separator="至"
                         start-placeholder="开始日期"
@@ -147,7 +147,7 @@
                         </el-date-picker>
                     </el-form-item>
                     <el-form-item label="管理员" prop="adminer">
-                        <el-select v-model="addNewForm.adminer" size="small" placeholder="请选择" :loading="adminerOptionsloading" @change="selectAdminer">
+                        <el-select v-model="form.adminer" size="small" placeholder="请选择" :loading="adminerOptionsloading">
                             <el-option
                             v-for="item in adminerOptions"
                             :key="item.value"
@@ -167,26 +167,32 @@
                         name="uploadFile"
                         :show-file-list ="false"
                         :on-success="uploadSuccess"
-                        :file-list="addNewForm.fileList"
+                        :file-list="form.fileList"
                         :auto-upload="true">
                             <el-button slot="trigger" size="small" type="primary">选取</el-button>
-                            <el-input v-model="addNewForm.imageName" style="width:135px" size="small" placeholder="请选取图片"></el-input>
+                            <el-input v-model="form.imageName" style="width:135px" size="small" placeholder="请选取图片"></el-input>
                         </el-upload>
                     </el-form-item>
                     <el-form-item label="位置" prop="position">
-                        <el-input v-model="addNewForm.position" size="small" placeholder="请输入内容"></el-input>
+                        <el-input v-model="form.position" size="small" placeholder="请输入内容"></el-input>
                     </el-form-item>
                     <el-form-item label="备注" prop="comment">
                         <el-input
                         type="textarea"
                         :autosize="{ minRows: 2, maxRows: 4}"
                         placeholder="请输入内容"
-                        v-model="addNewForm.comment">
+                        v-model="form.comment">
                         </el-input>
                     </el-form-item>
                     <el-form-item>
-                        <el-checkbox label="已启用" v-model="addNewForm.status" size="small"></el-checkbox>
-                        <el-button type="primary" class="pull-right" @click="submitForm('addNewForm')" size="small" :loading="createLoading" style="width:90px;" :disabled="!project_btn_add">添加</el-button>
+                        <!-- <el-checkbox label="已启用" v-model="form.status" size="small"></el-checkbox>
+                        <el-button type="primary" class="pull-right" @click="submitForm('form')" size="small" :loading="createLoading" style="width:90px;" :disabled="!project_btn_add">添加</el-button> -->
+                        <el-checkbox label="已启用" v-model="form.status" size="small"></el-checkbox>
+                        <el-button v-if="flag == 'add'" type="primary" :loading="createLoading" class="pull-right" @click="submitForm('form')" size="small" style="width:85px;" :disabled="!project_btn_add">添加</el-button>
+                        <div v-else class="clearfix">
+                            <el-button  type="primary" :loading="createLoading" class="pull-left" @click="updataForm('form')" size="small" style="width:85px;">保存</el-button>
+                            <el-button  type="info" class="pull-right" @click="cancel('form')" size="small" style="width:85px;">取消</el-button>
+                        </div> 
                     </el-form-item>
                 </el-form>
             </div>
@@ -275,7 +281,7 @@ export default {
             parentIdOptions:[],
             adminerOptions:[],
             adminerOptionsloading:false,
-            addNewForm:{
+            form:{
                 parentId:0,
                 name:'',
                 tm:'',
@@ -288,6 +294,7 @@ export default {
                 status:0,
                 fileList: []
             },
+            flag:'add',
             headers:{Authorization: "Bearer " + getToken()},
             params:{component :'project'},
             createLoading:false,
@@ -367,17 +374,17 @@ export default {
                 
         },
         uploadSuccess(response, file, fileList){
-            this.addNewForm.thumbnailPath = response.result.path
-            this.addNewForm.thumbnailUrl = response.result.baseUrl
-            this.addNewForm.imageName = response.result.name
-            this.addNewForm.fileList = []
+            this.form.thumbnailPath = response.result.path
+            this.form.thumbnailUrl = response.result.baseUrl
+            this.form.imageName = response.result.name
+            this.form.fileList = []
         },  
         // 新增项目
         submitForm(formName){
             this.$refs[formName].validate((valid) => {
                 if (valid) {
                     this.createLoading = true
-                    let formData = Object.assign({}, this.addNewForm);
+                    let formData = Object.assign({}, this.form);
                     formData.beginAt = Math.round(new Date(formData.tm[0]).getTime()/1000);
                     formData.endAt = Math.round(new Date(formData.tm[1]).getTime()/1000);
                     formData.adminer = formData.adminer.toString()
@@ -409,7 +416,15 @@ export default {
                     this.getList()
                     this.alertNotify('删除')
                 })
-            })
+            })  
+        },
+        updataForm(row){
+
+        },
+        handleUpdata(){
+
+        },
+        cancel(){
             
         },
         resetForm(formName){
@@ -445,38 +460,6 @@ export default {
                 'row': row
             }
         },
-        //信息
-        toInfo(row){
-            console.log(row)
-            this.showView = 'manage'
-            this.$refs.proManage.tabView = 'info'
-            this.viewData = row
-        },
-        //机构
-        toOrg(row){
-            this.showView = 'manage'
-            this.$refs.proManage.tabView = 'org'
-            this.viewData = row
-        },
-        //人员
-        toPer(row){
-            this.showView = 'manage'
-            this.$refs.proManage.tabView = 'per'
-            this.viewData = row
-        },
-        //设备
-        toEqu(row){
-            this.showView = 'manage'
-            this.$refs.proManage.tabView = 'equ'
-            this.viewData = row
-        },
-        //文档
-        toDoc(row){
-            this.showView = 'manage'
-            this.$refs.proManage.tabView = 'doc'
-            this.viewData = row
-        },
-        selectAdminer(){},
         alertNotify(str){
             this.$notify({
                 title: str,
@@ -498,8 +481,7 @@ export default {
     border: 1px solid #dcdfe6;
     padding: 10px 20px 0 20px
 }
-.el-form-item__error{
-    padding-top: 0 !important
-}
+
+
 </style>
 

@@ -73,6 +73,9 @@ export default {
 }
 </script>
 <style scoped>
+.el-form-item{
+    margin-bottom: 15px
+}
 .containers{
     width: calc(100% - 320px)
 }
@@ -81,4 +84,5 @@ export default {
     border: 1px solid #dcdfe6;
     padding: 10px 20px 0 20px
 }
+
 </style>

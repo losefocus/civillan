@@ -1,7 +1,7 @@
 <template>
     <div>
         <h3>{{flag == 'add'?'添加':'修改'}}机构</h3>
-        <el-form label-width="65px" :model="addNewForm" :rules="rules"  ref="addNewForm">
+        <el-form label-width="60px" :model="addNewForm" :rules="rules"  ref="addNewForm">
             <el-form-item label="项目" >
                 <el-input v-model="projectInfo.name" size="small" placeholder="请输入内容" disabled></el-input>
             </el-form-item>
@@ -38,10 +38,10 @@
             </el-form-item>
             <el-form-item>
                 <el-checkbox label="已启用" v-model="addNewForm.status" size="small"></el-checkbox>
-                <el-button v-if="flag == 'add'" type="primary" :loading="createLoading" class="pull-right" @click="submitForm('addNewForm')" size="small" style="width:90px;">添加</el-button>
+                <el-button v-if="flag == 'add'" type="primary" :loading="createLoading" class="pull-right" @click="submitForm('addNewForm')" size="small" style="width:85px;">添加</el-button>
                 <div v-else class="clearfix">
-                    <el-button  type="primary" :loading="createLoading" class="pull-left" @click="updateForm('addNewForm')" size="small" style="width:90px;">保存</el-button>
-                    <el-button  type="info" class="pull-right" @click="cancel('addNewForm')" size="small" style="width:90px;">取消</el-button>
+                    <el-button  type="primary" :loading="createLoading" class="pull-left" @click="updateForm('addNewForm')" size="small" style="width:85px;">保存</el-button>
+                    <el-button  type="info" class="pull-right" @click="cancel('addNewForm')" size="small" style="width:85px;">取消</el-button>
                 </div>
             </el-form-item>
         </el-form>

@@ -27,9 +27,7 @@ export default {
 .el-table td, .el-table th{
   padding: 8px 0!important
 }
-.el-form-item__error{
-  padding-top: 0!important
-}
+
 .el-menu-item.is-active{
   background-color: #30a487 !important;
   color:#fff !important;
@@ -94,7 +92,7 @@ export default {
 #subTable.el-table::before{
   height: 0 !important;
 }
-.addNewProject .el-form-item__error{
+.el-form-item__error{
     padding-top: 0 !important
 }
 #orgType .el-dialog__body{

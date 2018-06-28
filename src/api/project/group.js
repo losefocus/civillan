@@ -1,5 +1,5 @@
 import request from '@/router/axios'
-  /* 报警信息 */
+  /* 信息 */
 export function getObj(query) {
   return request({
     url: '/device/device_group/list',

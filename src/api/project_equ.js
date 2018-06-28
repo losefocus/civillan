@@ -42,6 +42,14 @@ export function updataObj(obj) {
   })
 }
 
+  /* 分组信息 */
+  export function getGroupObj(id) {
+    return request({
+      url: '/device/device_group/list?projectId='+id,
+      method: 'get',
+    })
+  }
+
 /* 配置信息 */
 export function getConfigObj(query) {
   return request({

@@ -26,5 +26,6 @@ const getters = {
   notifyList: state => state.device.notifyList,
   alarmOptions: state => state.device.alarmOptions,
   adminerHash: state => state.common.adminerHash,
+  groupOptions: state => state.device.groupOptions,
 }
 export default getters

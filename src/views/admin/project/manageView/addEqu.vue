@@ -1,7 +1,7 @@
 <template>
     <div>
         <h3>{{flag == 'add'?'添加':'修改'}}设备</h3>
-        <el-form label-width="50px" :model="form"  ref="form" :rules="rules">
+        <el-form label-width="60px" :model="form"  ref="form" :rules="rules">
             <el-form-item label="项目" >
                 <el-input v-model="projectInfo.name" size="small" placeholder="请输入内容" disabled></el-input>
             </el-form-item>
@@ -16,7 +16,14 @@
                 </el-select>
             </el-form-item>
             <el-form-item label="分组" prop="deviceGroup.id">
-                <el-input v-model="form.deviceGroup.id" size="small" placeholder="请输入内容"></el-input>
+                <!-- <el-input v-model="form.deviceGroup.id" size="small" placeholder="请输入内容"></el-input> -->
+                <el-cascader
+                    size="small" placeholder="请选择上级分组"
+                    :options="groupOptions"
+                    v-model="form.deviceGroup.id"
+                    :show-all-levels="false"
+                    change-on-select>
+                </el-cascader>
             </el-form-item>
             <el-form-item label="名称" prop="name">
                 <el-input v-model="form.name" size="small" placeholder="请输入内容"></el-input>
@@ -62,7 +69,8 @@
 <script>
 import { mapGetters } from "vuex";
 import { getToken } from "@/util/auth";
-import {addObj,fetchProductList,updataObj} from "@/api/project_equ";
+import { toTree } from "@/util/util";
+import {addObj,fetchProductList,updataObj,getGroupObj} from "@/api/project_equ";
 export default {
     props:['projectInfo'],
     data(){
@@ -106,9 +114,10 @@ export default {
                 comment:'',
                 status:0,
                 deviceGroup:{
-                    id:''
+                    id:[]
                 }
             },
+            // groupOptions:[],
             disabled:false,
             productHash:{},
             imageName:'',
@@ -122,13 +131,14 @@ export default {
     },
     created() {
         this.getProductList()
+        this.getGroupList()
         this.device_btn_add = this.permissions["device_btn_add"];
     },
     mounted() {
 
     },
     computed: {
-        ...mapGetters(["permissions"])
+        ...mapGetters(["permissions","groupOptions"])
     },
     methods:{
         uploadSuccess(response, file, fileList){
@@ -148,11 +158,18 @@ export default {
                 });
             })
         },
+        getGroupList(){
+            getGroupObj(this.projectInfo.id).then(res => {
+                let groupOptions = toTree(res.data.result.items)
+                this.$store.commit("SET_GROUPOPTIONS", groupOptions);
+            })
+        },
         submitForm(formName){
             let data = Object.assign({},this.form)
             data.projectId = this.projectInfo.id
             data.status = data.status?1:0
             data.alias = this.productHash[data.productId]
+            data.deviceGroup.id = data.deviceGroup.id[data.deviceGroup.id.length-1]
             data.protocol = "string"
             data.passage = "string"
             this.$refs[formName].validate((valid) => {
@@ -199,10 +216,9 @@ export default {
                 comment:'',
                 status:0,
                 deviceGroup:{
-                    id:''
+                    id:[]
                 }
             }
-            this.productId_alias = ''
             this.disabled = false
         }
     }
@@ -210,7 +226,7 @@ export default {
 </script>
 <style scoped>
 .avatar-uploader{
-     height: 208px;
+     height: 200px;
 }
 .avatar-uploader .el-upload {
     border: 1px dashed #d9d9d9;
@@ -225,16 +241,16 @@ export default {
 .avatar-uploader-icon {
     font-size: 28px;
     color: #8c939d;
-    width: 208px;
-    height: 208px;
-    line-height: 208px;
+    width: 198px;
+    height: 198px;
+    line-height: 198px;
     text-align: center;
     border: 1px solid #dcdfe6;
     border-radius: 4px;
 }
 .avatar {
-    width: 208px;
-    height: 208px;
+    width: 198px;
+    height: 198px;
     display: block;
     border-radius: 4px;
 }

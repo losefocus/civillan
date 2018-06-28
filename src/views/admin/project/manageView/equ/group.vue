@@ -2,15 +2,21 @@
     <div>
         <el-form :model="form" class="clearfix" ref="form" label-width="50px">
             <el-form-item label="上级" style="width: 210px">
-                <!-- <el-input v-model="form.parentId" size="small" auto-complete="off"></el-input> -->
-                <el-select v-model="form.parentId" size="small" placeholder="请选择">
+                <!-- <el-select v-model="form.parentId" size="small" placeholder="请选择">
                     <el-option
                     v-for="item in parentOptions"
                     :key="item.value"
                     :label="item.label"
                     :value="item.value">
                     </el-option>
-                </el-select>
+                </el-select> -->
+                <el-cascader
+                    size="small" placeholder="请选择上级分组"
+                    :options="parentOptions"
+                    v-model="form.parentId"
+                    :show-all-levels="false"
+                    change-on-select>
+                </el-cascader>
             </el-form-item>
             <el-form-item label="名称" style="width: 210px;margin-left:10px">
                 <el-input v-model="form.name" size="small" auto-complete="off"></el-input>
@@ -88,6 +94,7 @@
 </template>
 <script>
 import { getToken } from "@/util/auth";
+import { toTree } from "@/util/util";
 import { mapGetters } from "vuex";
 import {getObj,addObj,delObj,editObj} from "@/api/project/group";
 
@@ -119,7 +126,7 @@ export default {
                 }
             ],
             form:{
-                parentId:0,
+                parentId:[],
                 name:'',
                 sort:'',
                 comment:'',
@@ -127,6 +134,7 @@ export default {
                 thumbnailPath:'',
                 thumbnailBaseUrl:'',
             },
+            selectedOptions2:[],
             fileList:[],
             headers:{Authorization: "Bearer " + getToken()},
             params:{component :'project'},
@@ -172,24 +180,21 @@ export default {
                 this.list = res.data.result.items
                 this.total = res.data.result.total
                 this.listLoading = false
-                this.getParentOptiong(this.list)
+                for (let i=0; i<this.list.length; i++) {
+                    this.parentHash[this.list[i].id] = this.list[i].name
+                }
+                this.parentOptions = toTree(this.list)
+                let [...groupOptions] = this.parentOptions
+                this.$store.commit("SET_GROUPOPTIONS", groupOptions);
+                this.parentOptions.unshift({value:0,label:'无'})
             })
         },
-        getParentOptiong(treeArray){
-            let options = []
-            options.push({value:0,label:'无'})
-            for (let i=0; i<treeArray.length; i++) {
-                if("parentId" in treeArray[i] && treeArray[i].parentId == 0){
-                    options.push({value:treeArray[i].id,label:treeArray[i].name})
-                    this.parentHash[treeArray[i].id] = treeArray[i].name
-                }
-            }
-            this.parentOptions = options
-        },
         updateList(row){
+            console.log(row)
             this.flag = 'edit'
             this.form = Object.assign({},row)
             this.form.status = this.form.status==1?true:false
+            this.form.parentId = [this.form.parentId]
         },
         deleteList(row){
             this.$confirm(
@@ -211,6 +216,7 @@ export default {
             let data = Object.assign({},this.form)
             data.sort = parseInt(data.sort)
             data.status = data.status?1:0
+            data.parentId = data.parentId[data.parentId.length-1]
             data.projectId = this.$parent.$parent.projectInfo.id
             this.createdLoading = true
             addObj(data).then(res => {
@@ -224,6 +230,7 @@ export default {
             let data = Object.assign({},this.form)
             data.sort = parseInt(data.sort)
             data.status = data.status?1:0
+            data.parentId = data.parentId[data.parentId.length-1]
             editObj(data).then(res => {
                 this.getList()
                 this.$parent.$parent.$parent.$parent.alertNotify('修改')
@@ -236,7 +243,7 @@ export default {
         },
         resetTem(){
             this.form={
-                parentId:0,
+                parentId:[],
                 name:'',
                 sort:'',
                 comment:'',

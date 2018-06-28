@@ -264,3 +264,38 @@ export const randomLenNum = (len, date) => {
   }
   return -1
 }
+
+/**
+ * 根据parentId生成树结构 增加了value,lebel属性
+ */
+export const toTree = (data) => {
+  data.forEach(function (item) {
+    delete item.children;
+  });
+  var map = {};
+  data.forEach(function (item) {
+    let ele ={
+      id:item.id,
+      parentId:item.parentId,
+      value:item.id,
+      label:item.name,
+    }
+    map[item.id] = ele;
+  });
+  var val = [];
+  data.forEach(function (item) {
+    let ele ={
+      id:item.id,
+      parentId:item.parentId,
+      value:item.id,
+      label:item.name,
+    }
+    var parent = map[item.parentId];
+    if (parent) {
+      if(parent.children || ( parent.children = [] ))parent.children.push(ele);
+    } else {
+      val.push(ele);
+    }
+  });
+  return val;
+}

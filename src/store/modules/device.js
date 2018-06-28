@@ -35,6 +35,9 @@ const device = {
     alarmOptions: getStore({
       name: 'alarmOptions'
     }) || [],
+    groupOptions: getStore({
+      name: 'groupOptions'
+    }) || [],
   },
   actions: {
     // 获取字典公用类
@@ -86,7 +89,10 @@ const device = {
     SET_ALARMOPTIONS:(state, action)=>{
       state.alarmOptions = action
     },
-    
+    // 选项
+    SET_GROUPOPTIONS:(state, action)=>{
+      state.groupOptions = action
+    },
   }
 }
 export default device
