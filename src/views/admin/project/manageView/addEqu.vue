@@ -1,22 +1,21 @@
 <template>
     <div>
         <h3>{{flag == 'add'?'添加':'修改'}}设备</h3>
-        <el-form label-width="40px" :model="form"  ref="form">
+        <el-form label-width="50px" :model="form"  ref="form" :rules="rules">
             <el-form-item label="项目" >
                 <el-input v-model="projectInfo.name" size="small" placeholder="请输入内容" disabled></el-input>
             </el-form-item>
-            <el-form-item label="型号" prop="productId_alias">
-                <el-select v-model="productId_alias" size="small" placeholder="请选择">
+            <el-form-item label="型号" prop="productId">
+                <el-select v-model="form.productId" size="small" placeholder="请选择" :disabled="disabled">
                     <el-option
                     v-for="item in productOptions"
                     :key="item.value"
                     :label="item.label"
-                    :value="item.value"
-                    :disabled="item.disabled">
+                    :value="item.value">
                     </el-option>
                 </el-select>
             </el-form-item>
-            <el-form-item label="分组" prop="deviceGroup">
+            <el-form-item label="分组" prop="deviceGroup.id">
                 <el-input v-model="form.deviceGroup.id" size="small" placeholder="请输入内容"></el-input>
             </el-form-item>
             <el-form-item label="名称" prop="name">
@@ -25,7 +24,7 @@
             <el-form-item label="固件" prop="firmware">
                 <el-input v-model="form.firmware" size="small" placeholder="请输入内容"></el-input>
             </el-form-item>
-            <el-form-item label="图片">
+            <el-form-item label="图片" prop="thumbnailBaseUrl">
                 <el-upload
                     class="avatar-uploader"
                     ref="upload"
@@ -69,26 +68,23 @@ export default {
     data(){
         return {
             rules: {
-                parentId: [
-                    { required: false, message: '请选择父级项目', trigger: 'change' },
+                productId: [
+                    { required: true, message: '请选择父级项目', trigger: 'change' },
+                ],
+                'deviceGroup.id': [
+                    { required: true, message: '请选择分组', trigger: 'blur' },
                 ],
                 name: [
-                    { required: true, message: '请输入项目名称', trigger: 'blur' }
+                    { required: true, message: '请输入名称', trigger: 'blur' }
                 ],
-                tm: [
-                    { required: true, message: '请选择工期', trigger: 'blur' }
-                ],
-                adminer: [
-                    { required: true, message: '请选择管理员', trigger: 'change' }
-                ],
-                thumbnailPath: [
+                thumbnailBaseUrl: [
                     { required: true, message: '请添加图片', trigger: 'blur' }
                 ],
-                position: [
-                    { required: true, message: '请选择位置', trigger: 'blur' }
+                firmware: [
+                    { required: true, message: '请输入固件', trigger: 'blur' }
                 ],
                 comment: [
-                    { required: true, message: '请输入备注', trigger: 'blur' }
+                    { required: false, message: '请输入备注', trigger: 'blur' }
                 ]
             },
             listLoading:false,
@@ -113,7 +109,8 @@ export default {
                     id:''
                 }
             },
-            productId_alias:'',
+            disabled:false,
+            productHash:{},
             imageName:'',
             fileList:[],
             headers:{Authorization: "Bearer " + getToken()},
@@ -145,8 +142,9 @@ export default {
                 let data = res.data.result.items
                 this.productOptions = []
                 data.forEach(ele => {
-                    let item = {value:ele.id +','+ele.alias, label:ele.alias}
+                    let item = {value:ele.id, label:ele.alias}
                     this.productOptions.push(item)
+                    this.productHash[ele.id] = ele.alias
                 });
             })
         },
@@ -154,25 +152,26 @@ export default {
             let data = Object.assign({},this.form)
             data.projectId = this.projectInfo.id
             data.status = data.status?1:0
-            data.deviceGroup.id = 1
-            data.productId = this.productId_alias.split(',')[0],
-            data.alias = this.productId_alias.split(',')[1],
-            data.protocol = "string",
-            data.passage = "string",
-            addObj(data).then( res => {
-                this.createLoading = false
-                this.$parent.$refs.equ.getList()
-                this.resetTemp()
-                this.$parent.$parent.alertNotify('添加')
+            data.alias = this.productHash[data.productId]
+            data.protocol = "string"
+            data.passage = "string"
+            this.$refs[formName].validate((valid) => {
+                if (valid) {
+                    addObj(data).then( res => {
+                        this.createLoading = false
+                        this.$parent.$refs.equ.getList()
+                        this.resetTemp()
+                        this.$parent.$parent.alertNotify('添加')
+                    })
+                }
             })
+            
         },
         updataForm(formName){
             this.$refs[formName].validate((valid) => {
                 if (valid) {
                     this.form.status = this.form.status?1:0
-                    this.form.productId = this.productId_alias.split(',')[0],
-                    this.form.alias = this.productId_alias.split(',')[1],
-                    console.log(this.form)
+                    this.form.alias = this.productHash[data.productId]
                     this.createLoading = true
                     updataObj(this.form).then(response => {
                         this.createLoading = false
@@ -204,13 +203,14 @@ export default {
                 }
             }
             this.productId_alias = ''
+            this.disabled = false
         }
     }
 }
 </script>
 <style scoped>
 .avatar-uploader{
-     height: 218px;
+     height: 208px;
 }
 .avatar-uploader .el-upload {
     border: 1px dashed #d9d9d9;
@@ -225,16 +225,16 @@ export default {
 .avatar-uploader-icon {
     font-size: 28px;
     color: #8c939d;
-    width: 218px;
-    height: 218px;
-    line-height: 218px;
+    width: 208px;
+    height: 208px;
+    line-height: 208px;
     text-align: center;
     border: 1px solid #dcdfe6;
     border-radius: 4px;
 }
 .avatar {
-    width: 218px;
-    height: 218px;
+    width: 208px;
+    height: 208px;
     display: block;
     border-radius: 4px;
 }

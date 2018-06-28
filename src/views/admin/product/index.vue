@@ -50,12 +50,25 @@
                         </template>
                     </el-table-column>
                     
-                    <el-table-column align="center" label="操作" width="350">
+                    <el-table-column align="center" label="操作">
                         <template slot-scope="pro">
-                            <el-button size="small" type="success" plain @click="variableTemplate(pro.row)">变量模板</el-button>
+
+                            <el-dropdown trigger="click" @command="handleCommand">
+                                <el-button type="primary" size="small">
+                                    操作<i class="el-icon-arrow-down el-icon--right"></i>
+                                </el-button>
+                                <el-dropdown-menu slot="dropdown">
+                                    <el-dropdown-item v-if="product_btn_variable_template" :command="composeValue('variableTemplateVisible',pro.row)">变量</el-dropdown-item>
+                                    <el-dropdown-item v-if="product_btn_alert_template" :command="composeValue('alarmTemplatVisible',pro.row)">报警</el-dropdown-item>
+                                    <el-dropdown-item divided v-if="product_btn_edit" :command="composeValue('del',pro.row)">修改</el-dropdown-item>
+                                    <el-dropdown-item v-if="product_btn_del" :command="composeValue('del',pro.row)">删除</el-dropdown-item>
+                                </el-dropdown-menu>
+                            </el-dropdown>
+
+                            <!-- <el-button size="small" type="success" plain @click="variableTemplate(pro.row)">变量模板</el-button>
                             <el-button size="small" type="success" plain @click="alarmTemplat(pro.row)">报警模板</el-button>
                             <el-button size="small" type="success" plain @click="updataProduct(pro.row)" v-if="product_btn_edit" >修改</el-button>
-                            <el-button size="small" type="danger" plain @click="delProduct(pro.row)" v-if="product_btn_del">删除</el-button>
+                            <el-button size="small" type="danger" plain @click="delProduct(pro.row)" v-if="product_btn_del">删除</el-button> -->
                         </template>
                     </el-table-column>
                 </el-table>    
@@ -112,19 +125,19 @@
                     产 品 : {{productData.name}} 
                 </div>
                 <el-input style="padding:20px 0" type="textarea" :rows="10" placeholder="请输入内容" v-model="templateData.content"></el-input>
-                <el-button class="pull-right" size="small" type="success" @click="setTemplate" :loading="tempCreateloading">保存</el-button>
+                <el-button class="pull-right" size="small" type="primary" @click="setTemplate" :loading="tempCreateloading">保存</el-button>
             </div>
         </el-dialog>
-        <!-- <el-dialog id="alarm" title="报警模板"  :visible.sync="alarmTemplatVisible" width='690px'>
-            <alarm :product-info="productData" :template-info="templateData"></alarm>
+        <el-dialog id="alarm" title="报警模板"  :visible.sync="alarmTemplatVisible" width='690px'>
+            <!-- <alarm :product-info="productData" :template-info="templateData"></alarm> -->
             <div class="clearfix" v-loading="temploading">
                 <div >
                     产 品 : {{productData.name}} 
                 </div>
                 <el-input style="padding:20px 0" type="textarea" :rows="10" placeholder="请输入内容" v-model="templateData.content"></el-input>
-                <el-button class="pull-right" size="small" type="success">保存</el-button>
+                <el-button class="pull-right" size="small" type="primary">保存</el-button>
             </div>
-        </el-dialog> -->
+        </el-dialog>
     </div>
 </template>
 <script>
@@ -173,6 +186,8 @@ export default {
             product_btn_add:false,
             product_btn_edit:false,
             product_btn_del:false,
+            product_btn_variable_template:false,
+            product_btn_alert_template:false,
         }
     },
     created() {
@@ -180,6 +195,8 @@ export default {
         this.product_btn_add = this.permissions["product_btn_add"];
         this.product_btn_edit = this.permissions["product_btn_edit"];
         this.product_btn_del = this.permissions["product_btn_del"];
+        this.product_btn_variable_template = this.permissions["product_btn_variable_template"];
+        this.product_btn_alert_template = this.permissions["product_btn_alert_template"];
     },
     mounted() {
         
@@ -284,17 +301,27 @@ export default {
                 status:false
             }
         },
+        handleCommand(command){
+            if(command.value == 'del') this.delProduct(command.row)
+            else if(command.value == 'edit') this.updataProduct(command.row)
+            else if(command.value == 'variableTemplateVisible') this.variableTemplate(command.row)
+            else if(command.value == 'alarmTemplatVisible') this.alarmTemplat(command.row)
+        },
+        composeValue(item,row){
+             return {
+                'value': item,
+                'row': row
+            }
+        },
         //变量模板
         variableTemplate(row){
+            this.variableTemplateVisible = true
+            this.productData = row
             let id
             row.productTemplate.forEach(element => {
                 if(element.type === 1)id = element.id
             });
-            this.getContent(id)
-            this.variableTemplateVisible = true
-            this.productData = row
-            
-            
+            this.getContent(id) 
         },
         //报警模板
         alarmTemplat(row){

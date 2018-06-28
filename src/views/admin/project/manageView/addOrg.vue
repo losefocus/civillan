@@ -1,7 +1,7 @@
 <template>
     <div>
         <h3>{{flag == 'add'?'添加':'修改'}}机构</h3>
-        <el-form label-width="65px" :model="addNewForm"  ref="addNewForm">
+        <el-form label-width="65px" :model="addNewForm" :rules="rules"  ref="addNewForm">
             <el-form-item label="项目" >
                 <el-input v-model="projectInfo.name" size="small" placeholder="请输入内容" disabled></el-input>
             </el-form-item>
@@ -9,7 +9,7 @@
                 <el-input v-model="addNewForm.name" size="small" placeholder="请输入内容"></el-input>
             </el-form-item>
             <el-form-item label="类型" prop="typeId">
-                <el-select v-model="addNewForm.typeId" placeholder="请选择">
+                <el-select v-model="addNewForm.typeId" placeholder="请选择" size="small" >
                     <el-option
                     v-for="item in typeOptions"
                     :key="item.value"
@@ -44,9 +44,6 @@
                     <el-button  type="info" class="pull-right" @click="cancel('addNewForm')" size="small" style="width:90px;">取消</el-button>
                 </div>
             </el-form-item>
-            <!-- <el-form-item>
-                
-            </el-form-item> -->
         </el-form>
     </div>
 </template>
@@ -58,27 +55,12 @@ export default {
     data(){
         return {
             rules: {
-                parentId: [
-                    { required: false, message: '请选择父级项目', trigger: 'change' },
-                ],
                 name: [
-                    { required: true, message: '请输入项目名称', trigger: 'blur' }
+                    { required: true, message: '请输入机构名称', trigger: 'blur' }
                 ],
-                tm: [
-                    { required: true, message: '请选择工期', trigger: 'blur' }
+                typeId: [
+                    { required: true, message: '请选择机构类型', trigger: 'change' }
                 ],
-                adminer: [
-                    { required: true, message: '请选择管理员', trigger: 'change' }
-                ],
-                thumbnailPath: [
-                    { required: true, message: '请添加图片', trigger: 'blur' }
-                ],
-                position: [
-                    { required: true, message: '请选择位置', trigger: 'blur' }
-                ],
-                comment: [
-                    { required: true, message: '请输入备注', trigger: 'blur' }
-                ]
             },
             flag:'add',
             addNewForm:{

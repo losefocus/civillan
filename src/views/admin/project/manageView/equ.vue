@@ -1,7 +1,7 @@
 <template>
     <div style="padding:20px;border:1px solid #dcdfe6" class="equContent">
         <div class="filter-container">
-            <el-button class="filter-item" style="" @click="handleCreate" size="small" type="primary" icon="edit" >分组管理</el-button>
+            <el-button class="filter-item" style="" @click="handleGroup" size="small" type="primary" icon="edit" >分组管理</el-button>
         </div>
         <el-table :data="list" v-loading="listLoading" element-loading-text="给我一点时间" border fit highlight-current-row style="width: 99%;margin-bottom:10px">
             <el-table-column align="center" label="名称">
@@ -85,6 +85,9 @@
         <el-dialog title="通知管理"  :visible.sync="notifyVisible" width='690px'>
             <notify v-if="notifyVisible" :data-info="dataInfo" ref="notify"></notify>
         </el-dialog>
+        <el-dialog title="分组管理"  :visible.sync="groupVisible" width='690px'>
+            <group v-if="groupVisible" ref="group"></group>
+        </el-dialog>
     </div>
 </template>
 <script>
@@ -93,6 +96,7 @@ import certi from "./equ/certificate";
 import sensor from "./equ/sensor";
 import alarm from "./equ/alarm";
 import notify from "./equ/notify";
+import group from "./equ/group";
 import { mapGetters } from "vuex";
 import {fetchList,delObj,updataObj,getConfigObj,getSensorObj,getAlarmObj,getNotifyObj} from "@/api/project_equ";
 export default {
@@ -102,6 +106,7 @@ export default {
         sensor,
         alarm,
         notify,
+        group
     },
     props:['projectInfo'],
     data(){
@@ -148,6 +153,7 @@ export default {
             sensorVisible:false,//变量
             alarmVisible:false,//报警
             notifyVisible:false,//通知
+            groupVisible:false,
             dataInfo:null,
             listInfoQuery:{
                 page_index: 1,
@@ -173,8 +179,8 @@ export default {
         ...mapGetters(["permissions"])
     },
     methods:{
-        handleCreate(){
-
+        handleGroup(){
+            this.groupVisible = true
         },
         getList(){
             this.listLoading = true
@@ -220,7 +226,8 @@ export default {
             this.$parent.$refs.addEqu.flag = 'updata'
             this.$parent.$refs.addEqu.form = Object.assign({},row)
             this.$parent.$refs.addEqu.form.status = row.status === 1?true:false
-            this.$parent.$refs.addEqu.productId_alias = row.productId+','+row.alias
+            // this.$parent.$refs.addEqu.productId_alias = row.productId+','+row.alias
+            this.$parent.$refs.addEqu.disabled = true
         },
         handleUpdataEqu(){
             updataObj().then(res => {

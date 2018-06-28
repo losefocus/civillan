@@ -24,6 +24,12 @@ export default {
   height: 100%;
   overflow:hidden;
 }
+.el-table td, .el-table th{
+  padding: 8px 0!important
+}
+.el-form-item__error{
+  padding-top: 0!important
+}
 .el-menu-item.is-active{
   background-color: #30a487 !important;
   color:#fff !important;

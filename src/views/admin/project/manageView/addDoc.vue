@@ -1,7 +1,7 @@
 <template>
     <div>
         <h3>{{flag == 'add'?'添加':'修改'}}文件</h3>
-        <el-form label-width="65px" :model="form" ref="form">
+        <el-form label-width="65px" :model="form" ref="form" :rules="rules">
             <el-form-item label="项目" prop="parentId">
                 <el-input v-model="projectInfo.name" size="small" placeholder="请输入内容" disabled></el-input>
             </el-form-item>
@@ -19,8 +19,8 @@
                     :file-list="fileList"
                     :auto-upload="true">
                         <el-button slot="trigger" size="small" type="primary">上传</el-button>
-                        <el-input v-model="fileName" style="width:135px" size="small" placeholder="请上传文件"></el-input>
-                    </el-upload>
+                        <el-input v-model="fileName" style="width:135px" size="small" placeholder="请上传文件" disabled></el-input>
+                </el-upload>
             </el-form-item>
             <el-form-item label="标题" prop="name">
                 <el-input v-model="form.name" size="small" placeholder="请输入内容"></el-input>
@@ -54,30 +54,18 @@ export default {
     data(){
         return {
             rules: {
-                parentId: [
-                    { required: false, message: '请选择父级项目', trigger: 'change' },
+                
+                fileBaseUrl: [
+                    { required: true, message: '请添加图片', trigger: 'blur' }
                 ],
                 name: [
                     { required: true, message: '请输入项目名称', trigger: 'blur' }
                 ],
-                tm: [
-                    { required: true, message: '请选择工期', trigger: 'blur' }
-                ],
-                adminer: [
-                    { required: true, message: '请选择管理员', trigger: 'change' }
-                ],
-                thumbnailPath: [
-                    { required: true, message: '请添加图片', trigger: 'blur' }
-                ],
-                position: [
-                    { required: true, message: '请选择位置', trigger: 'blur' }
-                ],
                 comment: [
-                    { required: true, message: '请输入备注', trigger: 'blur' }
+                    { required: false, message: '请输入备注', trigger: 'blur' }
                 ]
             },
             form:{
-                projectId:this.projectInfo.id,
                 name:'',
                 fileBaseUrl:'',
                 filePath:'',
@@ -99,15 +87,23 @@ export default {
     methods:{
         selectParentId(){},
         selectAdminer(){},
-        submitForm(){
-            let data = Object.assign({},this.form)
-            data.status = data.status?1:0
-            this.createLoading = true
-            addObj(data).then(res => {
-                this.$parent.$refs.doc.getList();
-                this.$parent.$parent.alertNotify('添加')
-                this.cancel()
+        submitForm(formName){
+            this.$refs[formName].validate((valid) => {
+                if (valid) {
+                    let data = Object.assign({},this.form)
+                    data.status = data.status?1:0
+                    data.projectId = this.projectInfo.id
+                    this.createLoading = true
+                    addObj(data).then(res => {
+                        this.$parent.$refs.doc.getList();
+                        this.$parent.$parent.alertNotify('添加')
+                        this.cancel()
+                    })
+                }else{
+                    
+                }
             })
+            
         },
         uploadSuccess(response, file, fileList){
             this.form.fileBaseUrl = response.result.baseUrl
@@ -116,20 +112,24 @@ export default {
             this.fileName = file.name
             this.fileList = []
         }, 
-        updataForm(){
-            let data = Object.assign({},this.form)
-            data.status = data.status?1:0
-            this.createLoading = true
-            updataObj(data).then(res => {
-                this.$parent.$refs.doc.getList();
-                this.$parent.$parent.alertNotify('修改')
-                this.cancel()
+        updataForm(formName){
+            this.$refs[formName].validate((valid) => {
+                if (valid) {
+                    let data = Object.assign({},this.form)
+                    data.status = data.status?1:0
+                    this.createLoading = true
+                    updataObj(data).then(res => {
+                        this.$parent.$refs.doc.getList();
+                        this.$parent.$parent.alertNotify('修改')
+                        this.cancel()
+                    })
+                }
             })
+            
         },
         cancel(){
             this.flag = 'add'
             this.form = {
-                projectId:this.projectInfo.id,
                 name:'',
                 fileBaseUrl:'',
                 filePath:'',

@@ -1,10 +1,8 @@
 <template>
-    <div class="app-container calendar-list-container">
+    <div class="app-container calendar-list-container" >
         <div v-show="showView === 'index'"  class="clearfix">
             <div class="pull-left"  style="width:calc(100% - 320px)">
                 <div class="filter-container">
-                    <!-- <el-button class="filter-item" style="" size="small" type="primary" icon="edit" >添加项目
-                    </el-button> -->
                     <el-button class="filter-item" style="" @click="toProjectMap"  size="small" type="primary" icon="edit" >项目地图
                     </el-button>
                     <div class="pull-right">
@@ -56,10 +54,10 @@
                                                     :command="composeValue(item.value,pro.row)">
                                                     {{item.label}}
                                                     </el-dropdown-item>
+                                                    <el-dropdown-item divided v-if="project_btn_edit" :command="composeValue('del',pro.row)">修改</el-dropdown-item>
                                                     <el-dropdown-item divided v-if="project_btn_del" :command="composeValue('del',pro.row)">删除</el-dropdown-item>
                                                 </el-dropdown-menu>
                                             </el-dropdown>
-                                            <!-- <el-button size="small" type="danger" plain @click="delProject(pro.row)">删除</el-button> -->
                                         </template>
                                     </el-table-column>
                                 </el-table>
@@ -67,7 +65,10 @@
                         </el-table-column>
                         <el-table-column align="center" label="缩略图">
                             <template slot-scope="scope">
-                                <img style="width:50px;height:50px" :src="scope.row.thumbnailUrl+scope.row.thumbnailPath">
+                                <div style="height:50px">
+                                    <img style="width:50px;height:50px" :src="scope.row.thumbnailUrl+scope.row.thumbnailPath">
+                                </div>
+                                <!-- <img style="width:30px;height:30px" :src="scope.row.thumbnailUrl+scope.row.thumbnailPath"> -->
                             </template>
                         </el-table-column>
                         <el-table-column align="center" label="项目名称">
@@ -248,11 +249,6 @@ export default {
             total:null,
             btnList:[
                 {
-                    value:'info',
-                    label:'信息',
-                    btn:'project_btn_info',
-                    flag:false
-                },{
                     value:'org',
                     label:'机构',
                     btn:'project_btn_institutions',

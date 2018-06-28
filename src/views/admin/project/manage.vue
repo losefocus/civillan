@@ -1,19 +1,17 @@
 <template>
     <div class=" clearfix projectManage" >
-        <div class="pull-left" :class="{containers:tabView != 'info',containers_:tabView === 'info'}">
+        <div class="pull-left containers">
             <div class="filter-container">
             <el-button @click="toProjectIndex" size="small" >返回</el-button>
             <span>{{viewData.name}}</span>
             <el-radio-group v-model="tabView" size="small" style="margin-bottom: 30px;" class="pull-right">
-                <el-radio-button label="info">基本信息</el-radio-button>
                 <el-radio-button label="org">机构设置</el-radio-button>
                 <el-radio-button label="per">人员管理</el-radio-button>
                 <el-radio-button label="equ">设备管理</el-radio-button>
                 <el-radio-button label="doc">文档资料</el-radio-button>
             </el-radio-group>
             </div>
-            <div style="padding-top:20px;">
-                <info v-if="tabView === 'info'" :project-info="viewData"></info>
+            <div style="padding-top:20px; ">
                 <org v-if="tabView === 'org'" :project-info="viewData" ref="org"></org>
                 <per v-if="tabView === 'per'" :project-info="viewData" ref="per"></per>
                 <equ v-if="tabView === 'equ'" :project-info="viewData" ref="equ"></equ>
@@ -29,12 +27,10 @@
     </div>
 </template>
 <script>
-import info from "./manageView/info";
 import org from "./manageView/org";
 import per from "./manageView/per";
 import equ from "./manageView/equ";
 import doc from "./manageView/doc";
-import addInfo from "./manageView/addInfo";
 import addOrg from "./manageView/addOrg";
 import addPer from "./manageView/addPer";
 import addEqu from "./manageView/addEqu";
@@ -42,12 +38,10 @@ import addDoc from "./manageView/addDoc";
 
 export default {
     components:{
-        info,
         org,
         per,
         equ,
         doc,
-        addInfo,
         addOrg,
         addPer,
         addEqu,
@@ -56,7 +50,7 @@ export default {
     props:['viewData'],
     data(){
         return {
-            tabView:'info'
+            tabView:'org'
         }
     },
     created() {
@@ -65,9 +59,7 @@ export default {
 
     },
     computed: {
-        getViewData(){
-            return this.viewData
-        }
+        
     },
     methods:{
         toProjectIndex(){
@@ -76,18 +68,13 @@ export default {
         },
     },
     watch:{
-        getViewData(val){
-
-        }
+        
     }
 }
 </script>
 <style scoped>
 .containers{
     width: calc(100% - 320px)
-}
-.containers_{
-    width:100%
 }
 .addNewContainer{
     width: 260px;

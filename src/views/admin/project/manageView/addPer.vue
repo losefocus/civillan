@@ -67,14 +67,17 @@ export default {
     data(){
         var reg = 11 && /^((13|14|15|17|18)[0-9]{1}\d{8})$/;
         var validataPhone = (rule, value, callback) => {
-            if (value === '' || value== undefined) {
-                callback(new Error('请输入手机号码'));
-            }else {
-                if (!reg.test(value)) {
+            // if (value === '' || value== undefined) {
+            //     callback(new Error('请输入手机号码'));
+            // }else {
+                console.log(value != undefined)
+                if ((value != '' && value != undefined) && !reg.test(value)) {
                     callback(new Error('请输入正确的手机号码'));
+                }else{
+                    callback();
                 }
-                callback();
-            }
+                
+            // }
         };
         var validatePass = (rule, value, callback) => {
             if (value === '' || value== undefined) {
@@ -108,7 +111,6 @@ export default {
                     { required: true, message: '请选择机构', trigger: 'change' },
                 ],
                 userRole: [
-                    // { required: false, message: '请选择角色', trigger: 'change' }
                     { validator: validataroleId, trigger: 'change' ,required: true},
                 ],
                 name: [
@@ -116,19 +118,19 @@ export default {
                     { min: 3, max: 20, message: "长度在 3 到 20 个字符", trigger: "blur"}
                 ],
                 phone: [
-                     { validator: validataPhone, trigger: 'blur' ,required: true},
+                     { validator: validataPhone, trigger: 'blur' ,required: false},
                 ],
                 username: [
                     { required: true, message: '请输入用户名', trigger: 'blur' },
                     { min: 3, max: 20, message: "长度在 3 到 20 个字符", trigger: "blur"}
                 ],
                 password: [
-                    { validator: validatePass, trigger: 'blur' ,required: true}
-                    // { min: 6, max: 20, message: "长度在 6 到 20 个字符", trigger: "blur"}
+                    { validator: validatePass, trigger: 'blur' ,required: true},
+                    { min: 6, max: 20, message: "长度在 6 到 20 个字符", trigger: "blur"}
                 ],
                 password2: [
-                    { validator: validatePass2, trigger: 'blur' ,required: true}
-                    // { min: 6, max: 20, message: "长度在 6 到 20 个字符", trigger: "blur"}
+                    { validator: validatePass2, trigger: 'blur' ,required: true},
+                    { min: 6, max: 20, message: "长度在 6 到 20 个字符", trigger: "blur"}
                 ],
                 comment: [
                     { required: false, message: '请输入备注', trigger: 'blur' }
@@ -136,6 +138,7 @@ export default {
             },
             form:{
                 projectOrgan : {id:null} ,
+                userRole:[],
             },
             role:[],
             flag:'add',
@@ -177,9 +180,9 @@ export default {
             })
         },
         submitForm(formName){
-            let data = Object.assign({},this.form)
             this.$refs[formName].validate(valid => {
                 if (valid) {
+                    let data = Object.assign({},this.form)
                     data.projectId = this.projectInfo.id
                     data.status = data.status?1:0
                     delete data.password2
