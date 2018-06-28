@@ -14,9 +14,9 @@ maven-build:
   only:
     - master
   script:
-    - npm install -g cnpm --registry=https://registry.npm.taobao.org
-    - cnpm install
-    - cnpm run build
+#    - npm install -g cnpm --registry=https://registry.npm.taobao.org
+    - npm install
+    - npm run build
     # 启动
     - docker build -t="civillan-background-web" .
     - ssh test@test1.iot.v -tt docker stop civillan-background-web
