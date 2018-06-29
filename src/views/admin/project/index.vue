@@ -1,5 +1,5 @@
 <template>
-    <div class="app-container calendar-list-container" >
+    <div class="app-container calendar-list-container">
         <div v-show="showView === 'index'"  class="clearfix">
             <div class="pull-left"  style="width:calc(100% - 320px)">
                 <div class="filter-container">
@@ -175,7 +175,7 @@
                         </el-upload>
                     </el-form-item>
                     <el-form-item label="位置" prop="position">
-                        <el-input v-model="form.position" size="small" placeholder="请输入内容"></el-input>
+                        <el-input v-model="form.position" size="small" placeholder="请输入内容" @focus="positionPicker"></el-input>
                     </el-form-item>
                     <el-form-item label="备注" prop="comment">
                         <el-input
@@ -198,12 +198,15 @@
                 </el-form>
             </div>
         </div>
-        <div v-show="showView === 'mapView'">
+        <div v-if="showView === 'mapView'">
             <map-view ></map-view>
         </div>
         <div v-show="showView === 'manage'">
             <project-manage ref="proManage" :view-data='viewData'></project-manage>
         </div>
+        <el-dialog :visible.sync="positionVisible" id="mapPosition">
+            <map-position></map-position>
+        </el-dialog>
     </div>
 </template>
 
@@ -214,11 +217,13 @@ import { mapGetters } from "vuex";
 import waves from "@/directive/waves/index.js";
 import mapView from "./map";
 import projectManage from "./manage";
+import mapPosition from "./mapPosition";
 
 export default {
     components:{
         mapView,
-        projectManage
+        projectManage,
+        mapPosition
     },
     data(){
         return {
@@ -298,6 +303,7 @@ export default {
             flag:'add',
             headers:{Authorization: "Bearer " + getToken()},
             params:{component :'project'},
+            positionVisible:false,
             createLoading:false,
             project_btn_add:false,
             project_btn_edit :false,
@@ -380,6 +386,9 @@ export default {
             this.form.imageName = response.result.name
             this.form.fileList = []
         },  
+        positionPicker(){
+            this.positionVisible = true
+        },
         // 新增项目
         submitForm(formName){
             this.$refs[formName].validate((valid) => {
@@ -501,7 +510,6 @@ export default {
     border: 1px solid #dcdfe6;
     padding: 10px 20px 0 20px
 }
-
 
 </style>
 

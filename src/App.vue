@@ -104,4 +104,16 @@ export default {
 .equContent .el-dialog__body{
     padding-top: 0 !important
 }
+
+#mapPosition .el-dialog__header{
+    position: absolute;
+    right: 0;
+    z-index: 9999;
+}
+#mapPosition .el-dialog__body{
+    padding: 0!important;
+}
+#mapPosition .amap-ui-poi-picker-search-results-container.amap-pl-pc.dock-bottom{
+    display: none!important;
+}
 </style>
