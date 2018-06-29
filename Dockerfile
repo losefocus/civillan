@@ -1,5 +1,5 @@
 # This file is a template, and might need editing before it works on your project.
-FROM node:alpine
+FROM node
 
 WORKDIR /usr/src/app
 
@@ -12,4 +12,4 @@ COPY . /usr/src/app
 CMD [ "npm", "start" ]
 
 # replace this with your application's default port
-EXPOSE 8888
+EXPOSE 8080
