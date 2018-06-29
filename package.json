@@ -31,6 +31,7 @@
     "npm": "^5.8.0",
     "nprogress": "^0.2.0",
     "vue": "2.5.2",
+    "vue-amap": "^0.5.8",
     "vue-axios": "^2.0.2",
     "vue-image-crop-upload": "^2.3.1",
     "vue-moment": "^4.0.0-0",

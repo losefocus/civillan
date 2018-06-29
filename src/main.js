@@ -18,6 +18,8 @@ import {
 } from '@/config/env'
 import * as filters from './filters' // 全局filter
 import './styles/common.scss'
+import VueAMap from 'vue-amap';
+Vue.use(VueAMap);
 
 Vue.config.productionTip = false
 Vue.use(ElementUI)

@@ -169,9 +169,11 @@ export default {
             data.projectId = this.projectInfo.id
             data.status = data.status?1:0
             data.alias = this.productHash[data.productId]
-            data.deviceGroup.id = data.deviceGroup.id[data.deviceGroup.id.length-1]
+            // data.deviceGroup.id = data.deviceGroup.id[data.deviceGroup.id.length-1]
+            data.deviceGroup={id:data.deviceGroup.id[data.deviceGroup.id.length-1]} 
             data.protocol = "string"
             data.passage = "string"
+            console.log(data)
             this.$refs[formName].validate((valid) => {
                 if (valid) {
                     addObj(data).then( res => {

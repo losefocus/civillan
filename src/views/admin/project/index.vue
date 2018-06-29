@@ -54,8 +54,8 @@
                                                     :command="composeValue(item.value,pro.row)">
                                                     {{item.label}}
                                                     </el-dropdown-item>
-                                                    <el-dropdown-item divided v-if="project_btn_edit" :command="composeValue('del',pro.row)">修改</el-dropdown-item>
-                                                    <el-dropdown-item divided v-if="project_btn_del" :command="composeValue('del',pro.row)">删除</el-dropdown-item>
+                                                    <el-dropdown-item divided v-if="project_btn_edit" :command="composeValue('edit',pro.row)">修改</el-dropdown-item>
+                                                    <el-dropdown-item  v-if="project_btn_del" :command="composeValue('del',pro.row)">删除</el-dropdown-item>
                                                 </el-dropdown-menu>
                                             </el-dropdown>
                                         </template>
@@ -104,7 +104,8 @@
                                         :command="composeValue(item.value,pro.row)">
                                         {{item.label}}
                                         </el-dropdown-item>
-                                        <el-dropdown-item divided v-if="project_btn_del" :command="composeValue('del',pro.row)">删除</el-dropdown-item>
+                                        <el-dropdown-item divided v-if="project_btn_edit" :command="composeValue('edit',pro.row)">修改</el-dropdown-item>
+                                        <el-dropdown-item v-if="project_btn_del" :command="composeValue('del',pro.row)">删除</el-dropdown-item>
                                     </el-dropdown-menu>
                                 </el-dropdown>
                                 <!-- <el-button size="small" type="danger" plain @click="delProject(pro.row)" v-if="project_btn_del">删除</el-button> -->
@@ -190,7 +191,7 @@
                         <el-checkbox label="已启用" v-model="form.status" size="small"></el-checkbox>
                         <el-button v-if="flag == 'add'" type="primary" :loading="createLoading" class="pull-right" @click="submitForm('form')" size="small" style="width:85px;" :disabled="!project_btn_add">添加</el-button>
                         <div v-else class="clearfix">
-                            <el-button  type="primary" :loading="createLoading" class="pull-left" @click="updataForm('form')" size="small" style="width:85px;">保存</el-button>
+                            <el-button  type="primary" :loading="createLoading" class="pull-left" @click="handleUpdata('form')" size="small" style="width:85px;">保存</el-button>
                             <el-button  type="info" class="pull-right" @click="cancel('form')" size="small" style="width:85px;">取消</el-button>
                         </div> 
                     </el-form-item>
@@ -208,7 +209,7 @@
 
 <script>
 import { getToken } from "@/util/auth";
-import { fetchList,fetchAdminList,addObj,uploadImg,delObj} from "@/api/project";
+import { fetchList,fetchAdminList,addObj,uploadImg,delObj,editObj} from "@/api/project";
 import { mapGetters } from "vuex";
 import waves from "@/directive/waves/index.js";
 import mapView from "./map";
@@ -419,13 +420,31 @@ export default {
             })  
         },
         updataForm(row){
-
+            this.flag = 'edit'
+            this.form = Object.assign({},row)
+            this.form.status = row.status == 1?true:false
+            this.form.tm = [new Date(row.beginAt*1000),new Date(row.endAt*1000)]
         },
-        handleUpdata(){
-
+        handleUpdata(formName){ 
+            this.$refs[formName].validate((valid) => {
+                if (valid) {
+                    this.createLoading = true
+                    let data = Object.assign({},this.form)
+                    data.status = data.status?1:0
+                    delete data.children
+                    delete data.tm
+                    editObj(data).then(res => {
+                        this.createLoading = false
+                        this.getList()
+                        this.resetForm(formName)
+                        this.alertNotify('修改')
+                    })
+                }
+            })
         },
-        cancel(){
-            
+        cancel(formName){
+            this.flag = 'add'
+            this.resetForm(formName)
         },
         resetForm(formName){
             this.$refs[formName].resetFields();
@@ -448,6 +467,7 @@ export default {
         },
         handleCommand(command){
             if(command.value == 'del') this.delProject(command.row)
+            else if(command.value == 'edit') this.updataForm(command.row)
             else{
                 this.showView = 'manage'
                 this.$refs.proManage.tabView = command.value

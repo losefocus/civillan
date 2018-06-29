@@ -42,3 +42,12 @@ export function delObj(id) {
     method: 'post'
   })
 }
+
+/* 删除 */
+export function editObj(obj) {
+  return request({
+    url: '/project/project/edit',
+    method: 'post',
+    data: obj
+  })
+}
