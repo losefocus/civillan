@@ -7,10 +7,10 @@
   "scripts": {
     "dev": "webpack-dev-server --inline --progress --config build/webpack.dev.conf.js",
     "build": "node build/build.js",
-    "start": "npm run dev",
-    "build:client": "cross-env NODE_ENV=production webpack --config build/webpack.client.conf.js --progress --hide-modules",
+    "start": "npm run build:client && npm run build:server && node server",
+    "build:client": "webpack --config build/webpack.client.conf.js --progress --hide-modules",
     "temp": "node tools/app.js",
-    "build:server": "cross-env NODE_ENV=production webpack --config build/webpack.server.conf.js --progress --hide-modules",
+    "build:server": "webpack --config build/webpack.server.conf.js --progress --hide-modules",
     "lint": "eslint --ext .js,.vue src",
     "karma": "cross-env BABEL_ENV=test karma start test/unit/karma.conf.js --single-run"
   },
