@@ -28,7 +28,7 @@ module.exports = {
     port: 8080,
     autoOpenBrowser: true,
     assetsSubDirectory: 'static',
-    host: 'localhost',
+    host: 'test1.iot.v',
     assetsPublicPath: '/',
     proxyTable: {
       '/auth': {
