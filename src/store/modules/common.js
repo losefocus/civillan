@@ -23,7 +23,7 @@ const common = {
     }) || false,
     theme: getStore({
       name: 'theme'
-    }) || '#30a487',
+    }) || '#409EFF',
     lockPasswd: getStore({
       name: 'lockPasswd'
     }) || '',

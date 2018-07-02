@@ -56,7 +56,7 @@ export default {
   width: 230px;
   height: 64px;
   line-height: 64px;
-  background: #30a487;
+  background: #409EFF;
   color: #fdfdfd;
   text-align: center;
   font-size: 20px;

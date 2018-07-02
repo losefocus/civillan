@@ -1,7 +1,7 @@
 <template>
   <div class="sidebar-container" :class="{'is-active':isCollapse}">
     <logo :isCollapse="isCollapse"></logo>
-    <el-menu unique-opened :default-active="nowTagValue" class="el-menu-vertical-demo" mode="vertical" :show-timeout="200" background-color="#fff" text-color="hsla(0,0%,0%,1)" active-text-color="#30a487" :collapse="isCollapse">
+    <el-menu unique-opened :default-active="nowTagValue" class="el-menu-vertical-demo" mode="vertical" :show-timeout="200" :collapse="isCollapse">
       <sidebar-item :menu="menu" :isCollapse="isCollapse"></sidebar-item>
     </el-menu>
   </div>

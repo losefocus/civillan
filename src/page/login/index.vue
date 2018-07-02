@@ -111,14 +111,14 @@ export default {
 .login-title {
   margin: 0 0 20px;
   text-align: center;
-  color: #30a487;
+  color: #409EFF;
   letter-spacing: 3px;
 }
 .login-submit {
   margin-top: 20px;
   width: 100%;
-  background: #30a487;
-  border-radius: 28px;
+  // background: #30a487;
+  // border-radius: 28px;
 }
 .login-form {
   margin: 10px 0;
