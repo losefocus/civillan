@@ -81,7 +81,7 @@ export default {
 }
 .addNewContainer{
     width: 260px;
-    border: 1px solid #dcdfe6;
+    border: 1px solid #ebeef5;
     padding: 10px 20px 0 20px
 }
 

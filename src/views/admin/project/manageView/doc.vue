@@ -1,5 +1,5 @@
 <template>
-    <div style="padding:20px;border:1px solid #dcdfe6">
+    <div style="padding:20px;border:1px solid #ebeef5">
         <!-- <div class="filter-container">
             <el-button class="filter-item" style="" @click="handleCreate" size="small" type="primary" icon="edit" >分组管理</el-button>
         </div> -->

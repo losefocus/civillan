@@ -1,5 +1,5 @@
 <template>
-    <div style="padding:20px;border:1px solid #dcdfe6">
+    <div style="padding:20px;border:1px solid #ebeef5">
         <div class="filter-container">
             <el-button class="filter-item" style="" @click="objectTypeVisible = true" size="small" type="primary" icon="edit" >角色管理</el-button>
         </div>
@@ -71,7 +71,7 @@
                 </el-form-item>
             </el-form>
             <div v-loading="roleListLoading">
-                <el-table :data="roleList" element-loading-text="给我一点时间" stripe border fit highlight-current-row style="width: 99%;margin-bottom:10px">
+                <el-table :data="roleList" element-loading-text="给我一点时间" stripe border fit highlight-current-row style="width: 99%;margin-bottom:10px" height="300">
                     <el-table-column align="center" label="角色">
                         <template slot-scope="scope">
                             <span>{{scope.row.role}}</span>

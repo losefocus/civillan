@@ -1,5 +1,5 @@
 <template>
-    <div style="padding:20px;border:1px solid #dcdfe6" class="equContent">
+    <div style="padding:20px;border:1px solid #ebeef5">
         <div class="filter-container">
             <el-button class="filter-item" style="" @click="handleGroup" size="small" type="primary" icon="edit" >分组管理</el-button>
         </div>
@@ -14,17 +14,17 @@
                     <span>{{scope.row.deviceGroup.name}}</span>
                 </template>
             </el-table-column>
-            <el-table-column align="center" label="key">
+            <el-table-column align="center" label="key" >
                 <template slot-scope="scope">
                     <el-tooltip class="item" effect="dark" :content="scope.row.key" placement="top">
-                        <el-button size="small">key</el-button>
+                        <el-button size="small" class="copy_key" :data-clipboard-text="scope.row.key" @click="copy('key')">key</el-button>
                     </el-tooltip>
                 </template>
             </el-table-column>
             <el-table-column align="center" label="secret">
                 <template slot-scope="scope">
                     <el-tooltip class="item" effect="dark" :content="scope.row.secret" placement="top">
-                        <el-button size="small">secret</el-button>
+                        <el-button size="small"  class="copy_secret" :data-clipboard-text="scope.row.secret" @click="copy('secret')">secret</el-button>
                     </el-tooltip>
                 </template>
             </el-table-column>
@@ -247,6 +247,26 @@ export default {
                 'value': item,
                 'row': row
             }
+        },
+        copy(type) {  
+            var clipboard = (type == 'key')?new this.Clipboard('.copy_key'):new this.Clipboard('.copy_secret');  
+            clipboard.on('success', e => {  
+                this.$message({
+                    message: '复制成功',
+                    type: 'success'
+                });
+                    // 释放内存  
+                clipboard.destroy()  
+            })  
+            clipboard.on('error', e => {  
+                // 不支持复制  
+                this.$message({
+                    message: '该浏览器不支持自动复制',
+                    type: 'warning'
+                });
+                // 释放内存  
+                clipboard.destroy()  
+            })  
         },
     },
     watch:{

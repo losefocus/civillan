@@ -1,5 +1,5 @@
 <template>
-    <div style="padding:20px;border:1px solid #dcdfe6">
+    <div style="padding:20px;border:1px solid #ebeef5">
         <div class="filter-container">
             <!-- <el-button class="filter-item" style="" @click="handleCreate" size="small" type="primary" icon="edit" >添加机构
             </el-button> -->
@@ -72,7 +72,7 @@
                 </el-form-item>
             </el-form>
             <div v-loading="typelListLoading">
-                <el-table :data="orgTypeList"  element-loading-text="给我一点时间" stripe border fit highlight-current-row style="width: 99%;margin-bottom:10px">
+                <el-table :data="orgTypeList"  element-loading-text="给我一点时间" stripe border fit highlight-current-row style="width: 99%;margin-bottom:10px" height="300">
                     <el-table-column align="center" label="类型名称">
                         <template slot-scope="scope">
                             <span>{{scope.row.name}}</span>

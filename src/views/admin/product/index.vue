@@ -30,7 +30,7 @@
                     <el-table-column align="center" label="Product key" width="95">
                         <template slot-scope="scope">
                             <el-tooltip class="item" effect="dark" :content="scope.row.key" placement="top">
-                                <el-button size="small">key</el-button>
+                                <el-button size="small" class="copy_key" :data-clipboard-text="scope.row.key" @click="copy">key</el-button>
                             </el-tooltip>
                         </template>
                     </el-table-column>
@@ -60,7 +60,7 @@
                                 <el-dropdown-menu slot="dropdown">
                                     <el-dropdown-item v-if="product_btn_variable_template" :command="composeValue('variableTemplateVisible',pro.row)">变量</el-dropdown-item>
                                     <el-dropdown-item v-if="product_btn_alert_template" :command="composeValue('alarmTemplatVisible',pro.row)">报警</el-dropdown-item>
-                                    <el-dropdown-item divided v-if="product_btn_edit" :command="composeValue('del',pro.row)">修改</el-dropdown-item>
+                                    <el-dropdown-item divided v-if="product_btn_edit" :command="composeValue('edit',pro.row)">修改</el-dropdown-item>
                                     <el-dropdown-item v-if="product_btn_del" :command="composeValue('del',pro.row)">删除</el-dropdown-item>
                                 </el-dropdown-menu>
                             </el-dropdown>
@@ -80,7 +80,7 @@
             <div class="pull-right addNewProject">
                 <h3>{{(flag == 'add')?'添加':'修改'}}产品</h3>
                 <el-form label-width="55px" :model="form" :rules="rules" ref="form">
-                    <el-form-item label="名称" prop="parentId">
+                    <el-form-item label="名称" prop="name">
                         <el-input v-model="form.name" size="small" placeholder="请输入产品名称"></el-input>
                     </el-form-item>
                     <el-form-item label="型号" prop="alias">
@@ -89,7 +89,7 @@
                     <el-form-item label="分类" prop="category">
                         <el-input v-model="form.category" size="small" placeholder="请输入内容"></el-input>
                     </el-form-item>
-                    <el-form-item label="图片">
+                    <el-form-item label="图片" prop="thumbnailUrl">
                         <el-upload
                         class="avatar-uploader"
                         ref="upload"
@@ -153,8 +153,19 @@ export default {
     },
     data(){
         return {
-            rules:{
-
+            rules: {
+                name: [
+                    { required: true, message: '请输入产品名称', trigger: 'blur' }
+                ],
+                alias: [
+                    { required: true, message: '请输入产品型号', trigger: 'blur' },
+                ],
+                category: [
+                    { required: true, message: '请输入产品分类', trigger: 'blur' },
+                ],
+                thumbnailUrl: [
+                    { required: true, message: '请添加图片', trigger: 'blur' }
+                ],
             },
             listLoading:false,
             createLoading:false,
@@ -248,6 +259,7 @@ export default {
             this.form.status = this.form.status === 1?true:false
         },
         updataForm(formName){
+            this.createLoading = true
             let data = Object.assign({},this.form)
             data.status = data.status?1:0
             updataObj(data).then(res => {
@@ -357,7 +369,27 @@ export default {
                 });
                 this.tempCreateloading = false
             })
-        }
+        },
+        copy() {  
+            var clipboard = new this.Clipboard('.copy_key');  
+            clipboard.on('success', e => {  
+                this.$message({
+                    message: '复制成功',
+                    type: 'success'
+                });
+                    // 释放内存  
+                clipboard.destroy()  
+            })  
+            clipboard.on('error', e => {  
+                // 不支持复制  
+                this.$message({
+                    message: '该浏览器不支持自动复制',
+                    type: 'warning'
+                });
+                // 释放内存  
+                clipboard.destroy()  
+            })  
+        },
     }
 }
 </script>

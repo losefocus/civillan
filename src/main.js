@@ -19,6 +19,9 @@ import {
 import * as filters from './filters' // 全局filter
 import './styles/common.scss'
 import VueAMap from 'vue-amap';
+import Clipboard from 'clipboard'; 
+
+Vue.prototype.Clipboard=Clipboard;
 Vue.use(VueAMap);
 
 Vue.config.productionTip = false
