@@ -30,7 +30,6 @@ module.exports = {
     assetsSubDirectory: 'static',
     host: '0.0.0.0',
     assetsPublicPath: '/',
-    disableHostCheck: true,
     proxyTable: {
       '/auth': {
         target: baseUrl,
