@@ -7,7 +7,7 @@
   "scripts": {
     "dev": "webpack-dev-server --inline --progress --config build/webpack.dev.conf.js",
     "build": "node build/build.js",
-    "start": "npm run build:client && npm run build:server && cross-env NODE_ENV=production node server",
+    "start": "webpack-dev-server --inline --progress --config build/webpack.dev.conf.js",
     "build:client": "cross-env NODE_ENV=production webpack --config build/webpack.client.conf.js --progress --hide-modules",
     "temp": "node tools/app.js",
     "build:server": "cross-env NODE_ENV=production webpack --config build/webpack.server.conf.js --progress --hide-modules",

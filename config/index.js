@@ -28,7 +28,7 @@ module.exports = {
     port: 8080,
     autoOpenBrowser: true,
     assetsSubDirectory: 'static',
-    host: 'localhost',
+    host: '0.0.0.0',
     assetsPublicPath: '/',
     proxyTable: {
       '/auth': {
