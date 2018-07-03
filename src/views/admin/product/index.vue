@@ -1,8 +1,8 @@
 <template>
     <div class="app-container calendar-list-container clearfix" id="product">
         <div class="filter-container">
-            <el-button class="filter-item" style="" size="small" type="primary" icon="edit" >添加产品</el-button>
-            <el-button class="filter-item" style="" size="small" type="primary" icon="edit" >分类管理</el-button>
+            <!-- <el-button class="filter-item" style="" size="small" type="primary" icon="edit" >添加产品</el-button> -->
+            <el-button class="filter-item" style="" size="small" type="primary" icon="edit" @click="classifyManage">分类管理</el-button>
         </div>
         <div class="clearfix">
             <div v-loading="listLoading" class="pull-left"  style="width:calc(100% - 320px)">
@@ -138,18 +138,23 @@
                 <el-button class="pull-right" size="small" type="primary">保存</el-button>
             </div>
         </el-dialog>
+        <el-dialog title="分类管理" :visible.sync="classifyTemplatVisible" width='690px'>
+            <category ></category>
+        </el-dialog>
     </div>
 </template>
 <script>
 import { mapGetters } from "vuex";
 import variable from "./variable";
 import alarm from "./alarm";
+import category from "./category";
 import { getToken} from "@/util/auth";
 import { fetchList,addObj,delObj,updataObj,get_templateObj,set_templateObj} from "@/api/product";
 export default {
     components:{
         variable,
         alarm,
+        category
     },
     data(){
         return {
@@ -190,6 +195,7 @@ export default {
             flag:'add',
             variableTemplateVisible:false,
             alarmTemplatVisible:false,
+            classifyTemplatVisible:false,
             productData:{name:null},
             templateData:{content:''},
             temploading:false,
@@ -216,6 +222,9 @@ export default {
         ...mapGetters(["permissions"])
     },
     methods:{
+        classifyManage(){
+            this.classifyTemplatVisible = true
+        },
         getList(){
             this.listLoading = true
             fetchList(this.listQuery).then(res => {
@@ -244,12 +253,7 @@ export default {
             ).then(() => {
                 delObj(row.id).then(res => {
                     this.getList();
-                    this.$notify({
-                        title: "成功",
-                        message: "删除成功",
-                        type: "success",
-                        duration: 2000
-                    });
+                    this.alertNotify('删除');
                 })
             })
         },
@@ -264,15 +268,8 @@ export default {
             data.status = data.status?1:0
             updataObj(data).then(res => {
                 this.getList();
-                this.resetTemp()
-                this.flag = 'add'
-                this.createLoading = false
-                this.$notify({
-                    title: "成功",
-                    message: "修改成功",
-                    type: "success",
-                    duration: 2000
-                });
+                this.cancelForm()
+                this.alertNotify('修改');
             })
         },
         cancelForm(formName){
@@ -289,12 +286,7 @@ export default {
                 this.getList();
                 this.createLoading = false;
                 this.resetTemp()
-                this.$notify({
-                    title: "成功",
-                    message: "添加成功",
-                    type: "success",
-                    duration: 2000
-                });
+                this.alertNotify('添加');
             })
         },
         uploadSuccess(response, file, fileList){
@@ -349,24 +341,17 @@ export default {
             this.temploading = true
             get_templateObj(id).then(res => {
                 this.templateData = res.data.result
-                // this.templateData.content = ('content' in res.data.result)?JSON.stringify(res.data.result.content):''
                 this.temploading = false
             })
         },
         setTemplate(){
             let data = this.templateData
-            // data.content = eval('(' + data.content + ')')
             delete data.handler
             delete data.hibernateLazyInitializer
             this.tempCreateloading = true
             set_templateObj(data).then(res => {
                 this.variableTemplateVisible = false
-                this.$notify({
-                    title: "成功",
-                    message: "保存成功",
-                    type: "success",
-                    duration: 2000
-                });
+                this.alertNotify('保存');
                 this.tempCreateloading = false
             })
         },
@@ -377,19 +362,25 @@ export default {
                     message: '复制成功',
                     type: 'success'
                 });
-                    // 释放内存  
-                clipboard.destroy()  
+                     
+                clipboard.destroy()   // 释放内存 
             })  
             clipboard.on('error', e => {  
-                // 不支持复制  
                 this.$message({
                     message: '该浏览器不支持自动复制',
                     type: 'warning'
-                });
-                // 释放内存  
+                });  
                 clipboard.destroy()  
             })  
         },
+        alertNotify(str){
+            this.$notify({
+                title: str,
+                message: str+"成功",
+                type: "success",
+                duration: 2000
+            });
+        }
     }
 }
 </script>

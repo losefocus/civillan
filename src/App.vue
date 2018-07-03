@@ -98,7 +98,7 @@ export default {
     padding-top: 0 !important
 }
 
-.projectManage .el-dialog__body{
+.projectManage .el-dialog__body,#product .el-dialog__body{
     padding-top: 0 !important
 }
 
