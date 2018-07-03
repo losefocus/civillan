@@ -70,6 +70,7 @@ export default {
                 fileBaseUrl:'',
                 filePath:'',
                 comment:'',
+                status:false
             },
             createLoading:false,
             fileName:'',
@@ -134,6 +135,7 @@ export default {
                 fileBaseUrl:'',
                 filePath:'',
                 comment:'',
+                status:false
             }
             this.fileName = ''
             this.createLoading = false

@@ -67,17 +67,12 @@ export default {
     data(){
         var reg = 11 && /^((13|14|15|17|18)[0-9]{1}\d{8})$/;
         var validataPhone = (rule, value, callback) => {
-            // if (value === '' || value== undefined) {
-            //     callback(new Error('请输入手机号码'));
-            // }else {
-                console.log(value != undefined)
-                if ((value != '' && value != undefined) && !reg.test(value)) {
-                    callback(new Error('请输入正确的手机号码'));
-                }else{
-                    callback();
-                }
-                
-            // }
+            console.log(value != undefined)
+            if ((value != '' && value != undefined) && !reg.test(value)) {
+                callback(new Error('请输入正确的手机号码'));
+            }else{
+                callback();
+            }
         };
         var validatePass = (rule, value, callback) => {
             if (value === '' || value== undefined) {
@@ -115,7 +110,7 @@ export default {
                 ],
                 name: [
                     { required: true, message: '请输入姓名', trigger: 'blur' },
-                    { min: 3, max: 20, message: "长度在 3 到 20 个字符", trigger: "blur"}
+                    { min: 2, max: 20, message: "长度在 2 到 20 个字符", trigger: "blur"}
                 ],
                 phone: [
                      { validator: validataPhone, trigger: 'blur' ,required: false},
@@ -126,11 +121,11 @@ export default {
                 ],
                 password: [
                     { validator: validatePass, trigger: 'blur' ,required: true},
-                    { min: 6, max: 20, message: "长度在 6 到 20 个字符", trigger: "blur"}
+                    { min: 6, max: 50, message: "长度在 6 到 50 个字符", trigger: "blur"}
                 ],
                 password2: [
                     { validator: validatePass2, trigger: 'blur' ,required: true},
-                    { min: 6, max: 20, message: "长度在 6 到 20 个字符", trigger: "blur"}
+                    { min: 6, max: 50, message: "长度在 6 到 50 个字符", trigger: "blur"}
                 ],
                 comment: [
                     { required: false, message: '请输入备注', trigger: 'blur' }
@@ -139,6 +134,7 @@ export default {
             form:{
                 projectOrgan : {id:null} ,
                 userRole:[],
+                status:false
             },
             role:[],
             flag:'add',
@@ -207,7 +203,7 @@ export default {
                     console.log(data)
                     updateObj(data).then(response => {
                         this.$parent.$refs.per.getList()
-                        this.resetTemp()
+                        this.cancel()
                         this.$parent.$parent.alertNotify('修改')
                     })
                 }
@@ -221,6 +217,7 @@ export default {
             this.createLoading = false
             this.form={
                 projectOrgan: {id:null} ,
+                status:false
             }
             this.role = []
         },

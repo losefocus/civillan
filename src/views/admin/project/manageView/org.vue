@@ -120,7 +120,12 @@ export default {
             typelListLoading:false,
             list:[],
             objectTypeVisible:false,
-            orgTypeForm:{},
+            orgTypeForm:{
+                name:'',
+                alias:'',
+                sort:'',
+                status:false,
+            },
             orgTypeList:[],
             flag:'add',
             listQuery: {
@@ -175,7 +180,7 @@ export default {
         // 删除机构
         deleteOrg(row){
             this.$confirm(
-                "此操作将永久删除该机构类型(类型名:" + row.name + "), 是否继续?",
+                "此操作将永久删除该机构(机构名:" + row.name + "), 是否继续?",
                 "提示",
                 {
                 confirmButtonText: "确定",
@@ -229,9 +234,8 @@ export default {
                     addObjType(data).then(res=>{
                         if(res.data.success == true){
                             this.getTypeList()
-                            this.$refs.orgTypeForm.resetFields();
                             this.$parent.$parent.alertNotify('添加')
-                            this.createLoading = false
+                            this.resetType()
                         }
                     })
                 }
@@ -274,20 +278,24 @@ export default {
             updateObjType(data).then(res => {
                 if(res.data.success == true){
                     this.getTypeList()
-                    this.orgTypeForm = {}
                     this.flag = 'add'
                     this.$parent.$parent.alertNotify('修改')
-                    this.createLoading = false
+                    this.resetType()
                 }
             })
         },
         cancelEdit(formName){
-            this.flag = 'add',
-            this.orgTypeForm = {}
-            this.createLoading = false
+            this.flag = 'add'
+            this.resetType()
         },
         resetType(){
-            this.orgTypeForm = {}
+            this.createLoading = false
+            this.orgTypeForm={
+                name:'',
+                alias:'',
+                sort:'',
+                status:false,
+            }
         }
         
     }

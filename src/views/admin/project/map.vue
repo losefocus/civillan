@@ -6,6 +6,7 @@
 </template>
 <script>
 export default {
+    props:['stationData'],
     data(){
         return {
             mapHeight:{height:'100px'}
@@ -27,31 +28,39 @@ export default {
         initMap(){
             var map = new AMap.Map('container', {
                 resizeEnable: true,
-                zoom:15,
+                zoom:13,
                 center: [120.007321,30.263739]
             });
-            
             map.clearMap();  // 清除地图覆盖物
-            var markers = [{
-                icon: 'http://webapi.amap.com/theme/v1.3/markers/n/mark_b1.png',
-                position: [120.007321,30.263739]
-            }, {
-                icon: 'http://webapi.amap.com/theme/v1.3/markers/n/mark_b2.png',
-                position: [120.097272,30.28983]
-            }, {
-                icon: 'http://webapi.amap.com/theme/v1.3/markers/n/mark_b3.png',
-                position: [120.182416,30.411893]
-            }];
 
+            var markers = [],
+                positions=[]
+            this.stationData.forEach(function(data) {
+                let marker = {position:[data.position.split(',')[0],data.position.split(',')[1]],title:data.name}
+                let position = [data.position.split(',')[0],data.position.split(',')[1]]
+                markers.push(marker)
+                positions.push(position)
+            })
             markers.forEach(function(marker) {
                 new AMap.Marker({
                     map: map,
                     icon: marker.icon,
                     position: [marker.position[0], marker.position[1]],
-                    offset: new AMap.Pixel(-12, -36)
+                    offset: new AMap.Pixel(-12, -36),
+                    title:marker.title
                 });
             });
 
+            // console.log(positions)
+            // //1.把想自适应的部分的点装在一个透明的覆盖物图层里
+            // var polygon = new AMap.Polygon({
+            //     path : positions,  //以5个点的坐标创建一个隐藏的多边形
+            //     map:map,
+            //     strokeOpacity:0,//透明
+            //     fillOpacity:0,//透明
+            //     bubble:true//事件穿透到地图
+            // });
+            // var overlaysList = map.getAllOverlays('polygon');//获取多边形图层
             map.setFitView();
         }
     }

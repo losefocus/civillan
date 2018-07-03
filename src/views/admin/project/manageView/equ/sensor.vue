@@ -21,14 +21,13 @@
                     </el-option>
                 </el-select>
             </el-form-item>
-            
             <el-form-item  :style="flag == 'add'?'width: 140px':'width: 220px'" class="pull-right" style="padding-top:5px">
                 <div v-if="flag == 'add'">
-                    <el-button size="small" type="primary" class="pull-right" @click="handleAdd('form')" :loading="createdLoading">添加</el-button>
+                    <el-button size="mini" type="primary" class="pull-right" @click="handleAdd('form')" :loading="createdLoading">添加</el-button>
                 </div>
                 <div v-else >
-                    <el-button size="small" type="info" class="pull-right" style="margin-left:10px" @click="cancelEdit('form')">取消</el-button>
-                    <el-button size="small" type="primary" class="pull-right" @click="handleEdit('form')" :loading="createdLoading">保存</el-button>
+                    <el-button size="mini" type="info" class="pull-right" style="margin-left:10px" @click="cancelEdit('form')">取消</el-button>
+                    <el-button size="mini" type="primary" class="pull-right" @click="handleEdit('form')" :loading="createdLoading">保存</el-button>
                 </div>
             </el-form-item>
             <el-form-item class="pull-right">
@@ -59,8 +58,8 @@
                 </el-table-column>
                 <el-table-column align="center" label="操作" width="160" style="float:right">
                     <template slot-scope="scope">
-                        <el-button size="small" type="success" plain @click="updateList(scope.row)">修改</el-button>
-                        <el-button size="small" type="danger" plain @click="deleteList(scope.row)">删除</el-button>
+                        <el-button size="mini" type="success" plain @click="updateList(scope.row)">修改</el-button>
+                        <el-button size="mini" type="danger" plain @click="deleteList(scope.row)">删除</el-button>
                     </template>
                 </el-table-column>
             </el-table>
@@ -147,7 +146,7 @@ export default {
         },
         deleteList(row){
             this.$confirm(
-                "此操作将永久删除该变量(变量名:" + row.title + "), 是否继续?",
+                "此操作将永久删除该变量(变量名:" + row.name + "), 是否继续?",
                 "提示",
                 {
                 confirmButtonText: "确定",
@@ -181,7 +180,7 @@ export default {
             editObj(data).then(res => {
                 this.getList(this.listQuery)
                 this.$parent.$parent.$parent.$parent.alertNotify('修改')
-                this.resetTem()
+                this.cancelEdit()
             })
         },
         cancelEdit(){

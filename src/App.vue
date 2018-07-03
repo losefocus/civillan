@@ -97,13 +97,8 @@ export default {
 .el-form-item__error{
     padding-top: 0 !important
 }
-#orgType .el-dialog__body{
-    padding-top: 0 !important
-}
-#product .el-dialog__body{
-    padding-top: 0 !important
-}
-.equContent .el-dialog__body{
+
+.projectManage .el-dialog__body{
     padding-top: 0 !important
 }
 

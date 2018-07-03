@@ -31,6 +31,9 @@
             <el-form-item label="固件" prop="firmware">
                 <el-input v-model="form.firmware" size="small" placeholder="请输入内容"></el-input>
             </el-form-item>
+            <el-form-item label="位置" prop="position">
+                <el-input v-model="form.position" size="small" readonly placeholder="请选择位置" @focus="positionPicker"></el-input>
+            </el-form-item>
             <el-form-item label="图片" prop="thumbnailBaseUrl">
                 <el-upload
                     class="avatar-uploader"
@@ -64,6 +67,9 @@
                 </div>                 
             </el-form-item>
         </el-form>
+        <el-dialog :visible.sync="positionVisible" id="mapPosition">
+            <map-position></map-position>
+        </el-dialog>
     </div>
 </template>
 <script>
@@ -71,7 +77,11 @@ import { mapGetters } from "vuex";
 import { getToken } from "@/util/auth";
 import { toTree } from "@/util/util";
 import {addObj,fetchProductList,updataObj,getGroupObj} from "@/api/project_equ";
+import mapPosition from "../mapPosition";
 export default {
+    components:{
+        mapPosition
+    },
     props:['projectInfo'],
     data(){
         return {
@@ -86,7 +96,7 @@ export default {
                     { required: true, message: '请输入名称', trigger: 'blur' }
                 ],
                 thumbnailBaseUrl: [
-                    { required: true, message: '请添加图片', trigger: 'blur' }
+                    { required: false, message: '请添加图片', trigger: 'blur' }
                 ],
                 firmware: [
                     { required: true, message: '请输入固件', trigger: 'blur' }
@@ -108,6 +118,7 @@ export default {
                 productId:'',
                 alias:'',
                 name:'',
+                position:'',
                 firmware:'',
                 thumbnailPath:'',
                 thumbnailBaseUrl:'',
@@ -117,7 +128,7 @@ export default {
                     id:[]
                 }
             },
-            // groupOptions:[],
+            positionVisible:false,
             disabled:false,
             productHash:{},
             imageName:'',
@@ -164,12 +175,14 @@ export default {
                 this.$store.commit("SET_GROUPOPTIONS", groupOptions);
             })
         },
+        positionPicker(){
+            this.positionVisible = true
+        },
         submitForm(formName){
             let data = Object.assign({},this.form)
             data.projectId = this.projectInfo.id
             data.status = data.status?1:0
             data.alias = this.productHash[data.productId]
-            // data.deviceGroup.id = data.deviceGroup.id[data.deviceGroup.id.length-1]
             data.deviceGroup={id:data.deviceGroup.id[data.deviceGroup.id.length-1]} 
             data.protocol = "string"
             data.passage = "string"
@@ -189,10 +202,12 @@ export default {
         updataForm(formName){
             this.$refs[formName].validate((valid) => {
                 if (valid) {
-                    this.form.status = this.form.status?1:0
-                    this.form.alias = this.productHash[data.productId]
+                    let data = Object.assign({},this.form)
+                    data.status = data.status?1:0                   
+                    data.alias = this.productHash[data.productId]
+                    data.deviceGroup={id:data.deviceGroup.id[data.deviceGroup.id.length-1]} 
                     this.createLoading = true
-                    updataObj(this.form).then(response => {
+                    updataObj(data).then(response => {
                         this.createLoading = false
                         this.$parent.$refs.equ.getList()
                         this.resetTemp()
@@ -212,6 +227,7 @@ export default {
                 productId:'',
                 alias:'',
                 name:'',
+                position:'',
                 firmware:'',
                 thumbnailPath:'',
                 thumbnailBaseUrl:'',

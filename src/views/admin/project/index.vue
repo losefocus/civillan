@@ -134,11 +134,11 @@
                     <el-form-item label="名称" prop="name">
                         <el-input v-model="form.name" size="small" placeholder="请输入内容"></el-input>
                     </el-form-item>
-                    <el-form-item label="工期" prop="tm">
+                    <el-form-item label="工期" prop="beginAt">
                         <el-date-picker
                         style="width:195px"
                         size="small"
-                        v-model="form.tm"
+                        v-model="tm"
                         type="daterange"
                         range-separator="至"
                         start-placeholder="开始日期"
@@ -168,14 +168,14 @@
                         name="uploadFile"
                         :show-file-list ="false"
                         :on-success="uploadSuccess"
-                        :file-list="form.fileList"
+                        :file-list="fileList"
                         :auto-upload="true">
                             <el-button slot="trigger" size="small" type="primary">选取</el-button>
-                            <el-input v-model="form.imageName" style="width:135px" size="small" placeholder="请选取图片"></el-input>
+                            <el-input v-model="imageName" style="width:135px" size="small" placeholder="请选取图片"></el-input>
                         </el-upload>
                     </el-form-item>
                     <el-form-item label="位置" prop="position">
-                        <el-input v-model="form.position" size="small" placeholder="请输入内容" @focus="positionPicker"></el-input>
+                        <el-input v-model="form.position" size="small" readonly placeholder="请选择位置" @focus="positionPicker"></el-input>
                     </el-form-item>
                     <el-form-item label="备注" prop="comment">
                         <el-input
@@ -198,8 +198,8 @@
                 </el-form>
             </div>
         </div>
-        <div v-if="showView === 'mapView'">
-            <map-view ></map-view>
+        <div v-if="showView === 'mapView'" >
+            <map-view :station-data="mapList"></map-view>
         </div>
         <div v-show="showView === 'manage'">
             <project-manage ref="proManage" :view-data='viewData'></project-manage>
@@ -234,7 +234,7 @@ export default {
                 name: [
                     { required: true, message: '请输入项目名称', trigger: 'blur' }
                 ],
-                tm: [
+                beginAt: [
                     { required: true, message: '请选择工期', trigger: 'blur' }
                 ],
                 adminer: [
@@ -257,6 +257,7 @@ export default {
                 page_size: 20
             },
             listLoading:false,
+            mapList:[],
             list:[],
             total:null,
             btnList:[
@@ -290,16 +291,17 @@ export default {
             form:{
                 parentId:0,
                 name:'',
-                tm:'',
+                beginAt:null,
                 adminer:'',
                 thumbnailPath:'',
                 thumbnailUrl:'',
-                imageName:'',
                 position:'',
                 comment:'',
                 status:0,
-                fileList: []
             },
+            tm:[],
+            imageName:'',
+            fileList: [],
             flag:'add',
             headers:{Authorization: "Bearer " + getToken()},
             params:{component :'project'},
@@ -339,6 +341,7 @@ export default {
                     hash[datas[i].id] = datas[i].username
                 } 
                 this.adminerOptions = options
+                console.log(this.adminerOptions)
                 this.$store.commit("SET_ADMINERHASH",hash);
                 this.adminerOptionsloading = false
             })
@@ -348,6 +351,7 @@ export default {
             this.listLoading = true
             fetchList(this.listQuery).then(response => {
                 let datas = response.data.result.items;
+                this.mapList = datas
                 this.list = this.arrayToJson(datas);
                 this.total = response.data.result.total;
                 this.listLoading = false;
@@ -383,8 +387,8 @@ export default {
         uploadSuccess(response, file, fileList){
             this.form.thumbnailPath = response.result.path
             this.form.thumbnailUrl = response.result.baseUrl
-            this.form.imageName = response.result.name
-            this.form.fileList = []
+            this.imageName = response.result.name
+            this.fileList = []
         },  
         positionPicker(){
             this.positionVisible = true
@@ -395,13 +399,13 @@ export default {
                 if (valid) {
                     this.createLoading = true
                     let formData = Object.assign({}, this.form);
-                    formData.beginAt = Math.round(new Date(formData.tm[0]).getTime()/1000);
-                    formData.endAt = Math.round(new Date(formData.tm[1]).getTime()/1000);
-                    formData.adminer = formData.adminer.toString()
+                    formData.beginAt = Math.round(new Date(this.tm[0]).getTime()/1000);
+                    formData.endAt = Math.round(new Date(this.tm[1]).getTime()/1000);
+                    formData.adminer = formData.adminer
                     formData.status = formData.status?1:0
-                    delete formData.tm
-                    delete formData.fileList
-                    delete formData.imageName
+                    // delete formData.tm
+                    // delete formData.fileList
+                    // delete formData.imageName
                     addObj(formData).then(response => {
                         this.createLoading = false
                         this.getList()
@@ -429,19 +433,23 @@ export default {
             })  
         },
         updataForm(row){
+            console.log(row)
             this.flag = 'edit'
             this.form = Object.assign({},row)
             this.form.status = row.status == 1?true:false
-            this.form.tm = [new Date(row.beginAt*1000),new Date(row.endAt*1000)]
+            this.form.adminer = parseInt(row.adminer) 
+            this.tm = [new Date(row.beginAt*1000),new Date(row.endAt*1000)]
         },
         handleUpdata(formName){ 
             this.$refs[formName].validate((valid) => {
                 if (valid) {
                     this.createLoading = true
                     let data = Object.assign({},this.form)
+                    data.beginAt = Math.round(new Date(this.tm[0]).getTime()/1000);
+                    data.endAt = Math.round(new Date(this.tm[1]).getTime()/1000);
                     data.status = data.status?1:0
                     delete data.children
-                    delete data.tm
+                    // delete data.tm
                     editObj(data).then(res => {
                         this.createLoading = false
                         this.getList()
@@ -457,6 +465,19 @@ export default {
         },
         resetForm(formName){
             this.$refs[formName].resetFields();
+            this.form={
+                parentId:0,
+                name:'',
+                adminer:'',
+                thumbnailPath:'',
+                thumbnailUrl:'',
+                position:'',
+                comment:'',
+                status:0,
+            }
+            this.tm=[]
+            this.imageName=''
+            this.fileList=[]
         },
         handleFilter(){
             this.listQuery.page_index = 1;
@@ -503,7 +524,7 @@ export default {
 
 <style scoped>
 .el-form-item{
-    margin-bottom: 15px
+    margin-bottom: 15px;
 }
 .addNewProject{
     width: 260px;

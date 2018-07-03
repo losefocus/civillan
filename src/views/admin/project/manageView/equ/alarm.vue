@@ -192,7 +192,7 @@ export default {
             editObj(data).then(res => {
                 this.getList(this.listQuery)
                 this.$parent.$parent.$parent.$parent.alertNotify('修改')
-                this.resetTem()
+                this.cancelEdit()
             })
         },
         cancelEdit(){

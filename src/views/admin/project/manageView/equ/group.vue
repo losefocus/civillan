@@ -126,7 +126,7 @@ export default {
                 }
             ],
             form:{
-                parentId:[],
+                parentId:[0],
                 name:'',
                 sort:'',
                 comment:'',
@@ -234,7 +234,7 @@ export default {
             editObj(data).then(res => {
                 this.getList()
                 this.$parent.$parent.$parent.$parent.alertNotify('修改')
-                this.resetTem()
+                this.cancelEdit()
             })
         },
         cancelEdit(){
@@ -243,7 +243,7 @@ export default {
         },
         resetTem(){
             this.form={
-                parentId:[],
+                parentId:[0],
                 name:'',
                 sort:'',
                 comment:'',
