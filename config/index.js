@@ -80,6 +80,13 @@ module.exports = {
           '^/notification': '/notification'
         }
       },
+      '/certificate': {
+        target: baseUrl,
+        changeOrigin: true,
+        pathRewrite: {
+          '^/certificate': '/certificate'
+        }
+      },
     },
     cssSourceMap: false
   }
