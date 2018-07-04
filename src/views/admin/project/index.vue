@@ -159,7 +159,7 @@
                     </el-form-item>
                     <el-form-item label="图片" prop="thumbnailPath">
                         <el-upload
-                        class="upload-demo"
+                        class="avatar-uploader"
                         ref="upload"
                         :headers="headers"
                         action="/file/attachment/upload"
@@ -170,8 +170,10 @@
                         :on-success="uploadSuccess"
                         :file-list="fileList"
                         :auto-upload="true">
-                            <el-button slot="trigger" size="small" type="primary">选取</el-button>
-                            <el-input v-model="imageName" style="width:135px" size="small" placeholder="请选取图片"></el-input>
+                            <!-- <el-button slot="trigger" size="small" type="primary">选取</el-button>
+                            <el-input v-model="imageName" style="width:135px" size="small" placeholder="请选取图片"></el-input> -->
+                            <img v-if="form.thumbnailUrl!='' && form.thumbnailUrl!=undefined" :src="form.thumbnailUrl+form.thumbnailPath" class="avatar">
+                            <i v-else class="el-icon-plus avatar-uploader-icon"></i>
                         </el-upload>
                     </el-form-item>
                     <el-form-item label="位置" prop="position">
@@ -241,7 +243,7 @@ export default {
                     { required: true, message: '请选择管理员', trigger: 'change' }
                 ],
                 thumbnailPath: [
-                    { required: true, message: '请添加图片', trigger: 'blur' }
+                    { required: false, message: '请添加图片', trigger: 'blur' }
                 ],
                 position: [
                     { required: true, message: '请选择位置', trigger: 'blur' }
@@ -341,7 +343,6 @@ export default {
                     hash[datas[i].id] = datas[i].username
                 } 
                 this.adminerOptions = options
-                console.log(this.adminerOptions)
                 this.$store.commit("SET_ADMINERHASH",hash);
                 this.adminerOptionsloading = false
             })
@@ -523,6 +524,36 @@ export default {
 </script>
 
 <style scoped>
+.avatar-uploader{
+     height: 193px;
+}
+.avatar-uploader .el-upload {
+    border: 1px dashed #d9d9d9;
+    border-radius: 6px;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+  }
+  .avatar-uploader .el-upload:hover {
+    border-color: #409EFF;
+  }
+  .avatar-uploader-icon {
+    font-size: 28px;
+    color: #8c939d;
+    width: 193px;
+    height: 193px;
+    line-height: 193px;
+    text-align: center;
+    border: 1px solid #dcdfe6;
+    border-radius: 4px;
+  }
+  .avatar {
+    width: 193px;
+    height: 193px;
+    display: block;
+    border-radius: 4px;
+  }
+
 .el-form-item{
     margin-bottom: 15px;
 }
