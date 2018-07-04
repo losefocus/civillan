@@ -95,7 +95,7 @@ export default {
   height: 0 !important;
 }
 .el-form-item__error{
-    padding-top: 0 !important
+    padding-top: 2px !important
 }
 
 .projectManage .el-dialog__body,#product .el-dialog__body{

@@ -73,6 +73,13 @@ module.exports = {
           '^/product': '/product'
         }
       },
+      '/notification': {
+        target: baseUrl,
+        changeOrigin: true,
+        pathRewrite: {
+          '^/notification': '/notification'
+        }
+      },
     },
     cssSourceMap: false
   }
