@@ -2,7 +2,7 @@
     <div class="app-container calendar-list-container clearfix" id="product">
         <div class="filter-container">
             <!-- <el-button class="filter-item" style="" size="small" type="primary" icon="edit" >添加产品</el-button> -->
-            <el-button class="filter-item" style="" size="small" type="primary" icon="edit" @click="classifyManage">分类管理</el-button>
+            <el-button class="filter-item" style="" size="small" type="primary" icon="edit" @click="classifyTemplatVisible=true">分类管理</el-button>
         </div>
         <div class="clearfix">
             <div v-loading="listLoading" class="pull-left"  style="width:calc(100% - 320px)">
@@ -24,7 +24,7 @@
                     </el-table-column>
                     <el-table-column align="center" label="所属分类">
                         <template slot-scope="scope">
-                            <span>{{scope.row.category}}</span>
+                            <span>{{categoryHash.get(scope.row.category)}}</span>
                         </template>
                     </el-table-column>
                     <el-table-column align="center" label="Product key" width="95">
@@ -87,7 +87,15 @@
                         <el-input v-model="form.alias" size="small" placeholder="请输入内容"></el-input>
                     </el-form-item>
                     <el-form-item label="分类" prop="category">
-                        <el-input v-model="form.category" size="small" placeholder="请输入内容"></el-input>
+                        <!-- <el-input v-model="form.category" size="small" placeholder="请输入内容"></el-input> -->
+                        <el-select v-model="form.category" size="small" placeholder="请选择分类">
+                            <el-option
+                            v-for="item in categoryOptions"
+                            :key="item.value"
+                            :label="item.label"
+                            :value="item.value">
+                            </el-option>
+                        </el-select>
                     </el-form-item>
                     <el-form-item label="图片" prop="thumbnailUrl">
                         <el-upload
@@ -125,7 +133,7 @@
                     产 品 : {{productData.name}} 
                 </div>
                 <el-input style="padding:20px 0" type="textarea" :rows="10" placeholder="请输入内容" v-model="templateData.content"></el-input>
-                <el-button class="pull-right" size="small" type="primary" @click="setTemplate" :loading="tempCreateloading">保存</el-button>
+                <el-button class="pull-right" size="mini" type="primary" @click="setTemplate" :loading="tempCreateloading">保存</el-button>
             </div>
         </el-dialog>
         <el-dialog id="alarm" title="报警模板"  :visible.sync="alarmTemplatVisible" width='690px'>
@@ -135,11 +143,11 @@
                     产 品 : {{productData.name}} 
                 </div>
                 <el-input style="padding:20px 0" type="textarea" :rows="10" placeholder="请输入内容" v-model="templateData.content"></el-input>
-                <el-button class="pull-right" size="small" type="primary">保存</el-button>
+                <el-button class="pull-right" size="mini" type="primary">保存</el-button>
             </div>
         </el-dialog>
         <el-dialog title="分类管理" :visible.sync="classifyTemplatVisible" width='690px'>
-            <category ></category>
+            <category @showCategoryOptions="getParentOptions" @showCategoryHash="getParentHash"></category>
         </el-dialog>
     </div>
 </template>
@@ -149,7 +157,8 @@ import variable from "./variable";
 import alarm from "./alarm";
 import category from "./category";
 import { getToken} from "@/util/auth";
-import { fetchList,addObj,delObj,updataObj,get_templateObj,set_templateObj} from "@/api/product";
+import { toTree } from "@/util/util";
+import { fetchList,fetchCategoryList,addObj,delObj,updataObj,get_templateObj,set_templateObj} from "@/api/product";
 export default {
     components:{
         variable,
@@ -169,7 +178,7 @@ export default {
                     { required: true, message: '请输入产品分类', trigger: 'blur' },
                 ],
                 thumbnailUrl: [
-                    { required: true, message: '请添加图片', trigger: 'blur' }
+                    { required: false, message: '请添加图片', trigger: 'blur' }
                 ],
             },
             listLoading:false,
@@ -188,6 +197,8 @@ export default {
                 thumbnailUrl:'',
                 status:false
             },
+            categoryOptions:[],
+            categoryHash:{},
             imageName:'',
             fileList:[],
             headers:{Authorization: "Bearer " + getToken()},
@@ -208,7 +219,7 @@ export default {
         }
     },
     created() {
-        this.getList()
+        this.getAllList()
         this.product_btn_add = this.permissions["product_btn_add"];
         this.product_btn_edit = this.permissions["product_btn_edit"];
         this.product_btn_del = this.permissions["product_btn_del"];
@@ -222,6 +233,32 @@ export default {
         ...mapGetters(["permissions"])
     },
     methods:{
+        getAllList(){
+            this.listLoading = true
+            Promise.all([fetchList(),fetchCategoryList()]).then(results => {
+                let res1 = results[0],res2 = results[1]
+                //产品列表
+                this.list = res1.data.result.items
+                this.total = res1.data.result.total
+                //分类处理
+                let data = res2.data.result.items
+                let newMap = new Map();
+                newMap.set(0,'无')
+                for (let i=0; i<data.length; i++) {
+                    newMap.set(data[i].id,data[i].name)
+                }
+                this.categoryHash = newMap
+                this.categoryOptions = toTree(data)
+                this.categoryOptions.unshift({value:0,label:'无'})
+                this.listLoading = false
+            });
+        },
+        getParentOptions(msg) {
+            this.categoryOptions = msg
+        },
+        getParentHash(msg) {
+            this.categoryHash = msg
+        },
         classifyManage(){
             this.classifyTemplatVisible = true
         },
@@ -263,14 +300,19 @@ export default {
             this.form.status = this.form.status === 1?true:false
         },
         updataForm(formName){
-            this.createLoading = true
-            let data = Object.assign({},this.form)
-            data.status = data.status?1:0
-            updataObj(data).then(res => {
-                this.getList();
-                this.cancelForm()
-                this.alertNotify('修改');
-            })
+            this.$refs[formName].validate((valid) => {
+                if (valid) {
+                    this.createLoading = true
+                    let data = Object.assign({},this.form)
+                    data.status = data.status?1:0
+                    updataObj(data).then(res => {
+                        this.getList();
+                        this.cancelForm()
+                        this.alertNotify('修改');
+                    })
+                }
+            })    
+            
         },
         cancelForm(formName){
             this.resetTemp()
@@ -278,16 +320,21 @@ export default {
             this.createLoading = false
         },
         submitForm(formName){
-            let data = Object.assign({},this.form)
-            data.status = data.status?1:0
-            data.category = 1
-            this.createLoading = true
-            addObj(data).then(res => {
-                this.getList();
-                this.createLoading = false;
-                this.resetTemp()
-                this.alertNotify('添加');
+            this.$refs[formName].validate((valid) => {
+                if (valid) {
+                    let data = Object.assign({},this.form)
+                    data.status = data.status?1:0
+                    data.category = 1
+                    this.createLoading = true
+                    addObj(data).then(res => {
+                        this.getList();
+                        this.createLoading = false;
+                        this.resetTemp()
+                        this.alertNotify('添加');
+                    })
+                }
             })
+            
         },
         uploadSuccess(response, file, fileList){
             this.form.thumbnailPath = response.result.path

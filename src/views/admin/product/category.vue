@@ -1,22 +1,30 @@
 <template>
     <div>
-        <el-form :model="form" class="clearfix" ref="form" label-width="50px">
+        <el-form :model="form" class="clearfix" ref="form" size="mini" label-width="50px">
             <el-form-item label="名称" style="width: 215px">
-                <el-input v-model="form.name" size="small" auto-complete="off"></el-input>
+                <el-input v-model="form.name" size="mini" auto-complete="off"></el-input>
             </el-form-item>
-            <el-form-item label="分类" style="width: 220px;">
-                <el-input v-model="form.parentId" size="small" auto-complete="off"></el-input>
+            <el-form-item label="上级分类" style="width: 220px;" label-width="75px">
+                <!-- <el-input v-model="form.parentId" size="mini" auto-complete="off"></el-input> -->
+                <el-select v-model="form.parentId" size="mini" placeholder="请选择分类">
+                    <el-option
+                    v-for="item in categoryOptions"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value">
+                    </el-option>
+                </el-select>
             </el-form-item>
             <el-form-item label="排序" style="width: 215px;">
-                <el-input v-model="form.sort" size="small" auto-complete="off"></el-input>
+                <el-input v-model="form.sort" size="mini" auto-complete="off"></el-input>
             </el-form-item>
             <el-form-item  :style="flag == 'add'?'width: 120px':'width: 200px'" class="pull-right" style="padding-top:5px">
                 <div v-if="flag == 'add'">
-                    <el-button size="small" type="primary" class="pull-right" @click="handleAdd('form')" :loading="createdLoading">添加</el-button>
+                    <el-button size="mini" type="primary" class="pull-right" @click="handleAdd('form')" :loading="createdLoading">添加</el-button>
                 </div>
                 <div v-else>
-                    <el-button size="small" type="info" class="pull-right" style="margin-left:10px" @click="cancelEdit('form')">取消</el-button>
-                    <el-button size="small" type="primary" class="pull-right" @click="handleEdit('form')" :loading="createdLoading">保存</el-button>
+                    <el-button size="mini" type="info" class="pull-right" style="margin-left:10px" @click="cancelEdit('form')">取消</el-button>
+                    <el-button size="mini" type="primary" class="pull-right" @click="handleEdit('form')" :loading="createdLoading">保存</el-button>
                 </div>
             </el-form-item>
             <el-form-item class="pull-right">
@@ -30,9 +38,9 @@
                         <span>{{scope.row.name}}</span>
                     </template>
                 </el-table-column>
-                <el-table-column align="center" label="分类">
+                <el-table-column align="center" label="上级分类">
                     <template slot-scope="scope">
-                        <span>{{scope.row.parentId}}</span>
+                        <span>{{categoryHash.get(scope.row.parentId)}}</span>
                     </template>
                 </el-table-column>
                 <el-table-column align="center" label="排序">
@@ -71,37 +79,12 @@ export default {
         return {
             listLoading:false,
             createdLoading:false,
-            options:[
-                {
-                    value: 0,
-                    label: '从不通知'
-                },{
-                    value: 1,
-                    label: '仅一次'
-                },{
-                    value: 5,
-                    label: '每隔5分钟'
-                },{
-                    value: 30,
-                    label: '每隔30分钟'
-                },{
-                    value: 60,
-                    label: '每隔1小时'
-                },{
-                    value: 1440,
-                    label: '每隔1天'
-                }
-            ],
             form:{
                 parentId:'',
                 name:'',
                 sort:'',
                 status:'',
             },
-            selectedOptions2:[],
-            fileList:[],
-            headers:{Authorization: "Bearer " + getToken()},
-            params:{component :'project'},
             flag:'add',
             listQuery:{
                 page_index: 1,
@@ -109,8 +92,8 @@ export default {
             },
             total:null,
             list:null,
-            parentOptions:[],
-            parentHash:{0:'无'}
+            categoryOptions:[],
+            categoryHash:{0:'无'}
         }
     },
     created() {
@@ -123,11 +106,6 @@ export default {
         ...mapGetters(["alarmList"]),
     },
     methods:{
-        uploadSuccess(response, file, fileList){
-            this.form.thumbnailPath = response.result.path
-            this.form.thumbnailBaseUrl = response.result.baseUrl
-            this.fileList = []
-        },
         handleSizeChange(val) {
             this.listQuery.page_size = val;
             this.getList();
@@ -139,18 +117,20 @@ export default {
         getList(){
             this.resetTem()
             this.listLoading = true
-            // this.listQuery.projectId = this.$parent.$parent.projectInfo.id
             fetchList(this.listQuery).then(res => {
                 this.list = res.data.result.items
                 this.total = res.data.result.total
                 this.listLoading = false
+                let newMap = new Map();
+                newMap.set(0,'无')
                 for (let i=0; i<this.list.length; i++) {
-                    this.parentHash[this.list[i].id] = this.list[i].name
+                    newMap.set(this.list[i].id,this.list[i].name)
                 }
-                this.parentOptions = toTree(this.list)
-                let [...groupOptions] = this.parentOptions
-                this.$store.commit("SET_GROUPOPTIONS", groupOptions);
-                this.parentOptions.unshift({value:0,label:'无'})
+                this.categoryHash = newMap
+                this.categoryOptions = toTree(this.list)
+                this.categoryOptions.unshift({value:0,label:'无'})
+                this.$emit('showCategoryOptions',this.categoryOptions);
+                this.$emit('showCategoryHash',this.categoryHash);
             })
         },
         updateList(row){
