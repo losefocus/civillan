@@ -28,10 +28,10 @@
         <el-card class="box-card">
           <el-form :label-position="labelPosition" label-width="80px" :model="form" ref="form">
             <el-form-item label="父级节点" prop="parentId">
-              <el-input v-model="form.parentId" :disabled="formEdit" placeholder="请输入父级节点"></el-input>
+              <el-input v-model="form.parentId" disabled placeholder="请输入父级节点"></el-input>
             </el-form-item>
             <el-form-item label="节点ID" prop="parentId">
-              <el-input v-model="form.id" :disabled="formEdit" placeholder="请输入节点ID"></el-input>
+              <el-input v-model="form.id" disabled placeholder="请输入节点ID"></el-input>
             </el-form-item>
             <el-form-item label="标题" prop="name">
               <el-input v-model="form.name" :disabled="formEdit"  placeholder="请输入标题"></el-input>
@@ -42,8 +42,8 @@
             <el-form-item label="图标" prop="icon">
               <el-input v-model="form.icon" :disabled="formEdit" placeholder="请输入图标"></el-input>
             </el-form-item>
-            <el-form-item label="资源路径" prop="url">
-              <el-input v-model="form.url" :disabled="formEdit" placeholder="请输入资源路径"></el-input>
+            <el-form-item label="资源路径" prop="route">
+              <el-input v-model="form.route" :disabled="formEdit" placeholder="请输入资源路径"></el-input>
             </el-form-item>
             <el-form-item label="请求方法" prop="method">
               <el-select class="filter-item" v-model="form.method"  :disabled="formEdit"  placeholder="请输入资源请求类型">
@@ -116,7 +116,7 @@
           name: undefined,
           menuId: undefined,
           parentId: undefined,
-          url: undefined,
+          route: undefined,
           icon: undefined,
           sort: undefined,
           component: undefined,
@@ -270,7 +270,7 @@
           name: undefined,
           menuId: undefined,
           parentId: this.currentId,
-          url: undefined,
+          route: undefined,
           icon: undefined,
           sort: undefined,
           component: undefined,
