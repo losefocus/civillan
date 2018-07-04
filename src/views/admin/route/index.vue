@@ -64,7 +64,7 @@
       </el-pagination>
     </div>
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
-      <el-form :model="form" :rules="rules" ref="form" label-width="100px">
+      <el-form :model="form" :rules="rules" ref="form" label-width="100px" class="clearfix">
         <el-form-item label="服务名称" prop="serviceId">
           <el-input v-model="form.serviceId" placeholder="服务名称"></el-input>
         </el-form-item>
@@ -74,25 +74,25 @@
         <el-form-item label="转发地址" prop="url">
           <el-input v-model="form.url" placeholder="转发地址"></el-input>
         </el-form-item>
-        <el-form-item label="去掉前缀" prop="stripPrefix">
+        <el-form-item label="去掉前缀" prop="stripPrefix" style="width:50%" class="pull-left">
           <el-radio-group v-model="form.stripPrefix">
             <el-radio label="0">否</el-radio>
             <el-radio label="1">是</el-radio>
           </el-radio-group>
         </el-form-item>
-        <el-form-item label="是否重试" prop="retryable">
+        <el-form-item label="是否重试" prop="retryable" style="width:50%"  class="pull-right">
           <el-radio-group v-model="form.retryable">
             <el-radio label="0">否</el-radio>
             <el-radio label="1">是</el-radio>
           </el-radio-group>
         </el-form-item>
-        <el-form-item label="是否启用" prop="enabled">
+        <el-form-item label="是否启用" prop="enabled" style="width:50%" class="pull-left">
           <el-radio-group v-model="form.enabled">
             <el-radio label="0">否</el-radio>
             <el-radio label="1">是</el-radio>
           </el-radio-group>
         </el-form-item>
-        <el-form-item label="敏感头" prop="sensitiveheadersList">
+        <el-form-item label="敏感头" prop="sensitiveheadersList" style="width:50%" class="pull-right">
           <el-input v-model="form.sensitiveheadersList" placeholder="敏感头"></el-input>
         </el-form-item>
       </el-form>
