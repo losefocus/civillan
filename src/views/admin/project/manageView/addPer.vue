@@ -6,7 +6,7 @@
                 <el-input v-model="projectInfo.name" size="small" placeholder="请输入内容" disabled></el-input>
             </el-form-item>
             <el-form-item label="机构" prop="projectOrgan.id">
-                <el-select v-model="form.projectOrgan.id" size="small" placeholder="请选择" @change="change1()">
+                <el-select v-model="form.projectOrgan.id" size="small" placeholder="请选择">
                     <el-option
                     v-for="item in organOptions"
                     :key="item.value"
@@ -29,10 +29,10 @@
                 <el-input v-model="form.name" size="small" placeholder="请输入内容"></el-input>
             </el-form-item>
             <el-form-item label="电话" prop="phone">
-                <el-input v-model="form.phone" size="small" placeholder="请输入内容"></el-input>
+                <el-input v-model="form.phone" size="small" placeholder="请输入内容" @blur="checkDuplication('phone')"></el-input>
             </el-form-item>
-            <el-form-item label="登录名" prop="username">
-                <el-input v-model="form.username" size="small" placeholder="请输入内容"></el-input>
+            <el-form-item label="登录名" prop="username" >
+                <el-input v-model="form.username" size="small" placeholder="请输入内容" :disabled="usernameDisabled" @blur="checkDuplication('username')"></el-input>
             </el-form-item>
             <el-form-item label="密码" prop="password">
                 <el-input v-model="form.password" type="password" size="small" placeholder="请输入内容"></el-input>
@@ -61,16 +61,30 @@
 </template>
 <script>
 import { mapGetters } from "vuex";
-import { fetchOrganList,addObj,updateObj} from "@/api/project_per";
+import { fetchOrganList,addObj,updateObj,fetchUserList} from "@/api/project_per";
 export default {
     props:['projectInfo'],
     data(){
         var reg = 11 && /^((13|14|15|17|18)[0-9]{1}\d{8})$/;
         var validataPhone = (rule, value, callback) => {
-            console.log(value != undefined)
-            if ((value != '' && value != undefined) && !reg.test(value)) {
-                callback(new Error('请输入正确的手机号码'));
-            }else{
+            if (value === '' || value== undefined) {
+                callback(new Error('请输入手机号码'));
+            } else {
+                if (!reg.test(value)) {
+                    callback(new Error('请输入正确的手机号码'));
+                }else if (this.duplication_phone == true) {
+                    callback(new Error('该手机号码已存在!'));
+                } else {
+                    callback();
+                }
+            }
+        };
+        var validateUserName = (rule, value, callback) => {
+            if (value === '' || value== undefined) {
+                callback(new Error('请输入用户名'));
+            } else if (this.duplication_username == true) {
+                callback(new Error('该用户名已存在!'));
+            } else {
                 callback();
             }
         };
@@ -113,10 +127,10 @@ export default {
                     { min: 2, max: 20, message: "长度在 2 到 20 个字符", trigger: "blur"}
                 ],
                 phone: [
-                     { validator: validataPhone, trigger: 'blur' ,required: false},
+                    { validator: validataPhone, trigger: 'blur' ,required: true},
                 ],
                 username: [
-                    { required: true, message: '请输入用户名', trigger: 'blur' },
+                    { validator: validateUserName, trigger: 'blur' ,required: true},
                     { min: 3, max: 20, message: "长度在 3 到 20 个字符", trigger: "blur"}
                 ],
                 password: [
@@ -136,6 +150,9 @@ export default {
                 userRole:[],
                 status:false
             },
+            duplication_username:false,
+            duplication_phone:false,
+            usernameDisabled:false,
             role:[],
             flag:'add',
             organOptions:[],
@@ -152,8 +169,15 @@ export default {
         ...mapGetters(["roleOptions"]),
     },
     methods:{
-        change1(){
-            //console.log(this.form.organId)
+        //检查用户名是否存在
+        checkDuplication(type){
+            let data = {}
+            data[type]=this.form[type]
+            fetchUserList(data).then(res => {
+                if(res.data.result.total != 0) this['duplication_'+type] = true 
+                else this['duplication_'+type] = false
+                this.$refs.forms.validateField(type);
+            })
         },
         selectRole(){
             let array = []
@@ -172,7 +196,6 @@ export default {
                     array.push(element)
                 });
                 this.organOptions = array
-                // this.$store.commit("SET_ORGANOPTIONS",organOptions);
             })
         },
         submitForm(formName){
@@ -200,7 +223,6 @@ export default {
                     data.status = this.form.status?1:0
                     delete data.password2
                     this.createLoading = true
-                    console.log(data)
                     updateObj(data).then(response => {
                         this.$parent.$refs.per.getList()
                         this.cancel()
@@ -219,6 +241,8 @@ export default {
                 projectOrgan: {id:null} ,
                 status:false
             }
+            this.usernameDisabled = false
+
             this.role = []
         },
 

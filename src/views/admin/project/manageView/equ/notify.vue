@@ -66,11 +66,12 @@
                         <span>{{scope.row.cycle}}</span>
                     </template>
                 </el-table-column>
-                <!-- <el-table-column align="center" label="状态" >
+                <el-table-column align="center" label="状态" >
                     <template slot-scope="scope">
-                        <span>{{(scope.row.status == 1)?'已启用':'未启用'}}</span>
+                        <i v-if="scope.row.status == 1" class="el-icon-circle-check" style="font-size:18px;color:#67c23a"></i>
+                        <i v-else class="el-icon-circle-close" style="font-size:18px;color:#f56c6c"></i>
                     </template>
-                </el-table-column> -->
+                </el-table-column>
                 <el-table-column align="center" label="操作" width="160" style="float:right">
                     <template slot-scope="scope">
                         <el-button size="mini" type="danger" plain @click="deleteList(scope.row)">删除</el-button>

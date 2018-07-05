@@ -36,6 +36,8 @@
         </el-form>
         <div v-loading="listLoading">
             <el-table :data="list" element-loading-text="给我一点时间" stripe border fit highlight-current-row style="width: 100%;margin-bottom:10px">
+                <el-table-column type="selection" align="center" width="50">
+                </el-table-column>
                 <el-table-column align="center" label="变量">
                     <template slot-scope="scope">
                         <span>{{scope.row.name}}</span>
@@ -51,15 +53,21 @@
                         <span>{{scope.row.sort}}</span>
                     </template>
                 </el-table-column>
+                <el-table-column align="center" label="类型">
+                    <template slot-scope="scope">
+                        <span>{{scope.row.type}}</span>
+                    </template>
+                </el-table-column>
                 <el-table-column align="center" label="状态" >
                     <template slot-scope="scope">
-                        <span>{{(scope.row.status == 1)?'已启用':'未启用'}}</span>
+                        <i v-if="scope.row.status == 1" class="el-icon-circle-check" style="font-size:18px;color:#67c23a"></i>
+                        <i v-else class="el-icon-circle-close" style="font-size:18px;color:#f56c6c"></i>
                     </template>
                 </el-table-column>
                 <el-table-column align="center" label="操作" width="160" style="float:right">
                     <template slot-scope="scope">
                         <el-button size="mini" type="success" plain @click="updateList(scope.row)">修改</el-button>
-                        <el-button size="mini" type="danger" plain @click="deleteList(scope.row)">删除</el-button>
+                        <el-button size="mini" type="danger" plain @click="deleteList(scope.row)" style="margin-left:0">删除</el-button>
                     </template>
                 </el-table-column>
             </el-table>

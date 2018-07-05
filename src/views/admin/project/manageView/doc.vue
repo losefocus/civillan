@@ -34,7 +34,7 @@
             <el-table-column align="center" label="操作" width="250">
                 <template slot-scope="scope" >
                     <!-- <a href="http://www.w3school.com.cn/i/w3school_logo_white.gif" download="w3logo" style="display:block;width:50px;height:50px;background:red"></a> -->
-                    <el-button size="small" type="success" plain @click="editOrg(scope.row)"><a :href="scope.row.fileBaseUrl+scope.row.filePath" download="w3logo" target="_blank">下载</a></el-button>
+                    <el-button size="small" type="success" plain @click="editOrg(scope.row)"><a :href="scope.row.fileBaseUrl+scope.row.filePath" download target="_blank">下载</a></el-button>
                     <el-button size="small" type="success" plain @click="updataDoc(scope.row)" style="margin-left:0px">修改</el-button>
                     <el-button size="small" type="danger" plain @click="deleteDoc(scope.row)" style="margin-left:0px">删除</el-button>
                 </template>

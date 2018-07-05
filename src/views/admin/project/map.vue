@@ -9,13 +9,13 @@ export default {
     props:['stationData'],
     data(){
         return {
-            mapHeight:{height:'100px'}
+            mapHeight:{height:'500px'}
         }
     },
     created() {},
     mounted() {
-        this.initMap()
         this.getMapHeight()
+        this.initMap()
     },
     computed: {},
     methods:{
@@ -33,35 +33,32 @@ export default {
             });
             map.clearMap();  // 清除地图覆盖物
 
-            var markers = [],
-                positions=[]
+            var markers = []
             this.stationData.forEach(function(data) {
-                let marker = {position:[data.position.split(',')[0],data.position.split(',')[1]],title:data.name}
+                let item = {position:[data.position.split(',')[0],data.position.split(',')[1]],title:data.name}
                 let position = [data.position.split(',')[0],data.position.split(',')[1]]
-                markers.push(marker)
-                positions.push(position)
+                markers.push(item)
             })
             
-            markers.forEach(function(marker) {
-                new AMap.Marker({
+            markers.forEach(function(item,index) {
+                let marker = new AMap.Marker({
                     map: map,
-                    icon: marker.icon,
-                    position: [marker.position[0], marker.position[1]],
+                    // icon: item.icon,
+                    position: [item.position[0], item.position[1]],
                     offset: new AMap.Pixel(-12, -36),
-                    title:marker.title
+                    title:item.title
                 });
+                marker.content = '我是第' + (index + 1) + '个Marker';
+                marker.on('click', markerClick);
+                marker.emit('click', {target: marker});
             });
-            
-
-            var polygon = new AMap.Polygon({
-                path : positions,  //以点的坐标创建一个隐藏的多边形
-                map:map,
-                strokeOpacity:0,//透明
-                fillOpacity:0,//透明
-                bubble:true//事件穿透到地图
-            });
-            var overlaysList = map.getAllOverlays('polygon');//获取多边形图层
-            map.setFitView(overlaysList);
+            var infoWindow = new AMap.InfoWindow({offset: new AMap.Pixel(0, -30)});
+            function markerClick(e) {
+                console.log(e)
+                infoWindow.setContent(e.target.content);
+                infoWindow.open(map, e.target.getPosition());
+            }
+            map.setFitView();
         }
     }
 }

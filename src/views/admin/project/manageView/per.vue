@@ -31,7 +31,8 @@
             </el-table-column> -->
             <el-table-column align="center" label="状态">
                 <template slot-scope="scope">
-                    <span>{{(scope.row.status === 1)?'已启用':'未启用'}}</span>
+                    <i v-if="scope.row.status == 1" class="el-icon-circle-check" style="font-size:18px;color:#67c23a"></i>
+                    <i v-else class="el-icon-circle-close" style="font-size:18px;color:#f56c6c"></i>
                 </template>
             </el-table-column>
             <el-table-column align="center" label="操作" width="180">
@@ -89,7 +90,8 @@
                     </el-table-column>
                     <el-table-column align="center" label="状态">
                         <template slot-scope="scope">
-                            <span>{{(scope.row.available == 1)?'已启用':'未启用'}}</span>
+                            <i v-if="scope.row.available == 1" class="el-icon-circle-check" style="font-size:18px;color:#67c23a"></i>
+                            <i v-else class="el-icon-circle-close" style="font-size:18px;color:#f56c6c"></i>
                         </template>
                     </el-table-column>
                     <el-table-column align="center" label="操作" width="160">
@@ -161,6 +163,7 @@ export default {
         },
         updatePer(row){
             this.$parent.$refs.addPer.flag = 'edit'
+            this.$parent.$refs.addPer.usernameDisabled = true
             this.$parent.$refs.addPer.form = Object.assign({},row)
             this.$parent.$refs.addPer.form.status = (row.status == 1)?true:false
             this.$parent.$refs.addPer.form.password2 = this.$parent.$refs.addPer.form.password
