@@ -15,7 +15,7 @@
                 </el-select>
             </el-form-item>
             <el-form-item class="pull-right">
-                <el-button type="primary" @click="onSubmit('form')" style="width:100px">推送</el-button>
+                <el-button type="primary" @click="onSubmit('form')" size="small" style="width:100px">推送</el-button>
             </el-form-item>
         </el-form>
         <el-table :data="list" border style="width: 100%" v-loading="listLoading">

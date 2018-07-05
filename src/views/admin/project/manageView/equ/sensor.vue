@@ -1,18 +1,18 @@
 <template>
     <div>
         <div>设 备 : {{dataInfo.name}}</div>
-        <el-form :model="form" class="clearfix" ref="form" label-width="50px">
+        <el-form :model="form" class="clearfix" ref="form" label-width="50px" size="small">
             <el-form-item label="名称" style="width: 163px">
-                <el-input v-model="form.name" size="small" auto-complete="off"></el-input>
+                <el-input v-model="form.name" size="mini" auto-complete="off"></el-input>
             </el-form-item>
             <el-form-item label="标识" style="width: 162px">
-                <el-input v-model="form.label" size="small" auto-complete="off"></el-input>
+                <el-input v-model="form.label" size="mini" auto-complete="off"></el-input>
             </el-form-item>
             <el-form-item label="排序" style="width: 163px">
-                <el-input v-model="form.sort" size="small" auto-complete="off"></el-input>
+                <el-input v-model="form.sort" size="mini" auto-complete="off"></el-input>
             </el-form-item>
             <el-form-item label="类型" style="width: 162px">
-                <el-select v-model="form.type" placeholder="请选择" size="small">
+                <el-select v-model="form.type" placeholder="请选择" size="mini">
                     <el-option
                     v-for="item in options"
                     :key="item.value"

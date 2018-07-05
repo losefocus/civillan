@@ -48,31 +48,31 @@
             <div>
                 项 目 : {{projectInfo.name}} 
             </div>
-            <el-form :model="orgTypeForm" class="clearfix" ref="orgTypeForm">
+            <el-form :model="orgTypeForm" class="clearfix" ref="orgTypeForm" size="small">
                 <el-form-item label="名称" style="width: 140px">
-                    <el-input v-model="orgTypeForm.name" style="width:90px;" size="small" auto-complete="off"></el-input>
+                    <el-input v-model="orgTypeForm.name" style="width:90px;" size="mini" auto-complete="off"></el-input>
                 </el-form-item>
                 <el-form-item label="别名" style="width: 140px">
-                    <el-input v-model="orgTypeForm.alias" style="width:90px;" size="small" auto-complete="off"></el-input>
+                    <el-input v-model="orgTypeForm.alias" style="width:90px;" size="mini" auto-complete="off"></el-input>
                 </el-form-item>
                 <el-form-item label="排序" style="width: 140px">
-                    <el-input v-model="orgTypeForm.sort" type="number" style="width:90px;" size="small" auto-complete="off"></el-input>
+                    <el-input v-model="orgTypeForm.sort" type="number" style="width:90px;" size="mini" auto-complete="off"></el-input>
                 </el-form-item>
                 <el-form-item >
                     <el-checkbox v-model="orgTypeForm.status" >已启用</el-checkbox>
                 </el-form-item>
                 <el-form-item  style="width: 150px">
                     <div v-show="flag == 'add'">
-                        <el-button size="small" type="primary" @click="addType('orgTypeForm')" :loading="createLoading">添加</el-button>
+                        <el-button size="mini" type="primary" @click="addType('orgTypeForm')" :loading="createLoading">添加</el-button>
                     </div>
                    <div v-show="flag == 'edit'">
-                        <el-button size="small" type="primary" @click="handleUpdateType('orgTypeForm')" :loading="createLoading">保存</el-button>
-                        <el-button size="small" type="info" @click="cancelEdit('orgTypeForm')">取消</el-button>
+                        <el-button size="mini" type="primary" @click="handleUpdateType('orgTypeForm')" :loading="createLoading">保存</el-button>
+                        <el-button size="mini" type="info" @click="cancelEdit('orgTypeForm')">取消</el-button>
                    </div>
                 </el-form-item>
             </el-form>
             <div v-loading="typelListLoading">
-                <el-table :data="orgTypeList"  element-loading-text="给我一点时间" stripe border fit highlight-current-row style="width: 99%;margin-bottom:10px" height="300">
+                <el-table :data="orgTypeList"  element-loading-text="给我一点时间" stripe border fit highlight-current-row style="width: 99%;margin-bottom:10px">
                     <el-table-column align="center" label="类型名称">
                         <template slot-scope="scope">
                             <span>{{scope.row.name}}</span>
@@ -95,8 +95,8 @@
                     </el-table-column>
                     <el-table-column align="center" label="操作" width="150">
                         <template slot-scope="scope">
-                            <el-button size="small" type="success" plain @click="updateType(scope.row)">修改</el-button>
-                            <el-button size="small" type="danger" plain @click="deleteType(scope.row)" style="margin-left:0px">删除</el-button>
+                            <el-button size="mini" type="success" plain @click="updateType(scope.row)">修改</el-button>
+                            <el-button size="mini" type="danger" plain @click="deleteType(scope.row)" style="margin-left:0px">删除</el-button>
                         </template>
                     </el-table-column>
                 </el-table>

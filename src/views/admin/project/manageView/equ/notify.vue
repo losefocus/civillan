@@ -1,9 +1,9 @@
 <template>
     <div>
         <div>设 备 : {{dataInfo.name}}</div>
-        <el-form :model="form" class="clearfix" ref="form" label-width="70px">
+        <el-form :model="form" class="clearfix" ref="form" label-width="70px" size="small">
             <el-form-item label="报警标题" style="width: 650px">
-                <el-select v-model="form.alarmId" placeholder="请选择" size="small" :loading="alarmLoading">
+                <el-select v-model="form.alarmId" placeholder="请选择" size="mini" :loading="alarmLoading">
                     <el-option
                     v-for="item in alarmOptions"
                     :key="item.value"
@@ -13,7 +13,7 @@
                 </el-select>
             </el-form-item>
             <el-form-item label="报警人员"  style="width: 650px">
-                <el-select v-model="form.puserIds" multiple placeholder="请选择" size="small" :loading="userLoading">
+                <el-select v-model="form.puserIds" multiple placeholder="请选择" size="mini" :loading="userLoading">
                     <el-option
                     v-for="item in userOptions"
                     :key="item.value"
@@ -23,7 +23,7 @@
                 </el-select>
             </el-form-item>
             <el-form-item label="报警周期" style="width: 310px;">
-                <el-select v-model="form.cycle" placeholder="请选择" size="small">
+                <el-select v-model="form.cycle" placeholder="请选择" size="mini">
                     <el-option
                     v-for="item in options"
                     :key="item.value"
@@ -33,7 +33,7 @@
                 </el-select>
             </el-form-item>
             <el-form-item label="通知类型" style="width: 310px;margin-left:30px">
-                <el-select v-model="form.notifyTypes" placeholder="请选择" size="small" >
+                <el-select v-model="form.notifyTypes" placeholder="请选择" size="mini" >
                     <el-option
                     v-for="item in typeOptions"
                     :key="item.value"
@@ -43,7 +43,7 @@
                 </el-select>
             </el-form-item>
             <el-form-item  style="width: 140px;padding-top:5px" class="pull-right">
-                <el-button size="small" type="primary" class="pull-right" @click="handleAdd('form')" :loading="createdLoading">添加</el-button>
+                <el-button size="mini" type="primary" class="pull-right" @click="handleAdd('form')" :loading="createdLoading">添加</el-button>
             </el-form-item>
             <el-form-item class="pull-right">
                 <el-checkbox v-model="form.status" >已启用</el-checkbox>
@@ -73,7 +73,7 @@
                 </el-table-column> -->
                 <el-table-column align="center" label="操作" width="160" style="float:right">
                     <template slot-scope="scope">
-                        <el-button size="small" type="danger" plain @click="deleteList(scope.row)">删除</el-button>
+                        <el-button size="mini" type="danger" plain @click="deleteList(scope.row)">删除</el-button>
                     </template>
                 </el-table-column>
             </el-table>

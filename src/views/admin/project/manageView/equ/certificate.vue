@@ -1,8 +1,6 @@
 <template>
     <div>
-        <div>
-            {{dataInfo.name}}
-        </div>
+        <div>设 备 : {{dataInfo.name}}</div>
         <ul v-loading="loading" class="keyForm">
             <li>
                 <p>Public Key</p>

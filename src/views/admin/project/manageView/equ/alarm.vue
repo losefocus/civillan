@@ -1,15 +1,15 @@
 <template>
     <div>
         <div>设 备 : {{dataInfo.name}}</div>
-        <el-form :model="form" class="clearfix" ref="form" label-width="70px">
+        <el-form :model="form" class="clearfix" ref="form" label-width="70px" size="small">
             <el-form-item label="报警标题" style="width: 650px">
-                <el-input v-model="form.title" size="small" auto-complete="off"></el-input>
+                <el-input v-model="form.title" size="mini" auto-complete="off"></el-input>
             </el-form-item>
             <el-form-item label="触发条件" style="width: 310px;">
-                <el-input v-model="form.condition" size="small" auto-complete="off"></el-input>
+                <el-input v-model="form.condition" size="mini" auto-complete="off"></el-input>
             </el-form-item>
             <el-form-item label="报警周期" style="width: 310px;;margin-left:30px">
-                <el-select v-model="form.cycle" placeholder="请选择" size="small">
+                <el-select v-model="form.cycle" placeholder="请选择" size="mini">
                     <el-option
                     v-for="item in options"
                     :key="item.value"
@@ -19,21 +19,21 @@
                 </el-select>
             </el-form-item>
             <el-form-item label="报警内容" style="width: 310px">
-                <el-input v-model="form.triggerMessage" size="small" auto-complete="off"></el-input>
+                <el-input v-model="form.triggerMessage" size="mini" auto-complete="off"></el-input>
             </el-form-item>
             <el-form-item label="恢复内容" style="width: 310px;margin-left:30px">
-                <el-input v-model="form.recoverMessage" size="small" auto-complete="off"></el-input>
+                <el-input v-model="form.recoverMessage" size="mini" auto-complete="off"></el-input>
             </el-form-item>
             <el-form-item label="备注" style="width: 650px">
-                <el-input v-model="form.comment" type="textarea" :rows="2" size="small" auto-complete="off"></el-input>
+                <el-input v-model="form.comment" type="textarea" :rows="2" size="mini" auto-complete="off"></el-input>
             </el-form-item>
             <el-form-item  :style="flag == 'add'?'width: 140px':'width: 220px'" class="pull-right" style="padding-top:5px">
                 <div v-if="flag == 'add'">
-                    <el-button size="small" type="primary" class="pull-right" @click="handleAdd('form')" :loading="createdLoading">添加</el-button>
+                    <el-button size="mini" type="primary" class="pull-right" @click="handleAdd('form')" :loading="createdLoading">添加</el-button>
                 </div>
                 <div v-else>
-                    <el-button size="small" type="info" class="pull-right" style="margin-left:10px" @click="cancelEdit('form')">取消</el-button>
-                    <el-button size="small" type="primary" class="pull-right" @click="handleEdit('form')" :loading="createdLoading">保存</el-button>
+                    <el-button size="mini" type="info" class="pull-right" style="margin-left:10px" @click="cancelEdit('form')">取消</el-button>
+                    <el-button size="mini" type="primary" class="pull-right" @click="handleEdit('form')" :loading="createdLoading">保存</el-button>
                 </div>
             </el-form-item>
             <el-form-item class="pull-right">
@@ -64,8 +64,8 @@
                 </el-table-column>
                 <el-table-column align="center" label="操作" width="160" style="float:right">
                     <template slot-scope="scope">
-                        <el-button size="small" type="success" plain @click="updateList(scope.row)">修改</el-button>
-                        <el-button size="small" type="danger" plain @click="deleteList(scope.row)">删除</el-button>
+                        <el-button size="mini" type="success" plain @click="updateList(scope.row)">修改</el-button>
+                        <el-button size="mini" type="danger" plain @click="deleteList(scope.row)">删除</el-button>
                     </template>
                 </el-table-column>
             </el-table>

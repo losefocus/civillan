@@ -1,23 +1,23 @@
 <template>
     <div>
         <div>设 备 : {{dataInfo.name}}</div>
-        <el-form :model="form" class="clearfix" ref="form" label-width="70px">
+        <el-form :model="form" class="clearfix" ref="form" label-width="70px" size="small">
             <el-form-item label="配置名称" style="width: 325px">
-                <el-input v-model="form.name" size="small" auto-complete="off" style="width:240px"></el-input>
+                <el-input v-model="form.name" size="mini" auto-complete="off" style="width:240px"></el-input>
             </el-form-item>
             <el-form-item label="配置项" style="width: 325px;">
-                <el-input v-model="form.key" size="small" auto-complete="off"  style="width:255px"></el-input>
+                <el-input v-model="form.key" size="mini" auto-complete="off"  style="width:255px"></el-input>
             </el-form-item>
             <el-form-item label="配置内容" style="width: 650px">
-                <el-input v-model="form.value" type="textarea" :rows="2"  style="width:580px" size="small" auto-complete="off"></el-input>
+                <el-input v-model="form.value" type="textarea" :rows="2"  style="width:580px" size="mini" auto-complete="off"></el-input>
             </el-form-item>
             <el-form-item  :style="flag == 'add'?'width: 140px':'width: 220px'" class="pull-right" style="padding-top:5px">
                 <div v-if="flag == 'add'">
-                    <el-button size="small" type="primary" class="pull-right" @click="handleAdd('form')" :loading="createdLoading">添加</el-button>
+                    <el-button size="mini" type="primary" class="pull-right" @click="handleAdd('form')" :loading="createdLoading">添加</el-button>
                 </div>
                 <div v-else>
-                    <el-button size="small" type="info" class="pull-right" style="margin-left:10px" @click="cancelEdit('form')">取消</el-button>
-                    <el-button size="small" type="primary" class="pull-right"  @click="handleEdit('form')" :loading="createdLoading">保存</el-button>
+                    <el-button size="mini" type="info" class="pull-right" style="margin-left:10px" @click="cancelEdit('form')">取消</el-button>
+                    <el-button size="mini" type="primary" class="pull-right"  @click="handleEdit('form')" :loading="createdLoading">保存</el-button>
                 </div>
             </el-form-item>
             <el-form-item class="pull-right">
@@ -48,8 +48,8 @@
                 </el-table-column>
                 <el-table-column align="center" label="操作" width="160" style="float:right">
                     <template slot-scope="scope">
-                        <el-button size="small" type="success" plain @click="updateList(scope.row)">修改</el-button>
-                        <el-button size="small" type="danger" plain @click="deleteList(scope.row)">删除</el-button>
+                        <el-button size="mini" type="success" plain @click="updateList(scope.row)">修改</el-button>
+                        <el-button size="mini" type="danger" plain @click="deleteList(scope.row)">删除</el-button>
                     </template>
                 </el-table-column>
             </el-table>

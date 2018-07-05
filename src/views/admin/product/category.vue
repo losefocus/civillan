@@ -1,6 +1,6 @@
 <template>
     <div>
-        <el-form :model="form" class="clearfix" ref="form" size="mini" label-width="50px">
+        <el-form :model="form" class="clearfix" ref="form" size="small" label-width="50px">
             <el-form-item label="名称" style="width: 215px">
                 <el-input v-model="form.name" size="mini" auto-complete="off"></el-input>
             </el-form-item>
@@ -56,7 +56,7 @@
                 <el-table-column align="center" label="操作" width="160" style="float:right">
                     <template slot-scope="scope">
                         <el-button size="mini" type="success" plain @click="updateList(scope.row)">修改</el-button>
-                        <el-button size="mini" type="danger" plain @click="deleteList(scope.row)">删除</el-button>
+                        <el-button size="mini" type="danger" plain @click="deleteList(scope.row)" style="margin-left: 0px;">删除</el-button>
                     </template>
                 </el-table-column>
             </el-table>

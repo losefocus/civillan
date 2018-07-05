@@ -246,7 +246,7 @@ export default {
                     { required: false, message: '请添加图片', trigger: 'blur' }
                 ],
                 position: [
-                    { required: true, message: '请选择位置', trigger: 'blur' }
+                    { required: false, message: '请选择位置', trigger: 'blur' }
                 ],
                 comment: [
                     { required: false, message: '请输入备注', trigger: 'blur' }

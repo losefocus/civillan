@@ -1,6 +1,6 @@
 <template>
     <div>
-        <el-form :model="form" class="clearfix" ref="form" label-width="50px">
+        <el-form :model="form" class="clearfix" ref="form" label-width="50px" size="small">
             <el-form-item label="上级" style="width: 210px">
                 <!-- <el-select v-model="form.parentId" size="small" placeholder="请选择">
                     <el-option
@@ -11,7 +11,7 @@
                     </el-option>
                 </el-select> -->
                 <el-cascader
-                    size="small" placeholder="请选择上级分组"
+                    size="mini" placeholder="请选择上级分组"
                     :options="parentOptions"
                     v-model="form.parentId"
                     :show-all-levels="false"
@@ -19,10 +19,10 @@
                 </el-cascader>
             </el-form-item>
             <el-form-item label="名称" style="width: 210px;margin-left:10px">
-                <el-input v-model="form.name" size="small" auto-complete="off"></el-input>
+                <el-input v-model="form.name" size="mini" auto-complete="off"></el-input>
             </el-form-item>
             <el-form-item label="排序" style="width: 210px;margin-left:10px">
-                <el-input v-model="form.sort" size="small" auto-complete="off"></el-input>
+                <el-input v-model="form.sort" size="mini" auto-complete="off"></el-input>
             </el-form-item>
             <el-form-item label="图片" style="width: 210px;">
                 <el-upload
@@ -41,15 +41,15 @@
                 </el-upload>
             </el-form-item>
             <el-form-item label="备注" style="width: 430px;margin-left:10px">
-                <el-input v-model="form.comment" type="textarea" :rows="5" size="small" auto-complete="off"></el-input>
+                <el-input v-model="form.comment" type="textarea" :rows="3" size="mini" auto-complete="off"></el-input>
             </el-form-item>
             <el-form-item  :style="flag == 'add'?'width: 140px':'width: 220px'" class="pull-right" style="padding-top:5px">
                 <div v-if="flag == 'add'">
-                    <el-button size="small" type="primary" class="pull-right" @click="handleAdd('form')" :loading="createdLoading">添加</el-button>
+                    <el-button size="mini" type="primary" class="pull-right" @click="handleAdd('form')" :loading="createdLoading">添加</el-button>
                 </div>
                 <div v-else>
-                    <el-button size="small" type="info" class="pull-right" style="margin-left:10px" @click="cancelEdit('form')">取消</el-button>
-                    <el-button size="small" type="primary" class="pull-right" @click="handleEdit('form')" :loading="createdLoading">保存</el-button>
+                    <el-button size="mini" type="info" class="pull-right" style="margin-left:10px" @click="cancelEdit('form')">取消</el-button>
+                    <el-button size="mini" type="primary" class="pull-right" @click="handleEdit('form')" :loading="createdLoading">保存</el-button>
                 </div>
             </el-form-item>
             <el-form-item class="pull-right">
@@ -57,7 +57,7 @@
             </el-form-item>
         </el-form>
         <div v-loading="listLoading">
-            <el-table :data="list" element-loading-text="给我一点时间" stripe border fit highlight-current-row style="width: 100%;margin-bottom:10px" height="250">
+            <el-table :data="list" element-loading-text="给我一点时间" stripe border fit highlight-current-row style="width: 100%;margin-bottom:10px">
                 <el-table-column align="center" label="名称">
                     <template slot-scope="scope">
                         <span>{{scope.row.name}}</span>
@@ -80,8 +80,8 @@
                 </el-table-column>
                 <el-table-column align="center" label="操作" width="160" style="float:right">
                     <template slot-scope="scope">
-                        <el-button size="small" type="success" plain @click="updateList(scope.row)">修改</el-button>
-                        <el-button size="small" type="danger" plain @click="deleteList(scope.row)">删除</el-button>
+                        <el-button size="mini" type="success" plain @click="updateList(scope.row)">修改</el-button>
+                        <el-button size="mini" type="danger" plain @click="deleteList(scope.row)">删除</el-button>
                     </template>
                 </el-table-column>
             </el-table>
@@ -265,7 +265,7 @@ export default {
     margin-bottom: 10px
 }
 .avatar-uploader{
-     height: 107px;
+     height: 100px;
 }
 .avatar-uploader .el-upload {
     border: 1px dashed #d9d9d9;
@@ -280,16 +280,16 @@ export default {
   .avatar-uploader-icon {
     font-size: 28px;
     color: #8c939d;
-    width: 107px;
-    height: 107px;
-    line-height: 107px;
+    width: 100px;
+    height: 100px;
+    line-height: 100px;
     text-align: center;
     border: 1px solid #dcdfe6;
     border-radius: 4px;
   }
   .avatar {
-    width: 107px;
-    height: 107px;
+    width: 100px;
+    height: 100px;
     display: block;
     border-radius: 4px;
   }

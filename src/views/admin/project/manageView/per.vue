@@ -50,28 +50,28 @@
             <div>
                 项 目 : {{projectInfo.name}} 
             </div>
-            <el-form :model="roleForm" class="clearfix" ref="roleForm">
+            <el-form :model="roleForm" class="clearfix" ref="roleForm" size="small">
                 <el-form-item label="角色" style="width: 140px">
-                    <el-input v-model="roleForm.role" style="width:90px;" size="small" auto-complete="off"></el-input>
+                    <el-input v-model="roleForm.role" style="width:90px;" size="mini" auto-complete="off"></el-input>
                 </el-form-item>
                 <el-form-item label="描述" style="width: 250px">
-                    <el-input v-model="roleForm.description" style="width:200px;" size="small" auto-complete="off"></el-input>
+                    <el-input v-model="roleForm.description" style="width:200px;" size="mini" auto-complete="off"></el-input>
                 </el-form-item>
                 <el-form-item >
                     <el-checkbox v-model="roleForm.available" >已启用</el-checkbox>
                 </el-form-item>
                 <el-form-item  style="width: 150px">
                     <div v-show="flag == 'add'">
-                        <el-button size="small" type="primary" @click="addRole('roleForm')" :loading="createdRoleLoading">添加</el-button>
+                        <el-button size="mini" type="primary" @click="addRole('roleForm')" :loading="createdRoleLoading">添加</el-button>
                     </div>
                    <div v-show="flag == 'edit'">
-                        <el-button size="small" type="primary" @click="handleEditRole('roleForm')" :loading="createdRoleLoading">保存</el-button>
-                        <el-button size="small" type="info" @click="cancelEdit('roleForm')">取消</el-button>
+                        <el-button size="mini" type="primary" @click="handleEditRole('roleForm')" :loading="createdRoleLoading">保存</el-button>
+                        <el-button size="mini" type="info" @click="cancelEdit('roleForm')">取消</el-button>
                    </div>
                 </el-form-item>
             </el-form>
             <div v-loading="roleListLoading">
-                <el-table :data="roleList" element-loading-text="给我一点时间" stripe border fit highlight-current-row style="width: 99%;margin-bottom:10px" height="300">
+                <el-table :data="roleList" element-loading-text="给我一点时间" stripe border fit highlight-current-row style="width: 99%;margin-bottom:10px">
                     <el-table-column align="center" label="角色">
                         <template slot-scope="scope">
                             <span>{{scope.row.role}}</span>
@@ -94,8 +94,8 @@
                     </el-table-column>
                     <el-table-column align="center" label="操作" width="160">
                         <template slot-scope="scope">
-                            <el-button size="small" type="success" plain @click="updateRole(scope.row)">修改</el-button>
-                            <el-button size="small" type="danger" plain @click="deleteRole(scope.row)" style="margin-left:0px">删除</el-button>
+                            <el-button size="mini" type="success" plain @click="updateRole(scope.row)">修改</el-button>
+                            <el-button size="mini" type="danger" plain @click="deleteRole(scope.row)" style="margin-left:0px">删除</el-button>
                         </template>
                     </el-table-column>
                 </el-table>
