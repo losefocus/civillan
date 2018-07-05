@@ -7,11 +7,17 @@
             <el-form-item label="内容" prop="message">
                 <el-input v-model="form.message" type="textarea" :rows="3" placeholder="内容"></el-input>
             </el-form-item>
-            <el-form-item label="推送对象" prop="pushObject">
+            <el-form-item label="推送对象" prop="pushObject" class="pull-left" style="width:45%">
                 <el-select v-model="form.pushObject" placeholder="推送对象">
                     <el-option label="后台用户" value="1"></el-option>
                     <el-option label="前台用户" value="2"></el-option>
                     <el-option label="设备" value="3"></el-option>
+                </el-select>
+            </el-form-item>
+            <el-form-item label="推送方式" prop="pushType" class="pull-right" style="width:45%">
+                <el-select v-model="form.pushType" placeholder="推送对象">
+                    <el-option label="web" value="1"></el-option>
+                    <el-option label="app" value="2"></el-option>
                 </el-select>
             </el-form-item>
             <el-form-item class="pull-right">
@@ -57,7 +63,7 @@
     </div>    
 </template>
 <script>
-import {fetchList,pushObj,delObj} from "@/api/notification";
+import {fetchList,pushObj,delObj,fetchUserList} from "@/api/notification";
 export default {
     data() {
       return {
@@ -81,11 +87,15 @@ export default {
             pushObject: [
                 { required: true, message: '请选择推送对象', trigger: 'change' }
             ],
+            pushType: [
+                { required: true, message: '请选择推送对象', trigger: 'change' }
+            ],
         },
         form: {
           title: '',
           message: '',
-          pushObject:null
+          pushObject:null,
+          pushType:null
         },
         listQuery:{
             page_index:1,
@@ -94,10 +104,13 @@ export default {
         total:null,
         listLoading:false,
         list:[],
+        userIds:[]
       }
     },
     created(){
+        this.getUserList()
         this.getList()
+        
     },
     methods: {
         handleSizeChange(){
@@ -106,12 +119,22 @@ export default {
         handleCurrentChange(){
 
         },
+        getUserList(){
+            this.userId = []
+            fetchUserList().then(res => {
+                res.data.result.items.forEach(element => {
+                    this.userIds.push(element.id)
+                });
+                
+            })
+        },
         getList(){
             this.listLoading = true
             fetchList(this.listQuery).then(res => {
                 this.list = res.data.result.items
                 this.total = res.data.result.total
                 this.listLoading = false
+                this.restTemp()
             })
         },
         handleDel(row){
@@ -140,12 +163,30 @@ export default {
                 if (valid) {
                     let data = Object.assign({},this.form)
                     data.pushObject = parseInt(data.pushObject)
+                    if(data.pushObject === 2){
+                        if(this.userIds.length !=0)data.userIds = this.userIds.join(',')
+                        else {
+                            this.$message({
+                                message: '缺少前台用户信息',
+                                type: 'warning'
+                            });
+                            return
+                        }
+                    }
                     pushObj(data).then(res => {
                         this.getList()
                     })
                 }
             })
             
+        },
+        restTemp(){
+            form = {
+                title: '',
+                message: '',
+                pushObject:null,
+                pushType:null
+            }
         }
     }
 }

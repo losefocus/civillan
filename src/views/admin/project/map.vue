@@ -41,6 +41,7 @@ export default {
                 markers.push(marker)
                 positions.push(position)
             })
+            
             markers.forEach(function(marker) {
                 new AMap.Marker({
                     map: map,
@@ -50,18 +51,17 @@ export default {
                     title:marker.title
                 });
             });
+            
 
-            // console.log(positions)
-            // //1.把想自适应的部分的点装在一个透明的覆盖物图层里
-            // var polygon = new AMap.Polygon({
-            //     path : positions,  //以5个点的坐标创建一个隐藏的多边形
-            //     map:map,
-            //     strokeOpacity:0,//透明
-            //     fillOpacity:0,//透明
-            //     bubble:true//事件穿透到地图
-            // });
-            // var overlaysList = map.getAllOverlays('polygon');//获取多边形图层
-            map.setFitView();
+            var polygon = new AMap.Polygon({
+                path : positions,  //以点的坐标创建一个隐藏的多边形
+                map:map,
+                strokeOpacity:0,//透明
+                fillOpacity:0,//透明
+                bubble:true//事件穿透到地图
+            });
+            var overlaysList = map.getAllOverlays('polygon');//获取多边形图层
+            map.setFitView(overlaysList);
         }
     }
 }

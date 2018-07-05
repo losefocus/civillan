@@ -26,3 +26,11 @@ export function delObj(id) {
     method: 'post'
   })
 }
+
+/* 人员列表 */
+export function fetchUserList() {
+  return request({
+    url: '/project/project_user/list',
+    method: 'get',
+  })
+}
