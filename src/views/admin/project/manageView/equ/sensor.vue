@@ -34,8 +34,12 @@
                 <el-checkbox v-model="form.status" >已启用</el-checkbox>
             </el-form-item>
         </el-form>
+        <div style="margin-bottom:10px;">
+            <el-button @click="importexcel" size="mini">导出</el-button>
+            <el-button @click="importexcel" size="mini">导入</el-button>
+        </div>
         <div v-loading="listLoading">
-            <el-table :data="list" element-loading-text="给我一点时间" stripe border fit highlight-current-row style="width: 100%;margin-bottom:10px">
+            <el-table :data="list" element-loading-text="给我一点时间" @selection-change="handleSelectionChange" stripe border fit highlight-current-row style="width: 100%;margin-bottom:10px">
                 <el-table-column type="selection" align="center" width="50">
                 </el-table-column>
                 <el-table-column align="center" label="变量">
@@ -117,19 +121,22 @@ export default {
                 page_size: 10
             },
             total:null,
-            list:null
+            list:null,
+            listSelection : []
         }
     },
     created() {
         this.getList()
     },
     mounted() {
-
     },
     computed: {
         ...mapGetters(["sensorList"]),
     },
     methods:{
+        handleSelectionChange(val) {
+            this.listSelection = val;
+        },
         handleSizeChange(val) {
             this.listQuery.page_size = val;
             this.getList();
@@ -204,6 +211,20 @@ export default {
                 status:''
             }
             this.createdLoading = false
+        },
+        importexcel() {　
+        　　require.ensure([], () => {　　　　　　　　
+                const { export_json_to_excel } = require('@/vendor/Export2Excel');　　//引入文件　　　　　　
+                const tHeader = ['变量名称', '标识', '类型']; //将对应的属性名转换成中文
+                //const tHeader = [];　
+                const filterVal = ['name', 'label', 'type'];//table表格中对应的属性名　　　　　 　　　
+                const list = this.listSelection;　　　　　　　　
+                const data = this.formatJson(filterVal, list);　　　　　　　　
+                export_json_to_excel(tHeader, data, '列表excel');
+            })
+        },
+        formatJson(filterVal, jsonData) {
+            return jsonData.map(v => filterVal.map(j => v[j]));
         }
     },
     watch:{

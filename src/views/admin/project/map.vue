@@ -35,12 +35,20 @@ export default {
 
             var markers = []
             this.stationData.forEach(function(data) {
-                let item = {position:[data.position.split(',')[0],data.position.split(',')[1]],title:data.name}
+                let item = {
+                    position:[data.position.split(',')[0],data.position.split(',')[1]],
+                    title:data.name,
+                    beginAt:data.beginAt,
+                    endAt:data.endAt,
+                    adminer:data.adminer,
+                }
                 let position = [data.position.split(',')[0],data.position.split(',')[1]]
                 markers.push(item)
             })
-            
+
+            var infoWindow = new AMap.InfoWindow({offset: new AMap.Pixel(0, -30)});
             markers.forEach(function(item,index) {
+                console.log(item)
                 let marker = new AMap.Marker({
                     map: map,
                     // icon: item.icon,
@@ -48,11 +56,15 @@ export default {
                     offset: new AMap.Pixel(-12, -36),
                     title:item.title
                 });
-                marker.content = '我是第' + (index + 1) + '个Marker';
+                marker.content = `<div class="info-title">项目名称：${item.title}</div>
+                <div class="info-title">开始时间：${item.beginAt}</div>
+                <div class="info-title">结束时间：${item.endAt}</div>
+                <div class="info-title">管理员：${item.adminer}</div>
+                <div class="info-content">当前坐标：${item.position[0]}, ${item.position[1]}</div>`;
                 marker.on('click', markerClick);
                 marker.emit('click', {target: marker});
             });
-            var infoWindow = new AMap.InfoWindow({offset: new AMap.Pixel(0, -30)});
+            
             function markerClick(e) {
                 console.log(e)
                 infoWindow.setContent(e.target.content);
