@@ -62,13 +62,14 @@ export default {
                 <div class="info-title">管理员：${item.adminer}</div>
                 <div class="info-content">当前坐标：${item.position[0]}, ${item.position[1]}</div>`;
                 marker.on('click', markerClick);
-                marker.emit('click', {target: marker});
+                // marker.emit('click', {target: marker});
             });
             
             function markerClick(e) {
                 console.log(e)
                 infoWindow.setContent(e.target.content);
                 infoWindow.open(map, e.target.getPosition());
+                map.setZoomAndCenter(14, e.target.getPosition());
             }
             map.setFitView();
         }

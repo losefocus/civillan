@@ -35,6 +35,8 @@
             </el-form-item>
         </el-form>
         <div style="margin-bottom:10px;">
+            <!-- <el-button @click="importexcel" size="mini">导出csv</el-button> -->
+            <download-btn :header="header" :data="data">导出csv</download-btn>
             <el-button @click="importexcel" size="mini">导出</el-button>
             <el-button @click="importexcel" size="mini">导入</el-button>
         </div>
@@ -85,11 +87,14 @@
 <script>
 import { mapGetters } from "vuex";
 import {getObj,addObj,delObj,editObj} from "@/api/project/sensor";
-
+import downloadBtn from "./downloadBtn"
 export default {
+    components:{downloadBtn},
     props:['dataInfo'],
     data(){
         return {
+            header:[],
+            data:[],
             listLoading:false,
             createdLoading:false,
             options:[
@@ -136,6 +141,9 @@ export default {
     methods:{
         handleSelectionChange(val) {
             this.listSelection = val;
+            // this.header = ['变量名称', '标识', '类型'] //['name', 'label', 'type']
+            this.header = [{label:'变量名称',prop:'name'},{label:'标识',prop:'label'},{label:'类型',prop:'type'}]
+            this.data = val
         },
         handleSizeChange(val) {
             this.listQuery.page_size = val;
@@ -218,7 +226,14 @@ export default {
                 const tHeader = ['变量名称', '标识', '类型']; //将对应的属性名转换成中文
                 //const tHeader = [];　
                 const filterVal = ['name', 'label', 'type'];//table表格中对应的属性名　　　　　 　　　
-                const list = this.listSelection;　　　　　　　　
+                const list = this.listSelection;　　　　
+                if(list.length == 0){
+                    this.$message({
+                        message: '请选择导出数据',
+                        type: 'warning'
+                    });
+                    return
+                }　　　　
                 const data = this.formatJson(filterVal, list);　　　　　　　　
                 export_json_to_excel(tHeader, data, '列表excel');
             })
