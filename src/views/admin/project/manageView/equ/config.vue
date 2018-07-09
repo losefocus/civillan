@@ -44,7 +44,7 @@
                 <el-table-column align="center" label="状态" >
                     <template slot-scope="scope">
                         <i v-if="scope.row.status == 1" class="el-icon-circle-check" style="font-size:18px;color:#67c23a"></i>
-                        <i v-else class="el-icon-circle-close" style="font-size:18px;color:#f56c6c"></i>
+                        <i v-else class="el-icon-circle-close" style="font-size:18px;color:#909399"></i>
                     </template>
                 </el-table-column>
                 <el-table-column align="center" label="操作" width="160" style="float:right">
@@ -74,7 +74,7 @@ export default {
             form:{
                 name:'',
                 key:'',
-                status:''
+                status:true
             },
             flag:'add',
             listQuery:{
@@ -164,7 +164,7 @@ export default {
             this.form={
                 name:'',
                 key:'',
-                status:''
+                status:true
             }
             this.createdLoading = false
         }

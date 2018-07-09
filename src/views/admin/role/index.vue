@@ -71,10 +71,10 @@
         <el-form-item label="描述" prop="roleDesc">
           <el-input v-model="form.roleDesc" placeholder="描述"></el-input>
         </el-form-item>
-        <el-form-item label="所属部门" prop="roleDept">
+        <!-- <el-form-item label="所属部门" prop="roleDept">
           <el-input v-model="form.deptName" placeholder="选择部门" @focus="handleDept()" readonly></el-input>
           <el-input type="hidden" v-model="form.roleDeptId"></el-input>
-        </el-form-item>
+        </el-form-item> -->
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="cancel('form')">取 消</el-button>
@@ -138,7 +138,7 @@ export default {
         roleName: undefined,
         roleCode: undefined,
         roleDesc: undefined,
-        deptName: undefined,
+        // deptName: undefined,
         roleDeptId: undefined
       },
       roleId: undefined,
@@ -172,8 +172,8 @@ export default {
         ],
         roleDesc: [
           {
-            required: true,
-            message: "角色标识",
+            required: false,
+            message: "角色描述",
             trigger: "blur"
           },
           {

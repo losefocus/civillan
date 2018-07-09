@@ -123,7 +123,7 @@ export default {
                 thumbnailPath:'',
                 thumbnailBaseUrl:'',
                 comment:'',
-                status:0,
+                status:true,
                 deviceGroup:{
                     id:[]
                 }
@@ -232,7 +232,7 @@ export default {
                 thumbnailPath:'',
                 thumbnailBaseUrl:'',
                 comment:'',
-                status:0,
+                status:true,
                 deviceGroup:{
                     id:[]
                 }

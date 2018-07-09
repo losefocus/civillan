@@ -1,7 +1,7 @@
 <template>
   <div class="top">
     <div class="top-button is-left">
-      <div class="tags-breadcrumb">
+      <div class="tags-breadcrumb" style="cursor:pointer">
         <i class="icon-navicon tag-collapse" :class="[{ 'tag-collapse_right': isCollapse }]" @click="showCollapse"></i>
       </div>
     </div>

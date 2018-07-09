@@ -53,17 +53,32 @@ import { addObj,updateObj} from "@/api/project_org";
 export default {
     props:['projectInfo'],
     data(){
+        var validateName = (rule, value, callback) => {
+            if (value === '' || value== undefined) {
+                callback(new Error('请输入机构名称'));
+            } else {
+                callback();
+            }
+        };
+        var validateTypeId = (rule, value, callback) => {
+            if (value === '' || value== undefined) {
+                callback(new Error('请选择机构类型'));
+            } else {
+                callback();
+            }
+        };
         return {
             rules: {
                 name: [
-                    { required: true, message: '请输入机构名称', trigger: 'blur' }
+                    {validator: validateName, message: '请输入机构名称', trigger: 'blur' }
                 ],
                 typeId: [
-                    { required: true, message: '请选择机构类型', trigger: 'change' }
+                    { validator: validateTypeId, message: '请选择机构类型', trigger: 'change' }
                 ],
             },
             flag:'add',
             addNewForm:{
+                status:true
             },
             createLoading: false,
         }
@@ -85,8 +100,7 @@ export default {
                     this.createLoading = true
                     addObj(this.addNewForm).then(response => {
                         this.$parent.$refs.org.getList()
-                        this.$refs[formName].resetFields()
-                        this.createLoading = false
+                        this.cancel()
                         this.$parent.$parent.alertNotify('添加')
                     })
                 }
@@ -98,10 +112,8 @@ export default {
                     this.addNewForm.status = this.addNewForm.status?1:0
                     this.createLoading = true
                     updateObj(this.addNewForm).then(response => {
-                        this.createLoading = false
                         this.$parent.$refs.org.getList()
-                        this.addNewForm = {}
-                        this.flag = 'add'
+                        this.cancel()
                         this.$parent.$parent.alertNotify('修改')
                     })
                 }
@@ -109,7 +121,9 @@ export default {
         },
         cancel(formName){
             this.flag = 'add'
-            this.addNewForm = {}
+            this.addNewForm = {
+                status:true
+            }
             this.createLoading = false
         },
     }

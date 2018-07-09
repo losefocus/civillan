@@ -1,6 +1,6 @@
 <template>
     <div>
-        <el-button @click="toProjectIndex" size="small">返回</el-button>
+        <el-button @click="toProjectIndex" size="small" type="primary">项目列表</el-button>
         <div id="container" :style="mapHeight" style="margin-top:10px"></div>
     </div>
 </template>

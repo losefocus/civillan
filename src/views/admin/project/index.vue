@@ -10,20 +10,21 @@
                         </el-input>
                     </div>
                 </div>
-            
                 <div v-loading="listLoading" >
-                    <el-table :data="list" element-loading-text="给我一点时间" border fit highlight-current-row style="width: 100%;margin-bottom:10px">
+                    <el-table :data="list" element-loading-text="给我一点时间" border fit highlight-current-row style="width: 100%;margin-bottom:10px" :row-class-name="setClassName">
                         <el-table-column type="expand">
                             <template slot-scope="scope">
-                                <el-table :data="scope.row.children"  style="background:red" v-if="scope.row.children.length != 0" border ref="subTable" id="subTable">
+                                <el-table :data="scope.row.children"  border ref="subTable" id="subTable">
                                     <el-table-column align="center" label="缩略图">
                                         <template slot-scope="pro">
                                             <img style="width:50px;height:50px" :src="pro.row.thumbnailUrl+pro.row.thumbnailPath" :alt="pro.row.name">
                                         </template>
                                     </el-table-column>      
-                                    <el-table-column align="center" label="项目名称">
+                                    <el-table-column align="left" label="项目名称" min-width="170">
                                         <template slot-scope="pro">
-                                            {{pro.row.name}}
+                                            <el-tooltip class="item" effect="dark" :content="pro.row.name" placement="top-start">
+                                                <span class="nameBox"><a>{{pro.row.name}}</a></span>
+                                            </el-tooltip>
                                         </template>
                                     </el-table-column>      
                                     <el-table-column align="center" label="开始时间" min-width="100">
@@ -41,14 +42,15 @@
                                             {{adminerHash[pro.row.adminer]}}
                                         </template>
                                     </el-table-column>      
-                                    <el-table-column align="center" label="操作" class-name="lastTd">
+                                    <el-table-column align="center" label="操作" class-name="lastTd" width="80">
                                         <template slot-scope="pro">
-                                            <el-dropdown trigger="click" @command="handleCommand">
-                                                <el-button type="primary" size="small">
+                                            <el-dropdown trigger="click" @command="handleCommand" placement="bottom">
+                                                <span style="cursor:pointer">
                                                     操作<i class="el-icon-arrow-down el-icon--right"></i>
-                                                </el-button>
+                                                </span >
                                                 <el-dropdown-menu slot="dropdown">
-                                                    <el-dropdown-item v-for="(item,index) in btnList" 
+                                                    <el-dropdown-item 
+                                                    v-for="(item,index) in btnList" 
                                                     :key="index" 
                                                     v-if="item.flag"
                                                     :command="composeValue(item.value,pro.row)">
@@ -71,9 +73,11 @@
                                 <!-- <img style="width:30px;height:30px" :src="scope.row.thumbnailUrl+scope.row.thumbnailPath"> -->
                             </template>
                         </el-table-column>
-                        <el-table-column align="center" label="项目名称">
+                        <el-table-column align="left" label="项目名称" min-width="170">
                             <template slot-scope="scope">
-                                <span>{{scope.row.name}}</span>
+                                <el-tooltip class="item" effect="dark" :content="scope.row.name" placement="top-start">
+                                    <span class="nameBox"><a>{{scope.row.name}}</a></span>
+                                </el-tooltip>
                             </template>
                         </el-table-column>
                         <el-table-column align="center" label="开始时间" min-width="100">
@@ -91,16 +95,18 @@
                                 <span>{{adminerHash[scope.row.adminer]}}</span>
                             </template>
                         </el-table-column>
-                        <el-table-column align="center" label="操作">
-                            <template slot-scope="pro" v-if="pro.row.children.length === 0">
-                                <el-dropdown trigger="click" @command="handleCommand">
-                                    <el-button type="primary" size="small">
+                        <el-table-column align="center" label="操作" width="80">
+                            <template slot-scope="pro" >
+                                <el-dropdown trigger="click" @command="handleCommand" placement="bottom">
+                                    <span style="cursor:pointer">
                                         操作<i class="el-icon-arrow-down el-icon--right"></i>
-                                    </el-button>
+                                    </span >
                                     <el-dropdown-menu slot="dropdown">
-                                        <el-dropdown-item v-for="(item,index) in btnList" 
+                                        <el-dropdown-item
+                                        v-if="pro.row.children.length !=0"
+                                        v-for="(item,index) in btnList" 
                                         :key="index" 
-                                        v-if="item.flag"
+                                        :disabled="item.flag"
                                         :command="composeValue(item.value,pro.row)">
                                         {{item.label}}
                                         </el-dropdown-item>
@@ -120,7 +126,7 @@
             </div>
             <div class="pull-right addNewProject">
                 <h3>添加项目</h3>
-                <el-form label-width="65px" :model="form" :rules="rules" ref="form">
+                <el-form label-width="65px" :model="form" :rules="rules" ref="form" status-icon>
                     <el-form-item label="上级" prop="parentId" >
                         <el-select v-model="form.parentId" size="small" :loading='listLoading' placeholder="请选择">
                             <el-option
@@ -228,29 +234,39 @@ export default {
         mapPosition
     },
     data(){
+        var validateName = (rule, value, callback) => {
+            if (value === '' || value== undefined) {
+                callback(new Error('请输入项目名称'));
+            } else {
+                callback();
+            }
+        };
+        var validateBeginAt = (rule, value, callback) => {
+            if (value === '' || value== undefined) {
+                callback(new Error('请选择工期'));
+            } else {
+                callback();
+            }
+        };
+        var validateAdminer = (rule, value, callback) => {
+            if (value === '' || value== undefined) {
+                callback(new Error('请选择管理员'));
+            } else {
+                callback();
+            }
+        };
         return {
             rules: {
-                parentId: [
-                    { required: false, message: '请选择父级项目', trigger: 'change' },
-                ],
                 name: [
-                    { required: true, message: '请输入项目名称', trigger: 'blur' }
+                    {validator: validateName, message: '请输入项目名称', trigger: 'blur' }
                 ],
                 beginAt: [
-                    { required: true, message: '请选择工期', trigger: 'blur' }
+                    { validator: validateBeginAt, message: '请选择工期', trigger: 'blur' }
                 ],
                 adminer: [
-                    { required: true, message: '请选择管理员', trigger: 'change' }
+                    { validator: validateAdminer, message: '请选择管理员', trigger: 'change' }
                 ],
-                thumbnailPath: [
-                    { required: false, message: '请添加图片', trigger: 'blur' }
-                ],
-                position: [
-                    { required: false, message: '请选择位置', trigger: 'blur' }
-                ],
-                comment: [
-                    { required: false, message: '请输入备注', trigger: 'blur' }
-                ]
+
             },
             sys_user_upd:true,
             sys_user_del:true,
@@ -331,6 +347,9 @@ export default {
         ...mapGetters(["permissions","adminerHash"])
     },
     methods:{
+        setClassName({row, index}){
+            return row.children.length != 0 ? '' : 'expand';
+        },
         //管理员列表
         getRoleList(){
             this.adminerOptionsloading = true
@@ -354,6 +373,8 @@ export default {
                 let datas = response.data.result.items;
                 this.mapList = datas
                 this.list = this.arrayToJson(datas);
+                this.list.expand = true
+                console.log(this.list)
                 this.total = response.data.result.total;
                 this.listLoading = false;
             });
@@ -524,6 +545,10 @@ export default {
 </script>
 
 <style scoped>
+.nameBox{
+    white-space:nowrap;
+    cursor: pointer;
+}
 .avatar-uploader{
      height: 193px;
 }

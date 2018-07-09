@@ -148,7 +148,7 @@ export default {
             form:{
                 projectOrgan : {id:null} ,
                 userRole:[],
-                status:false
+                status:true
             },
             duplication_username:false,
             duplication_phone:false,
@@ -239,7 +239,7 @@ export default {
             this.createLoading = false
             this.form={
                 projectOrgan: {id:null} ,
-                status:false
+                status:true
             }
             this.usernameDisabled = false
 

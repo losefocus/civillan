@@ -2,19 +2,21 @@
     <div class="app-container calendar-list-container clearfix" id="product">
         <div class="filter-container">
             <!-- <el-button class="filter-item" style="" size="small" type="primary" icon="edit" >添加产品</el-button> -->
-            <el-button class="filter-item" style="" size="small" type="primary" icon="edit" @click="classifyTemplatVisible=true">分类管理</el-button>
+            <el-button class="filter-item" style="" size="small" type="primary" icon="edit" @click="classifyTemplatVisible=true">产品分类管理</el-button>
         </div>
         <div class="clearfix">
             <div v-loading="listLoading" class="pull-left"  style="width:calc(100% - 320px)">
                 <el-table :data="list" element-loading-text="给我一点时间" border fit highlight-current-row style="width: 100%;margin-bottom:10px">
-                    <el-table-column align="center" label="缩略图">
+                    <el-table-column align="center" label="缩略图" class-name="xxx">
                         <template slot-scope="scope">
                             <img style="width:50px;height:50px" :src="scope.row.thumbnailUrl+scope.row.thumbnailPath">
                         </template>
                     </el-table-column>
-                    <el-table-column align="center" label="产品名称">
+                    <el-table-column align="left" label="产品名称" min-width="170">
                         <template slot-scope="scope">
-                            <span>{{scope.row.name}}</span>
+                            <el-tooltip class="item" effect="dark" :content="scope.row.name" placement="top-start">
+                                <span class="nameBox"><a>{{scope.row.name}}</a></span>
+                            </el-tooltip>
                         </template>
                     </el-table-column>
                     <el-table-column align="center" label="别名/型号" width="85">
@@ -27,16 +29,19 @@
                             <span>{{categoryHash.get(scope.row.category)}}</span>
                         </template>
                     </el-table-column>
-                    <el-table-column align="center" label="Product key" width="95">
+                    <el-table-column align="center" label="产品标识" width="95">
                         <template slot-scope="scope">
                             <el-tooltip class="item" effect="dark" :content="scope.row.key" placement="top">
-                                <el-button size="small" class="copy_key" :data-clipboard-text="scope.row.key" @click="copy">key</el-button>
+                                <i style="cursor:pointer" class="iconfont icon-fuzhi copy_key" :data-clipboard-text="scope.row.key" @click="copy" ></i>
                             </el-tooltip>
                         </template>
                     </el-table-column>
                     <el-table-column align="center" label="状态">
                         <template slot-scope="scope">
-                            <span>{{(scope.row.status === 1)?'已启用':'未启用'}}</span>
+                            <span>
+                                <i v-if="scope.row.status == 1" class="el-icon-circle-check" style="font-size:18px;color:#67c23a"></i>
+                                <i v-else class="el-icon-circle-close" style="font-size:18px;color:#909399"></i>
+                            </span>
                         </template>
                     </el-table-column>
                     <!-- <el-table-column align="center" label="排序">
@@ -50,13 +55,12 @@
                         </template>
                     </el-table-column>
                     
-                    <el-table-column align="center" label="操作">
+                    <el-table-column align="center" label="操作" width="80">
                         <template slot-scope="pro">
-
-                            <el-dropdown trigger="click" @command="handleCommand">
-                                <el-button type="primary" size="small">
+                            <el-dropdown trigger="click" @command="handleCommand" placement="bottom">
+                                <span style="cursor:pointer">
                                     操作<i class="el-icon-arrow-down el-icon--right"></i>
-                                </el-button>
+                                </span >
                                 <el-dropdown-menu slot="dropdown">
                                     <el-dropdown-item v-if="product_btn_variable_template" :command="composeValue('variableTemplateVisible',pro.row)">变量</el-dropdown-item>
                                     <el-dropdown-item v-if="product_btn_alert_template" :command="composeValue('alarmTemplatVisible',pro.row)">报警</el-dropdown-item>
@@ -64,11 +68,6 @@
                                     <el-dropdown-item v-if="product_btn_del" :command="composeValue('del',pro.row)">删除</el-dropdown-item>
                                 </el-dropdown-menu>
                             </el-dropdown>
-
-                            <!-- <el-button size="small" type="success" plain @click="variableTemplate(pro.row)">变量模板</el-button>
-                            <el-button size="small" type="success" plain @click="alarmTemplat(pro.row)">报警模板</el-button>
-                            <el-button size="small" type="success" plain @click="updataProduct(pro.row)" v-if="product_btn_edit" >修改</el-button>
-                            <el-button size="small" type="danger" plain @click="delProduct(pro.row)" v-if="product_btn_del">删除</el-button> -->
                         </template>
                     </el-table-column>
                 </el-table>    
@@ -84,11 +83,10 @@
                         <el-input v-model="form.name" size="small" placeholder="请输入产品名称"></el-input>
                     </el-form-item>
                     <el-form-item label="型号" prop="alias">
-                        <el-input v-model="form.alias" size="small" placeholder="请输入内容"></el-input>
+                        <el-input v-model="form.alias" size="small" placeholder="请输入产品型号"></el-input>
                     </el-form-item>
                     <el-form-item label="分类" prop="category">
-                        <!-- <el-input v-model="form.category" size="small" placeholder="请输入内容"></el-input> -->
-                        <el-select v-model="form.category" size="small" placeholder="请选择分类">
+                        <el-select v-model="form.category" size="small" placeholder="请选择产品分类">
                             <el-option
                             v-for="item in categoryOptions"
                             :key="item.value"
@@ -127,24 +125,24 @@
             </div>
         </div>
         <el-dialog id="variable" title="变量模板"  :visible.sync="variableTemplateVisible" width='690px'>
-            <!-- <variable :product-info="productData" :template-info="templateData"></variable> -->
-            <div class="clearfix">
+            <variable v-if="variableTemplateVisible == true" :product-info="productData" :template-info="templateData"></variable>
+            <!-- <div class="clearfix">
                 <div >
                     产 品 : {{productData.name}} 
                 </div>
                 <el-input style="padding:20px 0" type="textarea" :rows="10" placeholder="请输入内容" v-model="templateData.content"></el-input>
                 <el-button class="pull-right" size="mini" type="primary" @click="setTemplate" :loading="tempCreateloading">保存</el-button>
-            </div>
+            </div> -->
         </el-dialog>
         <el-dialog id="alarm" title="报警模板"  :visible.sync="alarmTemplatVisible" width='690px'>
             <!-- <alarm :product-info="productData" :template-info="templateData"></alarm> -->
-            <div class="clearfix" v-loading="temploading">
+            <!-- <div class="clearfix" v-loading="temploading">
                 <div >
                     产 品 : {{productData.name}} 
                 </div>
                 <el-input style="padding:20px 0" type="textarea" :rows="10" placeholder="请输入内容" v-model="templateData.content"></el-input>
                 <el-button class="pull-right" size="mini" type="primary">保存</el-button>
-            </div>
+            </div> -->
         </el-dialog>
         <el-dialog title="分类管理" :visible.sync="classifyTemplatVisible" width='690px'>
             <category @showCategoryOptions="getParentOptions" @showCategoryHash="getParentHash"></category>
@@ -166,20 +164,39 @@ export default {
         category
     },
     data(){
+        var validateName = (rule, value, callback) => {
+            if (value === '' || value== undefined) {
+                callback(new Error('请输入产品名称'));
+            } else {
+                callback();
+            }
+        };
+        var validateAlias = (rule, value, callback) => {
+            if (value === '' || value== undefined) {
+                callback(new Error('请输入产品型号'));
+            } else {
+                callback();
+            }
+        };
+        var validateCategory = (rule, value, callback) => {
+            if (value === '' || value== undefined) {
+                callback(new Error('请输入产品分类'));
+            } else {
+                callback();
+            }
+        };
         return {
             rules: {
                 name: [
-                    { required: true, message: '请输入产品名称', trigger: 'blur' }
+                    { validator: validateName, message: '请输入产品名称', trigger: 'blur' }
                 ],
                 alias: [
-                    { required: true, message: '请输入产品型号', trigger: 'blur' },
+                    { validator: validateAlias, message: '请输入产品型号', trigger: 'blur' },
                 ],
                 category: [
-                    { required: true, message: '请输入产品分类', trigger: 'blur' },
+                    { validator: validateCategory, message: '请输入产品分类', trigger: 'change' },
                 ],
-                thumbnailUrl: [
-                    { required: false, message: '请添加图片', trigger: 'blur' }
-                ],
+
             },
             listLoading:false,
             createLoading:false,
@@ -195,7 +212,7 @@ export default {
                 category:null,
                 thumbnailPath:'',
                 thumbnailUrl:'',
-                status:false
+                status:true
             },
             categoryOptions:[],
             categoryHash:{},
@@ -349,7 +366,7 @@ export default {
                 category:null,
                 thumbnailPath:'',
                 thumbnailUrl:'',
-                status:false
+                status:true
             }
         },
         handleCommand(command){
@@ -366,13 +383,14 @@ export default {
         },
         //变量模板
         variableTemplate(row){
+            console.log(row)
             this.variableTemplateVisible = true
             this.productData = row
             let id
             row.productTemplate.forEach(element => {
                 if(element.type === 1)id = element.id
             });
-            this.getContent(id) 
+            // this.getContent(id) 
         },
         //报警模板
         alarmTemplat(row){
@@ -408,8 +426,7 @@ export default {
                 this.$message({
                     message: '复制成功',
                     type: 'success'
-                });
-                     
+                });   
                 clipboard.destroy()   // 释放内存 
             })  
             clipboard.on('error', e => {  
@@ -432,6 +449,10 @@ export default {
 }
 </script>
 <style scoped>
+.nameBox{
+    white-space:nowrap;
+    cursor: pointer;
+}
 .avatar-uploader{
      height: 203px;
 }
