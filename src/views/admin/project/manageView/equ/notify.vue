@@ -1,7 +1,7 @@
 <template>
     <div>
         <div>设 备 : {{dataInfo.name}}</div>
-        <el-form :model="form" class="clearfix" ref="form" label-width="70px" size="small">
+        <el-form :model="form" class="clearfix" ref="form" label-width="70px" size="mini">
             <el-form-item label="报警标题" style="width: 650px">
                 <el-select v-model="form.alarmId" placeholder="请选择" size="mini" :loading="alarmLoading">
                     <el-option
@@ -12,7 +12,7 @@
                     </el-option>
                 </el-select>
             </el-form-item>
-            <el-form-item label="报警人员"  style="width: 650px">
+            <el-form-item label="通知对象"  style="width: 650px">
                 <el-select v-model="form.puserIds" multiple placeholder="请选择" size="mini" :loading="userLoading">
                     <el-option
                     v-for="item in userOptions"
@@ -32,7 +32,7 @@
                     </el-option>
                 </el-select>
             </el-form-item>
-            <el-form-item label="通知类型" style="width: 310px;margin-left:30px">
+            <el-form-item label="通知方式" style="width: 310px;margin-left:30px">
                 <el-select v-model="form.notifyTypes" placeholder="请选择" size="mini" >
                     <el-option
                     v-for="item in typeOptions"
@@ -51,12 +51,12 @@
         </el-form>
         <div v-loading="listLoading">
             <el-table :data="list" element-loading-text="给我一点时间" stripe border fit highlight-current-row style="width: 100%;margin-bottom:10px">
-                <el-table-column align="center" label="报警人员">
+                <el-table-column align="center" label="通知对象">
                     <template slot-scope="scope">
                         <span>{{scope.row.projectUser.name}}</span>
                     </template>
                 </el-table-column>
-                <el-table-column align="center" label="报警方式">
+                <el-table-column align="center" label="通知方式">
                     <template slot-scope="scope">
                         <span>{{scope.row.notifyTypes}}</span>
                     </template>

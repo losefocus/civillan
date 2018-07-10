@@ -10,7 +10,7 @@ export default [{
   redirect: '/wel/index',
   children: [{
     path: 'index',
-    name: '首页',
+    name: '控制台',
     component: _import('wel')
   }]
 }, {

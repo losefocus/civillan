@@ -7,9 +7,11 @@
             </el-button>
         </div>
         <el-table :data="list" v-loading="listLoading" element-loading-text="给我一点时间" border fit highlight-current-row style="width: 99%;margin-bottom: 10px;">
-            <el-table-column align="center" label="机构名称">
+            <el-table-column align="left" label="机构名称" min-width="170px">
                 <template slot-scope="scope">
-                    <span>{{scope.row.name}}</span>
+                    <el-tooltip class="item" effect="dark" :content="scope.row.name" placement="top-start">
+                        <span style="white-space:nowrap;cursor:pointer;"><a>{{scope.row.name}}</a></span>
+                    </el-tooltip>
                 </template>
             </el-table-column>
             <el-table-column align="center" label="联络人">
@@ -35,8 +37,8 @@
             </el-table-column>
             <el-table-column align="center" label="操作" min-width ="150">
                 <template slot-scope="scope" >
-                    <el-button size="small" type="success" plain @click="updateOrg(scope.row)">修改</el-button>
-                    <el-button size="small" type="danger" plain @click="deleteOrg(scope.row)" style="margin-left:0px">删除</el-button>
+                    <el-button size="mini" type="success" plain @click="updateOrg(scope.row)">修改</el-button>
+                    <el-button size="mini" type="danger" plain @click="deleteOrg(scope.row)" style="margin-left:0px">删除</el-button>
                 </template>
             </el-table-column>
         </el-table> 
@@ -46,10 +48,7 @@
         </div>
 
         <el-dialog id="orgType" title="机构类型"  :visible.sync="objectTypeVisible" width='690px'>
-            <div>
-                项 目 : {{projectInfo.name}} 
-            </div>
-            <el-form :model="orgTypeForm" class="clearfix" ref="orgTypeForm" size="small">
+            <el-form :model="orgTypeForm" class="clearfix" ref="orgTypeForm" size="mini">
                 <el-form-item label="名称" style="width: 140px">
                     <el-input v-model="orgTypeForm.name" style="width:90px;" size="mini" auto-complete="off"></el-input>
                 </el-form-item>

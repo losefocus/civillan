@@ -4,9 +4,9 @@
             <el-button class="filter-item" style="" @click="handleGroup" size="small" type="primary" icon="edit" >分组管理</el-button>
         </div>
         <el-table :data="list" v-loading="listLoading" element-loading-text="给我一点时间" border fit highlight-current-row style="width: 99%;margin-bottom:10px">
-            <el-table-column align="center" label="名称">
+            <el-table-column align="center" label="设备名称">
                 <template slot-scope="scope">
-                    <span>{{scope.row.name}}</span>
+                    <span style="white-space:nowrap;cursor:pointer;"><a>{{scope.row.name}}</a></span>
                 </template>
             </el-table-column>
             <el-table-column align="center" label="所在分组">
@@ -17,14 +17,14 @@
             <el-table-column align="center" label="key" >
                 <template slot-scope="scope">
                     <el-tooltip class="item" effect="dark" :content="scope.row.key" placement="top">
-                        <el-button size="small" class="copy_key" :data-clipboard-text="scope.row.key" @click="copy('key')">key</el-button>
+                        <i style="cursor:pointer" class="iconfont icon-fuzhi copy_key" :data-clipboard-text="scope.row.key" @click="copy('key')" ></i>
                     </el-tooltip>
                 </template>
             </el-table-column>
             <el-table-column align="center" label="secret">
                 <template slot-scope="scope">
                     <el-tooltip class="item" effect="dark" :content="scope.row.secret" placement="top">
-                        <el-button size="small"  class="copy_secret" :data-clipboard-text="scope.row.secret" @click="copy('secret')">secret</el-button>
+                        <i style="cursor:pointer" class="iconfont icon-fuzhi copy_secret" :data-clipboard-text="scope.row.secret" @click="copy('secret')" ></i>
                     </el-tooltip>
                 </template>
             </el-table-column>
@@ -47,14 +47,14 @@
             </el-table-column>
             <el-table-column align="center" label="操作">
                 <template slot-scope="scope" >
-                    <el-dropdown trigger="click" @command="handleCommand">
-                        <el-button type="primary" size="small">
+                    <el-dropdown trigger="click" @command="handleCommand" placement="bottom">
+                        <span style="cursor:pointer">
                             操作<i class="el-icon-arrow-down el-icon--right"></i>
-                        </el-button>
+                        </span >
                         <el-dropdown-menu slot="dropdown">
                             <el-dropdown-item v-for="(item,index) in btnList" 
                             :key="index" 
-                            v-if="item.flag"
+                            :disabled="!item.flag"
                             :command="composeValue(item.value,scope.row)">
                             {{item.label}}
                             </el-dropdown-item>
@@ -81,7 +81,7 @@
         <el-dialog title="变量管理"  :visible.sync="sensorVisible" width='690px'>
             <sensor v-if="sensorVisible" :data-info="dataInfo" ref="sensor"></sensor>
         </el-dialog>
-        <el-dialog title="报警管理"  :visible.sync="alarmVisible" width='690px'>
+        <el-dialog title="警报管理"  :visible.sync="alarmVisible" width='690px'>
             <alarm v-if="alarmVisible" :data-info="dataInfo" ref="alarm"></alarm>
         </el-dialog>
         <el-dialog title="通知管理"  :visible.sync="notifyVisible" width='690px'>
@@ -122,11 +122,6 @@ export default {
             total:null,
             btnList:[
                 {
-                    value:'configVisible',
-                    label:'配置',
-                    btn:'device_btn_config',
-                    flag:false
-                },{
                     value:'certiVisible',
                     label:'证书',
                     btn:'device_btn_certificate',
@@ -138,13 +133,19 @@ export default {
                     flag:false
                 },{
                     value:'alarmVisible',
-                    label:'报警',
+                    label:'警报',
                     btn:'device_btn_alert',
                     flag:false
                 },{
                     value:'notifyVisible',
                     label:'通知',
                     btn:'device_btn_notice',
+                    flag:false
+                },
+                {
+                    value:'configVisible',
+                    label:'配置',
+                    btn:'device_btn_config',
                     flag:false
                 },
             ],
@@ -173,6 +174,7 @@ export default {
         this.btnList.forEach(element => {
             element.flag = this.permissions[element.btn]
         });
+        this.btnList[4].flag = false
     },
     mounted() {
 
@@ -261,6 +263,7 @@ export default {
                 clipboard.destroy()  
             })  
             clipboard.on('error', e => {  
+                console.log(222)
                 // 不支持复制  
                 this.$message({
                     message: '该浏览器不支持自动复制',

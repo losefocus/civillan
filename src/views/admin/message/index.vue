@@ -1,21 +1,21 @@
 <template>
     <div class="app-container calendar-list-container">
         <el-form :model="form" class="clearfix" label-width="80px" ref="form" :rules="rules">
-            <el-form-item label="标题" prop="title">
+            <el-form-item label="消息标题" prop="title">
                 <el-input v-model="form.title" placeholder="标题"></el-input>
             </el-form-item>
-            <el-form-item label="内容" prop="message">
+            <el-form-item label="消息内容" prop="message">
                 <el-input v-model="form.message" type="textarea" :rows="3" placeholder="内容"></el-input>
             </el-form-item>
-            <el-form-item label="推送对象" prop="pushObject" class="pull-left" style="width:45%">
-                <el-select v-model="form.pushObject" placeholder="推送对象">
+            <el-form-item label="通知对象" prop="pushObject" class="pull-left" style="width:45%">
+                <el-select v-model="form.pushObject" placeholder="通知对象">
                     <el-option label="后台用户" value="1"></el-option>
                     <el-option label="前台用户" value="2"></el-option>
                     <el-option label="设备" value="3"></el-option>
                 </el-select>
             </el-form-item>
-            <el-form-item label="推送方式" prop="pushType" class="pull-right" style="width:45%">
-                <el-select v-model="form.pushType" placeholder="推送对象">
+            <el-form-item label="通知方式" prop="pushType" class="pull-right" style="width:45%">
+                <el-select v-model="form.pushType" placeholder="通知对象">
                     <el-option label="web" value="1"></el-option>
                     <el-option label="app" value="2"></el-option>
                 </el-select>
@@ -25,12 +25,12 @@
             </el-form-item>
         </el-form>
         <el-table :data="list" border style="width: 100%" v-loading="listLoading">
-            <el-table-column align="center" label="标题" width="180">
+            <el-table-column align="center" label="消息标题" width="180">
                 <template slot-scope="scope">
                     <span>{{ scope.row.title }}</span>
                 </template>
             </el-table-column>
-             <el-table-column align="center" label="内容" width="180">
+             <el-table-column align="center" label="消息内容" width="180">
                 <template slot-scope="scope">
                     <span>{{ scope.row.message }}</span>
                 </template>
@@ -45,7 +45,7 @@
                     <span>{{ scope.row.username }}</span>
                 </template>
             </el-table-column>
-            <el-table-column align="center" label="推送对象">
+            <el-table-column align="center" label="通知对象">
                 <template slot-scope="scope">
                     <span>{{ scope.row.pushObject }}</span>
                 </template>
@@ -66,7 +66,35 @@
 import {fetchList,pushObj,delObj,fetchUserList} from "@/api/notification";
 export default {
     data() {
-      return {
+        var validateTitle = (rule, value, callback) => {
+            if (value === '' || value== undefined) {
+                callback(new Error('请输入消息标题'));
+            } else {
+                callback();
+            }
+        };
+        var validateMessage = (rule, value, callback) => {
+            if (value === '' || value== undefined) {
+                callback(new Error('请输入消息内容'));
+            } else {
+                callback();
+            }
+        };
+        var validateObject = (rule, value, callback) => {
+            if (value === '' || value== undefined) {
+                callback(new Error('请选择通知对象'));
+            } else {
+                callback();
+            }
+        };
+        var validateType = (rule, value, callback) => {
+            if (value === '' || value== undefined) {
+                callback(new Error('请选择通知方式'));
+            } else {
+                callback();
+            }
+        };
+    return {
         pushObjectOptions:[{
             value:1,
             label:'后台用户'
@@ -79,16 +107,16 @@ export default {
         },],
         rules:{
             title: [
-                { required: true, message: '请输入标题', trigger: 'blur' },
+                { validator: validateTitle, message: '请输入消息标题', trigger: 'blur' },
             ],
             message: [
-                { required: true, message: '请输入内容', trigger: 'blur' }
+                { validator: validateMessage, message: '请输入消息内容', trigger: 'blur' }
             ],
             pushObject: [
-                { required: true, message: '请选择推送对象', trigger: 'change' }
+                { validator: validateObject, message: '请选择通知对象', trigger: 'change' }
             ],
             pushType: [
-                { required: true, message: '请选择推送对象', trigger: 'change' }
+                { validator: validateType, message: '请选择通知方式', trigger: 'change' }
             ],
         },
         form: {
@@ -178,10 +206,9 @@ export default {
                     })
                 }
             })
-            
         },
         restTemp(){
-            form = {
+            this.form = {
                 title: '',
                 message: '',
                 pushObject:null,

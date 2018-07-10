@@ -3,7 +3,7 @@ import {
 } from '@/config/env'
 export const menu = [{
   id: 1,
-  label: "首页",
+  label: "控制台",
   href: '/wel/index',
   icon: 'icon-huanyingye',
   meta: {},

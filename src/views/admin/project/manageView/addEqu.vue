@@ -1,12 +1,9 @@
 <template>
     <div>
         <h3>{{flag == 'add'?'添加':'修改'}}设备</h3>
-        <el-form label-width="60px" :model="form"  ref="form" :rules="rules">
-            <el-form-item label="项目" >
-                <el-input v-model="projectInfo.name" size="small" placeholder="请输入内容" disabled></el-input>
-            </el-form-item>
+        <el-form label-width="55px" :model="form"  ref="form" :rules="rules">
             <el-form-item label="型号" prop="productId">
-                <el-select v-model="form.productId" size="small" placeholder="请选择" :disabled="disabled">
+                <el-select v-model="form.productId" size="small" placeholder="请选择型号" :disabled="disabled">
                     <el-option
                     v-for="item in productOptions"
                     :key="item.value"
@@ -18,7 +15,7 @@
             <el-form-item label="分组" prop="deviceGroup.id">
                 <!-- <el-input v-model="form.deviceGroup.id" size="small" placeholder="请输入内容"></el-input> -->
                 <el-cascader
-                    size="small" placeholder="请选择上级分组"
+                    size="small" placeholder="请选择分组"
                     :options="groupOptions"
                     v-model="form.deviceGroup.id"
                     :show-all-levels="false"
@@ -26,10 +23,10 @@
                 </el-cascader>
             </el-form-item>
             <el-form-item label="名称" prop="name">
-                <el-input v-model="form.name" size="small" placeholder="请输入内容"></el-input>
+                <el-input v-model="form.name" size="small" placeholder="请输入名称"></el-input>
             </el-form-item>
             <el-form-item label="固件" prop="firmware">
-                <el-input v-model="form.firmware" size="small" placeholder="请输入内容"></el-input>
+                <el-input v-model="form.firmware" size="small" placeholder="请输入固件"></el-input>
             </el-form-item>
             <el-form-item label="位置" prop="position">
                 <el-input v-model="form.position" size="small" readonly placeholder="请选择位置" @focus="positionPicker"></el-input>
@@ -54,7 +51,7 @@
                 <el-input
                 type="textarea"
                 :autosize="{ minRows: 2, maxRows: 4}"
-                placeholder="请输入内容"
+                placeholder="请输入备注"
                 v-model="form.comment">
                 </el-input>
             </el-form-item>
@@ -84,26 +81,49 @@ export default {
     },
     props:['projectInfo'],
     data(){
+        var validataProductId = (rule, value, callback) => {
+            if(value === '' || value== undefined){
+                callback(new Error('请选择父级项目'));
+            }else{
+                callback()
+            }
+        }
+        var validataGroupId = (rule, value, callback) => {
+            console.log(value)
+            if(value.length == 0){
+                callback(new Error('请选择分组'));
+            }else{
+                callback()
+            }
+        }
+        var validataName = (rule, value, callback) => {
+            if(value === '' || value== undefined){
+                callback(new Error('请输入名称'));
+            }else{
+                callback()
+            }
+        }
+        var validataFirmware = (rule, value, callback) => {
+            if(value === '' || value== undefined){
+                callback(new Error('请输入固件'));
+            }else{
+                callback()
+            }
+        }
         return {
             rules: {
                 productId: [
-                    { required: true, message: '请选择父级项目', trigger: 'change' },
+                    { validator: validataProductId, trigger: 'change' },
                 ],
                 'deviceGroup.id': [
-                    { required: true, message: '请选择分组', trigger: 'blur' },
+                    { validator: validataGroupId, trigger: 'change' },
                 ],
                 name: [
-                    { required: true, message: '请输入名称', trigger: 'blur' }
-                ],
-                thumbnailBaseUrl: [
-                    { required: false, message: '请添加图片', trigger: 'blur' }
+                    { validator: validataName, message: '请输入名称', trigger: 'blur' }
                 ],
                 firmware: [
-                    { required: true, message: '请输入固件', trigger: 'blur' }
+                    { validator: validataFirmware, message: '请输入固件', trigger: 'blur' }
                 ],
-                comment: [
-                    { required: false, message: '请输入备注', trigger: 'blur' }
-                ]
             },
             listLoading:false,
             createLoading:false,
@@ -186,7 +206,6 @@ export default {
             data.deviceGroup={id:data.deviceGroup.id[data.deviceGroup.id.length-1]} 
             data.protocol = "string"
             data.passage = "string"
-            console.log(data)
             this.$refs[formName].validate((valid) => {
                 if (valid) {
                     addObj(data).then( res => {
@@ -244,7 +263,7 @@ export default {
 </script>
 <style scoped>
 .avatar-uploader{
-     height: 200px;
+     height: 110px;
 }
 .avatar-uploader .el-upload {
     border: 1px dashed #d9d9d9;
@@ -253,25 +272,25 @@ export default {
     position: relative;
     overflow: hidden;
   }
-.avatar-uploader .el-upload:hover {
+  .avatar-uploader .el-upload:hover {
     border-color: #409EFF;
-}
-.avatar-uploader-icon {
+  }
+  .avatar-uploader-icon {
     font-size: 28px;
     color: #8c939d;
-    width: 198px;
-    height: 198px;
-    line-height: 198px;
+    width: 203px;
+    height: 110px;
+    line-height: 110px;
     text-align: center;
     border: 1px solid #dcdfe6;
     border-radius: 4px;
-}
-.avatar {
-    width: 198px;
-    height: 198px;
+  }
+  .avatar {
+    width: 203px;
+    height: 110px;
     display: block;
     border-radius: 4px;
-}
+  }
 .el-form-item{
     margin-bottom: 15px
 }

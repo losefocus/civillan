@@ -1,25 +1,25 @@
 <template>
     <div>
         <div>设 备 : {{dataInfo.name}}</div>
-        <ul v-loading="loading" class="keyForm">
-            <li>
-                <p>Public Key</p>
-                <el-input type="textarea" v-model="form.publicKey" :rows='3'></el-input>
-                <el-button class="copy_key" :data-clipboard-text="form.publicKey" @click="copy" plain size="mini">复制</el-button>
-            </li>
-            <li>
-                <p>Pricate Key</p>
-                <el-input type="textarea" v-model="form.privateKey" :rows='3'></el-input>
-                <el-button class="copy_key" :data-clipboard-text="form.privateKey" @click="copy" plain size="mini">复制</el-button>
-            </li>
-            <li>
+        <ul v-loading="loading" class="keyForm clearfix">
+            <li class="pull-left">
                 <p>CA Key</p>
-                <el-input type="textarea" v-model="form.caKey" :rows='3'></el-input>
+                <el-input type="textarea" v-model="form.caKey" :rows='5'></el-input>
                 <el-button class="copy_key" :data-clipboard-text="form.caKey" @click="copy" plain size="mini">复制</el-button>
             </li>
-            <li>
+            <li class="pull-right">
+                <p>Public Key</p>
+                <el-input type="textarea" v-model="form.publicKey" :rows='5'></el-input>
+                <el-button class="copy_key" :data-clipboard-text="form.publicKey" @click="copy" plain size="mini">复制</el-button>
+            </li>
+            <li class="pull-left">
+                <p>Private Key</p>
+                <el-input type="textarea" v-model="form.privateKey" :rows='5'></el-input>
+                <el-button class="copy_key" :data-clipboard-text="form.privateKey" @click="copy" plain size="mini">复制</el-button>
+            </li>
+            <li class="pull-right">
                 <p>Req</p>
-                <el-input type="textarea" v-model="form.req" :rows='3'></el-input>
+                <el-input type="textarea" v-model="form.req" :rows='5'></el-input>
                 <el-button class="copy_key" :data-clipboard-text="form.req" @click="copy" plain size="mini">复制</el-button>
             </li>
         </ul>
@@ -97,8 +97,12 @@ export default {
 }
 </script>
 <style scoped>
+.keyForm{
+    width: 100%
+}
 .keyForm li{
     position: relative;
+    width: 48%
 }
 .keyForm p{
     line-height: 34px;

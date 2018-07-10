@@ -3,12 +3,10 @@
         <div v-show="showView === 'index'"  class="clearfix">
             <div class="pull-left"  style="width:calc(100% - 320px)">
                 <div class="filter-container">
-                    <el-button class="filter-item" style="" @click="toProjectMap"  size="small" type="primary" icon="edit" >项目地图
-                    </el-button>
-                    <div class="pull-right">
-                        <el-input @keyup.enter.native="handleFilter" style="width: 200px;" size="small" suffix-icon="el-icon-search" class="filter-item" placeholder="项目搜索" v-model="listQuery.keyword">
-                        </el-input>
-                    </div>
+                    <el-button size="small" type="primary" >添加产品</el-button>
+                    <el-button style="" @click="toProjectMap"  size="small" type="primary">项目地图</el-button>
+                    <el-button class="pull-right" type="primary" size="small" v-waves  @click="handleFilter">搜索</el-button>
+                    <el-input @keyup.enter.native="handleFilter" style="width: 200px;" size="small" suffix-icon="el-icon-search" class="pull-right" placeholder="项目搜索" v-model="listQuery.keyword"></el-input>
                 </div>
                 <div v-loading="listLoading" >
                     <el-table :data="list" element-loading-text="给我一点时间" border fit highlight-current-row style="width: 100%;margin-bottom:10px" :row-class-name="setClassName">
@@ -17,13 +15,13 @@
                                 <el-table :data="scope.row.children"  border ref="subTable" id="subTable">
                                     <el-table-column align="center" label="缩略图">
                                         <template slot-scope="pro">
-                                            <img style="width:50px;height:50px" :src="pro.row.thumbnailUrl+pro.row.thumbnailPath" :alt="pro.row.name">
+                                            <img style="width:50px;height:50px" :src="pro.row.thumbnailUrl+pro.row.thumbnailPath">
                                         </template>
                                     </el-table-column>      
                                     <el-table-column align="left" label="项目名称" min-width="170">
                                         <template slot-scope="pro">
                                             <el-tooltip class="item" effect="dark" :content="pro.row.name" placement="top-start">
-                                                <span class="nameBox"><a>{{pro.row.name}}</a></span>
+                                                <span style="white-space:nowrap;cursor: pointer;"><a>{{pro.row.name}}</a></span>
                                             </el-tooltip>
                                         </template>
                                     </el-table-column>      
@@ -52,7 +50,7 @@
                                                     <el-dropdown-item 
                                                     v-for="(item,index) in btnList" 
                                                     :key="index" 
-                                                    v-if="item.flag"
+                                                    :disabled="!item.flag"
                                                     :command="composeValue(item.value,pro.row)">
                                                     {{item.label}}
                                                     </el-dropdown-item>
@@ -76,11 +74,11 @@
                         <el-table-column align="left" label="项目名称" min-width="170">
                             <template slot-scope="scope">
                                 <el-tooltip class="item" effect="dark" :content="scope.row.name" placement="top-start">
-                                    <span class="nameBox"><a>{{scope.row.name}}</a></span>
+                                    <span style="white-space:nowrap;cursor: pointer;"><a>{{scope.row.name}}</a></span>
                                 </el-tooltip>
                             </template>
                         </el-table-column>
-                        <el-table-column align="center" label="开始时间" min-width="100">
+                        <!-- <el-table-column align="center" label="开始时间" min-width="100">
                             <template slot-scope="scope">
                                 <span>{{scope.row.beginAt | parseTime('{y}-{m}-{d}')}}</span>
                             </template>
@@ -88,6 +86,11 @@
                         <el-table-column align="center" label="结束时间" min-width="100">
                             <template slot-scope="scope">
                                 <span>{{scope.row.endAt | parseTime('{y}-{m}-{d}')}}</span>
+                            </template>
+                        </el-table-column> -->
+                        <el-table-column align="center" label="工期" min-width="200">
+                            <template slot-scope="scope">
+                                <span>{{scope.row.beginAt | parseTime('{y}-{m}-{d}')}} 至 {{scope.row.endAt | parseTime('{y}-{m}-{d}')}}</span>
                             </template>
                         </el-table-column>
                         <el-table-column align="center" label="管理员">
@@ -103,10 +106,10 @@
                                     </span >
                                     <el-dropdown-menu slot="dropdown">
                                         <el-dropdown-item
-                                        v-if="pro.row.children.length !=0"
+                                        v-if="pro.row.children.length ==0"
                                         v-for="(item,index) in btnList" 
                                         :key="index" 
-                                        :disabled="item.flag"
+                                        :disabled="!item.flag"
                                         :command="composeValue(item.value,pro.row)">
                                         {{item.label}}
                                         </el-dropdown-item>
@@ -114,7 +117,6 @@
                                         <el-dropdown-item v-if="project_btn_del" :command="composeValue('del',pro.row)">删除</el-dropdown-item>
                                     </el-dropdown-menu>
                                 </el-dropdown>
-                                <!-- <el-button size="small" type="danger" plain @click="delProject(pro.row)" v-if="project_btn_del">删除</el-button> -->
                             </template>
                         </el-table-column>
                     </el-table>    
@@ -126,7 +128,7 @@
             </div>
             <div class="pull-right addNewProject">
                 <h3>添加项目</h3>
-                <el-form label-width="65px" :model="form" :rules="rules" ref="form" status-icon>
+                <el-form label-width="55px" :model="form" :rules="rules" ref="form" status-icon>
                     <el-form-item label="上级" prop="parentId" >
                         <el-select v-model="form.parentId" size="small" :loading='listLoading' placeholder="请选择">
                             <el-option
@@ -142,7 +144,7 @@
                     </el-form-item>
                     <el-form-item label="工期" prop="beginAt">
                         <el-date-picker
-                        style="width:195px"
+                        style="width:205px"
                         size="small"
                         v-model="tm"
                         type="daterange"
@@ -163,6 +165,9 @@
                             </el-option>
                         </el-select>                        
                     </el-form-item>
+                    <el-form-item label="位置" prop="position">
+                        <el-input v-model="form.position" size="small" readonly placeholder="请选择位置" @focus="positionPicker"></el-input>
+                    </el-form-item>
                     <el-form-item label="图片" prop="thumbnailPath">
                         <el-upload
                         class="avatar-uploader"
@@ -176,14 +181,9 @@
                         :on-success="uploadSuccess"
                         :file-list="fileList"
                         :auto-upload="true">
-                            <!-- <el-button slot="trigger" size="small" type="primary">选取</el-button>
-                            <el-input v-model="imageName" style="width:135px" size="small" placeholder="请选取图片"></el-input> -->
                             <img v-if="form.thumbnailUrl!='' && form.thumbnailUrl!=undefined" :src="form.thumbnailUrl+form.thumbnailPath" class="avatar">
                             <i v-else class="el-icon-plus avatar-uploader-icon"></i>
                         </el-upload>
-                    </el-form-item>
-                    <el-form-item label="位置" prop="position">
-                        <el-input v-model="form.position" size="small" readonly placeholder="请选择位置" @focus="positionPicker"></el-input>
                     </el-form-item>
                     <el-form-item label="备注" prop="comment">
                         <el-input
@@ -194,8 +194,6 @@
                         </el-input>
                     </el-form-item>
                     <el-form-item>
-                        <!-- <el-checkbox label="已启用" v-model="form.status" size="small"></el-checkbox>
-                        <el-button type="primary" class="pull-right" @click="submitForm('form')" size="small" :loading="createLoading" style="width:90px;" :disabled="!project_btn_add">添加</el-button> -->
                         <el-checkbox label="已启用" v-model="form.status" size="small"></el-checkbox>
                         <el-button v-if="flag == 'add'" type="primary" :loading="createLoading" class="pull-right" @click="submitForm('form')" size="small" style="width:85px;" :disabled="!project_btn_add">添加</el-button>
                         <div v-else class="clearfix">
@@ -266,7 +264,6 @@ export default {
                 adminer: [
                     { validator: validateAdminer, message: '请选择管理员', trigger: 'change' }
                 ],
-
             },
             sys_user_upd:true,
             sys_user_del:true,
@@ -374,7 +371,6 @@ export default {
                 this.mapList = datas
                 this.list = this.arrayToJson(datas);
                 this.list.expand = true
-                console.log(this.list)
                 this.total = response.data.result.total;
                 this.listLoading = false;
             });
@@ -403,14 +399,21 @@ export default {
                     }
                 }
             }
-            return r
-                
+            return r      
         },
         uploadSuccess(response, file, fileList){
-            this.form.thumbnailPath = response.result.path
-            this.form.thumbnailUrl = response.result.baseUrl
-            this.imageName = response.result.name
-            this.fileList = []
+            if(response.success == false){
+                this.$notify.error({
+                    title: '错误',
+                    message: '图片获取失败'
+                });
+            }else{
+                this.form.thumbnailPath = response.result.path
+                this.form.thumbnailUrl = response.result.baseUrl
+                this.imageName = response.result.name
+                this.fileList = []
+            }
+            
         },  
         positionPicker(){
             this.positionVisible = true
@@ -425,9 +428,6 @@ export default {
                     formData.endAt = Math.round(new Date(this.tm[1]).getTime()/1000);
                     formData.adminer = formData.adminer
                     formData.status = formData.status?1:0
-                    // delete formData.tm
-                    // delete formData.fileList
-                    // delete formData.imageName
                     addObj(formData).then(response => {
                         this.createLoading = false
                         this.getList()
@@ -545,12 +545,8 @@ export default {
 </script>
 
 <style scoped>
-.nameBox{
-    white-space:nowrap;
-    cursor: pointer;
-}
 .avatar-uploader{
-     height: 193px;
+     height: 110px;
 }
 .avatar-uploader .el-upload {
     border: 1px dashed #d9d9d9;
@@ -565,16 +561,16 @@ export default {
   .avatar-uploader-icon {
     font-size: 28px;
     color: #8c939d;
-    width: 193px;
-    height: 193px;
-    line-height: 193px;
+    width: 203px;
+    height: 110px;
+    line-height: 110px;
     text-align: center;
     border: 1px solid #dcdfe6;
     border-radius: 4px;
   }
   .avatar {
-    width: 193px;
-    height: 193px;
+    width: 203px;
+    height: 110px;
     display: block;
     border-radius: 4px;
   }

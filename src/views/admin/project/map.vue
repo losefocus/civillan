@@ -48,7 +48,6 @@ export default {
 
             var infoWindow = new AMap.InfoWindow({offset: new AMap.Pixel(0, -30)});
             markers.forEach(function(item,index) {
-                console.log(item)
                 let marker = new AMap.Marker({
                     map: map,
                     // icon: item.icon,
@@ -66,7 +65,6 @@ export default {
             });
             
             function markerClick(e) {
-                console.log(e)
                 infoWindow.setContent(e.target.content);
                 infoWindow.open(map, e.target.getPosition());
                 map.setZoomAndCenter(14, e.target.getPosition());

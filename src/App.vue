@@ -86,4 +86,6 @@ export default {
 .expand .el-table__expand-column .cell {
     display: none !important;
 }
+
+
 </style>

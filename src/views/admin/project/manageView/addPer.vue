@@ -1,12 +1,9 @@
 <template>
     <div>
         <h3>{{flag == 'add'?'添加':'修改'}}人员</h3>
-        <el-form label-width="80px" :model="form" :rules="rules"  ref="forms">
-            <el-form-item label="项目">
-                <el-input v-model="projectInfo.name" size="small" placeholder="请输入内容" disabled></el-input>
-            </el-form-item>
+        <el-form label-width="55px" :model="form" :rules="rules"  ref="forms">
             <el-form-item label="机构" prop="projectOrgan.id">
-                <el-select v-model="form.projectOrgan.id" size="small" placeholder="请选择">
+                <el-select v-model="form.projectOrgan.id" size="small" placeholder="请选择机构">
                     <el-option
                     v-for="item in organOptions"
                     :key="item.value"
@@ -16,7 +13,7 @@
                 </el-select>
             </el-form-item>
             <el-form-item label="角色" prop="userRole">
-                <el-select v-model="role" multiple  size="small" placeholder="请选择" @change="selectRole()">
+                <el-select v-model="role" multiple  size="small" placeholder="请选择角色" @change="selectRole()">
                     <el-option
                     v-for="item in roleOptions"
                     :key="item.value"
@@ -26,25 +23,25 @@
                 </el-select>
             </el-form-item>
             <el-form-item label="姓名" prop="name">
-                <el-input v-model="form.name" size="small" placeholder="请输入内容"></el-input>
+                <el-input v-model="form.name" size="small" placeholder="请输入姓名"></el-input>
             </el-form-item>
             <el-form-item label="电话" prop="phone">
-                <el-input v-model="form.phone" size="small" placeholder="请输入内容" @blur="checkDuplication('phone')"></el-input>
+                <el-input v-model="form.phone" size="small" placeholder="请输入电话" @blur="checkDuplication('phone')"></el-input>
             </el-form-item>
-            <el-form-item label="登录名" prop="username" >
-                <el-input v-model="form.username" size="small" placeholder="请输入内容" :disabled="usernameDisabled" @blur="checkDuplication('username')"></el-input>
+            <el-form-item label="账号" prop="username" >
+                <el-input v-model="form.username" size="small" placeholder="请输入账号" :disabled="usernameDisabled" @blur="checkDuplication('username')"></el-input>
             </el-form-item>
             <el-form-item label="密码" prop="password">
-                <el-input v-model="form.password" type="password" size="small" placeholder="请输入内容"></el-input>
+                <el-input v-model="form.password" type="password" size="small" placeholder="请输入密码"></el-input>
             </el-form-item>
-            <el-form-item label="确认密码" prop="password2">
+            <!-- <el-form-item label="确认密码" prop="password2">
                 <el-input v-model="form.password2" type="password" size="small" placeholder="请输入内容"></el-input>
-            </el-form-item>
+            </el-form-item> -->
             <el-form-item label="备注" prop="comment">
                 <el-input
                 type="textarea"
                 :autosize="{ minRows: 2, maxRows: 4}"
-                placeholder="请输入内容"
+                placeholder="请输入备注"
                 v-model="form.comment">
                 </el-input>
             </el-form-item>
@@ -65,6 +62,13 @@ import { fetchOrganList,addObj,updateObj,fetchUserList} from "@/api/project_per"
 export default {
     props:['projectInfo'],
     data(){
+        var validataOrganId = (rule, value, callback) => {
+            if (value === '' || value== undefined) {
+                callback(new Error('请选择机构'));
+            }else {
+                callback();
+            }
+        };
         var reg = 11 && /^((13|14|15|17|18)[0-9]{1}\d{8})$/;
         var validataPhone = (rule, value, callback) => {
             if (value === '' || value== undefined) {
@@ -92,21 +96,16 @@ export default {
             if (value === '' || value== undefined) {
                 callback(new Error('请输入密码'));
             } else {
-                if (this.form.password2 !== '') {
-                    this.$refs.forms.validateField('password2');
-                }
                 callback();
             }
         };
-        var validatePass2 = (rule, value, callback) => {
-            if (value === '' || value== undefined) {
-                callback(new Error('请确认密码'));
-            } else if (value !== this.form.password) {
-                callback(new Error('两次输入密码不一致!'));
-            } else {
-                callback();
+        var validataName = (rule, value, callback) => {
+            if(value === '' || value== undefined){
+                callback(new Error('请输入姓名'));
+            }else{
+                callback()
             }
-        };
+        }
         var validataroleId = (rule, value, callback) => {
             if(value.length == 0){
                 callback(new Error('请选择角色'));
@@ -117,33 +116,26 @@ export default {
         return {
             rules: {
                 "projectOrgan.id": [
-                    { required: true, message: '请选择机构', trigger: 'change' },
+                    { validator: validataOrganId, trigger: 'change' },
                 ],
                 userRole: [
-                    { validator: validataroleId, trigger: 'change' ,required: true},
+                    { validator: validataroleId, trigger: 'change' },
                 ],
                 name: [
-                    { required: true, message: '请输入姓名', trigger: 'blur' },
+                    {  validator: validataName, trigger: 'blur' },
                     { min: 2, max: 20, message: "长度在 2 到 20 个字符", trigger: "blur"}
                 ],
                 phone: [
-                    { validator: validataPhone, trigger: 'blur' ,required: true},
+                    { validator: validataPhone, trigger: 'blur' },
                 ],
                 username: [
-                    { validator: validateUserName, trigger: 'blur' ,required: true},
-                    { min: 3, max: 20, message: "长度在 3 到 20 个字符", trigger: "blur"}
+                    { validator: validateUserName, trigger: 'blur' },
+                    { min: 6, max: 20, message: "长度在 6 到 20 个字符", trigger: "blur"}
                 ],
                 password: [
-                    { validator: validatePass, trigger: 'blur' ,required: true},
+                    { validator: validatePass, trigger: 'blur' },
                     { min: 6, max: 50, message: "长度在 6 到 50 个字符", trigger: "blur"}
                 ],
-                password2: [
-                    { validator: validatePass2, trigger: 'blur' ,required: true},
-                    { min: 6, max: 50, message: "长度在 6 到 50 个字符", trigger: "blur"}
-                ],
-                comment: [
-                    { required: false, message: '请输入备注', trigger: 'blur' }
-                ]
             },
             form:{
                 projectOrgan : {id:null} ,
@@ -206,10 +198,20 @@ export default {
                     data.status = data.status?1:0
                     delete data.password2
                     this.createLoading = true
-                    addObj(data).then(() => {
-                        this.$parent.$refs.per.getList()
-                        this.resetTemp()
-                        this.$parent.$parent.alertNotify('添加')
+                    addObj(data).then((res) => {
+                        if(res.data.success == true){
+                            this.$parent.$refs.per.getList()
+                            this.resetTemp()
+                            this.$parent.$parent.alertNotify('添加')
+                        }else{
+                            this.$notify({
+                                title: '错误',
+                                message: res.data.message,
+                                type: 'error'
+                            });
+                            this.createLoading = false
+                        }
+                        
                     });
                 } else {
                     return false;

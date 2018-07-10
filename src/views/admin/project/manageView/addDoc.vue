@@ -1,10 +1,7 @@
 <template>
     <div>
         <h3>{{flag == 'add'?'添加':'修改'}}文件</h3>
-        <el-form label-width="60px" :model="form" ref="form" :rules="rules">
-            <el-form-item label="项目" prop="parentId">
-                <el-input v-model="projectInfo.name" size="small" placeholder="请输入内容" disabled></el-input>
-            </el-form-item>
+        <el-form label-width="55px" :model="form" ref="form" :rules="rules">
             <el-form-item label="文件" prop="fileBaseUrl">
                 <el-upload
                     class="upload-demo"
@@ -18,23 +15,22 @@
                     :on-success="uploadSuccess"
                     :file-list="fileList"
                     :auto-upload="true">
-                        <el-button slot="trigger" size="small" type="primary">上传</el-button>
-                        <el-input v-model="fileName" style="width:135px" size="small" placeholder="请上传文件" disabled></el-input>
+                        <el-button slot="trigger" size="small" type="primary">选择</el-button>
+                        <el-input v-model="fileName" style="width:135px" size="small" placeholder="请选择文件" disabled></el-input>
                 </el-upload>
             </el-form-item>
             <el-form-item label="标题" prop="name">
-                <el-input v-model="form.name" size="small" placeholder="请输入内容"></el-input>
+                <el-input v-model="form.name" size="small" placeholder="请输入标题"></el-input>
             </el-form-item>
             <el-form-item label="备注" prop="comment">
                 <el-input
                 type="textarea"
                 :autosize="{ minRows: 2, maxRows: 4}"
-                placeholder="请输入内容"
+                placeholder="请输入备注"
                 v-model="form.comment">
                 </el-input>
             </el-form-item>
             <el-form-item>
-
                 <el-checkbox label="公开" v-model="form.status" size="small"></el-checkbox>
                 <el-button v-if="flag == 'add'" type="primary" :loading="createLoading" class="pull-right" @click="submitForm('form')" size="small" style="width:85px;">添加</el-button>
                 <div v-else class="clearfix">
@@ -52,17 +48,27 @@ import {addObj,updataObj} from "@/api/project_doc";
 export default {
     props:['projectInfo'],
     data(){
+        var validataFileBaseUrl = (rule, value, callback) => {
+            if(value === '' || value== undefined){
+                callback(new Error('请添加图片'));
+            }else{
+                callback()
+            }
+        }
+        var validataName = (rule, value, callback) => {
+            if(value === '' || value== undefined){
+                callback(new Error('请输入项目名称'));
+            }else{
+                callback()
+            }
+        }
         return {
             rules: {
-                
                 fileBaseUrl: [
-                    { required: true, message: '请添加图片', trigger: 'blur' }
+                    {  validator: validataFileBaseUrl, trigger: 'blur' }
                 ],
                 name: [
-                    { required: true, message: '请输入项目名称', trigger: 'blur' }
-                ],
-                comment: [
-                    { required: false, message: '请输入备注', trigger: 'blur' }
+                    {  validator: validataName, trigger: 'blur' }
                 ]
             },
             form:{

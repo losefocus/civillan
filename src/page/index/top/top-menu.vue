@@ -18,7 +18,7 @@ export default {
       activeIndex: "0",
       items: [
         {
-          label: "首页",
+          label: "控制台",
           href: "/wel/index",
           parentId: 0
         },

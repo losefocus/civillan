@@ -3,7 +3,7 @@
         <div class="pull-left containers">
             <div class="filter-container">
             <el-button @click="toProjectIndex" size="small" >返回</el-button>
-            <span>{{viewData.name}}</span>
+            <span>项目名称: {{viewData.name}}</span>
             <el-radio-group v-model="tabView" size="small" style="margin-bottom: 30px;" class="pull-right">
                 <el-radio-button label="org">机构设置</el-radio-button>
                 <el-radio-button label="per">人员管理</el-radio-button>

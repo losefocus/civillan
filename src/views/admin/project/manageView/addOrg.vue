@@ -1,15 +1,12 @@
 <template>
     <div>
         <h3>{{flag == 'add'?'添加':'修改'}}机构</h3>
-        <el-form label-width="60px" :model="addNewForm" :rules="rules"  ref="addNewForm">
-            <el-form-item label="项目" >
-                <el-input v-model="projectInfo.name" size="small" placeholder="请输入内容" disabled></el-input>
-            </el-form-item>
+        <el-form label-width="55px" :model="addNewForm" :rules="rules"  ref="addNewForm">
             <el-form-item label="名称" prop="name">
-                <el-input v-model="addNewForm.name" size="small" placeholder="请输入内容"></el-input>
+                <el-input v-model="addNewForm.name" size="small" placeholder="请输入名称"></el-input>
             </el-form-item>
             <el-form-item label="类型" prop="typeId">
-                <el-select v-model="addNewForm.typeId" placeholder="请选择" size="small" >
+                <el-select v-model="addNewForm.typeId" placeholder="请选择类型" size="small" >
                     <el-option
                     v-for="item in typeOptions"
                     :key="item.value"
@@ -19,20 +16,20 @@
                     </el-option>
                 </el-select>
             </el-form-item>
-            <el-form-item label="地址" prop="address">
-                <el-input v-model="addNewForm.address" size="small" placeholder="请输入内容"></el-input>
-            </el-form-item>
             <el-form-item label="联系人" prop="contact">
-                <el-input v-model="addNewForm.contact" size="small" placeholder="请输入内容"></el-input>
+                <el-input v-model="addNewForm.contact" size="small" placeholder="请输入联系人"></el-input>
             </el-form-item>
             <el-form-item label="电话" prop="phone">
-                <el-input v-model="addNewForm.phone" size="small" placeholder="请输入内容"></el-input>
+                <el-input v-model="addNewForm.phone" size="small" placeholder="请输入电话"></el-input>
+            </el-form-item>
+            <el-form-item label="地址" prop="address">
+                <el-input v-model="addNewForm.address" size="small" placeholder="请输入地址"></el-input>
             </el-form-item>
             <el-form-item label="备注" prop="comment">
                 <el-input
                 type="textarea"
                 :autosize="{ minRows: 2, maxRows: 4}"
-                placeholder="请输入内容"
+                placeholder="请输入备注"
                 v-model="addNewForm.comment">
                 </el-input>
             </el-form-item>

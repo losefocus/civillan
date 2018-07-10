@@ -1,8 +1,8 @@
 <template>
     <div>
-        <el-form :model="form" class="clearfix" ref="form" label-width="50px" size="small">
+        <el-form :model="form" class="clearfix" ref="form" label-width="50px" size="mini">
             <el-form-item label="上级" style="width: 210px">
-                <!-- <el-select v-model="form.parentId" size="small" placeholder="请选择">
+                <!-- <el-select v-model="form.parentId" size="mini" placeholder="请选择">
                     <el-option
                     v-for="item in parentOptions"
                     :key="item.value"

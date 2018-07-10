@@ -1,7 +1,7 @@
 <template>
     <div>
         <div>设 备 : {{dataInfo.name}}</div>
-        <el-form :model="form" class="clearfix" ref="form" label-width="50px" size="small">
+        <el-form :model="form" class="clearfix" ref="form" label-width="50px" size="mini">
             <el-form-item label="名称" style="width: 163px">
                 <el-input v-model="form.name" size="mini" auto-complete="off"></el-input>
             </el-form-item>

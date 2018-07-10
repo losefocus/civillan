@@ -4,12 +4,12 @@
             <el-button class="filter-item" style="" @click="objectTypeVisible = true" size="small" type="primary" icon="edit" >角色管理</el-button>
         </div>
         <el-table :data="list" v-loading="listLoading" element-loading-text="给我一点时间" border fit highlight-current-row style="width: 99%;margin-bottom:10px">
-            <el-table-column align="center" label="姓名">
+            <el-table-column align="center" label="姓名(角色)" min-width="110">
                 <template slot-scope="scope">
-                    <span>{{scope.row.name}}</span>
+                    <span style="white-space:nowrap;cursor:pointer;"><a>{{scope.row.name}}({{scope.row.userRole.roleId}})</a></span>
                 </template>
             </el-table-column>
-            <el-table-column align="center" label="电话">
+            <el-table-column align="center" label="电话" min-width="110">
                 <template slot-scope="scope">
                     <span>{{scope.row.phone}}</span>
                 </template>
@@ -19,9 +19,11 @@
                     <span>{{scope.row.username}}</span>
                 </template>
             </el-table-column>
-            <el-table-column align="center" label="所在机构">
+            <el-table-column align="left" label="所在机构" min-width="170">
                 <template slot-scope="scope">
-                    <span>{{scope.row.projectOrgan.name}}</span>
+                    <el-tooltip class="item" effect="dark" :content="scope.row.projectOrgan.name" placement="top-start">
+                        <span style="white-space:nowrap;cursor:pointer;"><a>{{scope.row.projectOrgan.name}}</a></span>
+                    </el-tooltip>
                 </template>
             </el-table-column>
             <!-- <el-table-column align="center" label="角色">
@@ -35,10 +37,10 @@
                     <i v-else class="el-icon-circle-close" style="font-size:18px;color:#909399"></i>
                 </template>
             </el-table-column>
-            <el-table-column align="center" label="操作" width="180">
+            <el-table-column align="center" label="操作" min-width="140">
                 <template slot-scope="scope" >
-                    <el-button size="small" type="success" plain @click="updatePer(scope.row)">修改</el-button>
-                    <el-button size="small" type="danger" plain @click="deletePer(scope.row)" style="margin-left:0px">删除</el-button>
+                    <el-button size="mini" type="success" plain @click="updatePer(scope.row)">修改</el-button>
+                    <el-button size="mini" type="danger" plain @click="deletePer(scope.row)" style="margin-left:0px">删除</el-button>
                 </template>
             </el-table-column>
         </el-table>
@@ -48,15 +50,12 @@
         </div>
 
         <el-dialog id="orgType" title="角色管理"  :visible.sync="objectTypeVisible" width='690px'>
-            <div>
-                项 目 : {{projectInfo.name}} 
-            </div>
-            <el-form :model="roleForm" class="clearfix" ref="roleForm" size="small">
-                <el-form-item label="角色" style="width: 140px">
-                    <el-input v-model="roleForm.role" style="width:90px;" size="mini" auto-complete="off"></el-input>
+            <el-form :model="roleForm" class="clearfix" ref="roleForm" size="mini">
+                <el-form-item label="角色" style="width: 200px">
+                    <el-input v-model="roleForm.role" style="width:150px;" size="mini" auto-complete="off"></el-input>
                 </el-form-item>
-                <el-form-item label="描述" style="width: 250px">
-                    <el-input v-model="roleForm.description" style="width:200px;" size="mini" auto-complete="off"></el-input>
+                <el-form-item label="描述" style="width: 200px">
+                    <el-input v-model="roleForm.description" style="width:150px;" size="mini" auto-complete="off"></el-input>
                 </el-form-item>
                 <el-form-item >
                     <el-checkbox v-model="roleForm.available" >已启用</el-checkbox>
@@ -81,11 +80,6 @@
                     <el-table-column align="center" label="描述">
                         <template slot-scope="scope">
                             <span>{{scope.row.description}}</span>
-                        </template>
-                    </el-table-column>
-                    <el-table-column align="center" label="创建时间">
-                        <template slot-scope="scope">
-                            <span>{{scope.row.createdAt | parseTime('{y}-{m}-{d}')}}</span>
                         </template>
                     </el-table-column>
                     <el-table-column align="center" label="状态">
@@ -125,7 +119,9 @@ export default {
             },
             total:null,
             objectTypeVisible:false,
-            roleForm:{},
+            roleForm:{
+                available:true
+            },
             roleList:[],
             roleListQuery: {
                 page_index: 1,
@@ -275,7 +271,7 @@ export default {
         },
         cancelEdit(){
             this.flag = 'add'
-            this.roleForm = {}
+            this.roleForm = {available:true}
             this.createdRoleLoading = false
         }
     }

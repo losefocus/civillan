@@ -1,11 +1,14 @@
 <template>
     <div class="app-container calendar-list-container clearfix" id="product">
-        <div class="filter-container">
-            <!-- <el-button class="filter-item" style="" size="small" type="primary" icon="edit" >添加产品</el-button> -->
-            <el-button class="filter-item" style="" size="small" type="primary" icon="edit" @click="classifyTemplatVisible=true">产品分类管理</el-button>
-        </div>
+        
         <div class="clearfix">
             <div v-loading="listLoading" class="pull-left"  style="width:calc(100% - 320px)">
+                <div class="filter-container">
+                    <el-button  size="small" type="primary" >添加产品</el-button>
+                    <el-button  size="small" type="primary" @click="classifyTemplatVisible=true">产品分类管理</el-button>
+                    <el-button class="pull-right" type="primary" size="small" v-waves @click="handleFilter">搜索</el-button>
+                    <el-input @keyup.enter.native="handleFilter" style="width: 200px;" size="small" suffix-icon="el-icon-search" class="pull-right" placeholder="产品搜索" v-model="listQuery.keyword"></el-input>
+                </div>
                 <el-table :data="list" element-loading-text="给我一点时间" border fit highlight-current-row style="width: 100%;margin-bottom:10px">
                     <el-table-column align="center" label="缩略图" class-name="xxx">
                         <template slot-scope="scope">
@@ -287,6 +290,10 @@ export default {
                 this.listLoading = false
             })
         },
+        handleFilter(){
+            this.listQuery.page_index = 1;
+            this.getList()
+        },
         handleSizeChange(){
             this.listQuery.page_size = val;
             this.getList();
@@ -454,7 +461,7 @@ export default {
     cursor: pointer;
 }
 .avatar-uploader{
-     height: 203px;
+     height: 110px;
 }
 .avatar-uploader .el-upload {
     border: 1px dashed #d9d9d9;
@@ -470,15 +477,15 @@ export default {
     font-size: 28px;
     color: #8c939d;
     width: 203px;
-    height: 203px;
-    line-height: 203px;
+    height: 110px;
+    line-height: 110px;
     text-align: center;
     border: 1px solid #dcdfe6;
     border-radius: 4px;
   }
   .avatar {
     width: 203px;
-    height: 203px;
+    height: 110px;
     display: block;
     border-radius: 4px;
   }

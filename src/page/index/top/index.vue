@@ -34,7 +34,7 @@
         </span>
         <el-dropdown-menu slot="dropdown">
           <el-dropdown-item>
-            <router-link to="/">首页</router-link>
+            <router-link to="/">控制台</router-link>
           </el-dropdown-item>
           <el-dropdown-item>
             <router-link to="/info/index">用户资料</router-link>

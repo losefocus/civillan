@@ -1,10 +1,7 @@
 <template>
     <div style="padding:20px;border:1px solid #ebeef5">
-        <!-- <div class="filter-container">
-            <el-button class="filter-item" style="" @click="handleCreate" size="small" type="primary" icon="edit" >分组管理</el-button>
-        </div> -->
         <el-table :data="list" v-loading="listLoading" element-loading-text="给我一点时间" border fit highlight-current-row style="width: 99%;margin-bottom:10px;">
-            <el-table-column align="center" label="标题">
+            <el-table-column align="center" label="文档标题">
                 <template slot-scope="scope">
                     <span>{{scope.row.name}}</span>
                 </template>
@@ -14,29 +11,21 @@
                     <span>{{scope.row.extension}}</span>
                 </template>
             </el-table-column>
-            <!-- <el-table-column align="center" label="权限">
-                <template slot-scope="scope">
-                    <el-tooltip class="item" effect="dark" :content="scope.row.key" placement="top">
-                        <el-button size="small">复制</el-button>
-                    </el-tooltip>
-                </template>
-            </el-table-column> -->
-            <el-table-column align="center" label="上传时间">
-                <template slot-scope="scope">
-                    <span>{{scope.row.createdAt | parseTime('{y}-{m}-{d}')}}</span>
-                </template>
-            </el-table-column>
             <el-table-column align="center" label="上传用户">
                 <template slot-scope="scope">
                     <span>{{adminerHash[scope.row.createdBy]}}</span>
                 </template>
             </el-table-column>
+            <el-table-column align="center" label="上传时间">
+                <template slot-scope="scope">
+                    <span>{{scope.row.createdAt | parseTime('{y}-{m}-{d}')}}</span>
+                </template>
+            </el-table-column>
             <el-table-column align="center" label="操作" width="250">
                 <template slot-scope="scope" >
-                    <!-- <a href="http://www.w3school.com.cn/i/w3school_logo_white.gif" download="w3logo" style="display:block;width:50px;height:50px;background:red"></a> -->
-                    <el-button size="small" type="success" plain @click="editOrg(scope.row)"><a :href="scope.row.fileBaseUrl+scope.row.filePath" download target="_blank">下载</a></el-button>
-                    <el-button size="small" type="success" plain @click="updataDoc(scope.row)" style="margin-left:0px">修改</el-button>
-                    <el-button size="small" type="danger" plain @click="deleteDoc(scope.row)" style="margin-left:0px">删除</el-button>
+                    <el-button size="mini" type="success" plain><a :href="scope.row.fileBaseUrl+scope.row.filePath" download target="_blank">下载</a></el-button>
+                    <el-button size="mini" type="success" plain @click="updataDoc(scope.row)" style="margin-left:0px">修改</el-button>
+                    <el-button size="mini" type="danger" plain @click="deleteDoc(scope.row)" style="margin-left:0px">删除</el-button>
                 </template>
             </el-table-column>
         </el-table>

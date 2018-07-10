@@ -24,6 +24,7 @@ export default {
                 resizeEnable: true,
                 zoom: 10
             });
+            map.setDefaultCursor("crosshair");
             var marker = new AMap.Marker({
                 cursor: 'move',
                 animation: true,
