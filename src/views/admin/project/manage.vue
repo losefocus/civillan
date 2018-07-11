@@ -3,7 +3,7 @@
         <div class="pull-left containers">
             <div class="filter-container">
             <el-button @click="toProjectIndex" size="small" >返回</el-button>
-            <span>项目名称: {{viewData.name}}</span>
+            <span style="margin-left:20px">项目名称: {{viewData.name}}</span>
             <el-radio-group v-model="tabView" size="small" style="margin-bottom: 30px;" class="pull-right">
                 <el-radio-button label="org">机构设置</el-radio-button>
                 <el-radio-button label="per">人员管理</el-radio-button>
@@ -18,12 +18,12 @@
                 <doc v-if="tabView === 'doc'" :project-info="viewData" ref="doc"></doc>
             </div>
         </div>
-        <div class="pull-right addNewContainer" v-if="tabView != 'info'">
+        <el-card class="pull-right addNewContainer" :style="cardHeight" :class="{'show':cardVisibel}">
             <add-org v-if="tabView === 'org'" :project-info="viewData" ref="addOrg"></add-org>
             <add-per v-if="tabView === 'per'" :project-info="viewData" ref="addPer"></add-per>
             <add-equ v-if="tabView === 'equ'" :project-info="viewData" ref="addEqu"></add-equ>
             <add-doc v-if="tabView === 'doc'" :project-info="viewData" ref="addDoc"></add-doc>
-        </div>
+        </el-card>
     </div>
 </template>
 <script>
@@ -50,10 +50,13 @@ export default {
     props:['viewData'],
     data(){
         return {
-            tabView:'org'
+            tabView:'org',
+            cardHeight:{'height':null},
+            cardVisibel:false,
         }
     },
     created() {
+        this.getCardHeight()
     },
     mounted() {
 
@@ -62,6 +65,9 @@ export default {
         
     },
     methods:{
+        getCardHeight(){
+            this.cardHeight.height = document.body.clientHeight - 107  - 30 + 'px'
+        },
         toProjectIndex(){
             this.$parent.showView = 'index'
             this.tabView = null
@@ -73,16 +79,60 @@ export default {
 }
 </script>
 <style scoped>
+
 .el-form-item{
     margin-bottom: 15px
 }
 .containers{
-    width: calc(100% - 320px)
+    width: 100%
+}
+</style>
+<style>
+.projectManage{
+    position: relative;
 }
 .addNewContainer{
-    width: 260px;
-    border: 1px solid #ebeef5;
-    padding: 10px 20px 0 20px
+    background: #fff;
+    width: 300px;
+    padding-top: 0 ;
+    position: absolute;
+    top: -36px;
+    right: -335px;
+    /* right: -28px; */
+    z-index: 9
 }
-
+.addNewContainer.show{
+    right: -28px;
+}
+.addNewContainer .tit{
+    margin-top:-20px;
+    height: 60px;
+    border-bottom: 1px solid #dcdfe6;
+    position: relative;
+    margin-bottom: 20px;
+}
+.addNewContainer h3{
+    float: left;
+    line-height: 60px;
+    padding-left:20px;
+    font-weight: bold;
+}
+.addNewContainer .tit::before{
+    display: block;
+    content: '';
+    width: 4px;
+    background: #30a487;
+    height:20px;
+    position: absolute;
+    left: 0;
+    top: 20px;
+}
+.addNewContainer .tit span{
+    line-height: 70px;
+    color: #cacaca;
+    font-size: 12px;
+    padding-left: 20px;
+    letter-spacing: 1px;
+}
 </style>
+

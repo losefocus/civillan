@@ -1,7 +1,8 @@
 <template>
     <div>
-        <h3>{{flag == 'add'?'添加':'修改'}}人员</h3>
-        <el-form label-width="55px" :model="form" :rules="rules"  ref="forms">
+        <!-- <h3>{{flag == 'add'?'添加':'修改'}}人员</h3> -->
+        <div class="tit"><h3>{{(flag == 'add')?'添加':'修改'}}人员</h3><span>{{(flag == 'add')?'Add':'Edit'}} Personnel</span></div>
+        <el-form label-width="55px" :model="form" :rules="rules"  ref="forms" label-position="left">
             <el-form-item label="机构" prop="projectOrgan.id">
                 <el-select v-model="form.projectOrgan.id" size="small" placeholder="请选择机构">
                     <el-option
@@ -13,7 +14,7 @@
                 </el-select>
             </el-form-item>
             <el-form-item label="角色" prop="userRole">
-                <el-select v-model="role" multiple  size="small" placeholder="请选择角色" @change="selectRole()">
+                <el-select v-model="role" size="small" placeholder="请选择角色" @change="selectRole()">
                     <el-option
                     v-for="item in roleOptions"
                     :key="item.value"
@@ -47,11 +48,11 @@
             </el-form-item>
             <el-form-item>
                 <el-checkbox label="已启用" v-model="form.status" size="small"></el-checkbox>
-                <el-button v-if="flag == 'add'" type="primary" :loading="createLoading" class="pull-right" @click="submitForm('forms')" size="small" style="width:85px;">添加</el-button>
-                <div v-else class="clearfix">
-                    <el-button  type="primary" :loading="createLoading" class="pull-left" @click="updateForm('forms')" size="small" style="width:85px;">保存</el-button>
-                    <el-button  type="info" class="pull-right" @click="cancel('forms')" size="small" style="width:85px;">取消</el-button>
-                </div>            
+            </el-form-item>
+            <el-form-item>
+                <el-button v-if="flag == 'add'" type="primary" :loading="createLoading" @click="submitForm('forms')" size="small" style="width:85px;">添加</el-button>
+                <el-button v-else type="primary" :loading="createLoading" @click="updateForm('forms')" size="small" style="width:85px;">保存</el-button>
+                <el-button  type="info" @click="cancel('forms')" size="small" style="width:85px;">取消</el-button>
             </el-form-item>
         </el-form>
     </div>
@@ -145,7 +146,7 @@ export default {
             duplication_username:false,
             duplication_phone:false,
             usernameDisabled:false,
-            role:[],
+            role:'',
             flag:'add',
             organOptions:[],
             createLoading:false
@@ -172,11 +173,7 @@ export default {
             })
         },
         selectRole(){
-            let array = []
-            this.role.forEach(element => {
-                array.push({roleId:element})
-            });
-            this.form.userRole = array
+            this.form.userRole = [{projectRole:{id:parseInt(this.role)}}]
         },
         getOrganOptions(){
             fetchOrganList(this.projectInfo.id).then(res => {
@@ -196,13 +193,12 @@ export default {
                     let data = Object.assign({},this.form)
                     data.projectId = this.projectInfo.id
                     data.status = data.status?1:0
-                    delete data.password2
                     this.createLoading = true
                     addObj(data).then((res) => {
                         if(res.data.success == true){
-                            this.$parent.$refs.per.getList()
-                            this.resetTemp()
-                            this.$parent.$parent.alertNotify('添加')
+                            this.$parent.$parent.$refs.per.getList()
+                            this.cancel()
+                            this.$parent.$parent.$parent.alertNotify('添加')
                         }else{
                             this.$notify({
                                 title: '错误',
@@ -223,12 +219,12 @@ export default {
                 if (valid) {
                     let data = Object.assign({},this.form)
                     data.status = this.form.status?1:0
-                    delete data.password2
+                    data.userRole = [{projectRole:{id:parseInt(this.role)}}]
                     this.createLoading = true
                     updateObj(data).then(response => {
-                        this.$parent.$refs.per.getList()
+                        this.$parent.$parent.$refs.per.getList()
                         this.cancel()
-                        this.$parent.$parent.alertNotify('修改')
+                        this.$parent.$parent.$parent.alertNotify('修改')
                     })
                 }
             });
@@ -236,6 +232,7 @@ export default {
         cancel(formName){
             this.flag = 'add'
             this.resetTemp()
+            this.$parent.$parent.cardVisibel = false
         },
         resetTemp() {
             this.createLoading = false
@@ -244,8 +241,7 @@ export default {
                 status:true
             }
             this.usernameDisabled = false
-
-            this.role = []
+            this.role = ''
         },
 
     }

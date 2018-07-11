@@ -1,18 +1,18 @@
 <template>
     <div>
         <div>设 备 : {{dataInfo.name}}</div>
-        <el-form :model="form" class="clearfix" ref="form" label-width="50px" size="mini">
-            <el-form-item label="名称" style="width: 163px">
-                <el-input v-model="form.name" size="mini" auto-complete="off"></el-input>
+        <el-form :model="form" class="clearfix" ref="form" label-width="0" size="mini" style="margin-bottom:10px;">
+            <el-form-item label="" style="width: 105px;margin-right:5px">
+                <el-input v-model="form.name" size="mini" auto-complete="off" placeholder="名称"></el-input>
             </el-form-item>
-            <el-form-item label="标识" style="width: 162px">
-                <el-input v-model="form.label" size="mini" auto-complete="off"></el-input>
+            <el-form-item label="" style="width: 105px;margin-right:5px">
+                <el-input v-model="form.label" size="mini" auto-complete="off" placeholder="标识"></el-input>
             </el-form-item>
-            <el-form-item label="排序" style="width: 163px">
-                <el-input v-model="form.sort" size="mini" auto-complete="off"></el-input>
+            <el-form-item label="" style="width: 105px;margin-right:5px">
+                <el-input v-model="form.sort" size="mini" auto-complete="off" placeholder="排序"></el-input>
             </el-form-item>
-            <el-form-item label="类型" style="width: 162px">
-                <el-select v-model="form.type" placeholder="请选择" size="mini">
+            <el-form-item label="" style="width: 105px;margin-right:5px">
+                <el-select v-model="form.type" placeholder="选择类型" size="mini">
                     <el-option
                     v-for="item in options"
                     :key="item.value"
@@ -21,7 +21,7 @@
                     </el-option>
                 </el-select>
             </el-form-item>
-            <el-form-item  :style="flag == 'add'?'width: 140px':'width: 220px'" class="pull-right" style="padding-top:5px">
+            <el-form-item  :style="flag == 'add'?'width: 85px':'width: 140px'" class="pull-right">
                 <div v-if="flag == 'add'">
                     <el-button size="mini" type="primary" class="pull-right" @click="handleAdd('form')" :loading="createdLoading">添加</el-button>
                 </div>
@@ -30,7 +30,7 @@
                     <el-button size="mini" type="primary" class="pull-right" @click="handleEdit('form')" :loading="createdLoading">保存</el-button>
                 </div>
             </el-form-item>
-            <el-form-item class="pull-right">
+            <el-form-item style="width: 60px;margin-left:5px" class="pull-right">
                 <el-checkbox v-model="form.status" >已启用</el-checkbox>
             </el-form-item>
         </el-form>
@@ -38,10 +38,10 @@
             <!-- <el-button @click="importexcel" size="mini">导出csv</el-button> -->
             <download-btn :header="header" :data="data">导出csv</download-btn>
             <el-button @click="importexcel" size="mini">导出</el-button>
-            <el-button @click="importexcel" size="mini">导入</el-button>
+            <el-button @click="importexcel2" size="mini">导入</el-button>
         </div>
         <div v-loading="listLoading">
-            <el-table :data="list" element-loading-text="给我一点时间" @selection-change="handleSelectionChange" stripe border fit highlight-current-row style="width: 100%;margin-bottom:10px">
+            <el-table :data="list" element-loading-text="给我一点时间" @selection-change="handleSelectionChange" stripe border fit highlight-current-row style="width: 100%;margin-bottom:20px;margin-top:10px">
                 <el-table-column type="selection" align="center" width="50">
                 </el-table-column>
                 <el-table-column align="center" label="变量">
@@ -72,13 +72,13 @@
                 </el-table-column>
                 <el-table-column align="center" label="操作" width="160" style="float:right">
                     <template slot-scope="scope">
-                        <el-button size="mini" type="success" plain @click="updateList(scope.row)">修改</el-button>
-                        <el-button size="mini" type="danger" plain @click="deleteList(scope.row)" style="margin-left:0">删除</el-button>
+                        <el-button size="mini" type="" plain @click="updateList(scope.row)">修改</el-button>
+                        <el-button size="mini" type="" plain @click="deleteList(scope.row)" style="margin-left:0">删除</el-button>
                     </template>
                 </el-table-column>
             </el-table>
             <div v-show="!listLoading" class="pagination-container">
-                <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="listQuery.page_index" :page-sizes="[10,20,30, 50]" :page-size="listQuery.page_size" layout="total, sizes, prev, pager, next, jumper" :total="total">
+                <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="listQuery.page_index" :page-sizes="[10,20,30, 50]" :page-size="listQuery.page_size" layout="total,  prev, pager, next, jumper" :total="total">
                 </el-pagination>
             </div>
         </div>
@@ -86,7 +86,7 @@
 </template>
 <script>
 import { mapGetters } from "vuex";
-import {getObj,addObj,delObj,editObj} from "@/api/project/sensor";
+import {getObj,addObj,delObj,editObj,download} from "@/api/project/sensor";
 import downloadBtn from "./downloadBtn"
 export default {
     components:{downloadBtn},
@@ -235,11 +235,22 @@ export default {
                     return
                 }　　　　
                 const data = this.formatJson(filterVal, list);　　　　　　　　
-                export_json_to_excel(tHeader, data, '列表excel');
+                export_json_to_excel(tHeader, data, 'excel文件');
             })
         },
         formatJson(filterVal, jsonData) {
             return jsonData.map(v => filterVal.map(j => v[j]));
+        },
+        importexcel2(){
+            let ids = []
+            this.listSelection.forEach(ele => {
+                console.log(ele)
+                ids.push(ele.id)
+            })
+            console.log(ids.join(','))
+            download(ids.join(',')).then(res => {
+
+            })
         }
     },
     watch:{

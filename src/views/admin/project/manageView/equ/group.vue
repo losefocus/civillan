@@ -1,6 +1,6 @@
 <template>
     <div>
-        <el-form :model="form" class="clearfix" ref="form" label-width="50px" size="mini">
+        <el-form :model="form" class="clearfix" ref="form" label-width="50px" size="medium">
             <el-form-item label="上级" style="width: 210px">
                 <!-- <el-select v-model="form.parentId" size="mini" placeholder="请选择">
                     <el-option
@@ -57,7 +57,7 @@
             </el-form-item>
         </el-form>
         <div v-loading="listLoading">
-            <el-table :data="list" element-loading-text="给我一点时间" stripe border fit highlight-current-row style="width: 100%;margin-bottom:10px">
+            <el-table :data="list" element-loading-text="给我一点时间" stripe border fit highlight-current-row style="width: 100%;margin-bottom:20px;margin-top:10px">
                 <el-table-column align="center" label="名称">
                     <template slot-scope="scope">
                         <span>{{scope.row.name}}</span>
@@ -81,13 +81,13 @@
                 </el-table-column>
                 <el-table-column align="center" label="操作" width="160" style="float:right">
                     <template slot-scope="scope">
-                        <el-button size="mini" type="success" plain @click="updateList(scope.row)">修改</el-button>
-                        <el-button size="mini" type="danger" plain @click="deleteList(scope.row)">删除</el-button>
+                        <el-button size="mini" type="" plain @click="updateList(scope.row)">修改</el-button>
+                        <el-button size="mini" type="" plain @click="deleteList(scope.row)">删除</el-button>
                     </template>
                 </el-table-column>
             </el-table>
             <div v-show="!listLoading" class="pagination-container">
-                <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="listQuery.page_index" :page-sizes="[10,20,30, 50]" :page-size="listQuery.page_size" layout="total, sizes, prev, pager, next, jumper" :total="total">
+                <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="listQuery.page_index" :page-sizes="[10,20,30, 50]" :page-size="listQuery.page_size" layout="total,  prev, pager, next, jumper" :total="total">
                 </el-pagination>
             </div>
         </div>
@@ -263,10 +263,10 @@ export default {
 .el-form-item{
     float: left;
     width:80px;
-    margin-bottom: 10px
+    margin-bottom: 15px
 }
 .avatar-uploader{
-     height: 100px;
+     height: 64px;
 }
 .avatar-uploader .el-upload {
     border: 1px dashed #d9d9d9;
@@ -281,16 +281,16 @@ export default {
   .avatar-uploader-icon {
     font-size: 28px;
     color: #8c939d;
-    width: 100px;
-    height: 100px;
-    line-height: 100px;
+    width: 158px;
+    height: 64px;
+    line-height: 64px;
     text-align: center;
     border: 1px solid #dcdfe6;
     border-radius: 4px;
   }
   .avatar {
-    width: 100px;
-    height: 100px;
+    width: 158px;
+    height: 64px;
     display: block;
     border-radius: 4px;
   }

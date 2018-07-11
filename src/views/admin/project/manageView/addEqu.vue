@@ -1,6 +1,6 @@
 <template>
     <div>
-        <h3>{{flag == 'add'?'添加':'修改'}}设备</h3>
+        <div class="tit"><h3>{{(flag == 'add')?'添加':'修改'}}设备</h3><span>{{(flag == 'add')?'Add':'Edit'}} Equipment</span></div>
         <el-form label-width="55px" :model="form"  ref="form" :rules="rules">
             <el-form-item label="型号" prop="productId">
                 <el-select v-model="form.productId" size="small" placeholder="请选择型号" :disabled="disabled">
@@ -13,7 +13,6 @@
                 </el-select>
             </el-form-item>
             <el-form-item label="分组" prop="deviceGroup.id">
-                <!-- <el-input v-model="form.deviceGroup.id" size="small" placeholder="请输入内容"></el-input> -->
                 <el-cascader
                     size="small" placeholder="请选择分组"
                     :options="groupOptions"
@@ -57,11 +56,11 @@
             </el-form-item>
             <el-form-item>
                 <el-checkbox label="已启用" v-model="form.status" size="small"></el-checkbox>
-                <el-button v-if="flag == 'add'" type="primary" :loading="createLoading" class="pull-right" @click="submitForm('form')" size="small" style="width:85px;" :disabled="!device_btn_add">添加</el-button>
-                <div v-else class="clearfix">
-                    <el-button  type="primary" :loading="createLoading" class="pull-left" @click="updataForm('form')" size="small" style="width:85px;">保存</el-button>
-                    <el-button  type="info" class="pull-right" @click="cancel('form')" size="small" style="width:85px;">取消</el-button>
-                </div>                 
+            </el-form-item>
+            <el-form-item>
+                <el-button v-if="flag == 'add'" type="primary" :loading="createLoading" @click="submitForm('form')" size="small" style="width:85px;" :disabled="!device_btn_add">添加</el-button>
+                <el-button v-else type="primary" :loading="createLoading" @click="updataForm('form')" size="small" style="width:85px;">保存</el-button>
+                <el-button  type="info" @click="cancel('form')" size="small" style="width:85px;">取消</el-button>
             </el-form-item>
         </el-form>
         <el-dialog :visible.sync="positionVisible" id="mapPosition">
@@ -89,7 +88,6 @@ export default {
             }
         }
         var validataGroupId = (rule, value, callback) => {
-            console.log(value)
             if(value.length == 0){
                 callback(new Error('请选择分组'));
             }else{
@@ -209,10 +207,9 @@ export default {
             this.$refs[formName].validate((valid) => {
                 if (valid) {
                     addObj(data).then( res => {
-                        this.createLoading = false
-                        this.$parent.$refs.equ.getList()
-                        this.resetTemp()
-                        this.$parent.$parent.alertNotify('添加')
+                        this.$parent.$parent.$refs.equ.getList()
+                        this.cancel()
+                        this.$parent.$parent.$parent.alertNotify('添加')
                     })
                 }
             })
@@ -227,20 +224,20 @@ export default {
                     data.deviceGroup={id:data.deviceGroup.id[data.deviceGroup.id.length-1]} 
                     this.createLoading = true
                     updataObj(data).then(response => {
-                        this.createLoading = false
-                        this.$parent.$refs.equ.getList()
-                        this.resetTemp()
-                        this.$parent.$parent.alertNotify('修改')
+                        this.$parent.$parent.$refs.equ.getList()
+                        this.cancel()
+                        this.$parent.$parent.$parent.alertNotify('修改')
                     })
                 }
             });
         },
-        cancel(formName){
+        cancel(){
             this.flag = 'add'
             this.resetTemp()
-            this.createLoading = false
+            this.$parent.$parent.cardVisibel = false
         },
         resetTemp() {
+            this.createLoading = false
             this.form={
                 projectId:'',
                 productId:'',

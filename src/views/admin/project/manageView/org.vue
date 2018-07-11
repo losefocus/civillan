@@ -1,12 +1,11 @@
 <template>
     <div style="padding:20px;border:1px solid #ebeef5">
         <div class="filter-container">
-            <!-- <el-button class="filter-item" style="" @click="handleCreate" size="small" type="primary" icon="edit" >添加机构
-            </el-button> -->
+            <el-button class="filter-item" style="" @click="handleAdd" size="small" type="primary">添加机构</el-button>
             <el-button class="filter-item" style="" @click="objectTypeVisible = true"  size="small" type="primary" icon="edit" >机构类型
             </el-button>
         </div>
-        <el-table :data="list" v-loading="listLoading" element-loading-text="给我一点时间" border fit highlight-current-row style="width: 99%;margin-bottom: 10px;">
+        <el-table :data="list" v-loading="listLoading" element-loading-text="给我一点时间" border fit highlight-current-row style="width: 99%;margin-bottom: 20px;">
             <el-table-column align="left" label="机构名称" min-width="170px">
                 <template slot-scope="scope">
                     <el-tooltip class="item" effect="dark" :content="scope.row.name" placement="top-start">
@@ -37,13 +36,13 @@
             </el-table-column>
             <el-table-column align="center" label="操作" min-width ="150">
                 <template slot-scope="scope" >
-                    <el-button size="mini" type="success" plain @click="updateOrg(scope.row)">修改</el-button>
-                    <el-button size="mini" type="danger" plain @click="deleteOrg(scope.row)" style="margin-left:0px">删除</el-button>
+                    <el-button size="mini" type="" plain @click="updateOrg(scope.row)">修改</el-button>
+                    <el-button size="mini" type="" plain @click="deleteOrg(scope.row)" style="margin-left:0px">删除</el-button>
                 </template>
             </el-table-column>
         </el-table> 
         <div v-show="!listLoading" class="pagination-container">
-            <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="listQuery.page_index" :page-sizes="[10,20,30, 50]" :page-size="listQuery.page_size" layout="total, sizes, prev, pager, next, jumper" :total="total">
+            <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="listQuery.page_index" :page-sizes="[10,20,30, 50]" :page-size="listQuery.page_size" layout="total,  prev, pager, next, jumper" :total="total">
             </el-pagination>
         </div>
 
@@ -66,13 +65,13 @@
                         <el-button size="mini" type="primary" @click="addType('orgTypeForm')" :loading="createLoading">添加</el-button>
                     </div>
                    <div v-show="flag == 'edit'">
-                        <el-button size="mini" type="primary" @click="handleUpdateType('orgTypeForm')" :loading="createLoading">保存</el-button>
-                        <el-button size="mini" type="info" @click="cancelEdit('orgTypeForm')">取消</el-button>
+                        <el-button size="mini" type="" @click="handleUpdateType('orgTypeForm')" :loading="createLoading">保存</el-button>
+                        <el-button size="mini" type="" @click="cancelEdit('orgTypeForm')">取消</el-button>
                    </div>
                 </el-form-item>
             </el-form>
             <div v-loading="typelListLoading">
-                <el-table :data="orgTypeList"  element-loading-text="给我一点时间" stripe border fit highlight-current-row style="width: 99%;margin-bottom:10px">
+                <el-table :data="orgTypeList"  element-loading-text="给我一点时间" stripe border fit highlight-current-row style="width: 99%;margin-bottom:20px;margin-top:10px">
                     <el-table-column align="center" label="类型名称">
                         <template slot-scope="scope">
                             <span>{{scope.row.name}}</span>
@@ -96,13 +95,13 @@
                     </el-table-column>
                     <el-table-column align="center" label="操作" width="150">
                         <template slot-scope="scope">
-                            <el-button size="mini" type="success" plain @click="updateType(scope.row)">修改</el-button>
-                            <el-button size="mini" type="danger" plain @click="deleteType(scope.row)" style="margin-left:0px">删除</el-button>
+                            <el-button size="mini" type="" plain @click="updateType(scope.row)">修改</el-button>
+                            <el-button size="mini" type="" plain @click="deleteType(scope.row)" style="margin-left:0px">删除</el-button>
                         </template>
                     </el-table-column>
                 </el-table>
                 <div v-show="!typelListLoading" class="pagination-container">
-                    <el-pagination @size-change="handleSizeChange_type" @current-change="handleCurrentChange_type" :current-page.sync="typeListQuery.page_index" :page-sizes="[10,20,30, 50]" :page-size="typeListQuery.page_size" layout="total, sizes, prev, pager, next, jumper" :total="typeTotal">
+                    <el-pagination @size-change="handleSizeChange_type" @current-change="handleCurrentChange_type" :current-page.sync="typeListQuery.page_index" :page-sizes="[10,20,30, 50]" :page-size="typeListQuery.page_size" layout="total,  prev, pager, next, jumper" :total="typeTotal">
                     </el-pagination>
                 </div>
             </div>
@@ -151,8 +150,10 @@ export default {
     },
     computed: {},
     methods:{
-        handleCreate(){
-
+        handleAdd(){
+            this.$parent.cardVisibel = true
+            this.$parent.$refs.addOrg.flag = 'add'
+            this.$parent.$refs.addOrg.resetTemp()
         },
         // 得到机构列表
         getList(){
@@ -174,6 +175,7 @@ export default {
         },
         // 修改机构
         updateOrg(row){
+            this.$parent.cardVisibel = true
             this.$parent.$refs.addOrg.flag = 'update'
             this.$parent.$refs.addOrg.addNewForm = Object.assign({},row)
             this.$parent.$refs.addOrg.addNewForm.status = (row.status == 1)?true:false

@@ -1,21 +1,23 @@
 <template>
     <div class="app-container calendar-list-container">
         <div v-show="showView === 'index'"  class="clearfix">
-            <div class="pull-left"  style="width:calc(100% - 320px)">
+            <div class="pull-left"  style="width:100%">
                 <div class="filter-container">
-                    <el-button size="small" type="primary" >添加产品</el-button>
+                    <el-button size="small" type="primary" @click="handleAdd">添加产品</el-button>
                     <el-button style="" @click="toProjectMap"  size="small" type="primary">项目地图</el-button>
                     <el-button class="pull-right" type="primary" size="small" v-waves  @click="handleFilter">搜索</el-button>
                     <el-input @keyup.enter.native="handleFilter" style="width: 200px;" size="small" suffix-icon="el-icon-search" class="pull-right" placeholder="项目搜索" v-model="listQuery.keyword"></el-input>
                 </div>
                 <div v-loading="listLoading" >
-                    <el-table :data="list" element-loading-text="给我一点时间" border fit highlight-current-row style="width: 100%;margin-bottom:10px" :row-class-name="setClassName">
+                    <el-table :data="list" element-loading-text="给我一点时间" border fit highlight-current-row style="width: 100%;margin-bottom:25px;margin-top:15px;" :row-class-name="setClassName">
                         <el-table-column type="expand">
                             <template slot-scope="scope">
                                 <el-table :data="scope.row.children"  border ref="subTable" id="subTable">
                                     <el-table-column align="center" label="缩略图">
                                         <template slot-scope="pro">
+                                            <div style="height:50px">
                                             <img style="width:50px;height:50px" :src="pro.row.thumbnailUrl+pro.row.thumbnailPath">
+                                            </div>
                                         </template>
                                     </el-table-column>      
                                     <el-table-column align="left" label="项目名称" min-width="170">
@@ -25,7 +27,7 @@
                                             </el-tooltip>
                                         </template>
                                     </el-table-column>      
-                                    <el-table-column align="center" label="开始时间" min-width="100">
+                                    <!-- <el-table-column align="center" label="开始时间" min-width="100">
                                         <template slot-scope="pro">
                                             {{pro.row.beginAt | parseTime('{y}-{m}-{d}')}}
                                         </template>
@@ -34,7 +36,12 @@
                                         <template slot-scope="pro">
                                             {{pro.row.endAt | parseTime('{y}-{m}-{d}')}}
                                         </template>
-                                    </el-table-column>           
+                                    </el-table-column>    -->
+                                    <el-table-column align="center" label="工期" min-width="200">
+                                        <template slot-scope="scope">
+                                            <span>{{scope.row.beginAt | parseTime('{y}-{m}-{d}')}} 至 {{scope.row.endAt | parseTime('{y}-{m}-{d}')}}</span>
+                                        </template>
+                                    </el-table-column>        
                                     <el-table-column align="center" label="管理员">
                                         <template slot-scope="pro">
                                             {{adminerHash[pro.row.adminer]}}
@@ -98,7 +105,7 @@
                                 <span>{{adminerHash[scope.row.adminer]}}</span>
                             </template>
                         </el-table-column>
-                        <el-table-column align="center" label="操作" width="80">
+                        <el-table-column align="center" label="操作" min-width="80">
                             <template slot-scope="pro" >
                                 <el-dropdown trigger="click" @command="handleCommand" placement="bottom">
                                     <span style="cursor:pointer">
@@ -108,12 +115,12 @@
                                         <el-dropdown-item
                                         v-if="pro.row.children.length ==0"
                                         v-for="(item,index) in btnList" 
-                                        :key="index" 
+                                        :key="index"
                                         :disabled="!item.flag"
                                         :command="composeValue(item.value,pro.row)">
                                         {{item.label}}
                                         </el-dropdown-item>
-                                        <el-dropdown-item divided v-if="project_btn_edit" :command="composeValue('edit',pro.row)">修改</el-dropdown-item>
+                                        <el-dropdown-item :divided="pro.row.children.length == 0" v-if="project_btn_edit" :command="composeValue('edit',pro.row)">修改</el-dropdown-item>
                                         <el-dropdown-item v-if="project_btn_del" :command="composeValue('del',pro.row)">删除</el-dropdown-item>
                                     </el-dropdown-menu>
                                 </el-dropdown>
@@ -121,14 +128,14 @@
                         </el-table-column>
                     </el-table>    
                     <div v-show="!listLoading" class="pagination-container">
-                        <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="listQuery.page_index" :page-sizes="[10,20,30, 50]" :page-size="listQuery.page_size" layout="total, sizes, prev, pager, next, jumper" :total="total">
+                        <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="listQuery.page_index" :page-sizes="[10,20,30, 50]" :page-size="listQuery.page_size" layout="total, prev, pager, next, jumper" :total="total">
                         </el-pagination>
                     </div>
                 </div>
             </div>
-            <div class="pull-right addNewProject">
-                <h3>添加项目</h3>
-                <el-form label-width="55px" :model="form" :rules="rules" ref="form" status-icon>
+            <el-card class="pull-right addNewProject" :style="cardHeight" :class="{'show':cardVisibel}">
+                <div class="tit"><h3>{{(flag == 'add')?'添加':'修改'}}项目</h3><span>{{(flag == 'add')?'Add':'Edit'}} Project</span></div>
+                <el-form label-width="55px" :model="form" :rules="rules" ref="form" status-icon label-position="left">
                     <el-form-item label="上级" prop="parentId" >
                         <el-select v-model="form.parentId" size="small" :loading='listLoading' placeholder="请选择">
                             <el-option
@@ -195,14 +202,14 @@
                     </el-form-item>
                     <el-form-item>
                         <el-checkbox label="已启用" v-model="form.status" size="small"></el-checkbox>
-                        <el-button v-if="flag == 'add'" type="primary" :loading="createLoading" class="pull-right" @click="submitForm('form')" size="small" style="width:85px;" :disabled="!project_btn_add">添加</el-button>
-                        <div v-else class="clearfix">
-                            <el-button  type="primary" :loading="createLoading" class="pull-left" @click="handleUpdata('form')" size="small" style="width:85px;">保存</el-button>
-                            <el-button  type="info" class="pull-right" @click="cancel('form')" size="small" style="width:85px;">取消</el-button>
-                        </div> 
+                    </el-form-item>
+                    <el-form-item>
+                        <el-button v-if="flag == 'add'" type="primary" :loading="createLoading" @click="submitForm('form')" size="small" style="width:85px;" :disabled="!project_btn_add">添加</el-button>
+                        <el-button v-else  type="primary" :loading="createLoading" @click="handleUpdata('form')" size="small" style="width:85px;">保存</el-button>
+                        <el-button  type="info" @click="cancel('form')" size="small" style="width:85px;">取消</el-button>
                     </el-form-item>
                 </el-form>
-            </div>
+            </el-card>
         </div>
         <div v-if="showView === 'mapView'" >
             <map-view :station-data="mapList"></map-view>
@@ -325,11 +332,14 @@ export default {
             project_btn_add:false,
             project_btn_edit :false,
             project_btn_del :false,
+            cardHeight:{'height':null},
+            cardVisibel:false,
         }
     },
     created() {
         this.getList();
         this.getRoleList();
+        this.getCardHeight()
         this.project_btn_add = this.permissions["project_btn_add"];
         this.project_btn_edit = this.permissions["project_btn_edit"];
         this.project_btn_del = this.permissions["project_btn_del"];
@@ -344,6 +354,14 @@ export default {
         ...mapGetters(["permissions","adminerHash"])
     },
     methods:{
+        getCardHeight(){
+            this.cardHeight.height = document.body.clientHeight - 107  - 30 + 'px'
+        },
+        handleAdd(){
+            this.cardVisibel = true
+            this.flag = 'add'
+            this.resetForm()
+        },
         setClassName({row, index}){
             return row.children.length != 0 ? '' : 'expand';
         },
@@ -431,7 +449,7 @@ export default {
                     addObj(formData).then(response => {
                         this.createLoading = false
                         this.getList()
-                        this.resetForm(formName)
+                        this.cancel(formName)
                         this.alertNotify('添加')
                     })
                 }
@@ -448,15 +466,24 @@ export default {
                 type: "warning"
                 }
             ).then(() => {
-                delObj(row.id).then(response => {
-                    this.getList()
-                    this.alertNotify('删除')
-                })
-            })  
+                if(row.children && row.children.length>0){
+                    this.$notify({
+                        title: "错误",
+                        message: "请先删除子项目",
+                        type: "error",
+                        duration: 2000
+                    });
+                }else{
+                    delObj(row.id).then(response => {
+                        this.getList()
+                        this.alertNotify('删除')
+                    })
+                }
+            })   
         },
         updataForm(row){
-            console.log(row)
             this.flag = 'edit'
+            this.cardVisibel = true
             this.form = Object.assign({},row)
             this.form.status = row.status == 1?true:false
             this.form.adminer = parseInt(row.adminer) 
@@ -475,7 +502,7 @@ export default {
                     editObj(data).then(res => {
                         this.createLoading = false
                         this.getList()
-                        this.resetForm(formName)
+                        this.cancel(formName)
                         this.alertNotify('修改')
                     })
                 }
@@ -484,9 +511,9 @@ export default {
         cancel(formName){
             this.flag = 'add'
             this.resetForm(formName)
+            this.cardVisibel = false
         },
         resetForm(formName){
-            this.$refs[formName].resetFields();
             this.form={
                 parentId:0,
                 name:'',
@@ -574,15 +601,54 @@ export default {
     display: block;
     border-radius: 4px;
   }
-
+.app-container{
+    position: relative;
+}
 .el-form-item{
     margin-bottom: 15px;
 }
 .addNewProject{
-    width: 260px;
-    border: 1px solid #ebeef5;
-    padding: 10px 20px 0 20px
+    background: #fff;
+    /* height: 500px; */
+    width: 300px;
+    padding-top: 0 ;
+    position: absolute;
+    top: -16px;
+    right: -315px;
+    z-index: 9
 }
-
+.addNewProject.show{
+    right: -8px;
+}
+.addNewProject .tit{
+    margin-top:-20px;
+    height: 60px;
+    border-bottom: 1px solid #dcdfe6;
+    position: relative;
+    margin-bottom: 20px;
+}
+.addNewProject h3{
+    float: left;
+    line-height: 60px;
+    padding-left:20px;
+    font-weight: bold;
+}
+.addNewProject .tit::before{
+    display: block;
+    content: '';
+    width: 4px;
+    background: #30a487;
+    height:20px;
+    position: absolute;
+    left: 0;
+    top: 20px;
+}
+.addNewProject span{
+    line-height: 70px;
+    color: #cacaca;
+    font-size: 12px;
+    padding-left: 20px;
+    letter-spacing: 1px;
+}
 </style>
 

@@ -28,12 +28,8 @@ export default {
 .el-table td, .el-table th{
   padding: 5px 0!important
 }
-.xxx .cell{
-  height: 50px; 
-  line-height: 50px!important
-}
 .el-table__header th{
-    background: #f3f3f3 !important
+  background: #f3f3f3 !important
 }
 
 .el-table__expanded-cell[class*=cell]{
@@ -57,14 +53,14 @@ export default {
   border-right: none !important;
 }
 .el-table__expanded-cell .el-table th,.el-table__expanded-cell .el-table tr{
-  background: #f7f7f7
+  background: #fbfbfb
 }
 #subTable.el-table::before{
   height: 0 !important;
 }
-.el-form-item__error{
-    padding-top: 2px !important
-}
+// .el-form-item__error{
+//     padding-top: 2px !important
+// }
 
 .projectManage .el-dialog__body,#product .el-dialog__body{
     padding-top: 0 !important

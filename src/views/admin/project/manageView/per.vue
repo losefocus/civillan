@@ -1,12 +1,13 @@
 <template>
     <div style="padding:20px;border:1px solid #ebeef5">
         <div class="filter-container">
+            <el-button class="filter-item" style="" @click="handleAdd" size="small" type="primary">添加人员</el-button>
             <el-button class="filter-item" style="" @click="objectTypeVisible = true" size="small" type="primary" icon="edit" >角色管理</el-button>
         </div>
-        <el-table :data="list" v-loading="listLoading" element-loading-text="给我一点时间" border fit highlight-current-row style="width: 99%;margin-bottom:10px">
+        <el-table :data="list" v-loading="listLoading" element-loading-text="给我一点时间" border fit highlight-current-row style="width: 99%;margin-bottom:20px">
             <el-table-column align="center" label="姓名(角色)" min-width="110">
                 <template slot-scope="scope">
-                    <span style="white-space:nowrap;cursor:pointer;"><a>{{scope.row.name}}({{scope.row.userRole.roleId}})</a></span>
+                    <span style="white-space:nowrap;cursor:pointer;"><a>{{scope.row.name}}({{scope.row.userRole[0].projectRole.role}})</a></span>
                 </template>
             </el-table-column>
             <el-table-column align="center" label="电话" min-width="110">
@@ -39,13 +40,13 @@
             </el-table-column>
             <el-table-column align="center" label="操作" min-width="140">
                 <template slot-scope="scope" >
-                    <el-button size="mini" type="success" plain @click="updatePer(scope.row)">修改</el-button>
-                    <el-button size="mini" type="danger" plain @click="deletePer(scope.row)" style="margin-left:0px">删除</el-button>
+                    <el-button size="mini" type="" plain @click="updatePer(scope.row)">修改</el-button>
+                    <el-button size="mini" type="" plain @click="deletePer(scope.row)" style="margin-left:0px">删除</el-button>
                 </template>
             </el-table-column>
         </el-table>
         <div v-show="!listLoading" class="pagination-container">
-            <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="listQuery.page_index" :page-sizes="[10,20,30, 50]" :page-size="listQuery.page_size" layout="total, sizes, prev, pager, next, jumper" :total="total">
+            <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="listQuery.page_index" :page-sizes="[10,20,30, 50]" :page-size="listQuery.page_size" layout="total, prev, pager, next, jumper" :total="total">
             </el-pagination>
         </div>
 
@@ -71,7 +72,7 @@
                 </el-form-item>
             </el-form>
             <div v-loading="roleListLoading">
-                <el-table :data="roleList" element-loading-text="给我一点时间" stripe border fit highlight-current-row style="width: 99%;margin-bottom:10px">
+                <el-table :data="roleList" element-loading-text="给我一点时间" stripe border fit highlight-current-row style="width: 99%;margin-bottom:20px;margin-top:10px">
                     <el-table-column align="center" label="角色">
                         <template slot-scope="scope">
                             <span>{{scope.row.role}}</span>
@@ -90,13 +91,13 @@
                     </el-table-column>
                     <el-table-column align="center" label="操作" width="160">
                         <template slot-scope="scope">
-                            <el-button size="mini" type="success" plain @click="updateRole(scope.row)">修改</el-button>
-                            <el-button size="mini" type="danger" plain @click="deleteRole(scope.row)" style="margin-left:0px">删除</el-button>
+                            <el-button size="mini" type="" plain @click="updateRole(scope.row)">修改</el-button>
+                            <el-button size="mini" type="" plain @click="deleteRole(scope.row)" style="margin-left:0px">删除</el-button>
                         </template>
                     </el-table-column>
                 </el-table>
                 <div v-show="!roleListLoading" class="pagination-container">
-                    <el-pagination @size-change="handleSizeChange_role" @current-change="handleCurrentChange_role" :current-page.sync="roleListQuery.page_index" :page-sizes="[10,20,30, 50]" :page-size="roleListQuery.page_size" layout="total, sizes, prev, pager, next, jumper" :total="roleTotal">
+                    <el-pagination @size-change="handleSizeChange_role" @current-change="handleCurrentChange_role" :current-page.sync="roleListQuery.page_index" :page-sizes="[10,20,30, 50]" :page-size="roleListQuery.page_size" layout="total, prev, pager, next, jumper" :total="roleTotal">
                     </el-pagination>
                 </div>
             </div>
@@ -140,6 +141,11 @@ export default {
     },
     computed: {},
     methods:{ 
+        handleAdd(){
+            this.$parent.cardVisibel = true
+            this.$parent.$refs.addPer.flag = 'add'
+            this.$parent.$refs.addPer.resetTemp()
+        },
         getList(){
             this.listLoading = true
             this.listQuery.projectId = this.projectInfo.id
@@ -158,15 +164,13 @@ export default {
             this.getList();
         },
         updatePer(row){
+            this.$parent.cardVisibel = true
             this.$parent.$refs.addPer.flag = 'edit'
             this.$parent.$refs.addPer.usernameDisabled = true
             this.$parent.$refs.addPer.form = Object.assign({},row)
             this.$parent.$refs.addPer.form.status = (row.status == 1)?true:false
-            this.$parent.$refs.addPer.form.password2 = this.$parent.$refs.addPer.form.password
-            this.$parent.$refs.addPer.role = new Array()
-            row.userRole.forEach(element => {
-                this.$parent.$refs.addPer.role.push(element.roleId)
-            });
+            this.$parent.$refs.addPer.form.projectOrgan = {id :row.projectOrgan.id}
+            this.$parent.$refs.addPer.role = row.userRole[0].projectRole.id
         },
         deletePer(row){
             this.$confirm(
@@ -180,7 +184,6 @@ export default {
             ).then(() => {
                 delObj(row.id).then(res => {
                     this.getList()
-                    this.getTypeList()
                     this.$parent.$parent.alertNotify('删除')
                 })
             })

@@ -1,6 +1,9 @@
 <template>
     <div style="padding:20px;border:1px solid #ebeef5">
-        <el-table :data="list" v-loading="listLoading" element-loading-text="给我一点时间" border fit highlight-current-row style="width: 99%;margin-bottom:10px;">
+        <div class="filter-container">
+            <el-button class="filter-item" style="" @click="handleAdd" size="small" type="primary">添加文件</el-button>
+        </div>
+        <el-table :data="list" v-loading="listLoading" element-loading-text="给我一点时间" border fit highlight-current-row style="width: 99%;margin-bottom:20px;">
             <el-table-column align="center" label="文档标题">
                 <template slot-scope="scope">
                     <span>{{scope.row.name}}</span>
@@ -23,15 +26,15 @@
             </el-table-column>
             <el-table-column align="center" label="操作" width="250">
                 <template slot-scope="scope" >
-                    <el-button size="mini" type="success" plain><a :href="scope.row.fileBaseUrl+scope.row.filePath" download target="_blank">下载</a></el-button>
-                    <el-button size="mini" type="success" plain @click="updataDoc(scope.row)" style="margin-left:0px">修改</el-button>
-                    <el-button size="mini" type="danger" plain @click="deleteDoc(scope.row)" style="margin-left:0px">删除</el-button>
+                    <el-button size="mini" type="" plain><a :href="scope.row.fileBaseUrl+scope.row.filePath" download target="_blank">下载</a></el-button>
+                    <el-button size="mini" type="" plain @click="updataDoc(scope.row)" style="margin-left:0px">修改</el-button>
+                    <el-button size="mini" type="" plain @click="deleteDoc(scope.row)" style="margin-left:0px">删除</el-button>
                 </template>
             </el-table-column>
         </el-table>
 
         <div v-show="!listLoading" class="pagination-container">
-            <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="listQuery.page_index" :page-sizes="[10,20,30, 50]" :page-size="listQuery.page_size" layout="total, sizes, prev, pager, next, jumper" :total="total">
+            <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="listQuery.page_index" :page-sizes="[10,20,30, 50]" :page-size="listQuery.page_size" layout="total,  prev, pager, next, jumper" :total="total">
             </el-pagination>
         </div>
     </div>
@@ -63,8 +66,10 @@ export default {
     },
     computed: {},
     methods:{
-        handleCreate(){
-
+        handleAdd(){
+            this.$parent.cardVisibel = true
+            this.$parent.$refs.addDoc.flag = 'add'
+            this.$parent.$refs.addDoc.resetTemp()
         },
         getList(){
             this.listLoading = true
@@ -100,16 +105,11 @@ export default {
             })
         },
         updataDoc(row){
-            console.log(row)
+            this.$parent.cardVisibel = true
             this.$parent.$refs.addDoc.flag = 'updata'
             this.$parent.$refs.addDoc.form = Object.assign({},row)
             this.$parent.$refs.addDoc.form.status = (row.status === 1)?true:false
-            // this.$parent.$refs.addDoc.productId_alias = row.productId+','+row.alias
         },
-        editOrg(){
-
-        },
-        
     }
 }
 </script>

@@ -1,6 +1,6 @@
 <template>
     <div>
-        <h3>{{flag == 'add'?'添加':'修改'}}文件</h3>
+        <div class="tit"><h3>{{(flag == 'add')?'添加':'修改'}}文件</h3><span>{{(flag == 'add')?'Add':'Edit'}} Document</span></div>
         <el-form label-width="55px" :model="form" ref="form" :rules="rules">
             <el-form-item label="文件" prop="fileBaseUrl">
                 <el-upload
@@ -32,11 +32,11 @@
             </el-form-item>
             <el-form-item>
                 <el-checkbox label="公开" v-model="form.status" size="small"></el-checkbox>
-                <el-button v-if="flag == 'add'" type="primary" :loading="createLoading" class="pull-right" @click="submitForm('form')" size="small" style="width:85px;">添加</el-button>
-                <div v-else class="clearfix">
-                    <el-button  type="primary" :loading="createLoading" class="pull-left" @click="updataForm('form')" size="small" style="width:85px;">保存</el-button>
-                    <el-button  type="info" class="pull-right" @click="cancel('form')" size="small" style="width:85px;">取消</el-button>
-                </div>
+            </el-form-item>
+            <el-form-item>
+                <el-button v-if="flag == 'add'" type="primary" :loading="createLoading" @click="submitForm('form')" size="small" style="width:85px;">添加</el-button>
+                <el-button v-else type="primary" :loading="createLoading" @click="updataForm('form')" size="small" style="width:85px;">保存</el-button>
+                <el-button type="info" @click="cancel('form')" size="small" style="width:85px;">取消</el-button>
             </el-form-item>
         </el-form>
     </div>
@@ -102,8 +102,8 @@ export default {
                     data.projectId = this.projectInfo.id
                     this.createLoading = true
                     addObj(data).then(res => {
-                        this.$parent.$refs.doc.getList();
-                        this.$parent.$parent.alertNotify('添加')
+                        this.$parent.$parent.$refs.doc.getList();
+                        this.$parent.$parent.$parent.alertNotify('添加')
                         this.cancel()
                     })
                 }else{
@@ -126,8 +126,8 @@ export default {
                     data.status = data.status?1:0
                     this.createLoading = true
                     updataObj(data).then(res => {
-                        this.$parent.$refs.doc.getList();
-                        this.$parent.$parent.alertNotify('修改')
+                        this.$parent.$parent.$refs.doc.getList();
+                        this.$parent.$parent.$parent.alertNotify('修改')
                         this.cancel()
                     })
                 }
@@ -136,6 +136,11 @@ export default {
         },
         cancel(){
             this.flag = 'add'
+            this.createLoading = false
+            this.resetTemp()
+            this.$parent.$parent.cardVisibel = false
+        },
+        resetTemp() {
             this.form = {
                 name:'',
                 fileBaseUrl:'',
@@ -144,7 +149,6 @@ export default {
                 status:true
             }
             this.fileName = ''
-            this.createLoading = false
         }
     }
 }

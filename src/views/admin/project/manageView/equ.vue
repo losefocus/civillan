@@ -1,9 +1,10 @@
 <template>
     <div style="padding:20px;border:1px solid #ebeef5">
         <div class="filter-container">
+            <el-button class="filter-item" style="" @click="handleAdd" size="small" type="primary">添加设备</el-button>
             <el-button class="filter-item" style="" @click="handleGroup" size="small" type="primary" icon="edit" >分组管理</el-button>
         </div>
-        <el-table :data="list" v-loading="listLoading" element-loading-text="给我一点时间" border fit highlight-current-row style="width: 99%;margin-bottom:10px">
+        <el-table :data="list" v-loading="listLoading" element-loading-text="给我一点时间" border fit highlight-current-row style="width: 99%;margin-bottom:20px">
             <el-table-column align="center" label="设备名称">
                 <template slot-scope="scope">
                     <span style="white-space:nowrap;cursor:pointer;"><a>{{scope.row.name}}</a></span>
@@ -17,14 +18,14 @@
             <el-table-column align="center" label="key" >
                 <template slot-scope="scope">
                     <el-tooltip class="item" effect="dark" :content="scope.row.key" placement="top">
-                        <i style="cursor:pointer" class="iconfont icon-fuzhi copy_key" :data-clipboard-text="scope.row.key" @click="copy('key')" ></i>
+                        <i style="cursor:pointer;color:#30a487" class="iconfont icon-fuzhi copy_key" :data-clipboard-text="scope.row.key" @click="copy('key')" ></i>
                     </el-tooltip>
                 </template>
             </el-table-column>
             <el-table-column align="center" label="secret">
                 <template slot-scope="scope">
                     <el-tooltip class="item" effect="dark" :content="scope.row.secret" placement="top">
-                        <i style="cursor:pointer" class="iconfont icon-fuzhi copy_secret" :data-clipboard-text="scope.row.secret" @click="copy('secret')" ></i>
+                        <i style="cursor:pointer;color:#30a487" class="iconfont icon-fuzhi copy_secret" :data-clipboard-text="scope.row.secret" @click="copy('secret')" ></i>
                     </el-tooltip>
                 </template>
             </el-table-column>
@@ -69,7 +70,7 @@
         </el-table>
 
         <div v-show="!listLoading" class="pagination-container">
-            <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="listQuery.page_index" :page-sizes="[10,20,30, 50]" :page-size="listQuery.page_size" layout="total, sizes, prev, pager, next, jumper" :total="total">
+            <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="listQuery.page_index" :page-sizes="[10,20,30, 50]" :page-size="listQuery.page_size" layout="total,  prev, pager, next, jumper" :total="total">
             </el-pagination>
         </div>
         <el-dialog title="设备配置"  :visible.sync="configVisible" width='690px'>
@@ -183,6 +184,11 @@ export default {
         ...mapGetters(["permissions"])
     },
     methods:{
+        handleAdd(){
+            this.$parent.cardVisibel = true
+            this.$parent.$refs.addEqu.flag = 'add'
+            this.$parent.$refs.addEqu.resetTemp()
+        },
         handleGroup(){
             this.groupVisible = true
         },
@@ -227,6 +233,7 @@ export default {
             })
         },
         updataEqu(row){
+            this.$parent.cardVisibel = true
             this.$parent.$refs.addEqu.flag = 'updata'
             this.$parent.$refs.addEqu.form = Object.assign({},row)
             this.$parent.$refs.addEqu.form.status = row.status === 1?true:false

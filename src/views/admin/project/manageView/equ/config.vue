@@ -25,7 +25,7 @@
             </el-form-item>
         </el-form>
         <div v-loading="listLoading">
-            <el-table :data="list" element-loading-text="给我一点时间" stripe border fit highlight-current-row style="width: 100%;margin-bottom:10px">
+            <el-table :data="list" element-loading-text="给我一点时间" stripe border fit highlight-current-row style="width: 100%;margin-bottom:20px;margin-top:10px">
                 <el-table-column align="center" label="配置名称">
                     <template slot-scope="scope">
                         <span>{{scope.row.name}}</span>
@@ -49,13 +49,13 @@
                 </el-table-column>
                 <el-table-column align="center" label="操作" width="160" style="float:right">
                     <template slot-scope="scope">
-                        <el-button size="mini" type="success" plain @click="updateList(scope.row)">修改</el-button>
-                        <el-button size="mini" type="danger" plain @click="deleteList(scope.row)">删除</el-button>
+                        <el-button size="mini" type="" plain @click="updateList(scope.row)">修改</el-button>
+                        <el-button size="mini" type="" plain @click="deleteList(scope.row)">删除</el-button>
                     </template>
                 </el-table-column>
             </el-table>
             <div v-show="!listLoading" class="pagination-container">
-                <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="listQuery.page_index" :page-sizes="[10,20,30, 50]" :page-size="listQuery.page_size" layout="total, sizes, prev, pager, next, jumper" :total="total">
+                <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="listQuery.page_index" :page-sizes="[10,20,30, 50]" :page-size="listQuery.page_size" layout="total,  prev, pager, next, jumper" :total="total">
                 </el-pagination>
             </div>
         </div>

@@ -1,132 +1,133 @@
 <template>
     <div class="app-container calendar-list-container clearfix" id="product">
         
-        <div class="clearfix">
-            <div v-loading="listLoading" class="pull-left"  style="width:calc(100% - 320px)">
-                <div class="filter-container">
-                    <el-button  size="small" type="primary" >添加产品</el-button>
-                    <el-button  size="small" type="primary" @click="classifyTemplatVisible=true">产品分类管理</el-button>
-                    <el-button class="pull-right" type="primary" size="small" v-waves @click="handleFilter">搜索</el-button>
-                    <el-input @keyup.enter.native="handleFilter" style="width: 200px;" size="small" suffix-icon="el-icon-search" class="pull-right" placeholder="产品搜索" v-model="listQuery.keyword"></el-input>
-                </div>
-                <el-table :data="list" element-loading-text="给我一点时间" border fit highlight-current-row style="width: 100%;margin-bottom:10px">
-                    <el-table-column align="center" label="缩略图" class-name="xxx">
-                        <template slot-scope="scope">
-                            <img style="width:50px;height:50px" :src="scope.row.thumbnailUrl+scope.row.thumbnailPath">
-                        </template>
-                    </el-table-column>
-                    <el-table-column align="left" label="产品名称" min-width="170">
-                        <template slot-scope="scope">
-                            <el-tooltip class="item" effect="dark" :content="scope.row.name" placement="top-start">
-                                <span class="nameBox"><a>{{scope.row.name}}</a></span>
-                            </el-tooltip>
-                        </template>
-                    </el-table-column>
-                    <el-table-column align="center" label="别名/型号" width="85">
-                        <template slot-scope="scope">
-                            <span>{{scope.row.alias}}</span>
-                        </template>
-                    </el-table-column>
-                    <el-table-column align="center" label="所属分类">
-                        <template slot-scope="scope">
-                            <span>{{categoryHash.get(scope.row.category)}}</span>
-                        </template>
-                    </el-table-column>
-                    <el-table-column align="center" label="产品标识" width="95">
-                        <template slot-scope="scope">
-                            <el-tooltip class="item" effect="dark" :content="scope.row.key" placement="top">
-                                <i style="cursor:pointer" class="iconfont icon-fuzhi copy_key" :data-clipboard-text="scope.row.key" @click="copy" ></i>
-                            </el-tooltip>
-                        </template>
-                    </el-table-column>
-                    <el-table-column align="center" label="状态">
-                        <template slot-scope="scope">
-                            <span>
-                                <i v-if="scope.row.status == 1" class="el-icon-circle-check" style="font-size:18px;color:#67c23a"></i>
-                                <i v-else class="el-icon-circle-close" style="font-size:18px;color:#909399"></i>
-                            </span>
-                        </template>
-                    </el-table-column>
-                    <!-- <el-table-column align="center" label="排序">
-                        <template slot-scope="scope">
-                            <span>{{scope.row.sort}}</span>
-                        </template>
-                    </el-table-column> -->
-                    <el-table-column align="center" label="创建日期" min-width="100">
-                        <template slot-scope="scope">
-                            <span>{{scope.row.createdAt | parseTime('{y}-{m}-{d}')}}</span>
-                        </template>
-                    </el-table-column>
-                    
-                    <el-table-column align="center" label="操作" width="80">
-                        <template slot-scope="pro">
-                            <el-dropdown trigger="click" @command="handleCommand" placement="bottom">
-                                <span style="cursor:pointer">
-                                    操作<i class="el-icon-arrow-down el-icon--right"></i>
-                                </span >
-                                <el-dropdown-menu slot="dropdown">
-                                    <el-dropdown-item v-if="product_btn_variable_template" :command="composeValue('variableTemplateVisible',pro.row)">变量</el-dropdown-item>
-                                    <el-dropdown-item v-if="product_btn_alert_template" :command="composeValue('alarmTemplatVisible',pro.row)">报警</el-dropdown-item>
-                                    <el-dropdown-item divided v-if="product_btn_edit" :command="composeValue('edit',pro.row)">修改</el-dropdown-item>
-                                    <el-dropdown-item v-if="product_btn_del" :command="composeValue('del',pro.row)">删除</el-dropdown-item>
-                                </el-dropdown-menu>
-                            </el-dropdown>
-                        </template>
-                    </el-table-column>
-                </el-table>    
-                <div v-show="!listLoading" class="pagination-container">
-                    <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="listQuery.page_index" :page-sizes="[10,20,30, 50]" :page-size="listQuery.page_size" layout="total, sizes, prev, pager, next, jumper" :total="total">
-                    </el-pagination>
-                </div>
+        <div v-loading="listLoading"   style="width:100%">
+            <div class="filter-container">
+                <el-button  size="small" type="primary" @click="handleAdd">添加产品</el-button>
+                <el-button  size="small" type="primary" @click="classifyTemplatVisible=true">产品分类管理</el-button>
+                <el-button class="pull-right" type="primary" size="small" v-waves @click="handleFilter">搜索</el-button>
+                <el-input @keyup.enter.native="handleFilter" style="width: 200px;" size="small" suffix-icon="el-icon-search" class="pull-right" placeholder="产品搜索" v-model="listQuery.keyword"></el-input>
             </div>
-            <div class="pull-right addNewProject">
-                <h3>{{(flag == 'add')?'添加':'修改'}}产品</h3>
-                <el-form label-width="55px" :model="form" :rules="rules" ref="form">
-                    <el-form-item label="名称" prop="name">
-                        <el-input v-model="form.name" size="small" placeholder="请输入产品名称"></el-input>
-                    </el-form-item>
-                    <el-form-item label="型号" prop="alias">
-                        <el-input v-model="form.alias" size="small" placeholder="请输入产品型号"></el-input>
-                    </el-form-item>
-                    <el-form-item label="分类" prop="category">
-                        <el-select v-model="form.category" size="small" placeholder="请选择产品分类">
-                            <el-option
-                            v-for="item in categoryOptions"
-                            :key="item.value"
-                            :label="item.label"
-                            :value="item.value">
-                            </el-option>
-                        </el-select>
-                    </el-form-item>
-                    <el-form-item label="图片" prop="thumbnailUrl">
-                        <el-upload
-                        class="avatar-uploader"
-                        ref="upload"
-                        :headers="headers"
-                        action="/file/attachment/upload"
-                        :limit="10"
-                        :data="params"
-                        name="uploadFile"
-                        :show-file-list="false"
-                        :on-success="uploadSuccess"
-                        :auto-upload="true">
-                        <img v-if="form.thumbnailUrl!='' && form.thumbnailUrl!=undefined" :src="form.thumbnailUrl+form.thumbnailPath" class="avatar">
-                        <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-                        </el-upload>
-                    </el-form-item>
-                    <el-form-item>
-                        <el-checkbox v-model="form.status">已启用</el-checkbox>                    
-                    </el-form-item>
-                    <el-form-item v-if="flag == 'add'">
-                        <el-button type="primary" @click="submitForm('form')" size="small" :loading="createLoading" style="width:90px;" :disabled="!product_btn_add" >添加</el-button>
-                    </el-form-item>
-                    <el-form-item v-else>
-                        <el-button type="primary" @click="updataForm('form')" size="small" :loading="createLoading" style="width:90px;">保存</el-button>
-                        <el-button type="info" @click="cancelForm('form')" size="small" style="width:90px;">取消</el-button>
-                    </el-form-item>
-                </el-form>
+            <el-table :data="list" element-loading-text="给我一点时间" border fit highlight-current-row style="width: 100%;margin-bottom:25px;margin-top:15px">
+                <el-table-column align="center" label="缩略图">
+                    <template slot-scope="scope">
+                        <div style="height:50px">
+                        <img style="width:50px;height:50px" :src="scope.row.thumbnailUrl+scope.row.thumbnailPath">
+                        </div>
+                    </template>
+                </el-table-column>
+                <el-table-column align="left" label="产品名称" min-width="170">
+                    <template slot-scope="scope">
+                        <el-tooltip class="item" effect="dark" :content="scope.row.name" placement="top-start">
+                            <span style="white-space:nowrap;cursor: pointer;"><a>{{scope.row.name}}</a></span>
+                        </el-tooltip>
+                    </template>
+                </el-table-column>
+                <el-table-column align="center" label="别名/型号" width="85">
+                    <template slot-scope="scope">
+                        <span>{{scope.row.alias}}</span>
+                    </template>
+                </el-table-column>
+                <el-table-column align="center" label="所属分类">
+                    <template slot-scope="scope">
+                        <span>{{categoryHash.get(scope.row.category)}}</span>
+                    </template>
+                </el-table-column>
+                <el-table-column align="center" label="产品标识" width="95">
+                    <template slot-scope="scope">
+                        
+                        <el-tooltip class="item" effect="dark" :content="scope.row.key" placement="top">
+                            <i style="cursor:pointer;color:#30a487" class="iconfont icon-fuzhi copy_key" :data-clipboard-text="scope.row.key" @click="copy"></i>
+                            <!-- <el-button type="primary" size="mini" icon="iconfont icon-fuzhi copy_key" class="icopy_key" :data-clipboard-text="scope.row.key" @click="copy" plain></el-button> -->
+                        </el-tooltip>
+                        
+                    </template>
+                </el-table-column>
+                <el-table-column align="center" label="状态">
+                    <template slot-scope="scope">
+                        <span>
+                            <i v-if="scope.row.status == 1" class="el-icon-circle-check" style="font-size:18px;color:#67c23a"></i>
+                            <i v-else class="el-icon-circle-close" style="font-size:18px;color:#909399"></i>
+                        </span>
+                    </template>
+                </el-table-column>
+                <!-- <el-table-column align="center" label="排序">
+                    <template slot-scope="scope">
+                        <span>{{scope.row.sort}}</span>
+                    </template>
+                </el-table-column> -->
+                <el-table-column align="center" label="创建日期" min-width="100">
+                    <template slot-scope="scope">
+                        <span>{{scope.row.createdAt | parseTime('{y}-{m}-{d}')}}</span>
+                    </template>
+                </el-table-column>
+                
+                <el-table-column align="center" label="操作" min-width="80">
+                    <template slot-scope="pro">
+                        <el-dropdown trigger="click" @command="handleCommand" placement="bottom">
+                            <span style="cursor:pointer">
+                                操作<i class="el-icon-arrow-down el-icon--right"></i>
+                            </span >
+                            <el-dropdown-menu slot="dropdown">
+                                <el-dropdown-item v-if="product_btn_variable_template" :command="composeValue('variableTemplateVisible',pro.row)">变量</el-dropdown-item>
+                                <el-dropdown-item v-if="product_btn_alert_template" :command="composeValue('alarmTemplatVisible',pro.row)">报警</el-dropdown-item>
+                                <el-dropdown-item divided v-if="product_btn_edit" :command="composeValue('edit',pro.row)">修改</el-dropdown-item>
+                                <el-dropdown-item v-if="product_btn_del" :command="composeValue('del',pro.row)">删除</el-dropdown-item>
+                            </el-dropdown-menu>
+                        </el-dropdown>
+                    </template>
+                </el-table-column>
+            </el-table>    
+            <div v-show="!listLoading" class="pagination-container">
+                <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="listQuery.page_index" :page-sizes="[10,20,30, 50]" :page-size="listQuery.page_size" layout="total,  prev, pager, next, jumper" :total="total">
+                </el-pagination>
             </div>
         </div>
+        <el-card class="addNewProject" :style="cardHeight" :class="{'show':cardVisibel}">
+            <div class="tit"><h3>{{(flag == 'add')?'添加':'修改'}}产品</h3><span>{{(flag == 'add')?'Add':'Edit'}} Product</span></div>
+            <el-form label-width="40px" :model="form" :rules="rules" ref="form" label-position="left">
+                <el-form-item label="名称" prop="name">
+                    <el-input v-model="form.name" size="small" placeholder="请输入产品名称"></el-input>
+                </el-form-item>
+                <el-form-item label="型号" prop="alias">
+                    <el-input v-model="form.alias" size="small" placeholder="请输入产品型号"></el-input>
+                </el-form-item>
+                <el-form-item label="分类" prop="category">
+                    <el-select v-model="form.category" size="small" placeholder="请选择产品分类">
+                        <el-option
+                        v-for="item in categoryOptions"
+                        :key="item.value"
+                        :label="item.label"
+                        :value="item.value">
+                        </el-option>
+                    </el-select>
+                </el-form-item>
+                <el-form-item label="图片" prop="thumbnailUrl">
+                    <el-upload
+                    class="avatar-uploader"
+                    ref="upload"
+                    :headers="headers"
+                    action="/file/attachment/upload"
+                    :limit="10"
+                    :data="params"
+                    name="uploadFile"
+                    :show-file-list="false"
+                    :on-success="uploadSuccess"
+                    :auto-upload="true">
+                    <img v-if="form.thumbnailUrl!='' && form.thumbnailUrl!=undefined" :src="form.thumbnailUrl+form.thumbnailPath" class="avatar">
+                    <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+                    </el-upload>
+                </el-form-item>
+                <el-form-item>
+                    <el-checkbox v-model="form.status">已启用</el-checkbox>                    
+                </el-form-item>
+                <el-form-item>
+                    <el-button v-if="flag == 'add'" type="primary" @click="submitForm('form')" size="small" :loading="createLoading" style="width:90px;" :disabled="!product_btn_add" >添加</el-button>
+                    <el-button v-else type="primary" @click="updataForm('form')" size="small" :loading="createLoading" style="width:90px;">保存</el-button>
+                    <el-button type="info" @click="cancelForm('form')" size="small" style="width:90px;">取消</el-button>
+                </el-form-item>
+            </el-form>
+        </el-card>
         <el-dialog id="variable" title="变量模板"  :visible.sync="variableTemplateVisible" width='690px'>
             <variable v-if="variableTemplateVisible == true" :product-info="productData" :template-info="templateData"></variable>
             <!-- <div class="clearfix">
@@ -154,6 +155,7 @@
 </template>
 <script>
 import { mapGetters } from "vuex";
+import waves from "@/directive/waves/index.js";
 import variable from "./variable";
 import alarm from "./alarm";
 import category from "./category";
@@ -236,10 +238,13 @@ export default {
             product_btn_del:false,
             product_btn_variable_template:false,
             product_btn_alert_template:false,
+            cardHeight:{'height':null},
+            cardVisibel:false,
         }
     },
     created() {
         this.getAllList()
+        this.getCardHeight()
         this.product_btn_add = this.permissions["product_btn_add"];
         this.product_btn_edit = this.permissions["product_btn_edit"];
         this.product_btn_del = this.permissions["product_btn_del"];
@@ -253,6 +258,21 @@ export default {
         ...mapGetters(["permissions"])
     },
     methods:{
+        getCardHeight(){
+            this.cardHeight.height = document.body.clientHeight - 107  - 30 + 'px'
+        },
+        handleAdd(){
+            this.cardVisibel = true
+            this.flag = 'add'
+            this.form = {
+                name:'',
+                alias:'',
+                category:null,
+                thumbnailPath:'',
+                thumbnailUrl:'',
+                status:true
+            }
+        },
         getAllList(){
             this.listLoading = true
             Promise.all([fetchList(),fetchCategoryList()]).then(results => {
@@ -322,6 +342,7 @@ export default {
             this.flag = 'updata'
             this.form = Object.assign({},row)
             this.form.status = this.form.status === 1?true:false
+            this.cardVisibel = true
         },
         updataForm(formName){
             this.$refs[formName].validate((valid) => {
@@ -367,6 +388,7 @@ export default {
             this.fileList = []
         },
         resetTemp() {
+            this.cardVisibel = false
             this.form = {
                 name:'',
                 alias:'',
@@ -456,12 +478,8 @@ export default {
 }
 </script>
 <style scoped>
-.nameBox{
-    white-space:nowrap;
-    cursor: pointer;
-}
 .avatar-uploader{
-     height: 110px;
+     height: 120px;
 }
 .avatar-uploader .el-upload {
     border: 1px dashed #d9d9d9;
@@ -476,31 +494,74 @@ export default {
   .avatar-uploader-icon {
     font-size: 28px;
     color: #8c939d;
-    width: 203px;
-    height: 110px;
-    line-height: 110px;
+    width: 218px;
+    height: 120px;
+    line-height: 120px;
     text-align: center;
     border: 1px solid #dcdfe6;
     border-radius: 4px;
   }
   .avatar {
-    width: 203px;
-    height: 110px;
+    width: 218px;
+    height: 120px;
     display: block;
     border-radius: 4px;
   }
-
+#product{
+    position: relative;
+}
 .el-form-item{
-    margin-bottom: 15px
+    margin-bottom: 20px
+}
+.el-card__body{
+    padding-top: 0 !important;
 }
 .addNewProject{
-    width: 260px;
-    border: 1px solid #ebeef5;
-    padding: 10px 20px 0 20px
+    background: #fff;
+    /* height: 500px; */
+    width: 300px;
+    padding-top: 0 ;
+    position: absolute;
+    top: -16px;
+    right: -315px;
+    z-index: 9
 }
-.el-form-item__error{
+.addNewProject.show{
+    right: -8px;
+}
+.addNewProject .tit{
+    margin-top:-20px;
+    height: 60px;
+    border-bottom: 1px solid #dcdfe6;
+    position: relative;
+    margin-bottom: 20px;
+}
+.addNewProject h3{
+    float: left;
+    line-height: 60px;
+    padding-left:20px;
+    font-weight: bold;
+}
+.addNewProject .tit::before{
+    display: block;
+    content: '';
+    width: 4px;
+    background: #30a487;
+    height:20px;
+    position: absolute;
+    left: 0;
+    top: 20px;
+}
+.addNewProject span{
+    line-height: 70px;
+    color: #cacaca;
+    font-size: 12px;
+    padding-left: 20px;
+    letter-spacing: 1px;
+}
+/* .el-form-item__error{
     padding-top: 0 !important
-}
+} */
 .el-dialog__body{
     padding-top: 0 !important
 }
