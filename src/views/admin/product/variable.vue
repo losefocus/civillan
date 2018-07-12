@@ -1,10 +1,41 @@
 <template>
     <div class="clearfix">
-        <div >
-            产 品 : {{productInfo.name}} 
-        </div>
+        <div>产 品 : {{productInfo.name}} </div>
+        <el-form :model="form" class="clearfix" ref="form" label-width="0" size="mini" style="padding-top:10px;">
+            <el-form-item label="" style="width: 105px;margin-right:5px">
+                <el-input v-model="form.name" size="mini" auto-complete="off" placeholder="名称"></el-input>
+            </el-form-item>
+            <el-form-item label="" style="width: 105px;margin-right:5px">
+                <el-input v-model="form.label" size="mini" auto-complete="off" placeholder="标识"></el-input>
+            </el-form-item>
+            <el-form-item label="" style="width: 105px;margin-right:5px">
+                <el-input v-model="form.sort" size="mini" auto-complete="off" placeholder="排序"></el-input>
+            </el-form-item>
+            <el-form-item label="" style="width: 105px;margin-right:5px">
+                <el-select v-model="form.type" placeholder="选择类型" size="mini">
+                    <el-option
+                    v-for="item in options"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value">
+                    </el-option>
+                </el-select>
+            </el-form-item>
+            <el-form-item  :style="flag == 'add'?'width: 85px':'width: 140px'" class="pull-right">
+                <div v-if="flag == 'add'">
+                    <el-button size="mini" type="primary" class="pull-right" @click="handleAdd('form')" :loading="createdLoading">添加</el-button>
+                </div>
+                <div v-else >
+                    <el-button size="mini" type="info" class="pull-right" style="margin-left:10px" @click="cancelEdit('form')">取消</el-button>
+                    <el-button size="mini" type="primary" class="pull-right" @click="handleEdit" :loading="createdLoading">保存</el-button>
+                </div>
+            </el-form-item>
+            <el-form-item style="width: 60px;margin-left:5px" class="pull-right">
+                <el-checkbox v-model="form.status" >已启用</el-checkbox>
+            </el-form-item>
+        </el-form>
         <div v-loading="listLoading">
-            <el-table :data="list" element-loading-text="给我一点时间" stripe border fit highlight-current-row style="width: 100%;margin-bottom:10px">
+            <el-table :data="list" element-loading-text="给我一点时间" stripe border fit highlight-current-row style="width: 100%;margin-bottom:20px">
                 <el-table-column align="center" label="变量">
                     <template slot-scope="scope">
                         <span>{{scope.row.name}}</span>
@@ -33,7 +64,7 @@
                 </el-table-column>
                 <el-table-column align="center" label="操作" width="160" style="float:right">
                     <template slot-scope="scope">
-                        <el-button size="mini" type="" plain @click="updateList(scope.row)">修改</el-button>
+                        <el-button size="mini" type="" plain @click="updateList(scope.$index, list)">修改</el-button>
                         <el-button size="mini" type="" plain @click="deleteList(scope.$index, list)" style="margin-left:0">删除</el-button>
                     </template>
                 </el-table-column>
@@ -47,9 +78,9 @@
 </template>
 <script>
 
-import {get_templateObj} from "@/api/product";
+import {get_templateObj,set_templateObj} from "@/api/product";
 export default {
-    props:['productInfo','templateInfo'],
+    props:['productInfo'],
     data(){
         return {
             listLoading:false,
@@ -61,7 +92,31 @@ export default {
                 page_size: 10
             },
             total:null,
-            templateData:null
+            templateData:null,
+            options:[
+                {
+                    value: 'bool',
+                    label: 'bool'
+                },{
+                    value: 'float',
+                    label: 'float'
+                },{
+                    value: 'integer',
+                    label: 'integer'
+                },{
+                    value: 'char',
+                    label: 'char'
+                },
+            ],
+            form:{
+                name:'',
+                label:'',
+                sort:'',
+                type:'',
+                status:true
+            },
+            createdLoading:false,
+            editIndex:null,
         }
     },
     created() {
@@ -91,21 +146,69 @@ export default {
                 this.listLoading = false
             })
         },
-        updateList(index, rows){
-            
+        handleAdd(){
+            let obj = Object.assign({},this.form)
+            obj.status = obj.status?1:0
+            let [...dataList] = this.list
+            dataList.push(obj)
+            this.templateData.content = JSON.stringify(dataList)
+            this.setContent()
         },
-        deleteList(row){
+        deleteList(index,rows){
             rows.splice(index, 1);
-            let content = rows
-            this.setContent(content)
+            let content = (rows.length!=0)?JSON.stringify(rows):''
+            this.templateData.content = content
+            this.setContent()
         },
-        setContent(content){
-            this.templateInfo.content = content
-            console.log(this.templateInfo)
+        updateList(index,rows){
+            this.flag = 'edit'
+            this.form = Object.assign({},rows[index])
+            this.form.status = this.form.status==1?true:false
+            this.editIndex = index
         },
-        handleAdd(){},
-        handleEdit(){},
-        cancelEdit(){}
+        handleEdit(){
+            let obj = Object.assign({},this.form)
+            obj.status = obj.status?1:0
+            let [...dataList] = this.list
+            dataList.splice(this.editIndex, 1,obj)
+            this.templateData.content = JSON.stringify(dataList)
+            this.setContent()
+        },
+        setContent(){
+            set_templateObj(this.templateData).then(res => {
+                if(res.data.success == true){
+                    this.getList()
+                    this.cancelEdit()
+                    this.$notify({
+                        title: '成功',
+                        message: "保存成功",
+                        type: "success",
+                        duration: 2000
+                    });
+                }else{
+                    this.$notify({
+                        title: '失败',
+                        message: "保存失败",
+                        type: "error",
+                        duration: 2000
+                    });
+                }
+            })
+        },
+        cancelEdit(){
+            this.flag = 'add'
+            this.resetTem()
+        },
+        resetTem(){
+            this.form={
+                name:'',
+                label:'',
+                sort:'',
+                type:'',
+                status:true
+            }
+            this.createdLoading = false
+        },
     }
 }
 </script>

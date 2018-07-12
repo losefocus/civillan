@@ -13,7 +13,7 @@ export function fetchList(query) {
 /* 新增 */
 export function pushObj(obj) {
   return request({
-    url: '/notification/pushMessage',
+    url: '/notification/push_message',
     method: 'post',
     params: obj
   })

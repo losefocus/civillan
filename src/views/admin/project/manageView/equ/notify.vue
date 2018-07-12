@@ -87,6 +87,7 @@
 </template>
 <script>
 import { mapGetters } from "vuex";
+import { remote } from "@/api/dict";
 import {getAlarmObj,getUserObj,getObj,addObj,delObj,editObj} from "@/api/project/notify";
 
 export default {
@@ -95,39 +96,8 @@ export default {
         return {
             listLoading:false,
             createdLoading:false,
-            options:[
-                {
-                    value: 0,
-                    label: '从不通知'
-                },{
-                    value: 1,
-                    label: '仅一次'
-                },{
-                    value: 5,
-                    label: '每隔5分钟'
-                },{
-                    value: 30,
-                    label: '每隔30分钟'
-                },{
-                    value: 60,
-                    label: '每隔1小时'
-                },{
-                    value: 1440,
-                    label: '每隔1天'
-                }
-            ],
-            typeOptions:[
-                {
-                    value: 'sms',
-                    label: '手机短信'
-                },{
-                    value: 'wechart',
-                    label: '微信'
-                },{
-                    value: 'email',
-                    label: '电子邮件'
-                }
-            ],
+            options:[],
+            typeOptions:[],
             form:{
                 alarmId:'',
                 puserIds:[],
@@ -153,6 +123,12 @@ export default {
         this.getList()
         this.getAlarmList()
         this.getUserList()
+        remote("cycle").then(response => {
+            this.options = response.data.result;
+        });
+        remote("notify_types").then(response => {
+            this.typeOptions = response.data.result;
+        });
     },
     mounted() {
 

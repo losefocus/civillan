@@ -129,24 +129,10 @@
             </el-form>
         </el-card>
         <el-dialog id="variable" title="变量模板"  :visible.sync="variableTemplateVisible" width='690px'>
-            <variable v-if="variableTemplateVisible == true" :product-info="productData" :template-info="templateData"></variable>
-            <!-- <div class="clearfix">
-                <div >
-                    产 品 : {{productData.name}} 
-                </div>
-                <el-input style="padding:20px 0" type="textarea" :rows="10" placeholder="请输入内容" v-model="templateData.content"></el-input>
-                <el-button class="pull-right" size="mini" type="primary" @click="setTemplate" :loading="tempCreateloading">保存</el-button>
-            </div> -->
+            <variable v-if="variableTemplateVisible == true" :product-info="productData"></variable>
         </el-dialog>
         <el-dialog id="alarm" title="报警模板"  :visible.sync="alarmTemplatVisible" width='690px'>
-            <!-- <alarm :product-info="productData" :template-info="templateData"></alarm> -->
-            <!-- <div class="clearfix" v-loading="temploading">
-                <div >
-                    产 品 : {{productData.name}} 
-                </div>
-                <el-input style="padding:20px 0" type="textarea" :rows="10" placeholder="请输入内容" v-model="templateData.content"></el-input>
-                <el-button class="pull-right" size="mini" type="primary">保存</el-button>
-            </div> -->
+            <alarm v-if="alarmTemplatVisible == true" :product-info="productData"></alarm>
         </el-dialog>
         <el-dialog title="分类管理" :visible.sync="classifyTemplatVisible" width='690px'>
             <category @showCategoryOptions="getParentOptions" @showCategoryHash="getParentHash"></category>
@@ -161,7 +147,7 @@ import alarm from "./alarm";
 import category from "./category";
 import { getToken} from "@/util/auth";
 import { toTree } from "@/util/util";
-import { fetchList,fetchCategoryList,addObj,delObj,updataObj,get_templateObj,set_templateObj} from "@/api/product";
+import { fetchList,fetchCategoryList,addObj,delObj,updataObj} from "@/api/product";
 export default {
     components:{
         variable,
@@ -412,42 +398,13 @@ export default {
         },
         //变量模板
         variableTemplate(row){
-            console.log(row)
             this.variableTemplateVisible = true
             this.productData = row
-            let id
-            row.productTemplate.forEach(element => {
-                if(element.type === 1)id = element.id
-            });
-            // this.getContent(id) 
         },
         //报警模板
         alarmTemplat(row){
             this.alarmTemplatVisible = true
             this.productData = row
-            let id
-            row.productTemplate.forEach(element => {
-                if(element.type === 2)id = element.id
-            });
-            this.getContent(id)
-        },
-        getContent(id){          
-            this.temploading = true
-            get_templateObj(id).then(res => {
-                this.templateData = res.data.result
-                this.temploading = false
-            })
-        },
-        setTemplate(){
-            let data = this.templateData
-            delete data.handler
-            delete data.hibernateLazyInitializer
-            this.tempCreateloading = true
-            set_templateObj(data).then(res => {
-                this.variableTemplateVisible = false
-                this.alertNotify('保存');
-                this.tempCreateloading = false
-            })
         },
         copy() {  
             var clipboard = new this.Clipboard('.copy_key');  

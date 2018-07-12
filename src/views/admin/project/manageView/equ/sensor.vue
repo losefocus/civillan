@@ -14,7 +14,7 @@
             <el-form-item label="" style="width: 105px;margin-right:5px">
                 <el-select v-model="form.type" placeholder="选择类型" size="mini">
                     <el-option
-                    v-for="item in options"
+                    v-for="item in dicts"
                     :key="item.value"
                     :label="item.label"
                     :value="item.value">
@@ -86,6 +86,7 @@
 </template>
 <script>
 import { mapGetters } from "vuex";
+import { remote } from "@/api/dict";
 import {getObj,addObj,delObj,editObj,download} from "@/api/project/sensor";
 import downloadBtn from "./downloadBtn"
 export default {
@@ -97,21 +98,7 @@ export default {
             data:[],
             listLoading:false,
             createdLoading:false,
-            options:[
-                {
-                    value: 'bool',
-                    label: 'bool'
-                },{
-                    value: 'float',
-                    label: 'float'
-                },{
-                    value: 'integer',
-                    label: 'integer'
-                },{
-                    value: 'char',
-                    label: 'char'
-                },
-            ],
+            dicts:[],
             form:{
                 name:'',
                 label:'',
@@ -132,6 +119,9 @@ export default {
     },
     created() {
         this.getList()
+        remote("data_type").then(response => {
+            this.dicts = response.data.result;
+        });
     },
     mounted() {
     },

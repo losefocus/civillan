@@ -79,6 +79,7 @@
 </template>
 <script>
 import { mapGetters } from "vuex";
+import { remote } from "@/api/dict";
 import {getObj,addObj,delObj,editObj} from "@/api/project/alarm";
 
 export default {
@@ -128,6 +129,9 @@ export default {
     },
     created() {
         this.getList()
+        remote("cycle").then(response => {
+            this.dicts = response.data.result;
+        });
     },
     mounted() {
 
