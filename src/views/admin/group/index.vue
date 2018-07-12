@@ -2,9 +2,9 @@
   <div class="app-container calendar-list-container">
     <div class="filter-container">
       <el-button-group>
-        <el-button type="primary" v-if="group_btn_add" icon="plus" @click="handlerAdd">添加</el-button>
-        <el-button type="primary" v-if="group_btn_edit" icon="edit" @click="handlerEdit">编辑</el-button>
-        <el-button type="primary" v-if="group_btn_del" icon="delete" @click="handleDelete">删除</el-button>
+        <el-button type="primary" v-if="group_btn_add" icon="plus" @click="handlerAdd" size="small">添加</el-button>
+        <el-button type="primary" v-if="group_btn_edit" icon="edit" @click="handlerEdit" size="small">编辑</el-button>
+        <el-button type="primary" v-if="group_btn_del" icon="delete" @click="handleDelete" size="small">删除</el-button>
       </el-button-group>
     </div>
 
@@ -44,12 +44,12 @@
             </el-form-item>
 
             <el-form-item v-if="formStatus == 'update'">
-              <el-button type="primary" @click="update">更新</el-button>
-              <el-button @click="onCancel">取消</el-button>
+              <el-button type="primary" @click="update" size="small">更新</el-button>
+              <el-button @click="onCancel" size="small">取消</el-button>
             </el-form-item>
             <el-form-item v-if="formStatus == 'create'">
-              <el-button type="primary" @click="create">保存</el-button>
-              <el-button @click="onCancel">取消</el-button>
+              <el-button type="primary" @click="create" size="small">保存</el-button>
+              <el-button @click="onCancel" size="small">取消</el-button>
             </el-form-item>
           </el-form>
         </el-card>

@@ -26,20 +26,31 @@ export default {
             });
             map.setDefaultCursor("crosshair");
             var marker = new AMap.Marker({
-                cursor: 'move',
+                draggable: true,
                 animation: true,
             });
-            // this.$parent.$parent.form.position = map.getCenter().getLng()+','+map.getCenter().getLat()
+            let pos = this.$parent.$parent.form.position.split(',')
+            if(pos != ''){
+                marker.setMap(map);
+                marker.setAnimation('AMAP_ANIMATION_DROP')
+                marker.setPosition([parseFloat(pos[0]), parseFloat(pos[1])])
+                map.setCenter([parseFloat(pos[0]), parseFloat(pos[1])])
+            }
             var clickEventListener = map.on('click', e => {
-                this.lnglat = e.lnglat.getLng() + ',' + e.lnglat.getLat()
                 marker.setMap(map);
                 marker.setAnimation('AMAP_ANIMATION_DROP')
                 marker.setPosition([e.lnglat.getLng(), e.lnglat.getLat()])
-                this.$parent.$parent.form.position = this.lnglat
+                this.$parent.$parent.form.position = e.lnglat.getLng() + ',' + e.lnglat.getLat()
                 setTimeout(()=>{
                     this.$parent.$parent.positionVisible = false
                 },800)
             });
+            marker.on('dragend',e => {
+                this.$parent.$parent.form.position = e.lnglat.getLng() + ',' + e.lnglat.getLat()
+                setTimeout(()=>{
+                    this.$parent.$parent.positionVisible = false
+                },800)
+            })
             //搜索
             AMapUI.loadUI(['misc/PoiPicker'], function(PoiPicker) {
                 var poiPicker = new PoiPicker({

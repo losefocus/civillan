@@ -47,7 +47,7 @@
                                             {{adminerHash[pro.row.adminer]}}
                                         </template>
                                     </el-table-column>      
-                                    <el-table-column align="center" label="操作" class-name="lastTd" width="80">
+                                    <el-table-column align="center" label="操作" class-name="lastTd" min-width="80">
                                         <template slot-scope="pro">
                                             <el-dropdown trigger="click" @command="handleCommand" placement="bottom">
                                                 <span style="cursor:pointer">
@@ -218,7 +218,7 @@
             <project-manage ref="proManage" :view-data='viewData'></project-manage>
         </div>
         <el-dialog :visible.sync="positionVisible" id="mapPosition">
-            <map-position></map-position>
+            <map-position v-if="positionVisible == true"></map-position>
         </el-dialog>
     </div>
 </template>

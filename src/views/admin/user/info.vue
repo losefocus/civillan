@@ -21,14 +21,14 @@
             </el-form-item>
             <el-form-item label="头像">
               <my-upload field="uploadFile" @crop-upload-success="cropUploadSuccess" v-model="show" :width="300" :height="300" url="/file/attachment/upload" :headers="headers" img-format="png" :params="params"></my-upload>
-              <img :src="userInfo.avatar">
+              <img :src="userInfo.avatar" style="width:200px;height:200px;">
               <el-button type="primary" @click="toggleShow" size="mini">选择
                 <i class="el-icon-upload el-icon--right"></i>
               </el-button>
             </el-form-item>
             <el-form-item>
-              <el-button type="primary" @click="submitForm('ruleForm2')">提交</el-button>
-              <el-button @click="resetForm('ruleForm2')">重置</el-button>
+              <el-button type="primary" size="small" @click="submitForm('ruleForm2')">提交</el-button>
+              <el-button @click="resetForm('ruleForm2')" size="small">重置</el-button>
             </el-form-item>
           </el-form>
         </div>

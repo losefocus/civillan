@@ -52,7 +52,7 @@
       </el-table-column>
       <el-table-column label="操作" width="200">
         <template slot-scope="scope">
-          <el-button v-if="sys_route_upd" size="small" type="success" @click="handleUpdate(scope.row)">编辑
+          <el-button v-if="sys_route_upd" size="mini" type="success" @click="handleUpdate(scope.row)">编辑
           </el-button>
           <el-button v-if="sys_route_del" size="mini" type="danger" @click="handleDelete(scope.row)">删除
           </el-button>
@@ -97,9 +97,9 @@
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="cancel('form')">取 消</el-button>
-        <el-button v-if="dialogStatus=='create'" type="primary" @click="create('form')">确 定</el-button>
-        <el-button v-else type="primary" @click="update('form')">修 改</el-button>
+        <el-button @click="cancel('form')" size="small">取 消</el-button>
+        <el-button v-if="dialogStatus=='create'" type="primary" @click="create('form')" size="small">确 定</el-button>
+        <el-button v-else type="primary" @click="update('form')" size="small">修 改</el-button>
       </div>
     </el-dialog>
   </div>

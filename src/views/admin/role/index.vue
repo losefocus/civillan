@@ -1,7 +1,7 @@
 <template>
   <div class="app-container calendar-list-container">
     <div class="filter-container">
-      <el-button class="filter-item" style="margin-left: 10px;" @click="handleCreate" type="primary" icon="edit" v-if="roleManager_btn_add">添加
+      <el-button class="filter-item" style="margin-left: 10px;" @click="handleCreate" type="primary" size="small" icon="edit" v-if="roleManager_btn_add">添加
       </el-button>
     </div>
 
@@ -275,8 +275,9 @@ export default {
       console.log(data);
     },
     handleDelete(row) {
+      console.log(row)
        this.$confirm(
-        "此操作将永久删除该用户(用户名:" + row.username + "), 是否继续?",
+        "此操作将永久删除该角色(角色名:" + row.roleName + "), 是否继续?",
         "提示",
         {
           confirmButtonText: "确定",

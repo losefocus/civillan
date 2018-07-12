@@ -1,10 +1,10 @@
 <template>
   <div class="app-container calendar-list-container">
     <div class="filter-container">
-      <el-input @keyup.enter.native="handleFilter" style="width: 200px;" class="filter-item" placeholder="编号" v-model="listQuery.client_id">
+      <el-input @keyup.enter.native="handleFilter" style="width: 200px;" class="filter-item" placeholder="编号" v-model="listQuery.client_id" size="small">
       </el-input>
-      <el-button class="filter-item" type="primary" v-waves icon="search" @click="handleFilter">搜索</el-button>
-      <el-button v-if="sys_client_add" class="filter-item" style="margin-left: 10px;" @click="handleCreate" type="primary" icon="edit">新增
+      <el-button class="filter-item" type="primary" v-waves icon="search" @click="handleFilter" size="small">搜索</el-button>
+      <el-button v-if="sys_client_add" class="filter-item" style="margin-left: 10px;" @click="handleCreate" type="primary" icon="edit" size="small">新增
       </el-button>
     </div>
     <el-table :key='tableKey' :data="list" v-loading="listLoading" element-loading-text="给我一点时间" border fit highlight-current-row style="width: 99%">
@@ -35,7 +35,7 @@
       </el-table-column>
       <el-table-column label="操作" width="200">
         <template slot-scope="scope">
-          <el-button v-if="sys_client_upd" size="small" type="success" @click="handleUpdate(scope.row)">编辑
+          <el-button v-if="sys_client_upd" size="mini" type="success" @click="handleUpdate(scope.row)">编辑
           </el-button>
           <el-button v-if="sys_client_del" size="mini" type="danger" @click="handleDelete(scope.row)">删除
           </el-button>
@@ -86,9 +86,9 @@
         </el-form-item>-->
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="cancel('form')">取 消</el-button>
-        <el-button v-if="dialogStatus=='create'" type="primary" @click="create('form')">确 定</el-button>
-        <el-button v-else type="primary" @click="update('form')">修 改</el-button>
+        <el-button @click="cancel('form')" size="small">取 消</el-button>
+        <el-button v-if="dialogStatus=='create'" type="primary" @click="create('form')" size="small">确 定</el-button>
+        <el-button v-else type="primary" @click="update('form')" size="small">修 改</el-button>
       </div>
     </el-dialog>
   </div>

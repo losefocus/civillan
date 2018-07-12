@@ -244,10 +244,8 @@ export default {
         importexcel2(){
             let ids = []
             this.listSelection.forEach(ele => {
-                console.log(ele)
                 ids.push(ele.id)
             })
-            console.log(ids.join(','))
             download(ids.join(',')).then(res => {
 
             })
