@@ -55,15 +55,16 @@
 
       <el-table-column align="center" class-name="status-col" label="状态">
         <template slot-scope="scope">
-          <el-tag size="small">{{scope.row.status | statusFilter}}</el-tag>
+          <!-- <el-tag size="small">{{scope.row.status | statusFilter}}</el-tag> -->
+          <i v-if="scope.row.status == 1" class="el-icon-circle-check" style="font-size:18px;color:#67c23a"></i>
+          <i v-else class="el-icon-circle-close" style="font-size:18px;color:#909399"></i>
         </template>
       </el-table-column>
-
       <el-table-column align="center" label="操作" width="200">
         <template slot-scope="scope">
-          <el-button v-if="sys_user_upd" size="mini" type="success" @click="handleUpdate(scope.row)">编辑
+          <el-button v-if="sys_user_upd" size="mini" type="" @click="handleUpdate(scope.row)">编辑
           </el-button>
-          <el-button v-if="sys_user_del" size="mini" type="danger" @click="deletes(scope.row)">删除
+          <el-button v-if="sys_user_del" size="mini" type="" @click="deletes(scope.row)" style="margin-left:0">删除
           </el-button>
         </template>
       </el-table-column>

@@ -79,7 +79,7 @@
 
       <el-table-column align="center" label="操作" width="100" v-if="attachment_btn_del">
         <template slot-scope="scope">
-          <el-button  size="mini" type="danger" @click="deletes(scope.row)">删除
+          <el-button  size="mini" type="" @click="deletes(scope.row)">删除
           </el-button>
         </template>
       </el-table-column>

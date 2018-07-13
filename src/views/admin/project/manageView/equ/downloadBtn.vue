@@ -43,8 +43,8 @@ export default {
             csvContent += index < this.data.length ? dataString.replace(/,$/, '\r\n') : dataString.replace(/,$/, '');
         });
 
-        csvContent = csvContent;
-        var blob = new Blob([csvContent], { type: 'text/csv'});
+        csvContent = '\ufeff'+csvContent;
+        var blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8'});
         var uri = URL.createObjectURL(blob);
 
         this.$refs.link.setAttribute('href', uri);

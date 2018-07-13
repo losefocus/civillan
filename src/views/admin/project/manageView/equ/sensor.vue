@@ -37,7 +37,20 @@
         <div style="margin-bottom:10px;">
             <download-btn :header="header" :data="data">导出</download-btn> 
             <!-- <el-button @click="importexcel" size="mini">导出excel</el-button> -->
-            <el-button @click="importexcel2" size="mini">导入</el-button>
+            <!-- <el-button @click="importexcel2" size="mini">导入</el-button> -->
+            <el-upload
+                class="upload-demo"
+                ref="upload"
+                :headers="headers"
+                action="/device/device_sensor/import"
+                :limit="10"
+                :data="params"
+                name="file"
+                :show-file-list ="false"
+                :on-success="uploadSuccess"
+                :auto-upload="true">
+                    <el-button slot="trigger" size="small" type="primary">选择</el-button>
+            </el-upload>
         </div>
         <div v-loading="listLoading">
             <el-table :data="list" element-loading-text="给我一点时间" @selection-change="handleSelectionChange" stripe border fit highlight-current-row style="width: 100%;margin-bottom:20px;margin-top:10px">
@@ -86,6 +99,7 @@
 <script>
 import { mapGetters } from "vuex";
 import { remote } from "@/api/dict";
+import { getToken } from "@/util/auth";
 import {getObj,addObj,delObj,editObj,download} from "@/api/project/sensor";
 import downloadBtn from "./downloadBtn"
 export default {
@@ -113,7 +127,9 @@ export default {
             },
             total:null,
             list:null,
-            listSelection : []
+            listSelection : [],
+            headers:{Authorization: "Bearer " + getToken()},
+            params:{device_id:this.dataInfo.id},
         }
     },
     created() {
@@ -229,14 +245,9 @@ export default {
         formatJson(filterVal, jsonData) {
             return jsonData.map(v => filterVal.map(j => v[j]));
         },
-        importexcel2(){
-            let ids = []
-            this.listSelection.forEach(ele => {
-                ids.push(ele.id)
-            })
-            download(ids.join(',')).then(res => {
-
-            })
+        uploadSuccess(response, file, fileList){
+            this.$parent.$parent.$parent.$parent.alertNotify('上传')
+            this.getList()
         }
     },
     watch:{

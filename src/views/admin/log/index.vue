@@ -61,7 +61,7 @@
 
       <el-table-column align="center" label="操作">
         <template slot-scope="scope">
-          <el-button size="mini" type="danger" v-if="sys_log_del" @click="handleDelete(scope.row)">删除
+          <el-button size="mini" type="" v-if="sys_log_del" @click="handleDelete(scope.row)">删除
           </el-button>
         </template>
       </el-table-column>

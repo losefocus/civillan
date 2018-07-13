@@ -1,58 +1,50 @@
 <template>
     <div class="app-container calendar-list-container">
-        <el-form :model="form" class="clearfix" label-width="80px" ref="form" :rules="rules">
-            <el-form-item label="消息标题" prop="title">
+        <el-form :model="form" class="clearfix" label-width="80px" ref="form" :rules="rules" label-position="left">
+            <el-form-item label="常见问题" prop="title">
                 <el-input v-model="form.title" placeholder="标题"></el-input>
             </el-form-item>
-            <el-form-item label="消息内容" prop="message">
-                <el-input v-model="form.message" type="textarea" :rows="3" placeholder="内容"></el-input>
-            </el-form-item>
-            <el-form-item label="通知对象" prop="pushObject" class="pull-left" style="width:45%">
-                <el-select v-model="form.pushObject" placeholder="通知对象">
-                    <el-option label="后台用户" value="1"></el-option>
-                    <el-option label="前台用户" value="2"></el-option>
-                    <el-option label="设备" value="3"></el-option>
-                </el-select>
-            </el-form-item>
-            <el-form-item label="通知方式" prop="pushType" class="pull-right" style="width:45%">
-                <el-select v-model="form.pushType" placeholder="通知对象">
-                    <el-option label="web" value="1"></el-option>
-                    <el-option label="app" value="2"></el-option>
-                </el-select>
+            <el-form-item label="内容" prop="content">
+                <el-input v-model="form.content" type="textarea" :rows="5" placeholder="内容"></el-input>
             </el-form-item>
             <el-form-item class="pull-right">
-                <el-button type="primary" @click="onSubmit('form')" size="small" style="width:100px">推送</el-button>
+                <el-button v-if="flag == 'add'" type="primary" @click="onSubmit('form')" size="small" style="width:100px" :loading="createLoading">添加</el-button>
+                <div v-else>
+                    <el-button type="primary" @click="updataForm('form')" size="small" style="width:100px" :loading="createLoading">修改</el-button>
+                    <el-button type="info" @click="cancelForm('form')" size="small" style="width:100px">取消</el-button>
+                </div>
             </el-form-item>
         </el-form>
         <el-table :data="list" border style="width: 100%" v-loading="listLoading">
-            <el-table-column align="center" label="消息标题" >
+            <el-table-column align="center" label="标题" >
                 <template slot-scope="scope">
                     <span>{{ scope.row.title }}</span>
                 </template>
             </el-table-column>
-             <el-table-column align="center" label="消息内容" >
+             <el-table-column align="center" label="内容" >
                 <template slot-scope="scope">
-                    <span>{{ scope.row.message }}</span>
+                    <span>{{ scope.row.content }}</span>
                 </template>
             </el-table-column>
-            <el-table-column align="center" label="推送时间">
+            <el-table-column align="center" label="创建时间">
                 <template slot-scope="scope">
                     <span>{{ scope.row.createAt | parseTime('{y}-{m}-{d}')}}</span>
                 </template>
             </el-table-column>
-            <el-table-column align="center" label="推送人">
+            <!-- <el-table-column align="center" label="创建人">
                 <template slot-scope="scope">
                     <span>{{ scope.row.username }}</span>
                 </template>
-            </el-table-column>
-            <el-table-column align="center" label="通知对象">
+            </el-table-column> -->
+            <el-table-column align="center" label="标签">
                 <template slot-scope="scope">
-                    <span>{{ scope.row.pushObject }}</span>
+                    <span>{{ scope.row.tag }}</span>
                 </template>
             </el-table-column>
             <el-table-column align="center" label="操作">
                 <template slot-scope="scope">
-                    <el-button size="mini" type="" plain @click="handleDel(scope.row)">删除</el-button>
+                    <el-button size="mini" type="" plain @click="handleUpdata(scope.row)">修改</el-button>
+                    <el-button size="mini" type="" plain @click="handleDel(scope.row)" style="margin-left:0">删除</el-button>
                 </template>
             </el-table-column>
         </el-table>
@@ -63,7 +55,7 @@
     </div>    
 </template>
 <script>
-import {fetchList,pushObj,delObj,fetchUserList} from "@/api/notification";
+import {fetchList,addObj,delObj,updataObj} from "@/api/help";
 export default {
     data() {
         var validateTitle = (rule, value, callback) => {
@@ -76,20 +68,6 @@ export default {
         var validateMessage = (rule, value, callback) => {
             if (value === '' || value== undefined) {
                 callback(new Error('请输入消息内容'));
-            } else {
-                callback();
-            }
-        };
-        var validateObject = (rule, value, callback) => {
-            if (value === '' || value== undefined) {
-                callback(new Error('请选择通知对象'));
-            } else {
-                callback();
-            }
-        };
-        var validateType = (rule, value, callback) => {
-            if (value === '' || value== undefined) {
-                callback(new Error('请选择通知方式'));
             } else {
                 callback();
             }
@@ -109,21 +87,13 @@ export default {
             title: [
                 { validator: validateTitle, message: '请输入消息标题', trigger: 'blur' },
             ],
-            message: [
+            content: [
                 { validator: validateMessage, message: '请输入消息内容', trigger: 'blur' }
-            ],
-            pushObject: [
-                { validator: validateObject, message: '请选择通知对象', trigger: 'change' }
-            ],
-            pushType: [
-                { validator: validateType, message: '请选择通知方式', trigger: 'change' }
             ],
         },
         form: {
           title: '',
-          message: '',
-          pushObject:null,
-          pushType:null
+          content: '',
         },
         listQuery:{
             page_index:1,
@@ -131,30 +101,23 @@ export default {
         },
         total:null,
         listLoading:false,
+        createLoading:false,
         list:[],
-        userIds:[]
+        userIds:[],
+        flag:'add'
       }
     },
     created(){
-        this.getUserList()
         this.getList()
-        
     },
     methods: {
         handleSizeChange(){
-
+            this.listQuery.page_size = val;
+            this.getList();
         },
         handleCurrentChange(){
-
-        },
-        getUserList(){
-            this.userId = []
-            fetchUserList().then(res => {
-                res.data.result.items.forEach(element => {
-                    this.userIds.push(element.id)
-                });
-                
-            })
+            this.listQuery.page_index = val;
+            this.getList();
         },
         getList(){
             this.listLoading = true
@@ -162,7 +125,6 @@ export default {
                 this.list = res.data.result.items
                 this.total = res.data.result.total
                 this.listLoading = false
-                this.restTemp()
             })
         },
         handleDel(row){
@@ -190,30 +152,53 @@ export default {
             this.$refs[formName].validate((valid) => {
                 if (valid) {
                     let data = Object.assign({},this.form)
-                    data.pushObject = parseInt(data.pushObject)
-                    if(data.pushObject === 2){
-                        if(this.userIds.length !=0)data.userIds = this.userIds.join(',')
-                        else {
-                            this.$message({
-                                message: '缺少前台用户信息',
-                                type: 'warning'
-                            });
-                            return
-                        }
-                    }
-                    pushObj(data).then(res => {
+                    this.createLoading = true
+                    addObj(data).then(res => {
                         this.getList()
+                        this.cancelForm()
+                        this.$notify({
+                            title: "添加",
+                            message: "添加成功",
+                            type: "success",
+                            duration: 2000
+                        });
                     })
                 }
             })
         },
-        restTemp(){
+        handleUpdata(row){
+            this.flag = 'updata'
+            this.form = Object.assign({},row)
+            this.form.status = this.form.status === 1?true:false
+            this.cardVisibel = true
+        },
+        updataForm(formName){
+            this.$refs[formName].validate((valid) => {
+                if (valid) {
+                    this.createLoading = true
+                    let data = Object.assign({},this.form)
+                    data.status = data.status?1:0
+                    updataObj(data).then(res => {
+                        this.getList();
+                        this.cancelForm()
+                        this.$notify({
+                            title: "修改",
+                            message: "修改成功",
+                            type: "success",
+                            duration: 2000
+                        });
+                    })
+                }
+            })    
+            
+        },
+        cancelForm(){
             this.form = {
                 title: '',
-                message: '',
-                pushObject:null,
-                pushType:null
+                content: '',
             }
+            this.flag = 'add'
+            this.createLoading = false
         }
     }
 }
