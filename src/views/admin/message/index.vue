@@ -52,7 +52,7 @@
             </el-table-column>
             <el-table-column align="center" label="操作">
                 <template slot-scope="scope">
-                    <el-button size="small" type="danger" plain @click="handleDel(scope.row)">删除</el-button>
+                    <el-button size="mini" type="danger" plain @click="handleDel(scope.row)">删除</el-button>
                 </template>
             </el-table-column>
         </el-table>

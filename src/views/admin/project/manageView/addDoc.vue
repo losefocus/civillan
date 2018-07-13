@@ -1,7 +1,7 @@
 <template>
     <div>
         <div class="tit"><h3>{{(flag == 'add')?'添加':'修改'}}文件</h3><span>{{(flag == 'add')?'Add':'Edit'}} Document</span></div>
-        <el-form label-width="55px" :model="form" ref="form" :rules="rules">
+        <el-form label-width="55px" :model="form" ref="form" :rules="rules" label-position="left">
             <el-form-item label="文件" prop="fileBaseUrl">
                 <el-upload
                     class="upload-demo"

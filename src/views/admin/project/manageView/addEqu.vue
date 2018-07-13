@@ -1,7 +1,7 @@
 <template>
     <div>
         <div class="tit"><h3>{{(flag == 'add')?'添加':'修改'}}设备</h3><span>{{(flag == 'add')?'Add':'Edit'}} Equipment</span></div>
-        <el-form label-width="55px" :model="form"  ref="form" :rules="rules">
+        <el-form label-width="55px" :model="form"  ref="form" :rules="rules" label-position="left">
             <el-form-item label="型号" prop="productId">
                 <el-select v-model="form.productId" size="small" placeholder="请选择型号" :disabled="disabled">
                     <el-option

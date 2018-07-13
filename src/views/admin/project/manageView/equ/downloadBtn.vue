@@ -1,5 +1,7 @@
 <template>
-  <a ref="link" class="download-btn" v-on:click="handleClick">导出</a>
+  <el-button size="mini">
+    <a ref="link" class="download-btn" v-on:click="handleClick">导出</a>
+  </el-button>
 </template>
 <script type="text/javascript">
 export default {
@@ -73,18 +75,13 @@ export default {
 <style lang="scss" scoped>
 .download-btn {
   display: inline-block;
-  margin-left: 10px;
-  padding: 2px 15px;
   font-size: 12px;
-  border-radius: 4px;
-  color: #FFF;
-  background-color: #f7ba2a;
-  border-color: #f7ba2a;
   outline: 0;
   text-align: center;
   -webkit-appearence: none;
   appearence: none;
   cursor: pointer;
+  text-decoration:none
 }
 
 </style>

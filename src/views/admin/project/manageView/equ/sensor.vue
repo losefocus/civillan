@@ -35,9 +35,8 @@
             </el-form-item>
         </el-form>
         <div style="margin-bottom:10px;">
-            <!-- <el-button @click="importexcel" size="mini">导出csv</el-button> -->
-            <download-btn :header="header" :data="data">导出csv</download-btn>
-            <el-button @click="importexcel" size="mini">导出</el-button>
+            <download-btn :header="header" :data="data">导出</download-btn> 
+            <!-- <el-button @click="importexcel" size="mini">导出excel</el-button> -->
             <el-button @click="importexcel2" size="mini">导入</el-button>
         </div>
         <div v-loading="listLoading">
@@ -131,8 +130,7 @@ export default {
     methods:{
         handleSelectionChange(val) {
             this.listSelection = val;
-            // this.header = ['变量名称', '标识', '类型'] //['name', 'label', 'type']
-            this.header = [{label:'变量名称',prop:'name'},{label:'标识',prop:'label'},{label:'类型',prop:'type'}]
+            this.header = [{label:'标识',prop:'label'},{label:'变量名称',prop:'name'},{label:'类型',prop:'type'}]
             this.data = val
         },
         handleSizeChange(val) {
