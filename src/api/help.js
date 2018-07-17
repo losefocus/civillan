@@ -3,7 +3,7 @@ import request from '@/router/axios'
 /* 产品列表 */
 export function fetchList(query) {
     return request({
-      url: '/admin/helpCenter/list',
+      url: '/admin/article/list',
       method: 'get',
       params: query
     })
@@ -13,7 +13,7 @@ export function fetchList(query) {
 /* 新增 */
 export function addObj(obj) {
   return request({
-    url: '/admin/helpCenter/add',
+    url: '/admin/article/add',
     method: 'post',
     data: obj
   })
@@ -22,7 +22,7 @@ export function addObj(obj) {
 /* 删除 */
 export function delObj(id) {
   return request({
-    url: '/admin/helpCenter/delete?id=' + id,
+    url: '/admin/article/delete?id=' + id,
     method: 'post'
   })
 }
@@ -30,7 +30,7 @@ export function delObj(id) {
 /* 编辑 */
 export function updataObj(obj) {
     return request({
-      url: '/admin/helpCenter/update',
+      url: '/admin/article/update',
       method: 'post',
       data: obj
     })

@@ -20,7 +20,7 @@ export const formatRoutes = (aMenu) => {
       component,
       name,
       icon,
-      children
+      children,
     } = oMenu
     if (!validatenull(component)) {
       let filePath;
@@ -40,9 +40,9 @@ export const formatRoutes = (aMenu) => {
         icon: icon,
         children: validatenull(children) ? [] : formatRoutes(children)
       }
-      aRouter.push(oRouter)
+      console.log(oRouter)
+      aRouter.push(oRouter) 
     }
-
   })
   return aRouter
 }

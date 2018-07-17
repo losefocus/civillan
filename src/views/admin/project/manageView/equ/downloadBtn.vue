@@ -78,9 +78,6 @@ export default {
   font-size: 12px;
   outline: 0;
   text-align: center;
-  -webkit-appearence: none;
-  appearence: none;
-  cursor: pointer;
   text-decoration:none
 }
 

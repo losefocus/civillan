@@ -2,16 +2,16 @@
     <div class="clearfix">
         <div>产 品 : {{productInfo.name}} </div>
         <el-form :model="form" class="clearfix" ref="form" label-width="0" size="mini" style="padding-top:10px;">
-            <el-form-item label="" style="width: 105px;margin-right:5px">
+            <el-form-item label="" style="width: 100px;margin-right:5px">
                 <el-input v-model="form.name" size="mini" auto-complete="off" placeholder="名称"></el-input>
             </el-form-item>
-            <el-form-item label="" style="width: 105px;margin-right:5px">
+            <el-form-item label="" style="width: 100px;margin-right:5px">
                 <el-input v-model="form.label" size="mini" auto-complete="off" placeholder="标识"></el-input>
             </el-form-item>
-            <el-form-item label="" style="width: 105px;margin-right:5px">
+            <el-form-item label="" style="width: 100px;margin-right:5px">
                 <el-input v-model="form.sort" size="mini" auto-complete="off" placeholder="排序"></el-input>
             </el-form-item>
-            <el-form-item label="" style="width: 105px;margin-right:5px">
+            <el-form-item label="" style="width: 100px;margin-right:5px">
                 <el-select v-model="form.type" placeholder="选择类型" size="mini">
                     <el-option
                     v-for="item in options"
@@ -21,7 +21,7 @@
                     </el-option>
                 </el-select>
             </el-form-item>
-            <el-form-item  :style="flag == 'add'?'width: 85px':'width: 140px'" class="pull-right">
+            <el-form-item  :style="flag == 'add'?'width: 80px':'width: 150px'" class="pull-right">
                 <div v-if="flag == 'add'">
                     <el-button size="mini" type="primary" class="pull-right" @click="handleAdd('form')" :loading="createdLoading">添加</el-button>
                 </div>
@@ -30,7 +30,7 @@
                     <el-button size="mini" type="primary" class="pull-right" @click="handleEdit" :loading="createdLoading">保存</el-button>
                 </div>
             </el-form-item>
-            <el-form-item style="width: 60px;margin-left:5px" class="pull-right">
+            <el-form-item style="width: 70px;margin-left:5px" class="pull-right">
                 <el-checkbox v-model="form.status" >已启用</el-checkbox>
             </el-form-item>
         </el-form>

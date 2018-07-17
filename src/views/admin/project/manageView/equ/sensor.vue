@@ -2,16 +2,16 @@
     <div>
         <div>设 备 : {{dataInfo.name}}</div>
         <el-form :model="form" class="clearfix" ref="form" label-width="0" size="mini" style="margin-bottom:10px;">
-            <el-form-item label="" style="width: 105px;margin-right:5px">
+            <el-form-item label="" style="width: 100px;margin-right:5px">
                 <el-input v-model="form.name" size="mini" auto-complete="off" placeholder="名称"></el-input>
             </el-form-item>
-            <el-form-item label="" style="width: 105px;margin-right:5px">
+            <el-form-item label="" style="width: 100px;margin-right:5px">
                 <el-input v-model="form.label" size="mini" auto-complete="off" placeholder="标识"></el-input>
             </el-form-item>
-            <el-form-item label="" style="width: 105px;margin-right:5px">
+            <el-form-item label="" style="width: 100px;margin-right:5px">
                 <el-input v-model="form.sort" size="mini" auto-complete="off" placeholder="排序"></el-input>
             </el-form-item>
-            <el-form-item label="" style="width: 105px;margin-right:5px">
+            <el-form-item label="" style="width: 100px;margin-right:5px">
                 <el-select v-model="form.type" placeholder="选择类型" size="mini">
                     <el-option
                     v-for="item in dicts"
@@ -21,7 +21,7 @@
                     </el-option>
                 </el-select>
             </el-form-item>
-            <el-form-item  :style="flag == 'add'?'width: 85px':'width: 140px'" class="pull-right">
+            <el-form-item  :style="flag == 'add'?'width: 80px':'width: 150px'" class="pull-right">
                 <div v-if="flag == 'add'">
                     <el-button size="mini" type="primary" class="pull-right" @click="handleAdd('form')" :loading="createdLoading">添加</el-button>
                 </div>
@@ -30,16 +30,15 @@
                     <el-button size="mini" type="primary" class="pull-right" @click="handleEdit('form')" :loading="createdLoading">保存</el-button>
                 </div>
             </el-form-item>
-            <el-form-item style="width: 60px;margin-left:5px" class="pull-right">
+            <el-form-item style="width: 70px;margin-left:5px" class="pull-right">
                 <el-checkbox v-model="form.status" >已启用</el-checkbox>
             </el-form-item>
         </el-form>
-        <div style="margin-bottom:10px;">
-            <download-btn :header="header" :data="data">导出</download-btn> 
+        <div style="margin-bottom:10px;" class="clearfix">
+            <download-btn :header="header" :data="data" class="pull-left" style="margin-right:10px">导出</download-btn> 
             <!-- <el-button @click="importexcel" size="mini">导出excel</el-button> -->
-            <!-- <el-button @click="importexcel2" size="mini">导入</el-button> -->
             <el-upload
-                class="upload-demo"
+                class="upload-demo pull-left"
                 ref="upload"
                 :headers="headers"
                 action="/device/device_sensor/import"
@@ -47,9 +46,11 @@
                 :data="params"
                 name="file"
                 :show-file-list ="false"
+                :before-upload="beforeAvatarUpload"
                 :on-success="uploadSuccess"
+                :on-error="uploadError"
                 :auto-upload="true">
-                    <el-button slot="trigger" size="small" type="primary">选择</el-button>
+                    <el-button slot="trigger" size="mini" type="">导入</el-button>
             </el-upload>
         </div>
         <div v-loading="listLoading">
@@ -248,6 +249,20 @@ export default {
         uploadSuccess(response, file, fileList){
             this.$parent.$parent.$parent.$parent.alertNotify('上传')
             this.getList()
+        },
+        uploadError(){
+            this.$notify.error({
+                title: '错误',
+                message: '导入失败，请检查文件是否正确'
+            });
+        },
+        beforeAvatarUpload(file){
+            const isJPG = file.type === 'application/vnd.ms-excel';
+            // const isLt2M = file.size / 1024 / 1024 < 2; 文件大小2M
+            if (!isJPG) {
+            this.$message.error('只允许上传 CSV 格式文件!');
+            }
+            return isJPG;
         }
     },
     watch:{
