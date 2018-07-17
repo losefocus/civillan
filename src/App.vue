@@ -83,5 +83,7 @@ export default {
     display: none !important;
 }
 
-
+#messageContent .el-upload{
+  width: calc(100% - 2px)
+}
 </style>

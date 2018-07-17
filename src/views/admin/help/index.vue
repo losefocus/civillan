@@ -1,6 +1,6 @@
 <template>
     <div class="app-container calendar-list-container">
-        <el-form :model="form" class="clearfix" label-width="80px" ref="form" :rules="rules" label-position="left">
+        <!-- <el-form :model="form" class="clearfix" label-width="80px" ref="form" :rules="rules" label-position="left">
             <el-form-item label="常见问题" prop="title">
                 <el-input v-model="form.title" placeholder="标题"></el-input>
             </el-form-item>
@@ -14,7 +14,7 @@
                     <el-button type="info" @click="cancelForm('form')" size="small" style="width:100px">取消</el-button>
                 </div>
             </el-form-item>
-        </el-form>
+        </el-form> -->
         <el-table :data="list" border style="width: 100%" v-loading="listLoading">
             <el-table-column align="center" label="标题" >
                 <template slot-scope="scope">
@@ -171,6 +171,7 @@ export default {
             this.form = Object.assign({},row)
             this.form.status = this.form.status === 1?true:false
             this.cardVisibel = true
+            this.$router.push({ path: '/admin/content' ,query: {contentInfo: this.form}})
         },
         updataForm(formName){
             this.$refs[formName].validate((valid) => {

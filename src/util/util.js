@@ -40,7 +40,6 @@ export const formatRoutes = (aMenu) => {
         icon: icon,
         children: validatenull(children) ? [] : formatRoutes(children)
       }
-      console.log(oRouter)
       aRouter.push(oRouter) 
     }
   })
