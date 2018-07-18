@@ -23,7 +23,7 @@
                         </el-tooltip>
                     </template>
                 </el-table-column>
-                <el-table-column align="center" label="别名/型号" width="85">
+                <el-table-column align="center" label="别名/型号">
                     <template slot-scope="scope">
                         <span>{{scope.row.alias}}</span>
                     </template>
@@ -300,11 +300,11 @@ export default {
             this.listQuery.page_index = 1;
             this.getList()
         },
-        handleSizeChange(){
+        handleSizeChange(val){
             this.listQuery.page_size = val;
             this.getList();
         },
-        handleCurrentChange(){
+        handleCurrentChange(val){
             this.listQuery.page_index = val;
             this.getList();
         },

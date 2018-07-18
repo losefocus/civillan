@@ -141,11 +141,13 @@ export default {
         
     },
     methods: {
-        handleSizeChange(){
-
+        handleSizeChange(val) {
+            this.listQuery.page_size = val;
+            this.getList();
         },
-        handleCurrentChange(){
-
+        handleCurrentChange(val) {
+            this.listQuery.page_index = val;
+            this.getList();
         },
         getUserList(){
             this.userId = []

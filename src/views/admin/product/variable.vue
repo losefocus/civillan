@@ -126,8 +126,14 @@ export default {
     },
     computed: {},
     methods:{
-        handleCurrentChange(){},
-        handleSizeChange(){},
+        handleSizeChange(val) {
+            this.listQuery.page_size = val;
+            this.getList();
+        },
+        handleCurrentChange(val) {
+            this.listQuery.page_index = val;
+            this.getList();
+        },
         getList(){
             this.listLoading = true
             let id

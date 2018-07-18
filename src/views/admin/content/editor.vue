@@ -32,7 +32,6 @@ export default {
     },
     methods:{
         handleImageAdded: function(file, Editor, cursorLocation, resetUploader) {
-            console.log(123123)
             var formData = new FormData();
             formData.append('uploadFile', file)
             formData.append('component', 'project')

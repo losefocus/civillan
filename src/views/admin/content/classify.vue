@@ -1,11 +1,10 @@
 <template>
     <div>
-        <el-form :model="form" class="clearfix" ref="form" size="small" label-width="50px">
+        <el-form :model="form" class="clearfix" ref="form" size="small" label-width="80px">
             <el-form-item label="名称" style="width: 215px">
                 <el-input v-model="form.name" size="mini" auto-complete="off"></el-input>
             </el-form-item>
             <el-form-item label="上级分类" style="width: 220px;" label-width="75px">
-                <!-- <el-input v-model="form.parentId" size="mini" auto-complete="off"></el-input> -->
                 <el-select v-model="form.parentId" size="mini" placeholder="请选择分类">
                     <el-option
                     v-for="item in categoryOptions"
@@ -18,21 +17,46 @@
             <el-form-item label="排序" style="width: 215px;">
                 <el-input v-model="form.sort" size="mini" auto-complete="off"></el-input>
             </el-form-item>
-            <el-form-item  :style="flag == 'add'?'width: 120px':'width: 200px'" class="pull-right" style="padding-top:5px">
+            <el-form-item label="图片" prop="thumbnailUrl" style="width: 215px;">
+                <el-upload
+                class="avatar-uploader"
+                ref="upload"
+                :headers="headers"
+                action="/file/attachment/upload"
+                :limit="10"
+                :data="params"
+                name="uploadFile"
+                :show-file-list="false"
+                :on-success="uploadSuccess"
+                :auto-upload="true">
+                <img v-if="form.thumbnailUrl!='' && form.thumbnailUrl!=undefined" :src="form.thumbnailBaseUrl+form.thumbnailPath" class="avatar">
+                <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+                </el-upload>
+            </el-form-item>
+            <el-form-item label="备注" style="width: 215px;" label-width="75px">
+                <el-input type="textarea" :rows="1"></el-input>
+            </el-form-item>
+            <el-form-item  class="pull-right" style="padding-top:5px;width: 350px">
+                
                 <div v-if="flag == 'add'">
-                    <el-button size="mini" type="primary" class="pull-right" @click="handleAdd('form')" :loading="createdLoading">添加</el-button>
+                    <el-button size="mini" type="primary" class="pull-right" style="margin-left:20px" @click="handleAdd('form')" :loading="createdLoading">添加</el-button>
                 </div>
                 <div v-else>
                     <el-button size="mini" type="info" class="pull-right" style="margin-left:10px" @click="cancelEdit('form')">取消</el-button>
-                    <el-button size="mini" type="primary" class="pull-right" @click="handleEdit('form')" :loading="createdLoading">保存</el-button>
+                    <el-button size="mini" type="primary" class="pull-right" @click="handleEdit('form')" style="margin-left:20px" :loading="createdLoading">保存</el-button>
                 </div>
-            </el-form-item>
-            <el-form-item class="pull-right">
-                <el-checkbox v-model="form.status" >已启用</el-checkbox>
+                <el-checkbox v-model="form.status" class="pull-right">已启用</el-checkbox>
             </el-form-item>
         </el-form>
         <div v-loading="listLoading">
             <el-table :data="list" element-loading-text="给我一点时间" stripe border fit highlight-current-row style="width: 100%;margin-bottom:20px;margin-top:10px">
+                <el-table-column align="center" label="图片">
+                    <template slot-scope="scope">
+                        <div style="height:50px">
+                        <img style="width:50px;height:50px" :src="scope.row.thumbnailBaseUrl+scope.row.thumbnailPath">
+                        </div>
+                    </template>
+                </el-table-column>
                 <el-table-column align="center" label="名称">
                     <template slot-scope="scope">
                         <span>{{scope.row.name}}</span>
@@ -71,7 +95,7 @@
 import { getToken } from "@/util/auth";
 import { toTree } from "@/util/util";
 import { mapGetters } from "vuex";
-import {fetchList,addObj,delObj,editObj} from "@/api/product_category";
+import {fetchList,addObj,delObj,editObj} from "@/api/content_classify";
 
 export default {
     props:['dataInfo'],
@@ -85,6 +109,8 @@ export default {
                 sort:'',
                 status:'',
             },
+            headers:{Authorization: "Bearer " + getToken()},
+            params:{component :'project'},
             flag:'add',
             listQuery:{
                 page_index: 1,
@@ -114,6 +140,10 @@ export default {
             this.listQuery.page_index = val;
             this.getList();
         },
+        uploadSuccess(response, file, fileList){
+            this.form.thumbnailPath = response.result.thumbnailPath
+            this.form.thumbnailBaseUrl = response.result.thumbnailBaseUrl
+        },
         getList(){
             this.resetTem()
             this.listLoading = true
@@ -134,6 +164,7 @@ export default {
             })
         },
         updateList(row){
+            console.log(row)
             this.flag = 'edit'
             this.form = Object.assign({},row)
             this.form.status = this.form.status==1?true:false
@@ -150,7 +181,7 @@ export default {
             ).then(() => {
                 delObj(row.id).then(res => {
                     this.getList()
-                    this.$parent.$parent.alertNotify('删除')
+                    this.alertNotify('删除')
                 })
             })
         },
@@ -161,7 +192,7 @@ export default {
             this.createdLoading = true
             addObj(data).then(res => {
                 this.getList()
-                this.$parent.$parent.alertNotify('添加')
+                this.alertNotify('添加')
                 this.resetTem()
             })
         },
@@ -172,7 +203,7 @@ export default {
             data.status = data.status?1:0
             editObj(data).then(res => {
                 this.getList()
-                this.$parent.$parent.alertNotify('修改')
+                this.alertNotify('修改')
                 this.cancelEdit()
             })
         },
@@ -188,6 +219,14 @@ export default {
                 status:'',
             }
             this.createdLoading = false
+        },
+        alertNotify(str){
+            this.$notify({
+                title: str,
+                message: str+"成功",
+                type: "success",
+                duration: 2000
+            });
         }
     },
     watch:{
@@ -201,7 +240,8 @@ export default {
     margin-bottom: 10px
 }
 .avatar-uploader{
-     height: 107px;
+    float: left;
+     height: 80px;
 }
 .avatar-uploader .el-upload {
     border: 1px dashed #d9d9d9;
@@ -216,16 +256,16 @@ export default {
   .avatar-uploader-icon {
     font-size: 28px;
     color: #8c939d;
-    width: 107px;
-    height: 107px;
-    line-height: 107px;
+    width: 132px;
+    height: 80px;
+    line-height: 80px;
     text-align: center;
     border: 1px solid #dcdfe6;
     border-radius: 4px;
   }
   .avatar {
-    width: 107px;
-    height: 107px;
+    width: 132px;
+    height: 80px;
     display: block;
     border-radius: 4px;
   }

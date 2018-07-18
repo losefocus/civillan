@@ -1,16 +1,8 @@
 import request from '@/router/axios'
 
-/* 分类列表 */
-export function fetchCategoryList() {
-  return request({
-    url: '/admin/article/category/list',
-    method: 'get',
-  })
-}
-
 export function fetchList(query) {
   return request({
-    url: '/admin/article/list',
+    url: '/admin/article/category/list',
     method: 'get',
     params: query
   })
@@ -28,7 +20,7 @@ export function upload(query) {
   /* 删除 */
 export function delObj(id) {
     return request({
-      url: '/admin/article/delete?id=' + id,
+      url: '/admin/article/category/delete?id=' + id,
       method: 'post'
     })
   }
@@ -36,16 +28,16 @@ export function delObj(id) {
   /* 新增 */
 export function addObj(obj) {
     return request({
-      url: '/admin/article/add',
+      url: '/admin/article/category/add',
       method: 'post',
       data: obj
     })
   }
 
   /* 编辑 */
-export function updataObj(obj) {
+export function editObj(obj) {
     return request({
-      url: '/admin/article/update',
+      url: '/admin/article/category/edit',
       method: 'post',
       data: obj
     })
