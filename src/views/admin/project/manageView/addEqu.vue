@@ -2,8 +2,8 @@
     <div>
         <div class="tit"><h3>{{(flag == 'add')?'添加':'修改'}}设备</h3><span>{{(flag == 'add')?'Add':'Edit'}} Equipment</span></div>
         <el-form label-width="55px" :model="form"  ref="form" :rules="rules" label-position="left">
-            <el-form-item label="型号" prop="productId">
-                <el-select v-model="form.productId" size="small" placeholder="请选择型号" :disabled="disabled">
+            <el-form-item label="型号" prop="product.id">
+                <el-select v-model="form.product.id" size="small" placeholder="请选择型号" :disabled="disabled">
                     <el-option
                     v-for="item in productOptions"
                     :key="item.value"
@@ -13,13 +13,21 @@
                 </el-select>
             </el-form-item>
             <el-form-item label="分组" prop="deviceGroup.id">
-                <el-cascader
+                <el-select v-model="form.deviceGroup.id" size="small" placeholder="请选择分组">
+                    <el-option
+                    v-for="item in groupOptions"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value">
+                    </el-option>
+                </el-select>
+                <!-- <el-cascader
                     size="small" placeholder="请选择分组"
                     :options="groupOptions"
                     v-model="form.deviceGroup.id"
                     :show-all-levels="false"
                     change-on-select>
-                </el-cascader>
+                </el-cascader> -->
             </el-form-item>
             <el-form-item label="名称" prop="name">
                 <el-input v-model="form.name" size="small" placeholder="请输入名称"></el-input>
@@ -63,8 +71,8 @@
                 <el-button  type="info" @click="cancel('form')" size="small" style="width:85px;">取消</el-button>
             </el-form-item>
         </el-form>
-        <el-dialog :visible.sync="positionVisible" id="mapPosition">
-            <map-position></map-position>
+        <el-dialog :visible.sync="positionVisible" id="mapPosition" :append-to-body="true">
+            <map-position v-if="positionVisible == true"></map-position>
         </el-dialog>
     </div>
 </template>
@@ -82,13 +90,13 @@ export default {
     data(){
         var validataProductId = (rule, value, callback) => {
             if(value === '' || value== undefined){
-                callback(new Error('请选择父级项目'));
+                callback(new Error('请选择项目'));
             }else{
                 callback()
             }
         }
         var validataGroupId = (rule, value, callback) => {
-            if(value.length == 0){
+            if(value === '' || value== undefined){
                 callback(new Error('请选择分组'));
             }else{
                 callback()
@@ -110,7 +118,7 @@ export default {
         }
         return {
             rules: {
-                productId: [
+                'product.id': [
                     { validator: validataProductId, trigger: 'change' },
                 ],
                 'deviceGroup.id': [
@@ -133,8 +141,7 @@ export default {
             total:null,
             form:{
                 projectId:'',
-                productId:'',
-                alias:'',
+                product:{id:''},
                 name:'',
                 position:'',
                 firmware:'',
@@ -143,7 +150,7 @@ export default {
                 comment:'',
                 status:true,
                 deviceGroup:{
-                    id:[]
+                    id:''
                 }
             },
             positionVisible:false,
@@ -200,8 +207,8 @@ export default {
             let data = Object.assign({},this.form)
             data.projectId = this.projectInfo.id
             data.status = data.status?1:0
-            data.alias = this.productHash[data.productId]
-            data.deviceGroup={id:data.deviceGroup.id[data.deviceGroup.id.length-1]} 
+            // data.alias = this.productHash[data.productId]
+            // data.deviceGroup={id:data.deviceGroup.id[data.deviceGroup.id.length-1]} 
             data.protocol = "string"
             data.passage = "string"
             this.$refs[formName].validate((valid) => {
@@ -220,8 +227,8 @@ export default {
                 if (valid) {
                     let data = Object.assign({},this.form)
                     data.status = data.status?1:0                   
-                    data.alias = this.productHash[data.productId]
-                    data.deviceGroup={id:data.deviceGroup.id[data.deviceGroup.id.length-1]} 
+                    // data.alias = this.productHash[data.productId]
+                    // data.deviceGroup={id:data.deviceGroup.id[data.deviceGroup.id.length-1]} 
                     this.createLoading = true
                     updataObj(data).then(response => {
                         this.$parent.$parent.$refs.equ.getList()
@@ -240,8 +247,7 @@ export default {
             this.createLoading = false
             this.form={
                 projectId:'',
-                productId:'',
-                alias:'',
+                product:{id:''},
                 name:'',
                 position:'',
                 firmware:'',
@@ -249,9 +255,7 @@ export default {
                 thumbnailBaseUrl:'',
                 comment:'',
                 status:true,
-                deviceGroup:{
-                    id:[]
-                }
+                deviceGroup:{id:''}
             }
             this.disabled = false
         }

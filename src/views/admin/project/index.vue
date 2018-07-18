@@ -247,7 +247,8 @@ export default {
             }
         };
         var validateBeginAt = (rule, value, callback) => {
-            if (value === '' || value== undefined) {
+            let val = this.tm
+            if (val === '' || val== undefined) {
                 callback(new Error('请选择工期'));
             } else {
                 callback();
@@ -319,7 +320,7 @@ export default {
                 thumbnailUrl:'',
                 position:'',
                 comment:'',
-                status:0,
+                status:true,
             },
             tm:[],
             imageName:'',
@@ -522,7 +523,7 @@ export default {
                 thumbnailUrl:'',
                 position:'',
                 comment:'',
-                status:0,
+                status:true,
             }
             this.tm=[]
             this.imageName=''

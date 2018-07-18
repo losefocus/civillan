@@ -237,7 +237,7 @@ export default {
             this.$parent.$refs.addEqu.flag = 'updata'
             this.$parent.$refs.addEqu.form = Object.assign({},row)
             this.$parent.$refs.addEqu.form.status = row.status === 1?true:false
-            this.$parent.$refs.addEqu.form.deviceGroup = {id:[row.deviceGroup.id]}
+            this.$parent.$refs.addEqu.form.deviceGroup = {id:row.deviceGroup.id}
             this.$parent.$refs.addEqu.disabled = true
         },
         handleUpdataEqu(){

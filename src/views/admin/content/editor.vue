@@ -36,8 +36,8 @@ export default {
             formData.append('uploadFile', file)
             formData.append('component', 'project')
             upload(formData).then(res => {
-                // let url = res.data.result.baseUrl + res.data.result.path
-                let url = 'http://192.168.0.234:8899/' + res.data.result.path
+                let url = res.data.result.baseUrl + res.data.result.path
+                // let url = 'http://192.168.0.234:8899/' + res.data.result.path
                 Editor.insertEmbed(cursorLocation, 'image', url);
                 resetUploader();
             })

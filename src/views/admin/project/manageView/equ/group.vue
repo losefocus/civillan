@@ -2,21 +2,21 @@
     <div>
         <el-form :model="form" class="clearfix" ref="form" label-width="50px" size="medium">
             <el-form-item label="上级" style="width: 210px">
-                <!-- <el-select v-model="form.parentId" size="mini" placeholder="请选择">
+                <el-select v-model="form.parentId" size="mini" placeholder="请选择上级分组">
                     <el-option
                     v-for="item in parentOptions"
                     :key="item.value"
                     :label="item.label"
                     :value="item.value">
                     </el-option>
-                </el-select> -->
-                <el-cascader
+                </el-select>
+                <!-- <el-cascader
                     size="mini" placeholder="请选择上级分组"
                     :options="parentOptions"
                     v-model="form.parentId"
                     :show-all-levels="false"
                     change-on-select>
-                </el-cascader>
+                </el-cascader> -->
             </el-form-item>
             <el-form-item label="名称" style="width: 210px;margin-left:10px">
                 <el-input v-model="form.name" size="mini" auto-complete="off"></el-input>
