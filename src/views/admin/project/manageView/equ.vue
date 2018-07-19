@@ -18,14 +18,14 @@
             <el-table-column align="center" label="key" >
                 <template slot-scope="scope">
                     <el-tooltip class="item" effect="dark" :content="scope.row.key" placement="top">
-                        <i style="cursor:pointer;color:#30a487" class="iconfont icon-fuzhi copy_key" :data-clipboard-text="scope.row.key" @click="copy('key')" ></i>
+                        <i style="cursor:pointer;color:#30a487" class="iconfont icon-fuzhi copy_key" :data-clipboard-text="scope.row.key" @click="copy()" ></i>
                     </el-tooltip>
                 </template>
             </el-table-column>
             <el-table-column align="center" label="secret">
                 <template slot-scope="scope">
                     <el-tooltip class="item" effect="dark" :content="scope.row.secret" placement="top">
-                        <i style="cursor:pointer;color:#30a487" class="iconfont icon-fuzhi copy_secret" :data-clipboard-text="scope.row.secret" @click="copy('secret')" ></i>
+                        <i style="cursor:pointer;color:#30a487" class="iconfont icon-fuzhi copy_key" :data-clipboard-text="scope.row.secret" @click="copy()" ></i>
                     </el-tooltip>
                 </template>
             </el-table-column>
@@ -260,7 +260,7 @@ export default {
             }
         },
         copy(type) {  
-            var clipboard = (type == 'key')?new this.Clipboard('.copy_key'):new this.Clipboard('.copy_secret');  
+            var clipboard = new this.Clipboard('.copy_key');  
             clipboard.on('success', e => {  
                 this.$message({
                     message: '复制成功',
@@ -270,7 +270,6 @@ export default {
                 clipboard.destroy()  
             })  
             clipboard.on('error', e => {  
-                console.log(222)
                 // 不支持复制  
                 this.$message({
                     message: '该浏览器不支持自动复制',

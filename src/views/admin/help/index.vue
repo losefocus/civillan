@@ -29,6 +29,7 @@
 </template>
 <script>
 import {fetchList,addObj,delObj,updataObj} from "@/api/help";
+let Base64 = require('js-base64').Base64;
 export default {
     data() {
         var validateTitle = (rule, value, callback) => {
@@ -65,6 +66,7 @@ export default {
             fetchList(this.listQuery).then(res => {
                 let list = res.data.result.items
                 list.forEach(ele => {
+                    ele.content = Base64.decode(ele.content)
                     if(ele.articleId == 1){
                         this.list_1.push(ele)
                     }else if(ele.articleId == 2){

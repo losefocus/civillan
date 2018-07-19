@@ -8,9 +8,10 @@ export function generateObj(query) {
   })
 }
 
-export function getObj(id) {
+export function getObj(query) {
   return request({
-    url: '/certificate/certificate/get?identity='+id,
+    url: '/certificate/certificate/get',
     method: 'get',
+    params: query
   })
 }

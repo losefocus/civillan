@@ -55,7 +55,7 @@
                     <el-input v-model="orgTypeForm.alias" style="width:90px;" size="mini" auto-complete="off"></el-input>
                 </el-form-item>
                 <el-form-item label="排序" style="width: 140px">
-                    <el-input v-model="orgTypeForm.sort" type="number" style="width:90px;" size="mini" auto-complete="off"></el-input>
+                    <el-input v-model="orgTypeForm.sort" style="width:90px;" size="mini" auto-complete="off"></el-input>
                 </el-form-item>
                 <el-form-item >
                     <el-checkbox v-model="orgTypeForm.status" >已启用</el-checkbox>
@@ -124,7 +124,7 @@ export default {
                 name:'',
                 alias:'',
                 sort:'',
-                status:false,
+                status:true,
             },
             orgTypeList:[],
             flag:'add',
@@ -297,7 +297,7 @@ export default {
                 name:'',
                 alias:'',
                 sort:'',
-                status:false,
+                status:true,
             }
         }
         

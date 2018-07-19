@@ -38,6 +38,24 @@
             <!-- <el-form-item label="确认密码" prop="password2">
                 <el-input v-model="form.password2" type="password" size="small" placeholder="请输入内容"></el-input>
             </el-form-item> -->
+            <el-form-item label="头像" prop="avatarBaseUrl">
+                <el-upload
+                    v-loading='uploadLoaing'
+                    class="avatar-uploader"
+                    ref="upload"
+                    :headers="headers"
+                    action="/file/attachment/upload"
+                    :limit="10"
+                    :data="params"
+                    name="uploadFile"
+                    :show-file-list="false"
+                    :before-upload='beforeUpload'
+                    :on-success="uploadSuccess"
+                    :auto-upload="true">
+                    <img v-if="form.avatarBaseUrl!='' && form.avatarBaseUrl!=undefined" :src="form.avatarBaseUrl+form.avatarPath" class="avatar">
+                    <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+                </el-upload>
+            </el-form-item>
             <el-form-item label="备注" prop="comment">
                 <el-input
                 type="textarea"
@@ -59,6 +77,7 @@
 </template>
 <script>
 import { mapGetters } from "vuex";
+import { getToken } from "@/util/auth";
 import { fetchOrganList,addObj,updateObj,fetchUserList} from "@/api/project_per";
 export default {
     props:['projectInfo'],
@@ -146,6 +165,9 @@ export default {
             duplication_username:false,
             duplication_phone:false,
             usernameDisabled:false,
+            headers:{Authorization: "Bearer " + getToken()},
+            params:{component :'project'},
+            uploadLoaing:false,
             role:'',
             flag:'add',
             organOptions:[],
@@ -162,6 +184,14 @@ export default {
         ...mapGetters(["roleOptions"]),
     },
     methods:{
+        beforeUpload(){
+            this.uploadLoaing = true
+        },
+        uploadSuccess(response, file, fileList){
+            this.form.avatarPath = response.result.path
+            this.form.avatarBaseUrl = response.result.baseUrl
+            this.uploadLoaing = false
+        },
         //检查用户名是否存在
         checkDuplication(type){
             let data = {}
@@ -251,4 +281,33 @@ export default {
 .el-form-item{
     margin-bottom: 15px
 }
+.avatar-uploader{
+     height: 110px;
+}
+.avatar-uploader .el-upload {
+    border: 1px dashed #d9d9d9;
+    border-radius: 6px;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+  }
+  .avatar-uploader .el-upload:hover {
+    border-color: #409EFF;
+  }
+  .avatar-uploader-icon {
+    font-size: 28px;
+    color: #8c939d;
+    width: 203px;
+    height: 110px;
+    line-height: 110px;
+    text-align: center;
+    border: 1px solid #dcdfe6;
+    border-radius: 4px;
+  }
+  .avatar {
+    width: 203px;
+    height: 110px;
+    display: block;
+    border-radius: 4px;
+  }
 </style>

@@ -158,6 +158,7 @@ export default {
             let [...dataList] = this.list
             dataList.push(obj)
             this.templateData.content = JSON.stringify(dataList)
+            this.createdLoading = true
             this.setContent()
         },
         deleteList(index,rows){
@@ -178,8 +179,10 @@ export default {
             let [...dataList] = this.list
             dataList.splice(this.editIndex, 1,obj)
             this.templateData.content = JSON.stringify(dataList)
+            this.createdLoading = true
             this.setContent()
         },
+        // 保存变量
         setContent(){
             set_templateObj(this.templateData).then(res => {
                 if(res.data.success == true){

@@ -23,20 +23,6 @@
                 <el-button class="copy_key" :data-clipboard-text="form.req" @click="copy" plain size="mini">复制</el-button>
             </li>
         </ul>
-        <!-- <el-form :model="form" v-loading="loading" size="mini">
-            <el-form-item label="Public Key">
-                <el-input type="textarea" v-model="form.publicKey" :rows='3'></el-input>
-            </el-form-item>
-            <el-form-item label="Pricate Key">
-                <el-input type="textarea" v-model="form.privateKey" :rows='3'></el-input>
-            </el-form-item>
-            <el-form-item label="CA Key">
-                <el-input type="textarea" v-model="form.caKey" :rows='3'></el-input>
-            </el-form-item>
-            <el-form-item label="Req">
-                <el-input type="textarea" v-model="form.req" :rows='3'></el-input>
-            </el-form-item>
-        </el-form> -->
     </div>
 </template>
 <script>
@@ -65,15 +51,14 @@ export default {
         getCertificate(){
             this.loading = true
             let data = {
-                type :0,
+                type :1,
                 identity : this.dataInfo.id
             }
-            // generateObj(data).then(ele => {
-                getObj(this.dataInfo.id).then(res => {
-                    this.form = res.data.result
-                    this.loading = false
-                })
-            // })
+            getObj(data).then(res => {
+                this.form = res.data.result
+                this.loading = false
+            })
+            
         },
         copy() {  
             var clipboard = new this.Clipboard('.copy_key');  

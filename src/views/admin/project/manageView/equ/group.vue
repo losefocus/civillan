@@ -26,6 +26,7 @@
             </el-form-item>
             <el-form-item label="图片" style="width: 210px;">
                 <el-upload
+                    v-loading='uploadLoaing'
                     class="avatar-uploader"
                     ref="upload"
                     :headers="headers"
@@ -34,6 +35,7 @@
                     :data="params"
                     name="uploadFile"
                     :show-file-list="false"
+                    :before-upload='beforeUpload'
                     :on-success="uploadSuccess"
                     :auto-upload="true">
                     <img v-if="form.thumbnailBaseUrl!='' && form.thumbnailBaseUrl!=undefined" :src="form.thumbnailBaseUrl+form.thumbnailPath" class="avatar">
@@ -65,7 +67,7 @@
                 </el-table-column>
                 <el-table-column align="center" label="上级">
                     <template slot-scope="scope">
-                        <span>{{parentHash[scope.row.parentId]}}</span>
+                        <span>{{parentHash.get(scope.row.parentId)}}</span>
                     </template>
                 </el-table-column>
                 <el-table-column align="center" label="排序">
@@ -127,7 +129,7 @@ export default {
                 }
             ],
             form:{
-                parentId:[0],
+                parentId:0,
                 name:'',
                 sort:'',
                 comment:'',
@@ -139,6 +141,7 @@ export default {
             fileList:[],
             headers:{Authorization: "Bearer " + getToken()},
             params:{component :'project'},
+            uploadLoaing:false,
             flag:'add',
             listQuery:{
                 page_index: 1,
@@ -147,7 +150,7 @@ export default {
             total:null,
             list:null,
             parentOptions:[],
-            parentHash:{0:'无'}
+            parentHash:null
         }
     },
     created() {
@@ -160,10 +163,14 @@ export default {
         ...mapGetters(["alarmList"]),
     },
     methods:{
+        beforeUpload(){
+            this.uploadLoaing = true
+        },
         uploadSuccess(response, file, fileList){
             this.form.thumbnailPath = response.result.path
             this.form.thumbnailBaseUrl = response.result.baseUrl
             this.fileList = []
+            this.uploadLoaing = false
         },
         handleSizeChange(val) {
             this.listQuery.page_size = val;
@@ -177,13 +184,18 @@ export default {
             this.resetTem()
             this.listLoading = true
             this.listQuery.projectId = this.$parent.$parent.projectInfo.id
+            this.listQuery.sort_by = 'sort'
+            this.listQuery.direction = 'asc'
             getObj(this.listQuery).then(res => {
                 this.list = res.data.result.items
                 this.total = res.data.result.total
                 this.listLoading = false
+                let newMap = new Map();
+                newMap.set(0,'无')
                 for (let i=0; i<this.list.length; i++) {
-                    this.parentHash[this.list[i].id] = this.list[i].name
+                    newMap.set(this.list[i].id,this.list[i].name)
                 }
+                this.parentHash = newMap
                 this.parentOptions = toTree(this.list)
                 let [...groupOptions] = this.parentOptions
                 this.$store.commit("SET_GROUPOPTIONS", groupOptions);
@@ -191,11 +203,9 @@ export default {
             })
         },
         updateList(row){
-            console.log(row)
             this.flag = 'edit'
             this.form = Object.assign({},row)
             this.form.status = this.form.status==1?true:false
-            this.form.parentId = [this.form.parentId]
         },
         deleteList(row){
             this.$confirm(
@@ -217,7 +227,6 @@ export default {
             let data = Object.assign({},this.form)
             data.sort = parseInt(data.sort)
             data.status = data.status?1:0
-            data.parentId = data.parentId[data.parentId.length-1]
             data.projectId = this.$parent.$parent.projectInfo.id
             this.createdLoading = true
             addObj(data).then(res => {
@@ -231,7 +240,7 @@ export default {
             let data = Object.assign({},this.form)
             data.sort = parseInt(data.sort)
             data.status = data.status?1:0
-            data.parentId = data.parentId[data.parentId.length-1]
+            delete data.projectDevices
             editObj(data).then(res => {
                 this.getList()
                 this.$parent.$parent.$parent.$parent.alertNotify('修改')
@@ -244,7 +253,7 @@ export default {
         },
         resetTem(){
             this.form={
-                parentId:[0],
+                parentId:0,
                 name:'',
                 sort:'',
                 comment:'',

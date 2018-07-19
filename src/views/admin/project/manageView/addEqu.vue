@@ -40,6 +40,7 @@
             </el-form-item>
             <el-form-item label="图片" prop="thumbnailBaseUrl">
                 <el-upload
+                    v-loading='uploadLoaing'
                     class="avatar-uploader"
                     ref="upload"
                     :headers="headers"
@@ -48,6 +49,7 @@
                     :data="params"
                     name="uploadFile"
                     :show-file-list="false"
+                    :before-upload='beforeUpload'
                     :on-success="uploadSuccess"
                     :auto-upload="true">
                     <img v-if="form.thumbnailBaseUrl!='' && form.thumbnailBaseUrl!=undefined" :src="form.thumbnailBaseUrl+form.thumbnailPath" class="avatar">
@@ -160,6 +162,7 @@ export default {
             fileList:[],
             headers:{Authorization: "Bearer " + getToken()},
             params:{component :'project'},
+            uploadLoaing:false,
             flag:'add',
             productOptions:[],
             device_btn_add :false,
@@ -177,11 +180,15 @@ export default {
         ...mapGetters(["permissions","groupOptions"])
     },
     methods:{
+        beforeUpload(){
+            this.uploadLoaing = true
+        },
         uploadSuccess(response, file, fileList){
             this.form.thumbnailPath = response.result.path
             this.form.thumbnailBaseUrl = response.result.baseUrl
             this.imageName = response.result.name
             this.fileList = []
+            this.uploadLoaing = false
         },
         getProductList(){
             fetchProductList().then(res => {

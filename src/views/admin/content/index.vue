@@ -114,6 +114,7 @@ import myEditor from './editor'
 import classify from "./classify";
 import { getToken} from "@/util/auth";
 import { toTree } from "@/util/util";
+let Base64 = require('js-base64').Base64;
 export default {
     components: {
         myEditor,
@@ -272,7 +273,7 @@ export default {
         updateList(row){
             this.flag = 'edit'
             this.form = Object.assign({},row)
-            this.$refs.myeditor.content = row.content
+            this.$refs.myeditor.content = Base64.decode(row.content)
             this.form.status = this.form.status === 1?true:false
             this.cardVisibel = true
         },

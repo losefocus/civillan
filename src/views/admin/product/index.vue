@@ -84,7 +84,7 @@
             </div>
         </div>
         <el-card class="addNewProject" :style="cardHeight" :class="{'show':cardVisibel}">
-            <div class="tit"><h3>{{(flag == 'add')?'添加':'修改'}}产品</h3><span>{{(flag == 'add')?'Add':'Edit'}} Product</span></div>
+            <div class="tit"><h3>{{(flag == 'add')?'添加':'修改'}}产品</h3><span>{{(flag == 'add')?'Add':'Edit'}} Product</span><i class="closeBtn el-icon-close" @click="cardVisibel = false"></i></div>
             <el-form label-width="40px" :model="form" :rules="rules" ref="form" label-position="left">
                 <el-form-item label="名称" prop="name">
                     <el-input v-model="form.name" size="small" placeholder="请输入产品名称"></el-input>
@@ -104,6 +104,7 @@
                 </el-form-item>
                 <el-form-item label="图片" prop="thumbnailUrl">
                     <el-upload
+                    v-loading='uploadLoaing'
                     class="avatar-uploader"
                     ref="upload"
                     :headers="headers"
@@ -112,6 +113,7 @@
                     :data="params"
                     name="uploadFile"
                     :show-file-list="false"
+                    :before-upload='beforeUpload'
                     :on-success="uploadSuccess"
                     :auto-upload="true">
                     <img v-if="form.thumbnailUrl!='' && form.thumbnailUrl!=undefined" :src="form.thumbnailUrl+form.thumbnailPath" class="avatar">
@@ -211,6 +213,7 @@ export default {
             fileList:[],
             headers:{Authorization: "Bearer " + getToken()},
             params:{component :'project'},
+            uploadLoaing:false,
             flag:'add',
             variableTemplateVisible:false,
             alarmTemplatVisible:false,
@@ -367,11 +370,15 @@ export default {
             })
             
         },
+        beforeUpload(){
+            this.uploadLoaing = true
+        },
         uploadSuccess(response, file, fileList){
             this.form.thumbnailPath = response.result.path
             this.form.thumbnailUrl = response.result.baseUrl
             this.imageName = response.result.name
             this.fileList = []
+            this.uploadLoaing = false
         },
         resetTemp() {
             this.cardVisibel = false
@@ -521,5 +528,15 @@ export default {
 } */
 .el-dialog__body{
     padding-top: 0 !important
+}
+.closeBtn{
+    cursor: pointer;
+    float: right;
+    margin-top: 22px;
+    color: #6b6b6b;
+    transition: transform .3s ease-out 0s,-webkit-transform .3s ease-out 0s;
+}
+.closeBtn:hover{
+    transform: rotate(180deg)
 }
 </style>

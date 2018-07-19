@@ -19,6 +19,7 @@
             </div>
         </div>
         <el-card class="pull-right addNewContainer" :style="cardHeight" :class="{'show':cardVisibel}">
+            <i class="closeBtn el-icon-close" @click="cardVisibel = false"></i>
             <add-org v-if="tabView === 'org'" :project-info="viewData" ref="addOrg"></add-org>
             <add-per v-if="tabView === 'per'" :project-info="viewData" ref="addPer"></add-per>
             <add-equ v-if="tabView === 'equ'" :project-info="viewData" ref="addEqu"></add-equ>
@@ -133,6 +134,20 @@ export default {
     font-size: 12px;
     padding-left: 20px;
     letter-spacing: 1px;
+}
+.closeBtn{
+    position: absolute;
+    right: 20px;
+    top:0;
+    z-index: 9;
+    cursor: pointer;
+    float: right;
+    margin-top: 22px;
+    color: #6b6b6b;
+    transition: transform .3s ease-out 0s,-webkit-transform .3s ease-out 0s;
+}
+.closeBtn:hover{
+    transform: rotate(180deg)
 }
 </style>
 

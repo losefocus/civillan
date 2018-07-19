@@ -134,7 +134,7 @@
                 </div>
             </div>
             <el-card class="pull-right addNewProject" :style="cardHeight" :class="{'show':cardVisibel}">
-                <div class="tit"><h3>{{(flag == 'add')?'添加':'修改'}}项目</h3><span>{{(flag == 'add')?'Add':'Edit'}} Project</span></div>
+                <div class="tit"><h3>{{(flag == 'add')?'添加':'修改'}}项目</h3><span>{{(flag == 'add')?'Add':'Edit'}} Project</span><i class="closeBtn el-icon-close" @click="cardVisibel = false"></i></div>
                 <el-form label-width="55px" :model="form" :rules="rules" ref="form" status-icon label-position="left">
                     <el-form-item label="上级" prop="parentId" >
                         <el-select v-model="form.parentId" size="small" :loading='listLoading' placeholder="请选择">
@@ -177,6 +177,7 @@
                     </el-form-item>
                     <el-form-item label="图片" prop="thumbnailPath">
                         <el-upload
+                        v-loading='uploadLoaing'
                         class="avatar-uploader"
                         ref="upload"
                         :headers="headers"
@@ -185,6 +186,7 @@
                         :data="params"
                         name="uploadFile"
                         :show-file-list ="false"
+                        :before-upload='beforeUpload'
                         :on-success="uploadSuccess"
                         :file-list="fileList"
                         :auto-upload="true">
@@ -328,6 +330,7 @@ export default {
             flag:'add',
             headers:{Authorization: "Bearer " + getToken()},
             params:{component :'project'},
+            uploadLoaing:false,
             positionVisible:false,
             createLoading:false,
             project_btn_add:false,
@@ -420,6 +423,9 @@ export default {
             }
             return r      
         },
+        beforeUpload(){
+            this.uploadLoaing = true
+        },
         uploadSuccess(response, file, fileList){
             if(response.success == false){
                 this.$notify.error({
@@ -432,6 +438,7 @@ export default {
                 this.imageName = response.result.name
                 this.fileList = []
             }
+            this.uploadLoaing = false
             
         },  
         positionPicker(){
@@ -650,6 +657,16 @@ export default {
     font-size: 12px;
     padding-left: 20px;
     letter-spacing: 1px;
+}
+.closeBtn{
+    cursor: pointer;
+    float: right;
+    margin-top: 22px;
+    color: #6b6b6b;
+    transition: transform .3s ease-out 0s,-webkit-transform .3s ease-out 0s;
+}
+.closeBtn:hover{
+    transform: rotate(180deg)
 }
 </style>
 
