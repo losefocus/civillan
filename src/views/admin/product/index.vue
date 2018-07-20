@@ -69,8 +69,8 @@
                                 操作<i class="el-icon-arrow-down el-icon--right"></i>
                             </span >
                             <el-dropdown-menu slot="dropdown">
-                                <el-dropdown-item v-if="product_btn_variable_template" :command="composeValue('variableTemplateVisible',pro.row)">变量</el-dropdown-item>
-                                <el-dropdown-item v-if="product_btn_alert_template" :command="composeValue('alarmTemplatVisible',pro.row)">报警</el-dropdown-item>
+                                <el-dropdown-item v-if="product_btn_variable_template" :command="composeValue('variableTemplateVisible',pro.row)">变量模板</el-dropdown-item>
+                                <el-dropdown-item v-if="product_btn_alert_template" :command="composeValue('alarmTemplatVisible',pro.row)">警报模板</el-dropdown-item>
                                 <el-dropdown-item divided v-if="product_btn_edit" :command="composeValue('edit',pro.row)">修改</el-dropdown-item>
                                 <el-dropdown-item v-if="product_btn_del" :command="composeValue('del',pro.row)">删除</el-dropdown-item>
                             </el-dropdown-menu>
@@ -133,7 +133,7 @@
         <el-dialog id="variable" title="变量模板"  :visible.sync="variableTemplateVisible" width='690px'>
             <variable v-if="variableTemplateVisible == true" :product-info="productData"></variable>
         </el-dialog>
-        <el-dialog id="alarm" title="报警模板"  :visible.sync="alarmTemplatVisible" width='690px'>
+        <el-dialog id="alarm" title="警报模板"  :visible.sync="alarmTemplatVisible" width='690px'>
             <alarm v-if="alarmTemplatVisible == true" :product-info="productData"></alarm>
         </el-dialog>
         <el-dialog title="分类管理" :visible.sync="classifyTemplatVisible" width='690px'>
