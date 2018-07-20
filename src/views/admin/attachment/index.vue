@@ -401,14 +401,14 @@ export default {
               duration: 2000
             });
           })
-          .cache(() => {
-            this.$notify({
-              title: "失败",
-              message: "删除失败",
-              type: "error",
-              duration: 2000
-            });
-          });
+          // .cache(() => {
+          //   this.$notify({
+          //     title: "失败",
+          //     message: "删除失败",
+          //     type: "error",
+          //     duration: 2000
+          //   });
+          // });
       });
     },
     // 批量删除文件
@@ -440,14 +440,14 @@ export default {
                 duration: 2000
               });
             })
-            .cache(() => {
-              this.$notify({
-                title: "失败",
-                message: "删除失败",
-                type: "error",
-                duration: 2000
-              });
-            });
+            // .cache(() => {
+            //   this.$notify({
+            //     title: "失败",
+            //     message: "删除失败",
+            //     type: "error",
+            //     duration: 2000
+            //   });
+            // });
         });
       }
     },

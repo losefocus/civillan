@@ -32,7 +32,7 @@
             </el-table-column>
              <el-table-column align="center" label="消息内容" >
                 <template slot-scope="scope">
-                    <span>{{ scope.row.message }}</span>
+                    <span style="white-space:nowrap;cursor: pointer;">{{ scope.row.message }}</span>
                 </template>
             </el-table-column>
             <el-table-column align="center" label="推送时间">
@@ -47,7 +47,7 @@
             </el-table-column>
             <el-table-column align="center" label="通知对象">
                 <template slot-scope="scope">
-                    <span>{{ scope.row.pushObject }}</span>
+                    <span>{{ scope.row.pushObject | pushObjectFilter()}}</span>
                 </template>
             </el-table-column>
             <el-table-column align="center" label="操作">
@@ -64,6 +64,7 @@
 </template>
 <script>
 import {fetchList,pushObj,delObj,fetchUserList} from "@/api/notification";
+import { findByvalue } from "@/util/util";
 export default {
     data() {
         var validateTitle = (rule, value, callback) => {
@@ -135,6 +136,16 @@ export default {
         userIds:[]
       }
     },
+    filters: {
+        pushObjectFilter(pushObject) {
+            const pushObjectMap = {
+                1: "后台用户",
+                2: "前台用户",
+                3: "设备"
+            };
+            return pushObjectMap[pushObject];
+        }
+    },
     created(){
         this.getUserList()
         this.getList()
@@ -204,6 +215,12 @@ export default {
                         }
                     }
                     pushObj(data).then(res => {
+                        this.$notify({
+                            title: "成功",
+                            message: "推送成功",
+                            type: "success",
+                            duration: 2000
+                        });
                         this.getList()
                     })
                 }
