@@ -23,6 +23,7 @@
             </el-form-item>
             <el-form-item label="图片" prop="thumbnailBaseUrl" class="pull-right" style="width:45%">
                 <el-upload
+                v-loading='uploadLoaing'
                 class="avatar-uploader"
                 ref="upload"
                 :headers="headers"
@@ -31,6 +32,7 @@
                 :data="params"
                 name="uploadFile"
                 :show-file-list="false"
+                :before-upload='beforeUpload'
                 :on-success="uploadSuccess"
                 :auto-upload="true">
                 <img v-if="form.thumbnailBaseUrl!='' && form.thumbnailBaseUrl!=undefined" :src="form.thumbnailBaseUrl+form.thumbnailPath" class="avatar">
@@ -169,6 +171,7 @@ export default {
         createLoading:false,
         headers:{Authorization: "Bearer " + getToken()},
         params:{component :'project'},
+        uploadLoaing:false,
         classifyTemplatVisible:false,
         categoryOptions:null,
         categoryHash:null,
@@ -183,6 +186,7 @@ export default {
     },
     created(){
         this.getAllList()
+        
     },
     methods: {
         handleSizeChange(val){
@@ -226,9 +230,13 @@ export default {
         getParentHash(msg) {
             this.categoryHash = msg
         },
+        beforeUpload(){
+            this.uploadLoaing = true
+        },
         uploadSuccess(response, file, fileList){
             this.form.thumbnailPath = response.result.path
             this.form.thumbnailBaseUrl = response.result.baseUrl
+            this.uploadLoaing = false
         },
         deleteList(row){
             this.$confirm(
