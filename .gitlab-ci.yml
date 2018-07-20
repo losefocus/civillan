@@ -22,7 +22,7 @@ maven-build:
     - docker build -t="civillan-background-web" .
     - ssh test@192.168.0.232 -tt docker stop civillan-background-web
     - ssh test@192.168.0.232 -tt docker rm civillan-background-web
-    - ssh test@192.168.0.232 -tt docker run -p 9991:8080 --name civillan-background-web -d civillan-background-web
+    - ssh test@192.168.0.232 -tt docker run -p 9991:9991 --name civillan-background-web -d civillan-background-web
 
     #清除临时文件
     - ssh test@192.168.0.232 -tt docker rm $(docker ps -q -f status=exited -f name=runner)
