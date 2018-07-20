@@ -91,6 +91,9 @@
         <el-dialog title="分组管理"  :visible.sync="groupVisible" width='690px'>
             <group v-if="groupVisible" ref="group"></group>
         </el-dialog>
+        <el-dialog title="人员管理"  :visible.sync="personnelVisible" width='690px'>
+            <config v-if="personnelVisible" ref="personnel"></config>
+        </el-dialog>
     </div>
 </template>
 <script>
@@ -142,6 +145,11 @@ export default {
                     label:'通知',
                     btn:'device_btn_notice',
                     flag:false
+                },{
+                    value:'personnelVisible',
+                    label:'人员',
+                    btn:'device_btn_notice',
+                    flag:false
                 },
                 {
                     value:'configVisible',
@@ -157,6 +165,7 @@ export default {
             sensorVisible:false,//变量
             alarmVisible:false,//报警
             notifyVisible:false,//通知
+            personnelVisible:false,//人员
             groupVisible:false,
             dataInfo:null,
             listInfoQuery:{
@@ -175,7 +184,7 @@ export default {
         this.btnList.forEach(element => {
             element.flag = this.permissions[element.btn]
         });
-        this.btnList[4].flag = false
+        this.btnList[5].flag = false
     },
     mounted() {
 

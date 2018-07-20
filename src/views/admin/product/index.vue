@@ -71,8 +71,8 @@
                             <el-dropdown-menu slot="dropdown">
                                 <el-dropdown-item v-if="product_btn_variable_template" :command="composeValue('variableTemplateVisible',pro.row)">变量模板</el-dropdown-item>
                                 <el-dropdown-item v-if="product_btn_alert_template" :command="composeValue('alarmTemplatVisible',pro.row)">警报模板</el-dropdown-item>
-                                <el-dropdown-item divided v-if="product_btn_edit" :command="composeValue('edit',pro.row)">修改</el-dropdown-item>
-                                <el-dropdown-item v-if="product_btn_del" :command="composeValue('del',pro.row)">删除</el-dropdown-item>
+                                <el-dropdown-item divided v-if="product_btn_edit" :command="composeValue('edit',pro.row)">修改产品</el-dropdown-item>
+                                <el-dropdown-item v-if="product_btn_del" :command="composeValue('del',pro.row)">删除产品</el-dropdown-item>
                             </el-dropdown-menu>
                         </el-dropdown>
                     </template>

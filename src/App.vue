@@ -53,7 +53,7 @@ export default {
   border-right: none !important;
 }
 .el-table__expanded-cell .el-table th,.el-table__expanded-cell .el-table tr{
-  background: #fbfbfb
+  background: #f9f9fb
 }
 #subTable.el-table::before{
   height: 0 !important;
@@ -85,5 +85,16 @@ export default {
 
 #messageContent .el-upload{
   width: calc(100% - 2px)
+}
+
+.el-table__row.expanded{
+  // font-weight: bold;
+  // background: #dadada
+}
+.el-table__expand-icon.el-table__expand-icon--expanded i{
+  font-size:20px;
+  font-weight: bold;
+  margin-left: -10px;
+  margin-top: -10px;
 }
 </style>
