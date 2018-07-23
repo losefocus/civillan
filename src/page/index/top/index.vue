@@ -9,22 +9,22 @@
       <topMenu></topMenu>
     </h1>
     <div class="top-button is-right">
-      <el-tooltip class="item" effect="dark" content="主题色" placement="bottom">
+      <el-tooltip class="item" effect="dark" content="主题色" placement="bottom" :open-delay="300">
         <span class="top-item">
           <top-theme></top-theme>
         </span>
       </el-tooltip>
-      <el-tooltip class="item" effect="dark" content="锁屏" placement="bottom">
+      <el-tooltip class="item" effect="dark" content="锁屏" placement="bottom" :open-delay="300">
         <span class="top-item">
           <top-lock></top-lock>
         </span>
       </el-tooltip>
-      <el-tooltip class="item" effect="dark" :content="isFullScren?'退出全屏':'全屏'" placement="bottom">
+      <el-tooltip class="item" effect="dark" :content="isFullScren?'退出全屏':'全屏'" placement="bottom" :open-delay="300">
         <span class="top-item">
           <i :class="isFullScren?'icon-tuichuquanping':'icon-quanping'" @click="handleScreen"></i>
         </span>
       </el-tooltip>
-      <el-tooltip class="item" effect="dark" content="用户头像" placement="bottom">
+      <el-tooltip class="item" effect="dark" content="用户头像" placement="bottom" :open-delay="300">
         <img class="top-userImg" :src="userInfo.avatar">
       </el-tooltip>
       <el-dropdown trigger="click">

@@ -3,7 +3,7 @@
         <div class="filter-container">
             <el-button class="filter-item" style="" @click="handleAdd" size="small" type="primary">添加文件</el-button>
         </div>
-        <el-table :data="list" v-loading="listLoading" element-loading-text="给我一点时间" border fit highlight-current-row style="width: 99%;margin-bottom:20px;">
+        <el-table :data="list" v-loading="listLoading" stripe fit highlight-current-row style="width: 99%;margin-bottom:20px;">
             <el-table-column align="center" label="文档标题">
                 <template slot-scope="scope">
                     <span>{{scope.row.name}}</span>

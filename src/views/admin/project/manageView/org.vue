@@ -5,10 +5,10 @@
             <el-button class="filter-item" style="" @click="objectTypeVisible = true"  size="small" type="primary" icon="edit" >机构类型
             </el-button>
         </div>
-        <el-table :data="list" v-loading="listLoading" element-loading-text="给我一点时间" border fit highlight-current-row style="width: 99%;margin-bottom: 20px;">
+        <el-table :data="list" v-loading="listLoading" stripe fit highlight-current-row style="width: 99%;margin-bottom: 20px;">
             <el-table-column align="left" label="机构名称" min-width="170px">
                 <template slot-scope="scope">
-                    <el-tooltip class="item" effect="dark" :content="scope.row.name" placement="top-start">
+                    <el-tooltip class="item" effect="dark" :content="scope.row.name" placement="top-start" :open-delay="300">
                         <span style="white-space:nowrap;cursor:pointer;"><a>{{scope.row.name}}</a></span>
                     </el-tooltip>
                 </template>

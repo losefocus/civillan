@@ -24,7 +24,7 @@
                 <el-button type="primary" @click="onSubmit('form')" size="small" style="width:100px">推送</el-button>
             </el-form-item>
         </el-form>
-        <el-table :data="list" border style="width: 100%" v-loading="listLoading">
+        <el-table :data="list" stripe style="width: 100%" v-loading="listLoading">
             <el-table-column align="center" label="消息标题" >
                 <template slot-scope="scope">
                     <span>{{ scope.row.title }}</span>

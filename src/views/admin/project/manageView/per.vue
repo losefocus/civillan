@@ -4,7 +4,7 @@
             <el-button class="filter-item" style="" @click="handleAdd" size="small" type="primary">添加人员</el-button>
             <el-button class="filter-item" style="" @click="objectTypeVisible = true" size="small" type="primary" icon="edit" >角色管理</el-button>
         </div>
-        <el-table :data="list" v-loading="listLoading" element-loading-text="给我一点时间" border fit highlight-current-row style="width: 99%;margin-bottom:20px">
+        <el-table :data="list" v-loading="listLoading" stripe fit highlight-current-row style="width: 99%;margin-bottom:20px">
             <el-table-column align="center" label="姓名(角色)" min-width="110">
                 <template slot-scope="scope">
                     <span style="white-space:nowrap;cursor:pointer;"><a>{{scope.row.name}}({{scope.row.userRole[0].projectRole.role}})</a></span>
@@ -22,7 +22,7 @@
             </el-table-column>
             <el-table-column align="left" label="所在机构" min-width="170">
                 <template slot-scope="scope">
-                    <el-tooltip class="item" effect="dark" :content="scope.row.projectOrgan.name" placement="top-start">
+                    <el-tooltip class="item" effect="dark" :content="scope.row.projectOrgan.name" placement="top-start" :open-delay="300">
                         <span style="white-space:nowrap;cursor:pointer;"><a>{{scope.row.projectOrgan.name}}</a></span>
                     </el-tooltip>
                 </template>

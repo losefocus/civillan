@@ -4,7 +4,7 @@
             <el-button class="filter-item" style="" @click="handleAdd" size="small" type="primary">添加设备</el-button>
             <el-button class="filter-item" style="" @click="handleGroup" size="small" type="primary" icon="edit" >分组管理</el-button>
         </div>
-        <el-table :data="list" v-loading="listLoading" element-loading-text="给我一点时间" border fit highlight-current-row style="width: 99%;margin-bottom:20px">
+        <el-table :data="list" v-loading="listLoading" stripe fit highlight-current-row style="width: 99%;margin-bottom:20px">
             <el-table-column align="center" label="设备名称">
                 <template slot-scope="scope">
                     <span style="white-space:nowrap;cursor:pointer;"><a>{{scope.row.name}}</a></span>
@@ -17,14 +17,14 @@
             </el-table-column>
             <el-table-column align="center" label="key" >
                 <template slot-scope="scope">
-                    <el-tooltip class="item" effect="dark" :content="scope.row.key" placement="top">
+                    <el-tooltip class="item" effect="dark" :content="scope.row.key" placement="top" :open-delay="300">
                         <i style="cursor:pointer;color:#30a487" class="iconfont icon-fuzhi copy_key" :data-clipboard-text="scope.row.key" @click="copy()" ></i>
                     </el-tooltip>
                 </template>
             </el-table-column>
             <el-table-column align="center" label="secret">
                 <template slot-scope="scope">
-                    <el-tooltip class="item" effect="dark" :content="scope.row.secret" placement="top">
+                    <el-tooltip class="item" effect="dark" :content="scope.row.secret" placement="top" :open-delay="300">
                         <i style="cursor:pointer;color:#30a487" class="iconfont icon-fuzhi copy_key" :data-clipboard-text="scope.row.secret" @click="copy()" ></i>
                     </el-tooltip>
                 </template>

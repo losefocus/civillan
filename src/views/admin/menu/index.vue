@@ -9,7 +9,7 @@
     </div>
 
     <el-row>
-      <el-col :span="8" style='margin-top:15px;'>
+      <el-col :span="7" style='margin-top:15px;'>
         <el-tree
           class="filter-tree"
           node-key="id"
@@ -25,7 +25,7 @@
         >
         </el-tree>
       </el-col>
-      <el-col :span="16" style='margin-top:15px;'>
+      <el-col :span="16" class="pull-right" style='margin-top:15px;'>
         <el-card class="box-card">
           <el-form :label-position="labelPosition" label-width="80px" :model="form" ref="form">
             <el-form-item label="父级节点" prop="parentId">

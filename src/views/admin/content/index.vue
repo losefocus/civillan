@@ -58,11 +58,11 @@
             <classify @showCategoryOptions="getParentOptions" @showCategoryHash="getParentHash"></classify>
         </el-dialog>
         <div v-loading="listLoading">
-            <el-table :data="list" element-loading-text="给我一点时间" stripe border fit highlight-current-row style="width: 100%;margin-bottom:20px;margin-top:10px">
+            <el-table :data="list" stripe fit highlight-current-row style="width: 100%;margin-bottom:20px;margin-top:10px">
                 <el-table-column align="center" label="图片">
                     <template slot-scope="scope">
-                        <div style="height:50px">
-                        <img style="width:50px;height:50px" :src="scope.row.thumbnailBaseUrl+scope.row.thumbnailPath">
+                        <div style="height:40px">
+                        <img style="width:60px;height:40px" :src="scope.row.thumbnailBaseUrl+scope.row.thumbnailPath">
                         </div>
                     </template>
                 </el-table-column>

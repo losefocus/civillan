@@ -59,7 +59,7 @@
             </el-form-item>
         </el-form>
         <div v-loading="listLoading">
-            <el-table :data="list" element-loading-text="给我一点时间" stripe border fit highlight-current-row style="width: 100%;margin-bottom:20px;margin-top:10px">
+            <el-table :data="list" stripe border fit highlight-current-row style="width: 100%;margin-bottom:20px;margin-top:10px">
                 <el-table-column align="center" label="名称">
                     <template slot-scope="scope">
                         <span>{{scope.row.name}}</span>

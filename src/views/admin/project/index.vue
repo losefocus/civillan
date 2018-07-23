@@ -9,7 +9,7 @@
                     <el-input @keyup.enter.native="handleFilter" style="width: 200px;" size="small" suffix-icon="el-icon-search" class="pull-right" placeholder="项目搜索" v-model="listQuery.keyword"></el-input>
                 </div>
                 <div v-loading="listLoading" >
-                    <el-table :data="list" element-loading-text="给我一点时间" fit highlight-current-row style="width: 100%;margin-bottom:25px;margin-top:15px;" :row-class-name="setClassName">
+                    <el-table :data="list" stripe fit highlight-current-row style="width: 100%;margin-bottom:25px;margin-top:15px;" :row-class-name="setClassName">
                         <el-table-column type="expand">
                             <template slot-scope="scope">
                                 <el-table :data="scope.row.children"  border ref="subTable" id="subTable" size="mini">
@@ -22,7 +22,7 @@
                                     </el-table-column>      
                                     <el-table-column align="left" label="项目名称" min-width="250">
                                         <template slot-scope="pro">
-                                            <el-tooltip class="item" effect="dark" :content="pro.row.name" placement="top-start">
+                                            <el-tooltip class="item" effect="dark" :content="pro.row.name" placement="top-start" :open-delay="300">
                                                 <span style="white-space:nowrap;cursor: pointer;padding-left:20px;"><a>{{pro.row.name}}</a></span>
                                             </el-tooltip>
                                         </template>
@@ -80,7 +80,7 @@
                         </el-table-column>
                         <el-table-column align="left" label="项目名称" min-width="250">
                             <template slot-scope="scope">
-                                <el-tooltip class="item" effect="dark" :content="scope.row.name" placement="top-start">
+                                <el-tooltip class="item" effect="dark" :content="scope.row.name" placement="top-start" :open-delay="300">
                                     <span style="white-space:nowrap;cursor: pointer;font-weight: bold;"><a>{{scope.row.name}}</a></span>
                                 </el-tooltip>
                             </template>

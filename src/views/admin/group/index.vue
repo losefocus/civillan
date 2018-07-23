@@ -9,7 +9,7 @@
     </div>
 
     <el-row>
-      <el-col :span="8" style='margin-top:15px;'>
+      <el-col :span="7" style='margin-top:15px;'>
         <el-tree
           class="filter-tree"
           node-key="id"
@@ -24,14 +24,14 @@
         >
         </el-tree>
       </el-col>
-      <el-col :span="16" style='margin-top:15px;'>
+      <el-col :span="16" class="pull-right" style='margin-top:15px;'>
         <el-card class="box-card">
           <el-form :label-position="labelPosition" label-width="80px" :model="form" ref="form">
             <el-form-item label="父级节点" prop="parentId">
               <el-input v-model="form.parentId" :disabled="formEdit" placeholder="请输入父级节点"></el-input>
             </el-form-item>
             <el-form-item label="节点ID" prop="id">
-              <el-input v-model="form.id" :disabled="formEdit" placeholder="请输入节点ID"></el-input>
+              <el-input v-model="form.id" disabled placeholder="请输入节点ID"></el-input>
             </el-form-item>
             <el-form-item label="分组名称" prop="name">
               <el-input v-model="form.name" :disabled="formEdit"  placeholder="请输入标题"></el-input>
