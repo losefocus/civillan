@@ -1,10 +1,10 @@
 <template>
   <div class="app-container calendar-list-container">
     <div class="filter-container">
-      <el-button v-if="sys_route_add" class="filter-item" style="margin-left: 10px;" @click="handleCreate" type="primary" icon="edit">新增</el-button>
-      <el-button class="filter-item" style="margin-left: 10px;" @click="handleApply" type="primary" icon="edit">同步</el-button>
+      <el-button v-if="sys_route_add" class="filter-item" @click="handleCreate" type="primary" size="small" icon="edit">新增</el-button>
+      <el-button class="filter-item" style="margin-left: 10px;" @click="handleApply" type="primary" size="small" icon="edit">同步</el-button>
     </div>
-    <el-table :key='tableKey' :data="list" v-loading="listLoading" element-loading-text="给我一点时间" border fit highlight-current-row style="width: 99%">
+    <el-table :key='tableKey' :data="list" v-loading="listLoading" stripe fit highlight-current-row style="width: 100%">
       <el-table-column align="center" label="#">
         <template slot-scope="scope">
           <span>{{ scope.row.id }}</span>

@@ -1,13 +1,15 @@
 <template>
   <div class="app-container calendar-list-container">
-    <div class="filter-container">
-      <el-input @keyup.enter.native="handleFilter" style="width: 200px;" class="filter-item" placeholder="编号" v-model="listQuery.client_id" size="small">
-      </el-input>
-      <el-button class="filter-item" type="primary" v-waves icon="search" @click="handleFilter" size="small">搜索</el-button>
-      <el-button v-if="sys_client_add" class="filter-item" style="margin-left: 10px;" @click="handleCreate" type="primary" icon="edit" size="small">新增
+    <div class="filter-container clearfix">
+      <div class="pull-right">
+        <el-input @keyup.enter.native="handleFilter" style="width: 200px;" class="filter-item" placeholder="编号" v-model="listQuery.client_id" size="small">
+        </el-input>
+        <el-button class="filter-item" type="primary" v-waves icon="search" @click="handleFilter" size="small">搜索</el-button>
+      </div>
+      <el-button v-if="sys_client_add" class="filter-item" @click="handleCreate" type="primary" icon="edit" size="small">新增
       </el-button>
     </div>
-    <el-table :key='tableKey' :data="list" v-loading="listLoading" element-loading-text="给我一点时间" border fit highlight-current-row style="width: 99%">
+    <el-table :key='tableKey' :data="list" v-loading="listLoading" stripe fit highlight-current-row style="width: 100%">
       <el-table-column align="center" label="#">
         <template slot-scope="scope">
           <span>{{ getSerialNumber(scope.$index) }}</span>

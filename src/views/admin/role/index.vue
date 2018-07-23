@@ -1,11 +1,11 @@
 <template>
   <div class="app-container calendar-list-container">
     <div class="filter-container">
-      <el-button class="filter-item" style="margin-left: 10px;" @click="handleCreate" type="primary" size="small" icon="edit" v-if="roleManager_btn_add">添加
+      <el-button class="filter-item" @click="handleCreate" type="primary" size="small" icon="edit" v-if="roleManager_btn_add">添加
       </el-button>
     </div>
 
-    <el-table :key='tableKey' :data="list" v-loading="listLoading" element-loading-text="给我一点时间" border fit highlight-current-row style="width: 99%">
+    <el-table :key='tableKey' :data="list" v-loading="listLoading" stripe fit highlight-current-row style="width: 99%">
 
       <el-table-column align="center" label="序号">
         <template slot-scope="scope">

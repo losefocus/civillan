@@ -9,7 +9,7 @@
                     <el-input @keyup.enter.native="handleFilter" style="width: 200px;" size="small" suffix-icon="el-icon-search" class="pull-right" placeholder="项目搜索" v-model="listQuery.keyword"></el-input>
                 </div>
                 <div v-loading="listLoading" >
-                    <el-table :data="list" element-loading-text="给我一点时间" border fit highlight-current-row style="width: 100%;margin-bottom:25px;margin-top:15px;" :row-class-name="setClassName">
+                    <el-table :data="list" element-loading-text="给我一点时间" fit highlight-current-row style="width: 100%;margin-bottom:25px;margin-top:15px;" :row-class-name="setClassName">
                         <el-table-column type="expand">
                             <template slot-scope="scope">
                                 <el-table :data="scope.row.children"  border ref="subTable" id="subTable" size="mini">
@@ -76,7 +76,6 @@
                                     <img v-if="scope.row.children.length==0" style="width:60px;height:40px" :src="scope.row.thumbnailUrl+scope.row.thumbnailPath">
                                     <i v-else class="iconfont icon-wenjianjia" style="font-size:30px;line-height:40px;"></i>
                                 </div>
-                                <!-- <img style="width:30px;height:30px" :src="scope.row.thumbnailUrl+scope.row.thumbnailPath"> -->
                             </template>
                         </el-table-column>
                         <el-table-column align="left" label="项目名称" min-width="250">

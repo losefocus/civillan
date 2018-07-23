@@ -1,13 +1,15 @@
 <template>
   <div class="app-container calendar-list-container">
-    <div class="filter-container">
-      <el-select style="width: 200px;" class="filter-item" v-model="listQuery.type" filterable placeholder="请选择" size="small">
-        <el-option v-for="item in dicts" :key="item.value" :label="item.label" :value="item.value">
-        </el-option>
-      </el-select>
-      <el-button class="filter-item" type="primary" v-waves icon="search" @click="handleFilter" size="small">搜索</el-button>
+    <div class="filter-container clearfix">
+      <div class="pull-right">
+        <el-select style="width: 200px;" class="filter-item" v-model="listQuery.type" filterable placeholder="请选择" size="small">
+          <el-option v-for="item in dicts" :key="item.value" :label="item.label" :value="item.value">
+          </el-option>
+        </el-select>
+        <el-button class="filter-item" type="primary" v-waves icon="search" @click="handleFilter" size="small">搜索</el-button>
+      </div>
     </div>
-    <el-table :key='tableKey' :data="list" v-loading="listLoading" element-loading-text="给我一点时间" border fit highlight-current-row style="width: 99%">
+    <el-table :key='tableKey' :data="list" v-loading="listLoading" stripe fit highlight-current-row style="width: 100%">
       <el-table-column align="center" label="序号">
         <template slot-scope="scope">
           <span>{{ getSerialNumber(scope.$index) }}</span>

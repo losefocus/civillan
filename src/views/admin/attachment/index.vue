@@ -1,10 +1,10 @@
 <template>
   <div class="app-container calendar-list-container">
     <div class="filter-container">
-      <el-button v-if="attachment_btn_del" class="filter-item" style="margin-left: 10px;" @click="deletes_query" type="primary" icon="edit" size="small">批量删除</el-button>
+      <el-button v-if="attachment_btn_del" class="filter-item" @click="deletes_query" type="primary" icon="edit" size="small">批量删除</el-button>
     </div>
 
-    <el-table :key='tableKey' :data="list" v-loading="listLoading" element-loading-text="给我一点时间" border fit highlight-current-row style="width: 99%" @selection-change="handleSelectionChange">
+    <el-table :key='tableKey' :data="list" v-loading="listLoading" stripe fit highlight-current-row style="width: 100%" @selection-change="handleSelectionChange">
 
       <!-- <el-table-column align="center" label="序号">
         <template slot-scope="scope">
@@ -20,7 +20,6 @@
         type="index"
         width="50">
       </el-table-column>
-
       <el-table-column align="center" label="文件名">
         <template slot-scope="scope">
           <span>

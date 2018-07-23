@@ -1,13 +1,15 @@
 <template>
   <div class="app-container calendar-list-container">
-    <div class="filter-container">
-      <el-input @keyup.enter.native="handleFilter" style="width: 200px;" class="filter-item" placeholder="用户名" v-model="listQuery.username" size="small">
-      </el-input>
-      <el-button class="filter-item" type="primary" v-waves icon="search" @click="handleFilter" size="small">搜索</el-button>
-      <el-button v-if="sys_user_add" class="filter-item" style="margin-left: 10px;" @click="handleCreate" type="primary" icon="edit" size="small">添加</el-button>
+    <div class="filter-container clearfix">
+      <el-button v-if="sys_user_add" class="filter-item" @click="handleCreate" type="primary" icon="edit" size="small">添加</el-button>
+      <div class="pull-right">
+        <el-input @keyup.enter.native="handleFilter" style="width: 200px;" class="filter-item" placeholder="用户名" v-model="listQuery.username" size="small">
+        </el-input>
+        <el-button class="filter-item" type="primary" v-waves icon="search" @click="handleFilter" size="small">搜索</el-button>
+      </div>
     </div>
 
-    <el-table :key='tableKey' :data="list" v-loading="listLoading" element-loading-text="给我一点时间" border fit highlight-current-row style="width: 99%">
+    <el-table :key='tableKey' :data="list" v-loading="listLoading" stripe fit highlight-current-row style="width: 100%">
 
       <el-table-column align="center" label="序号">
         <template slot-scope="scope">
@@ -99,10 +101,11 @@
         <el-form-item label="所属分组" prop="groupName">
           <el-input v-model="form.groupName" placeholder="选择分组" @focus="handleDept()" readonly></el-input>
           <input type="hidden" v-model="form.group" />
+          <el-cascader :options="groupOptions" v-model="groupIds"></el-cascader>
         </el-form-item>
 
-        <el-form-item label="角色" prop="roleDesc">
-          <el-select class="filter-item" v-model="roleDesc" placeholder="请选择" multiple >
+        <el-form-item label="角色" prop="role">
+          <el-select class="filter-item" v-model="role" placeholder="请选择" multiple >
             <el-option v-for="item in rolesOptions" :key="item.roleId" :label="item.roleDesc" :value="item.roleId" :disabled="isDisabled[item.status]">
               <span style="float: left">{{ item.roleDesc }}</span>
               <span style="float: right; color: #8492a6; font-size: 13px">{{ item.roleCode }}</span>
@@ -132,6 +135,7 @@
 import { fetchList, getObj, addObj, putObj, delObj } from "@/api/user";
 import { roleList, fetchDeptTree } from "@/api/role";
 import { fetchTree } from "@/api/group";
+import { treeAddValue } from "@/util/util";
 import waves from "@/directive/waves/index.js"; // 水波纹指令
 // import { parseTime } from '@/utils'
 import { mapGetters } from "vuex";
@@ -164,6 +168,7 @@ export default {
       },
       role: [],
       roleDesc:[],
+      groupIds:[],
       form: {
         username: undefined,
         password: undefined,
@@ -215,7 +220,7 @@ export default {
         ],
         mobile: [
           {
-            required: true,
+            required: false,
             message: "手机号",
             trigger: "blur"
           },
@@ -229,6 +234,7 @@ export default {
       },
       statusOptions: ["0", "1"],
       rolesOptions: [],
+      groupOptions: [],
       dialogFormVisible: false,
       dialogDeptVisible: false,
       userAdd: false,
@@ -261,6 +267,7 @@ export default {
   },
   created() {
     this.getList();
+    //this.handleDept();
     this.sys_user_add = this.permissions["sys_user_add"];
     this.sys_user_upd = this.permissions["sys_user_upd"];
     this.sys_user_del = this.permissions["sys_user_del"];
@@ -285,14 +292,9 @@ export default {
       });
     },
     handleDept() {
-      
-      // fetchDeptTree().then(response => {
-      //   this.treeDeptData = response.data.result;
-      //   this.dialogDeptVisible = true;
-      // });
       fetchTree().then(response => {
         this.treeDeptData = response.data.result;
-        console.log(this.treeDeptData)
+        this.groupOptions = treeAddValue(response.data.result)
         this.dialogDeptVisible = true;
       });
     },
@@ -315,9 +317,8 @@ export default {
     },
     handleUpdate(row) {
       getObj(row.id).then(response => {
-        console.log(response.data.result)
         this.form = response.data.result;
-        // this.form.groupName = row.groupName
+        this.form.groupName = row.groupName
         this.dialogFormVisible = true;
         this.dialogStatus = "update";
         this.role = [];
@@ -326,7 +327,6 @@ export default {
           this.role[i] = row.roleList[i].roleId ;
           this.roleDesc[i] = row.roleList[i].roleDesc;
         }
-        console.log(response)
         roleList().then(response => {
           this.rolesOptions = response.data.result;
         });
@@ -337,6 +337,9 @@ export default {
       this.form.role = this.role;
       set[formName].validate(valid => {
         if (valid) {
+          delete this.form.status
+          delete this.form.groupName
+          delete this.form.roleDesc
           addObj(this.form).then(() => {
             this.dialogFormVisible = false;
             this.getList();
@@ -359,6 +362,7 @@ export default {
     update(formName) {
       const set = this.$refs;
       this.form.role = this.role;
+      console.log(this.form)
       set[formName].validate(valid => {
         if (valid) {
           this.dialogFormVisible = false;

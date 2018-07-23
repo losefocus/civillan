@@ -8,11 +8,11 @@
                 <el-button class="pull-right" type="primary" size="small" v-waves @click="handleFilter">搜索</el-button>
                 <el-input @keyup.enter.native="handleFilter" style="width: 200px;" size="small" suffix-icon="el-icon-search" class="pull-right" placeholder="产品搜索" v-model="listQuery.keyword"></el-input>
             </div>
-            <el-table :data="list" element-loading-text="给我一点时间" border fit highlight-current-row style="width: 100%;margin-bottom:25px;margin-top:15px">
+            <el-table :data="list" element-loading-text="给我一点时间" fit highlight-current-row style="width: 100%;margin-bottom:25px;margin-top:15px">
                 <el-table-column align="center" label="缩略图">
                     <template slot-scope="scope">
-                        <div style="height:50px">
-                        <img style="width:50px;height:50px" :src="scope.row.thumbnailUrl+scope.row.thumbnailPath">
+                        <div style="height:40px">
+                            <img style="width:60px;height:40px" :src="scope.row.thumbnailUrl+scope.row.thumbnailPath">
                         </div>
                     </template>
                 </el-table-column>
