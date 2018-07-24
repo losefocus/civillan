@@ -5,6 +5,7 @@
             <el-button @click="toProjectIndex" size="small" >返回</el-button>
             <span style="margin-left:20px">项目名称: {{viewData.name}}</span>
             <el-radio-group v-model="tabView" size="small" style="margin-bottom: 30px;" class="pull-right">
+                <el-radio-button label="info">项目详情</el-radio-button>
                 <el-radio-button label="org">机构设置</el-radio-button>
                 <el-radio-button label="per">人员管理</el-radio-button>
                 <el-radio-button label="equ">设备管理</el-radio-button>
@@ -12,6 +13,7 @@
             </el-radio-group>
             </div>
             <div style="padding-top:20px; ">
+                <info v-if="tabView === 'info'" :project-info="viewData" ref="info"></info>
                 <org v-if="tabView === 'org'" :project-info="viewData" ref="org"></org>
                 <per v-if="tabView === 'per'" :project-info="viewData" ref="per"></per>
                 <equ v-if="tabView === 'equ'" :project-info="viewData" ref="equ"></equ>
@@ -28,6 +30,7 @@
     </div>
 </template>
 <script>
+import info from "./manageView/info";
 import org from "./manageView/org";
 import per from "./manageView/per";
 import equ from "./manageView/equ";
@@ -39,6 +42,7 @@ import addDoc from "./manageView/addDoc";
 
 export default {
     components:{
+        info,
         org,
         per,
         equ,
@@ -51,7 +55,7 @@ export default {
     props:['viewData'],
     data(){
         return {
-            tabView:'org',
+            tabView:'info',
             cardHeight:{'height':null},
             cardVisibel:false,
         }

@@ -91,10 +91,10 @@ export default {
   // font-weight: bold;
   // background: #dadada
 }
-.el-table__expand-icon.el-table__expand-icon--expanded i{
+.el-table__expand-icon>.el-icon{
   font-size:20px;
   font-weight: bold;
-  margin-left: -10px;
-  margin-top: -10px;
+  margin-left: -10px !important;
+  margin-top: -10px !important;
 }
 </style>

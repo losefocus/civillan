@@ -101,7 +101,7 @@
 import { mapGetters } from "vuex";
 import { remote } from "@/api/dict";
 import { getToken } from "@/util/auth";
-import {getObj,addObj,delObj,editObj,download} from "@/api/project/sensor";
+import {getObj,addObj,delObj,editObj,download} from "@/api/device/sensor";
 import downloadBtn from "./downloadBtn"
 export default {
     components:{downloadBtn},

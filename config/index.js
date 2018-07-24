@@ -60,6 +60,13 @@ module.exports = {
           '^/file': '/file'
         }
       },
+      '/zuul': {
+        target: baseUrl,
+        changeOrigin: true,
+        pathRewrite: {
+          '^/zuul': '/zuul'
+        }
+      },
       '/device': {
         target: baseUrl,
         changeOrigin: true,

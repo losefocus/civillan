@@ -3,16 +3,16 @@ import request from '@/router/axios'
 /* 配置信息 */
 export function getObj(query) {
   return request({
-    url: '/device/device_config/list',
+    url: '/device/device_config/getByDeviceIdAndKey',
     method: 'get',
     params: query
   })
 }
 
   /* 添加 */
-  export function addObj(obj) {
+  export function setObj(obj) {
     return request({
-      url: '/device/device_config/add' ,
+      url: '/device/device_config/set' ,
       method: 'post',
       data: obj
     })

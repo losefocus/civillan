@@ -10,11 +10,6 @@
       </el-button>
     </div>
     <el-table :key='tableKey' :data="list" v-loading="listLoading" stripe fit highlight-current-row style="width: 100%">
-      <el-table-column align="center" label="#">
-        <template slot-scope="scope">
-          <span>{{ getSerialNumber(scope.$index) }}</span>
-        </template>
-      </el-table-column>
       <el-table-column align="center" label="编号">
         <template slot-scope="scope">
           <span>{{ scope.row.clientId }}</span>

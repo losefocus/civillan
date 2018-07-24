@@ -82,7 +82,7 @@ export default {
                 parentId:'',
                 name:'',
                 sort:'',
-                status:'',
+                status:true,
             },
             flag:'add',
             listQuery:{
@@ -184,7 +184,7 @@ export default {
                 parentId:'',
                 name:'',
                 sort:'',
-                status:'',
+                status:true,
             }
             this.createdLoading = false
         }

@@ -24,7 +24,6 @@
           </span>
         </template>
       </el-table-column>
-
       <el-table-column align="center" label="手机号">
         <template slot-scope="scope">
           <span>{{scope.row.mobile}}</span>

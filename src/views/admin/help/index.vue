@@ -6,7 +6,7 @@
                 <el-collapse accordion>
                     <el-collapse-item v-for="(item,index) in list_1" :key="index">
                         <template slot="title">
-                        <span>{{item.title}}</span><span class="pull-right">{{item.createAt | parseTime('{y}-{m}-{d}')}}</span>
+                        <span>{{item.title}}</span><span class="pull-right">{{item.updateAt | parseTime('{y}-{m}-{d}')}}</span>
                         </template>
                         <div style="overflow:auto;border-top:1px solid #ebeef5;padding-top:10px;"><p v-html="item.content"></p></div>
                     </el-collapse-item>
@@ -17,7 +17,7 @@
                 <el-collapse accordion>
                     <el-collapse-item v-for="(item,index) in list_2" :key="index">
                         <template slot="title">
-                        <span>{{item.title}}</span><span class="pull-right">{{item.createAt | parseTime('{y}-{m}-{d}')}}</span>
+                        <span>{{item.title}}</span>
                         </template>
                         <div style="overflow:auto;border-top:1px solid #ebeef5;padding-top:10px;"><p v-html="item.content"></p></div>
                     </el-collapse-item>

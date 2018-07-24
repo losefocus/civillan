@@ -61,7 +61,7 @@
                         <span>{{scope.row.notifyTypes}}</span>
                     </template>
                 </el-table-column>
-                <el-table-column align="center" label="报警周期">
+                <el-table-column align="center" label="通知频率">
                     <template slot-scope="scope">
                         <span>{{scope.row.cycle}}</span>
                     </template>
@@ -88,7 +88,7 @@
 <script>
 import { mapGetters } from "vuex";
 import { remote } from "@/api/dict";
-import {getAlarmObj,getUserObj,getObj,addObj,delObj,editObj} from "@/api/project/notify";
+import {getAlarmObj,getUserObj,getObj,addObj,delObj,editObj} from "@/api/device/notify";
 
 export default {
     props:['dataInfo'],

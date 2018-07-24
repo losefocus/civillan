@@ -5,6 +5,13 @@
             <el-button class="filter-item" style="" @click="handleGroup" size="small" type="primary" icon="edit" >分组管理</el-button>
         </div>
         <el-table :data="list" v-loading="listLoading" stripe fit highlight-current-row style="width: 99%;margin-bottom:20px">
+            <el-table-column align="center" label="缩略图">
+                <template slot-scope="scope">
+                    <div style="height:40px">
+                        <img style="width:60px;height:40px" :src="scope.row.thumbnailBaseUrl+scope.row.thumbnailPath">
+                    </div>
+                </template>
+            </el-table-column>
             <el-table-column align="center" label="设备名称">
                 <template slot-scope="scope">
                     <span style="white-space:nowrap;cursor:pointer;"><a>{{scope.row.name}}</a></span>
@@ -53,14 +60,14 @@
                             操作<i class="el-icon-arrow-down el-icon--right"></i>
                         </span >
                         <el-dropdown-menu slot="dropdown">
-                            <el-dropdown-item v-for="(item,index) in btnList" 
-                            :key="index" 
-                            :disabled="!item.flag"
-                            :command="composeValue(item.value,scope.row)">
-                            {{item.label}}
-                            </el-dropdown-item>
-                            <el-dropdown-item divided v-if="device_btn_edit" :command="composeValue('edit',scope.row)">修改</el-dropdown-item>
-                            <el-dropdown-item v-if="device_btn_del" :command="composeValue('del',scope.row)">删除</el-dropdown-item>
+                            <el-dropdown-item  v-if="device_btn_certificate" :command="composeValue('certiVisible',scope.row)">证书下载</el-dropdown-item>
+                            <el-dropdown-item  v-if="device_btn_variable" :command="composeValue('sensorVisible',scope.row)">变量管理</el-dropdown-item>
+                            <el-dropdown-item  v-if="device_btn_alert" :command="composeValue('alarmVisible',scope.row)">警报管理</el-dropdown-item>
+                            <el-dropdown-item  v-if="device_btn_notice" :command="composeValue('notifyVisible',scope.row)">通知管理</el-dropdown-item>
+                            <el-dropdown-item  v-if="device_btn_personnel" :command="composeValue('personnelVisible',scope.row)">操作人员</el-dropdown-item>
+                            <el-dropdown-item  v-if="device_btn_config" :command="composeValue('configVisible',scope.row)">设备配置</el-dropdown-item>
+                            <el-dropdown-item divided v-if="device_btn_edit" :command="composeValue('edit',scope.row)">修改设备</el-dropdown-item>
+                            <el-dropdown-item v-if="device_btn_del" :command="composeValue('del',scope.row)">删除设备</el-dropdown-item>
                         </el-dropdown-menu>
                     </el-dropdown>
                     <!-- <el-button size="small" type="success" plain @click="updataEqu(scope.row)" style="margin-left:0px" v-if="device_btn_edit">修改</el-button>
@@ -76,7 +83,7 @@
         <el-dialog title="设备配置"  :visible.sync="configVisible" width='690px'>
             <config v-if="configVisible" :data-info="dataInfo" ref="config"></config>
         </el-dialog>
-        <el-dialog title="证书管理"  :visible.sync="certiVisible" width='690px'>
+        <el-dialog title="证书下载"  :visible.sync="certiVisible" width='690px'>
             <certi v-if="certiVisible" :data-info="dataInfo" ref="certi"></certi>
         </el-dialog>
         <el-dialog title="变量管理"  :visible.sync="sensorVisible" width='690px'>
@@ -88,11 +95,11 @@
         <el-dialog title="通知管理"  :visible.sync="notifyVisible" width='690px'>
             <notify v-if="notifyVisible" :data-info="dataInfo" ref="notify"></notify>
         </el-dialog>
+        <el-dialog title="操作人员—绑定用户"  :visible.sync="personnelVisible" width='690px'>
+            <personnel v-if="personnelVisible" :data-info="dataInfo" ref="personnel"></personnel>
+        </el-dialog>
         <el-dialog title="分组管理"  :visible.sync="groupVisible" width='690px'>
             <group v-if="groupVisible" ref="group"></group>
-        </el-dialog>
-        <el-dialog title="人员管理"  :visible.sync="personnelVisible" width='690px'>
-            <config v-if="personnelVisible" ref="personnel"></config>
         </el-dialog>
     </div>
 </template>
@@ -103,6 +110,7 @@ import sensor from "./equ/sensor";
 import alarm from "./equ/alarm";
 import notify from "./equ/notify";
 import group from "./equ/group";
+import personnel from "./equ/personnel";
 import { mapGetters } from "vuex";
 import {fetchList,delObj,updataObj,getConfigObj,getSensorObj,getAlarmObj,getNotifyObj} from "@/api/project_equ";
 export default {
@@ -112,52 +120,19 @@ export default {
         sensor,
         alarm,
         notify,
-        group
+        group,
+        personnel
     },
     props:['projectInfo'],
     data(){
         return {
             listLoading:false,
-            list:[{}],
+            list:[],
             listQuery: {
                 page_index: 1,
                 page_size: 20
             },
             total:null,
-            btnList:[
-                {
-                    value:'certiVisible',
-                    label:'证书',
-                    btn:'device_btn_certificate',
-                    flag:false
-                },{
-                    value:'sensorVisible',
-                    label:'变量',
-                    btn:'device_btn_variable',
-                    flag:false
-                },{
-                    value:'alarmVisible',
-                    label:'警报',
-                    btn:'device_btn_alert',
-                    flag:false
-                },{
-                    value:'notifyVisible',
-                    label:'通知',
-                    btn:'device_btn_notice',
-                    flag:false
-                },{
-                    value:'personnelVisible',
-                    label:'人员',
-                    btn:'device_btn_notice',
-                    flag:false
-                },
-                {
-                    value:'configVisible',
-                    label:'配置',
-                    btn:'device_btn_config',
-                    flag:false
-                },
-            ],
             flag:'add',
             createdLoading:false,
             configVisible:false,//配置
@@ -174,6 +149,12 @@ export default {
             },
             device_btn_edit :false,
             device_btn_del :false,
+            device_btn_certificate :false,
+            device_btn_variable :false,
+            device_btn_alert :false,
+            device_btn_notice :false,
+            device_btn_personnel :false,
+            device_btn_config :false,
 
         }
     },
@@ -181,10 +162,12 @@ export default {
         this.getList()
         this.device_btn_edit = this.permissions["device_btn_edit"];
         this.device_btn_del = this.permissions["device_btn_del"];
-        this.btnList.forEach(element => {
-            element.flag = this.permissions[element.btn]
-        });
-        this.btnList[5].flag = false
+        this.device_btn_certificate = this.permissions["device_btn_certificate"];
+        this.device_btn_variable = this.permissions["device_btn_variable"];
+        this.device_btn_alert = this.permissions["device_btn_alert"];
+        this.device_btn_notice = this.permissions["device_btn_notice"];
+        this.device_btn_personnel = this.permissions["device_btn_personnel"];
+        this.device_btn_config = this.permissions["device_btn_config"];
     },
     mounted() {
 

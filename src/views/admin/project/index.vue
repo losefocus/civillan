@@ -12,7 +12,7 @@
                     <el-table :data="list" stripe fit highlight-current-row style="width: 100%;margin-bottom:25px;margin-top:15px;" :row-class-name="setClassName">
                         <el-table-column type="expand">
                             <template slot-scope="scope">
-                                <el-table :data="scope.row.children"  border ref="subTable" id="subTable" size="mini">
+                                <el-table :data="scope.row.children"  stripe ref="subTable" id="subTable" size="mini">
                                     <el-table-column align="center" label="缩略图">
                                         <template slot-scope="pro">
                                             <div style="height:30px">
@@ -171,7 +171,7 @@
                         class="avatar-uploader"
                         ref="upload"
                         :headers="headers"
-                        action="/file/attachment/upload"
+                        action="/zuul/file/attachment/upload"
                         :limit="10"
                         :data="params"
                         name="uploadFile"

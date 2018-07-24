@@ -24,6 +24,11 @@
                     <span>{{scope.row.createdAt | parseTime('{y}-{m}-{d}')}}</span>
                 </template>
             </el-table-column>
+            <el-table-column align="center" label="状态">
+                <template slot-scope="scope">
+                    <span>{{(scope.row.status == 1)?'已公开':'未公开'}}</span>
+                </template>
+            </el-table-column>
             <el-table-column align="center" label="操作" width="250">
                 <template slot-scope="scope" >
                     <el-button size="mini" type="" plain><a :href="scope.row.fileBaseUrl+scope.row.filePath" download target="_blank">下载</a></el-button>

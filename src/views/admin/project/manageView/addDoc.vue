@@ -2,7 +2,10 @@
     <div>
         <div class="tit"><h3>{{(flag == 'add')?'添加':'修改'}}文件</h3><span>{{(flag == 'add')?'Add':'Edit'}} Document</span></div>
         <el-form label-width="55px" :model="form" ref="form" :rules="rules" label-position="left">
-            <el-form-item label="文件" prop="fileBaseUrl">
+            <el-form-item label="标题" prop="name">
+                <el-input v-model="form.name" size="small" placeholder="请输入标题"></el-input>
+            </el-form-item>
+            <el-form-item label="文件" prop="fileBaseUrl" >
                 <el-upload
                     class="upload-demo"
                     ref="upload"
@@ -15,15 +18,13 @@
                     :on-success="uploadSuccess"
                     :file-list="fileList"
                     :auto-upload="true">
-                        <el-button slot="trigger" size="small" type="primary">选择</el-button>
-                        <el-input v-model="fileName" style="width:135px" size="small" placeholder="请选择文件" disabled></el-input>
+                        <el-input class="pull-left" v-model="fileName" style="width:135px" size="small" placeholder="请选择文件" disabled></el-input>
+                        <el-button slot="trigger" style="margin:4px 0 0 10px" size="small" type="primary">选择</el-button>
                 </el-upload>
-            </el-form-item>
-            <el-form-item label="标题" prop="name">
-                <el-input v-model="form.name" size="small" placeholder="请输入标题"></el-input>
             </el-form-item>
             <el-form-item label="备注" prop="comment">
                 <el-input
+                style="margin-top:4px"
                 type="textarea"
                 :autosize="{ minRows: 2, maxRows: 4}"
                 placeholder="请输入备注"

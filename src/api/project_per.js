@@ -84,3 +84,21 @@ export function updateRoleObj(obj) {
     data: obj
   })
 }
+
+/* 新增设备操作人员 */
+export function addDeviceUser(obj) {
+  return request({
+    url: '/device/device_user/add',
+    method: 'post',
+    params: obj
+  })
+}
+
+/* 获取设备操作人员列表 */
+export function getDeviceUser(obj) {
+  return request({
+    url: '/device/device_user/list',
+    method: 'get',
+    params: obj
+  })
+}

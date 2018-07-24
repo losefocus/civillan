@@ -5,11 +5,6 @@
       <el-button class="filter-item" style="margin-left: 10px;" @click="handleApply" type="primary" size="small" icon="edit">同步</el-button>
     </div>
     <el-table :key='tableKey' :data="list" v-loading="listLoading" stripe fit highlight-current-row style="width: 100%">
-      <el-table-column align="center" label="#">
-        <template slot-scope="scope">
-          <span>{{ scope.row.id }}</span>
-        </template>
-      </el-table-column>
       <el-table-column align="center" label="服务名称">
         <template slot-scope="scope">
           <span>{{ scope.row.serviceId }}</span>

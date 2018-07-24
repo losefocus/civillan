@@ -4,12 +4,8 @@
             <el-form-item label="标题" prop="title">
                 <el-input v-model="form.title" placeholder="标题"></el-input>
             </el-form-item>
-            <el-form-item label="URL" prop="url" class="pull-left" style="width:45%">
-                <el-input v-model="form.url" placeholder="URL"></el-input>
-            </el-form-item>
-            <el-form-item label="分类" prop="articleId" class="pull-right" style="width:45%">
-                <!-- <el-input v-model="form.articleId" placeholder="分类"></el-input> -->
-                <el-select v-model="form.articleId" size="small" placeholder="请选择分类">
+            <el-form-item label="分类" prop="articleId" class="pull-left" style="width:45%">
+                <el-select v-model="form.articleId" placeholder="请选择分类" >
                     <el-option
                     v-for="item in categoryOptions"
                     :key="item.value"
@@ -17,6 +13,9 @@
                     :value="item.value">
                     </el-option>
                 </el-select>
+            </el-form-item>
+            <el-form-item label="URL" prop="url" class="pull-right" style="width:45%">
+                <el-input v-model="form.url" placeholder="URL"></el-input>
             </el-form-item>
             <el-form-item label="作者" prop="auther" class="pull-left" style="width:45%">
                 <el-input v-model="form.auther" placeholder="作者"></el-input>
@@ -327,7 +326,7 @@ export default {
 <style scoped>
 .avatar-uploader{
      height: 100px;
-     width: 100%
+     width: 180px
 }
 .avatar-uploader .el-upload {
     border: 1px dashed #d9d9d9;
@@ -335,10 +334,10 @@ export default {
     cursor: pointer;
     /* position: relative; */
     overflow: hidden;
-    width: 100%
+    width: 180px
   }
   .el-upload.el-upload--text{
-      width: 100%
+      width: 180px
   }
   .avatar-uploader .el-upload:hover {
     border-color: #409EFF;
@@ -346,7 +345,7 @@ export default {
   .avatar-uploader-icon {
     font-size: 28px;
     color: #8c939d;
-    width: 100%;
+    width: 180px;
     height: 100px;
     line-height: 100px;
     text-align: center;
@@ -354,7 +353,7 @@ export default {
     border-radius: 4px;
   }
   .avatar {
-    width: 100%;
+    width: 180px;
     height: 100px;
     display: block;
     border-radius: 4px;

@@ -99,7 +99,7 @@
 import { getToken } from "@/util/auth";
 import { toTree } from "@/util/util";
 import { mapGetters } from "vuex";
-import {getObj,addObj,delObj,editObj} from "@/api/project/group";
+import {getObj,addObj,delObj,editObj} from "@/api/device/group";
 
 export default {
     props:['dataInfo'],

@@ -80,7 +80,7 @@
 <script>
 import { mapGetters } from "vuex";
 import { remote } from "@/api/dict";
-import {getObj,addObj,delObj,editObj} from "@/api/project/alarm";
+import {getObj,addObj,delObj,editObj} from "@/api/device/alarm";
 
 export default {
     props:['dataInfo'],

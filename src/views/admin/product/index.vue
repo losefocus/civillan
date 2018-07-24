@@ -28,19 +28,13 @@
                         <span>{{scope.row.alias}}</span>
                     </template>
                 </el-table-column>
-                <el-table-column align="center" label="所属分类">
-                    <template slot-scope="scope">
-                        <span>{{categoryHash.get(scope.row.category)}}</span>
-                    </template>
+                <el-table-column align="center" label="所属分类" prop="productCategory.name">
                 </el-table-column>
                 <el-table-column align="center" label="产品标识" width="95">
                     <template slot-scope="scope">
-                        
                         <el-tooltip class="item" effect="dark" :content="scope.row.key" placement="top" :open-delay="300">
                             <i style="cursor:pointer;color:#30a487" class="iconfont icon-fuzhi copy_key" :data-clipboard-text="scope.row.key" @click="copy"></i>
-                            <!-- <el-button type="primary" size="mini" icon="iconfont icon-fuzhi copy_key" class="icopy_key" :data-clipboard-text="scope.row.key" @click="copy" plain></el-button> -->
                         </el-tooltip>
-                        
                     </template>
                 </el-table-column>
                 <el-table-column align="center" label="状态">
@@ -92,8 +86,8 @@
                 <el-form-item label="型号" prop="alias">
                     <el-input v-model="form.alias" size="small" placeholder="请输入产品型号"></el-input>
                 </el-form-item>
-                <el-form-item label="分类" prop="category">
-                    <el-select v-model="form.category" size="small" placeholder="请选择产品分类">
+                <el-form-item label="分类" prop="productCategory.id">
+                    <el-select v-model="form.productCategory.id" size="small" placeholder="请选择产品分类">
                         <el-option
                         v-for="item in categoryOptions"
                         :key="item.value"
@@ -202,7 +196,7 @@ export default {
             form:{
                 name:'',
                 alias:'',
-                category:null,
+                productCategory:{id:null},
                 thumbnailPath:'',
                 thumbnailUrl:'',
                 status:true
@@ -256,7 +250,7 @@ export default {
             this.form = {
                 name:'',
                 alias:'',
-                category:null,
+                productCategory:{id:null},
                 thumbnailPath:'',
                 thumbnailUrl:'',
                 status:true
@@ -264,7 +258,7 @@ export default {
         },
         getAllList(){
             this.listLoading = true
-            Promise.all([fetchList(),fetchCategoryList()]).then(results => {
+            Promise.all([fetchList(this.listQuery),fetchCategoryList()]).then(results => {
                 let res1 = results[0],res2 = results[1]
                 //产品列表
                 this.list = res1.data.result.items
@@ -358,8 +352,8 @@ export default {
                 if (valid) {
                     let data = Object.assign({},this.form)
                     data.status = data.status?1:0
-                    data.category = 1
                     this.createLoading = true
+                    console.log(data)
                     addObj(data).then(res => {
                         this.getList();
                         this.createLoading = false;
@@ -385,7 +379,7 @@ export default {
             this.form = {
                 name:'',
                 alias:'',
-                category:null,
+                productCategory:{id:null},
                 thumbnailPath:'',
                 thumbnailUrl:'',
                 status:true
