@@ -6,7 +6,7 @@
                 <el-collapse accordion>
                     <el-collapse-item v-for="(item,index) in list_1" :key="index">
                         <template slot="title">
-                        <span>{{item.title}}</span><span class="pull-right">{{item.updateAt | parseTime('{y}-{m}-{d}')}}</span>
+                        <span>{{item.title}}</span><span class="pull-right">{{(item.updateAt)?item.updateAt:item.createdAt | parseTime('{y}-{m}-{d}')}}</span>
                         </template>
                         <div style="overflow:auto;border-top:1px solid #ebeef5;padding-top:10px;"><p v-html="item.content"></p></div>
                     </el-collapse-item>
@@ -67,9 +67,9 @@ export default {
                 let list = res.data.result.items
                 list.forEach(ele => {
                     ele.content = Base64.decode(ele.content)
-                    if(ele.articleId == 1){
+                    if(ele.categoryId == 1){
                         this.list_1.push(ele)
-                    }else if(ele.articleId == 2){
+                    }else if(ele.categoryId == 2){
                         this.list_2.push(ele)
                     }
                 });

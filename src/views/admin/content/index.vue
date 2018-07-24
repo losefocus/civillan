@@ -4,8 +4,8 @@
             <el-form-item label="标题" prop="title">
                 <el-input v-model="form.title" placeholder="标题"></el-input>
             </el-form-item>
-            <el-form-item label="分类" prop="articleId" class="pull-left" style="width:45%">
-                <el-select v-model="form.articleId" placeholder="请选择分类" >
+            <el-form-item label="分类" prop="categoryId" class="pull-left" style="width:45%">
+                <el-select v-model="form.categoryId" placeholder="请选择分类" >
                     <el-option
                     v-for="item in categoryOptions"
                     :key="item.value"
@@ -17,8 +17,8 @@
             <el-form-item label="URL" prop="url" class="pull-right" style="width:45%">
                 <el-input v-model="form.url" placeholder="URL"></el-input>
             </el-form-item>
-            <el-form-item label="作者" prop="auther" class="pull-left" style="width:45%">
-                <el-input v-model="form.auther" placeholder="作者"></el-input>
+            <el-form-item label="作者" prop="author" class="pull-left" style="width:45%">
+                <el-input v-model="form.author" placeholder="作者"></el-input>
             </el-form-item>
             <el-form-item label="图片" prop="thumbnailBaseUrl" class="pull-right" style="width:45%">
                 <el-upload
@@ -53,9 +53,8 @@
             </el-form-item>
         </el-form>
         <el-button type="primary" size="small" @click="classifyTemplatVisible = true">分类管理</el-button>
-        <el-dialog title="分类管理" :visible.sync="classifyTemplatVisible" width='690px'>
-            <classify @showCategoryOptions="getParentOptions" @showCategoryHash="getParentHash"></classify>
-        </el-dialog>
+        <el-button type="primary" size="small" @click="tagTemplatVisible = true">标签管理</el-button>
+        
         <div v-loading="listLoading">
             <el-table :data="list" stripe fit highlight-current-row style="width: 100%;margin-bottom:20px;margin-top:10px">
                 <el-table-column align="center" label="图片">
@@ -77,12 +76,12 @@
                 </el-table-column>
                 <el-table-column align="center" label="分类">
                     <template slot-scope="scope">
-                        <span>{{categoryHash.get(scope.row.articleId)}}</span>
+                        <span>{{categoryHash.get(scope.row.categoryId)}}</span>
                     </template>
                 </el-table-column>
                 <el-table-column align="center" label="作者">
                     <template slot-scope="scope">
-                        <span>{{scope.row.auther}}</span>
+                        <span>{{scope.row.author}}</span>
                     </template>
                 </el-table-column>
                 <el-table-column align="center" label="标签">
@@ -107,19 +106,27 @@
                 </el-pagination>
             </div>
         </div>
+        <el-dialog title="分类管理" :visible.sync="classifyTemplatVisible" width='690px'>
+            <classify v-if="classifyTemplatVisible" @showCategoryOptions="getParentOptions" @showCategoryHash="getParentHash"></classify>
+        </el-dialog>
+        <el-dialog title="标签管理" :visible.sync="tagTemplatVisible" width='690px'>
+            <tag v-if="tagTemplatVisible" @showTagOptions="getTagOptions" @showTagHash="getTagHash"></tag>
+        </el-dialog>
     </div>    
 </template>
 <script>
 import {fetchList,delObj,addObj,updataObj,fetchCategoryList} from "@/api/content";
 import myEditor from './editor'
 import classify from "./classify";
+import tag from "./tag";
 import { getToken} from "@/util/auth";
 import { toTree } from "@/util/util";
 let Base64 = require('js-base64').Base64;
 export default {
     components: {
         myEditor,
-        classify
+        classify,
+        tag
     },
     data() {
         var validateTitle = (rule, value, callback) => {
@@ -159,8 +166,8 @@ export default {
         form: {
           title: '',
           url:'',
-          articleId:'',
-          auther:'',
+          categoryId:'',
+          author:'',
           thumbnailBaseUrl:'',
           thumbnailPath:'',
           tag:'',
@@ -172,8 +179,11 @@ export default {
         params:{component :'project'},
         uploadLoaing:false,
         classifyTemplatVisible:false,
+        tagTemplatVisible:false,
         categoryOptions:null,
         categoryHash:null,
+        tagOptions:null,
+        tagHash:null,
         list:[],
         loading:false,
         listQuery:{
@@ -228,6 +238,12 @@ export default {
         },
         getParentHash(msg) {
             this.categoryHash = msg
+        },
+        getTagOptions(msg) {
+            this.tagOptions = msg
+        },
+        getTagHash(msg) {
+            this.tagHash = msg
         },
         beforeUpload(){
             this.uploadLoaing = true
@@ -310,8 +326,8 @@ export default {
             this.form = {
                 title: '',
                 url:'',
-                articleId:'',
-                auther:'',
+                categoryId:'',
+                author:'',
                 thumbnailBaseUrl:'',
                 thumbnailPath:'',
                 tag:'',

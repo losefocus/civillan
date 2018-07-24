@@ -1,10 +1,10 @@
 <template>
     <div>
-        <el-form :model="form" class="clearfix" ref="form" size="small" label-width="80px">
+        <el-form :model="form" class="clearfix" ref="form" size="small" label-width="50px">
             <el-form-item label="名称" style="width: 215px">
                 <el-input v-model="form.name" size="mini" auto-complete="off"></el-input>
             </el-form-item>
-            <el-form-item label="上级分类" style="width: 220px;" label-width="75px">
+            <el-form-item label="分类" style="width: 220px;">
                 <el-select v-model="form.parentId" size="mini" placeholder="请选择分类">
                     <el-option
                     v-for="item in categoryOptions"
@@ -33,7 +33,7 @@
                 <i v-else class="el-icon-plus avatar-uploader-icon"></i>
                 </el-upload>
             </el-form-item>
-            <el-form-item label="备注" style="width: 215px;" label-width="75px">
+            <el-form-item label="备注" style="width: 215px;">
                 <el-input type="textarea" :rows="1"></el-input>
             </el-form-item>
             <el-form-item  class="pull-right" style="padding-top:5px;width: 350px">
