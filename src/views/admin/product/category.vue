@@ -1,8 +1,8 @@
 <template>
     <div>
         <el-form :model="form" class="clearfix" ref="form" size="small" label-width="50px">
-            <el-form-item label="上级分类" style="width: 220px;" label-width="75px">
-                <el-select v-model="form.parentId" size="mini" placeholder="请选择分类">
+            <el-form-item label="分类" style="width: 220px;margin-right:5px">
+                <el-select v-model="form.parentId" size="mini" placeholder="上级分类">
                     <el-option
                     v-for="item in categoryOptions"
                     :key="item.value"
@@ -11,27 +11,48 @@
                     </el-option>
                 </el-select>
             </el-form-item>
-            <el-form-item label="名称" style="width: 215px">
-                <el-input v-model="form.name" size="mini" auto-complete="off"></el-input>
+            <el-form-item label="名称" style="width: 210px;margin-right:5px">
+                <el-input v-model="form.name" size="mini" auto-complete="off" placeholder="名称"></el-input>
             </el-form-item>
-            <el-form-item label="排序" style="width: 215px;">
-                <el-input v-model="form.sort" size="mini" auto-complete="off"></el-input>
+            <el-form-item label="排序" style="width: 210px;">
+                <el-input v-model="form.sort" size="mini" auto-complete="off" placeholder="排序"></el-input>
             </el-form-item>
-            <el-form-item  :style="flag == 'add'?'width: 120px':'width: 200px'" class="pull-right" style="padding-top:5px">
-                <div v-if="flag == 'add'">
-                    <el-button size="mini" type="primary" class="pull-right" @click="handleAdd('form')" :loading="createdLoading">添加</el-button>
-                </div>
+            <el-form-item label="图片" style="width: 210px;">
+                <el-upload
+                    v-loading='uploadLoaing'
+                    class="avatar-uploader"
+                    ref="upload"
+                    :headers="headers"
+                    action="/file/attachment/upload"
+                    :limit="10"
+                    :data="params"
+                    name="uploadFile"
+                    :show-file-list="false"
+                    :before-upload='beforeUpload'
+                    :on-success="uploadSuccess"
+                    :auto-upload="true">
+                    <img v-if="form.thumbnailBaseUrl!='' && form.thumbnailBaseUrl!=undefined" :src="form.thumbnailBaseUrl+form.thumbnailPath" class="avatar">
+                    <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+                </el-upload>
+            </el-form-item>
+            <el-form-item  style="width: 300px;padding-top:50px" class="pull-right">
+                <el-button v-if="flag == 'add'" size="mini" type="primary" class="pull-right" style="margin-left:10px"  @click="handleAdd('form')" :loading="createdLoading">添加</el-button>
                 <div v-else>
                     <el-button size="mini" type="info" class="pull-right" style="margin-left:10px" @click="cancelEdit('form')">取消</el-button>
                     <el-button size="mini" type="primary" class="pull-right" @click="handleEdit('form')" :loading="createdLoading">保存</el-button>
                 </div>
-            </el-form-item>
-            <el-form-item class="pull-right">
-                <el-checkbox v-model="form.status" >已启用</el-checkbox>
+                <el-checkbox v-model="form.status" class="pull-right">已启用</el-checkbox>
             </el-form-item>
         </el-form>
         <div v-loading="listLoading">
             <el-table :data="list" element-loading-text="给我一点时间" stripe border fit highlight-current-row style="width: 100%;margin-bottom:20px;margin-top:10px">
+                <el-table-column align="center" label="缩略图">
+                    <template slot-scope="scope">
+                        <div style="height:40px">
+                            <img style="width:60px;height:40px" :src="scope.row.thumbnailBaseUrl+scope.row.thumbnailPath">
+                        </div>
+                    </template>
+                </el-table-column>
                 <el-table-column align="center" label="名称">
                     <template slot-scope="scope">
                         <span>{{scope.row.name}}</span>
@@ -78,11 +99,16 @@ export default {
         return {
             listLoading:false,
             createdLoading:false,
+            headers:{Authorization: "Bearer " + getToken()},
+            params:{component :'project'},
+            uploadLoaing:false,
             form:{
                 parentId:'',
                 name:'',
                 sort:'',
                 status:true,
+                thumbnailPath:'',
+                thumbnailBaseUrl:''
             },
             flag:'add',
             listQuery:{
@@ -105,6 +131,14 @@ export default {
         ...mapGetters(["alarmList"]),
     },
     methods:{
+        beforeUpload(){
+            this.uploadLoaing = true
+        },
+        uploadSuccess(response, file, fileList){
+            this.form.thumbnailPath = response.result.path
+            this.form.thumbnailBaseUrl = response.result.baseUrl
+            this.uploadLoaing = false
+        },
         handleSizeChange(val) {
             this.listQuery.page_size = val;
             this.getList();
@@ -200,7 +234,8 @@ export default {
     margin-bottom: 10px
 }
 .avatar-uploader{
-     height: 107px;
+     height: 90px;
+     width: 170px;
 }
 .avatar-uploader .el-upload {
     border: 1px dashed #d9d9d9;
@@ -215,16 +250,17 @@ export default {
   .avatar-uploader-icon {
     font-size: 28px;
     color: #8c939d;
-    width: 107px;
-    height: 107px;
-    line-height: 107px;
+    width: 170px;
+    height: 90px;
+    line-height: 90px;
     text-align: center;
     border: 1px solid #dcdfe6;
     border-radius: 4px;
+    box-sizing: border-box
   }
   .avatar {
-    width: 107px;
-    height: 107px;
+    width: 170px;
+    height: 90px;
     display: block;
     border-radius: 4px;
   }

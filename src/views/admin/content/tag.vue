@@ -91,8 +91,8 @@ export default {
                 this.listLoading = false
                 let newMap = new Map();
                 this.list.forEach(ele => {
-                    ele.value = ele.id
-                    ele.label = ele.tagName
+                    // ele.value = ele.id
+                    // ele.label = ele.tagName
                     newMap.set(ele.id,ele.tagName)
                 });
                 this.$emit('showTagOptions',this.list);

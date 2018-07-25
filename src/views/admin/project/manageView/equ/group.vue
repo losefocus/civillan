@@ -1,63 +1,71 @@
 <template>
     <div>
-        <el-form :model="form" class="clearfix" ref="form" label-width="50px" size="medium">
-            <el-form-item label="上级" style="width: 210px">
-                <el-select v-model="form.parentId" size="mini" placeholder="请选择上级分组">
-                    <el-option
-                    v-for="item in parentOptions"
-                    :key="item.value"
-                    :label="item.label"
-                    :value="item.value">
-                    </el-option>
-                </el-select>
-                <!-- <el-cascader
-                    size="mini" placeholder="请选择上级分组"
-                    :options="parentOptions"
-                    v-model="form.parentId"
-                    :show-all-levels="false"
-                    change-on-select>
-                </el-cascader> -->
-            </el-form-item>
-            <el-form-item label="名称" style="width: 210px;margin-left:10px">
-                <el-input v-model="form.name" size="mini" auto-complete="off"></el-input>
-            </el-form-item>
-            <el-form-item label="排序" style="width: 210px;margin-left:10px">
-                <el-input v-model="form.sort" size="mini" auto-complete="off"></el-input>
-            </el-form-item>
-            <el-form-item label="图片" style="width: 210px;">
-                <el-upload
-                    v-loading='uploadLoaing'
-                    class="avatar-uploader"
-                    ref="upload"
-                    :headers="headers"
-                    action="/file/attachment/upload"
-                    :limit="10"
-                    :data="params"
-                    name="uploadFile"
-                    :show-file-list="false"
-                    :before-upload='beforeUpload'
-                    :on-success="uploadSuccess"
-                    :auto-upload="true">
-                    <img v-if="form.thumbnailBaseUrl!='' && form.thumbnailBaseUrl!=undefined" :src="form.thumbnailBaseUrl+form.thumbnailPath" class="avatar">
-                    <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-                </el-upload>
-            </el-form-item>
-            <el-form-item label="备注" style="width: 430px;margin-left:10px">
-                <el-input v-model="form.comment" type="textarea" :rows="3" size="mini" auto-complete="off"></el-input>
-            </el-form-item>
-            <el-form-item  :style="flag == 'add'?'width: 140px':'width: 220px'" class="pull-right" style="padding-top:5px">
-                <div v-if="flag == 'add'">
-                    <el-button size="mini" type="primary" class="pull-right" @click="handleAdd('form')" :loading="createdLoading">添加</el-button>
-                </div>
-                <div v-else>
-                    <el-button size="mini" type="info" class="pull-right" style="margin-left:10px" @click="cancelEdit('form')">取消</el-button>
-                    <el-button size="mini" type="primary" class="pull-right" @click="handleEdit('form')" :loading="createdLoading">保存</el-button>
-                </div>
-            </el-form-item>
-            <el-form-item class="pull-right">
-                <el-checkbox v-model="form.status" >已启用</el-checkbox>
-            </el-form-item>
-        </el-form>
+        <div class="clearfix addBtn" style="padding-bottom:20px;">
+            <el-button type="primary" size="mini" v-show="!isshow"  class="pull-left" @click="isshow = !isshow" >添加</el-button>
+            <el-button type="info" size="mini" v-show="isshow" class="pull-left" @click="cancelEdit" style="margin-left:0">取消</el-button>
+        </div>
+        <el-collapse-transition>
+            <div v-show="isshow">
+                <el-form :model="form" class="clearfix" ref="form" label-width="50px" size="medium">
+                    <el-form-item label="上级" style="width: 210px">
+                        <el-select v-model="form.parentId" size="mini" placeholder="请选择上级分组">
+                            <el-option
+                            v-for="item in parentOptions"
+                            :key="item.value"
+                            :label="item.label"
+                            :value="item.value">
+                            </el-option>
+                        </el-select>
+                        <!-- <el-cascader
+                            size="mini" placeholder="请选择上级分组"
+                            :options="parentOptions"
+                            v-model="form.parentId"
+                            :show-all-levels="false"
+                            change-on-select>
+                        </el-cascader> -->
+                    </el-form-item>
+                    <el-form-item label="名称" style="width: 210px;margin-left:10px">
+                        <el-input v-model="form.name" size="mini" auto-complete="off"></el-input>
+                    </el-form-item>
+                    <el-form-item label="排序" style="width: 210px;margin-left:10px">
+                        <el-input v-model="form.sort" size="mini" auto-complete="off"></el-input>
+                    </el-form-item>
+                    <el-form-item label="图片" style="width: 210px;">
+                        <el-upload
+                            v-loading='uploadLoaing'
+                            class="avatar-uploader"
+                            ref="upload"
+                            :headers="headers"
+                            action="/file/attachment/upload"
+                            :limit="10"
+                            :data="params"
+                            name="uploadFile"
+                            :show-file-list="false"
+                            :before-upload='beforeUpload'
+                            :on-success="uploadSuccess"
+                            :auto-upload="true">
+                            <img v-if="form.thumbnailBaseUrl!='' && form.thumbnailBaseUrl!=undefined" :src="form.thumbnailBaseUrl+form.thumbnailPath" class="avatar">
+                            <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+                        </el-upload>
+                    </el-form-item>
+                    <el-form-item label="备注" style="width: 430px;margin-left:10px">
+                        <el-input v-model="form.comment" type="textarea" :rows="3" size="mini" auto-complete="off"></el-input>
+                    </el-form-item>
+                    <el-form-item  :style="flag == 'add'?'width: 140px':'width: 220px'" class="pull-right" style="padding-top:5px">
+                        <div v-if="flag == 'add'">
+                            <el-button size="mini" type="primary" class="pull-right" @click="handleAdd('form')" :loading="createdLoading">添加</el-button>
+                        </div>
+                        <div v-else>
+                            <el-button size="mini" type="info" class="pull-right" style="margin-left:10px" @click="cancelEdit('form')">取消</el-button>
+                            <el-button size="mini" type="primary" class="pull-right" @click="handleEdit('form')" :loading="createdLoading">保存</el-button>
+                        </div>
+                    </el-form-item>
+                    <el-form-item class="pull-right">
+                        <el-checkbox v-model="form.status" >已启用</el-checkbox>
+                    </el-form-item>
+                </el-form>
+            </div>
+        </el-collapse-transition>
         <div v-loading="listLoading">
             <el-table :data="list" stripe border fit highlight-current-row style="width: 100%;margin-bottom:20px;margin-top:10px">
                 <el-table-column align="center" label="名称">
@@ -105,6 +113,7 @@ export default {
     props:['dataInfo'],
     data(){
         return {
+            isshow:false,
             listLoading:false,
             createdLoading:false,
             options:[
@@ -204,6 +213,7 @@ export default {
         },
         updateList(row){
             this.flag = 'edit'
+            this.isshow = true
             this.form = Object.assign({},row)
             this.form.status = this.form.status==1?true:false
         },
@@ -262,6 +272,7 @@ export default {
                 thumbnailBaseUrl:'',
             }
             this.createdLoading = false
+            this.isshow = false
         }
     },
     watch:{
@@ -302,5 +313,10 @@ export default {
     height: 64px;
     display: block;
     border-radius: 4px;
+  }
+  .addBtn{
+    position: absolute;
+    top: 20px;
+    left: 120px;
   }
 </style>

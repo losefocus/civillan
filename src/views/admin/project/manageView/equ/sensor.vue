@@ -1,6 +1,6 @@
 <template>
     <div>
-        <div>设 备 : {{dataInfo.name}}</div>
+        <div style="padding-bottom:10px;">设 备 : {{dataInfo.name}}</div>
         <el-form :model="form" class="clearfix" ref="form" label-width="0" size="mini" style="margin-bottom:10px;">
             <el-form-item label="" style="width: 100px;margin-right:5px">
                 <el-input v-model="form.name" size="mini" auto-complete="off" placeholder="名称"></el-input>

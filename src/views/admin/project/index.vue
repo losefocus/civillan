@@ -1,5 +1,5 @@
 <template>
-    <div class="app-container calendar-list-container">
+    <div class="app-container calendar-list-container" style="min-height: 700px;">
         <div v-show="showView === 'index'"  class="clearfix">
             <div class="pull-left"  style="width:100%">
                 <div class="filter-container">
@@ -9,42 +9,30 @@
                     <el-input @keyup.enter.native="handleFilter" style="width: 200px;" size="small" suffix-icon="el-icon-search" class="pull-right" placeholder="项目搜索" v-model="listQuery.keyword"></el-input>
                 </div>
                 <div v-loading="listLoading" >
-                    <el-table :data="list" stripe fit highlight-current-row style="width: 100%;margin-bottom:25px;margin-top:15px;" :row-class-name="setClassName">
+                    <el-table :data="list" fit style="width: 100%;margin-bottom:25px;margin-top:15px;" :row-class-name="setClassName">
                         <el-table-column type="expand">
                             <template slot-scope="scope">
-                                <el-table :data="scope.row.children"  stripe ref="subTable" id="subTable" size="mini">
-                                    <el-table-column align="center" label="缩略图">
+                                <el-table :data="scope.row.children" ref="subTable" id="subTable" size="mini">
+                                    <el-table-column align="left" label="项目名称" min-width="250">
                                         <template slot-scope="pro">
-                                            <div style="height:30px">
-                                            <img style="width:40px;height:30px" :src="pro.row.thumbnailUrl+pro.row.thumbnailPath">
+                                            <div style="padding-left:20px;">
+                                                <div style="height:40px" class="pull-left">
+                                                    <img style="width:60px;height:40px" :src="scope.row.thumbnailUrl+scope.row.thumbnailPath">
+                                                </div>
+                                                <el-tooltip class="item" effect="dark" :content="scope.row.name" placement="top-start" :open-delay="300">
+                                                    <span style="white-space:nowrap;cursor: pointer;"><a style="line-height:40px;padding-left:20px">{{scope.row.name}}</a></span>
+                                                </el-tooltip>
                                             </div>
                                         </template>
                                     </el-table-column>      
-                                    <el-table-column align="left" label="项目名称" min-width="250">
-                                        <template slot-scope="pro">
-                                            <el-tooltip class="item" effect="dark" :content="pro.row.name" placement="top-start" :open-delay="300">
-                                                <span style="white-space:nowrap;cursor: pointer;padding-left:20px;"><a>{{pro.row.name}}</a></span>
-                                            </el-tooltip>
-                                        </template>
-                                    </el-table-column>      
-                                    <!-- <el-table-column align="center" label="开始时间" min-width="100">
-                                        <template slot-scope="pro">
-                                            {{pro.row.beginAt | parseTime('{y}-{m}-{d}')}}
-                                        </template>
-                                    </el-table-column>      
-                                    <el-table-column align="center" label="结束时间" min-width="100">
-                                        <template slot-scope="pro">
-                                            {{pro.row.endAt | parseTime('{y}-{m}-{d}')}}
-                                        </template>
-                                    </el-table-column>    -->
-                                    <el-table-column align="center" label="工期" min-width="170">
+                                    <el-table-column align="left" label="工期" min-width="170">
                                         <template slot-scope="scope">
-                                            <span>{{scope.row.beginAt | parseTime('{y}-{m}-{d}')}} 至 {{scope.row.endAt | parseTime('{y}-{m}-{d}')}}</span>
+                                            <span style="padding-left:20px;">{{scope.row.beginAt | parseTime('{y}-{m}-{d}')}} 至 {{scope.row.endAt | parseTime('{y}-{m}-{d}')}}</span>
                                         </template>
                                     </el-table-column>        
-                                    <el-table-column align="center" label="管理员">
+                                    <el-table-column align="left" label="管理员">
                                         <template slot-scope="pro">
-                                            {{adminerHash[pro.row.adminer]}}
+                                            <span style="padding-left:20px;">{{adminerHash[pro.row.adminer]}}</span>
                                         </template>
                                     </el-table-column>      
                                     <el-table-column align="center" label="操作" class-name="lastTd" min-width="80">
@@ -70,35 +58,30 @@
                                 </el-table>
                             </template>
                         </el-table-column>
-                        <el-table-column align="center" label="缩略图">
-                            <template slot-scope="scope">
-                                <div style="height:40px">
-                                    <img v-if="scope.row.children.length==0" style="width:60px;height:40px" :src="scope.row.thumbnailUrl+scope.row.thumbnailPath">
-                                    <i v-else class="iconfont icon-wenjianjia" style="font-size:30px;line-height:40px;"></i>
-                                </div>
-                            </template>
-                        </el-table-column>
                         <el-table-column align="left" label="项目名称" min-width="250">
                             <template slot-scope="scope">
+                                <div style="height:40px" class="pull-left">
+                                    <img style="width:60px;height:40px" :src="scope.row.thumbnailUrl+scope.row.thumbnailPath">
+                                </div>
                                 <el-tooltip class="item" effect="dark" :content="scope.row.name" placement="top-start" :open-delay="300">
-                                    <span style="white-space:nowrap;cursor: pointer;font-weight: bold;"><a>{{scope.row.name}}</a></span>
+                                    <span style="white-space:nowrap;cursor: pointer;"><a style="line-height:40px;padding-left:20px">{{scope.row.name}}</a></span>
                                 </el-tooltip>
                             </template>
                         </el-table-column>
-                        <el-table-column align="center" label="工期" min-width="170">
+                        <el-table-column align="left" label="工期" min-width="170">
                             <template slot-scope="scope">
-                                <span style="font-weight: bold;">{{scope.row.beginAt | parseTime('{y}-{m}-{d}')}} 至 {{scope.row.endAt | parseTime('{y}-{m}-{d}')}}</span>
+                                <span>{{scope.row.beginAt | parseTime('{y}-{m}-{d}')}} 至 {{scope.row.endAt | parseTime('{y}-{m}-{d}')}}</span>
                             </template>
                         </el-table-column>
-                        <el-table-column align="center" label="管理员">
+                        <el-table-column align="left" label="管理员">
                             <template slot-scope="scope">
-                                <span style="font-weight: bold;">{{adminerHash[scope.row.adminer]}}</span>
+                                <span>{{adminerHash[scope.row.adminer]}}</span>
                             </template>
                         </el-table-column>
                         <el-table-column align="center" label="操作" min-width="80">
                             <template slot-scope="pro" >
                                 <el-dropdown trigger="click" @command="handleCommand" placement="bottom">
-                                    <span style="cursor:pointer;font-weight: bold;">
+                                    <span style="cursor:pointer;">
                                         操作<i class="el-icon-arrow-down el-icon--right"></i>
                                     </span >
                                     <el-dropdown-menu slot="dropdown">
@@ -171,7 +154,7 @@
                         class="avatar-uploader"
                         ref="upload"
                         :headers="headers"
-                        action="/zuul/file/attachment/upload"
+                        action="/file/attachment/upload"
                         :limit="10"
                         :data="params"
                         name="uploadFile"
@@ -607,13 +590,13 @@ export default {
 }
 .addNewProject{
     background: #fff;
-    /* height: 500px; */
     width: 300px;
     padding-top: 0 ;
     position: absolute;
     top: -16px;
     right: -315px;
-    z-index: 9
+    min-height: 730px;
+    z-index: 9;
 }
 .addNewProject.show{
     right: -8px;

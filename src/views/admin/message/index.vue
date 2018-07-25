@@ -1,29 +1,38 @@
 <template>
     <div class="app-container calendar-list-container">
-        <el-form :model="form" class="clearfix" label-width="80px" ref="form" :rules="rules">
-            <el-form-item label="消息标题" prop="title">
-                <el-input v-model="form.title" placeholder="标题"></el-input>
-            </el-form-item>
-            <el-form-item label="消息内容" prop="message">
-                <el-input v-model="form.message" type="textarea" :rows="3" placeholder="内容"></el-input>
-            </el-form-item>
-            <el-form-item label="通知对象" prop="pushObject" class="pull-left" style="width:45%">
-                <el-select v-model="form.pushObject" placeholder="通知对象">
-                    <el-option label="后台用户" value="1"></el-option>
-                    <el-option label="前台用户" value="2"></el-option>
-                    <el-option label="设备" value="3"></el-option>
-                </el-select>
-            </el-form-item>
-            <el-form-item label="通知方式" prop="pushType" class="pull-right" style="width:45%">
-                <el-select v-model="form.pushType" placeholder="通知对象">
-                    <el-option label="web" value="1"></el-option>
-                    <el-option label="app" value="2"></el-option>
-                </el-select>
-            </el-form-item>
-            <el-form-item class="pull-right">
-                <el-button type="primary" @click="onSubmit('form')" size="small" style="width:100px">推送</el-button>
-            </el-form-item>
-        </el-form>
+        <el-collapse-transition>
+            <div v-show="isshow">
+            <el-form :model="form" class="clearfix" label-width="80px" ref="form" :rules="rules">
+                <el-form-item label="消息标题" prop="title">
+                    <el-input v-model="form.title" placeholder="标题"></el-input>
+                </el-form-item>
+                <el-form-item label="消息内容" prop="message">
+                    <el-input v-model="form.message" type="textarea" :rows="3" placeholder="内容"></el-input>
+                </el-form-item>
+                <el-form-item label="通知对象" prop="pushObject" class="pull-left" style="width:45%">
+                    <el-select v-model="form.pushObject" placeholder="通知对象">
+                        <el-option label="后台用户" value="1"></el-option>
+                        <el-option label="前台用户" value="2"></el-option>
+                        <el-option label="设备" value="3"></el-option>
+                    </el-select>
+                </el-form-item>
+                <el-form-item label="通知方式" prop="pushType" class="pull-right" style="width:45%">
+                    <el-select v-model="form.pushType" placeholder="通知对象">
+                        <el-option label="web" value="1"></el-option>
+                        <el-option label="app" value="2"></el-option>
+                    </el-select>
+                </el-form-item>
+                <el-form-item class="pull-right">
+                    <el-button type="primary" @click="onSubmit('form')" size="small" :loading="createLoading" style="width:100px">推送</el-button>
+                </el-form-item>
+            </el-form>
+            </div>
+        </el-collapse-transition>
+        <div class="clearfix" style="padding-bottom:20px;">
+        <el-button type="primary" size="small" v-show="!isshow"  class="pull-left" @click="isshow = !isshow" style="width:80px;">添加</el-button>
+        <el-button type="info" size="small" v-show="isshow" class="pull-left" @click="isshow = !isshow" style="width:80px;margin-left:0">取消</el-button>
+        </div>
+
         <el-table :data="list" stripe style="width: 100%" v-loading="listLoading">
             <el-table-column align="center" label="消息标题" >
                 <template slot-scope="scope">
@@ -96,6 +105,7 @@ export default {
             }
         };
     return {
+        isshow:false,
         pushObjectOptions:[{
             value:1,
             label:'后台用户'
@@ -128,10 +138,11 @@ export default {
         },
         listQuery:{
             page_index:1,
-            page_size:10,
+            page_size:20,
         },
         total:null,
         listLoading:false,
+        createLoading:false,
         list:[],
         userIds:[]
       }
@@ -202,6 +213,7 @@ export default {
         onSubmit(formName) {
             this.$refs[formName].validate((valid) => {
                 if (valid) {
+                    this.createLoading = true
                     let data = Object.assign({},this.form)
                     data.pushObject = parseInt(data.pushObject)
                     if(data.pushObject === 2){
@@ -222,6 +234,7 @@ export default {
                             duration: 2000
                         });
                         this.getList()
+                        
                     })
                 }
             })
@@ -233,6 +246,8 @@ export default {
                 pushObject:null,
                 pushType:null
             }
+            this.createLoading = false
+            this.isshow = false
         }
     }
 }

@@ -77,10 +77,10 @@
       </el-pagination>
     </div>
 
-    <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogDeptVisible">
+    <!-- <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogDeptVisible">
       <el-tree class="filter-tree" :data="treeDeptData" :default-checked-keys="checkedKeys" check-strictly node-key="id" highlight-current ref="deptTree" :props="defaultProps" @node-click="getNodeData" default-expand-all>
       </el-tree>
-    </el-dialog>
+    </el-dialog> -->
 
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
       <el-form :model="form" :rules="rules" ref="form" label-width="100px">
@@ -98,9 +98,9 @@
         </el-form-item> -->
 
         <el-form-item label="所属分组" prop="groupName">
-          <el-input v-model="form.groupName" placeholder="选择分组" @focus="handleDept()" readonly></el-input>
-          <input type="hidden" v-model="form.group" />
-          <el-cascader :options="groupOptions" v-model="groupIds"></el-cascader>
+          <!-- <el-input v-model="form.groupName" placeholder="选择分组" @focus="handleDept()" readonly></el-input> -->
+          <!-- <input type="hidden" v-model="form.group" /> -->
+          <el-cascader :options="groupOptions" v-model="groupIds" :show-all-levels="false" change-on-select @change="changeGroup"></el-cascader>
         </el-form-item>
 
         <el-form-item label="角色" prop="role">
@@ -116,9 +116,10 @@
         </el-form-item>
 
         <el-form-item label="状态" v-if="dialogStatus == 'update' && sys_user_del " prop="status">
-          <el-select class="filter-item" v-model="form.status" placeholder="请选择">
+          <!-- <el-select class="filter-item" v-model="form.status" placeholder="请选择">
             <el-option v-for="item in statusOptions" :key="item" :label="item | statusFilter" :value="item"> </el-option>
-          </el-select>
+          </el-select> -->
+          <el-checkbox label="已启用" v-model="form.status" size="small"></el-checkbox>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -131,7 +132,7 @@
 </template>
 
 <script>
-import { fetchList, getObj, addObj, putObj, delObj } from "@/api/user";
+import { fetchList, getObj, addObj, putObj, delObj,get_parent } from "@/api/user";
 import { roleList, fetchDeptTree } from "@/api/role";
 import { fetchTree } from "@/api/group";
 import { treeAddValue } from "@/util/util";
@@ -171,7 +172,7 @@ export default {
       form: {
         username: undefined,
         password: undefined,
-        status: undefined,
+        c: true,
         mobile: undefined,
         group:undefined,
         groupName:undefined,
@@ -266,7 +267,7 @@ export default {
   },
   created() {
     this.getList();
-    //this.handleDept();
+    this.handleDept();
     this.sys_user_add = this.permissions["sys_user_add"];
     this.sys_user_upd = this.permissions["sys_user_upd"];
     this.sys_user_del = this.permissions["sys_user_del"];
@@ -282,13 +283,16 @@ export default {
         this.listLoading = false;
       });
     },
-    getNodeData(data) {
-      this.dialogDeptVisible = false;
-      this.form.group = data.id;
-      this.form.groupName = data.name;
-      roleList().then(response => {
-        this.rolesOptions = response.data.result;
-      });
+    // getNodeData(data) {
+    //   this.dialogDeptVisible = false;
+    //   this.form.group = data.id;
+    //   this.form.groupName = data.name;
+    //   roleList().then(response => {
+    //     this.rolesOptions = response.data.result;
+    //   });
+    // },
+    changeGroup(){
+      this.form.group = this.groupIds[this.groupIds.length - 1]
     },
     handleDept() {
       fetchTree().then(response => {
@@ -317,6 +321,7 @@ export default {
     handleUpdate(row) {
       getObj(row.id).then(response => {
         this.form = response.data.result;
+        this.form.status = this.form.status == 1?true:false
         this.form.groupName = row.groupName
         this.dialogFormVisible = true;
         this.dialogStatus = "update";
@@ -329,6 +334,13 @@ export default {
         roleList().then(response => {
           this.rolesOptions = response.data.result;
         });
+        get_parent(this.form.group).then(res => {
+          let groups = new Array
+          res.data.result.forEach(ele => {
+            groups.push(ele.id)
+          });
+          this.groupIds = groups
+        })
       });
     },
     create(formName) {
@@ -366,6 +378,7 @@ export default {
         if (valid) {
           this.dialogFormVisible = false;
           this.form.password = undefined;
+          this.form.status = this.form.status?1:0
           putObj(this.form).then(() => {
             this.dialogFormVisible = false;
             this.getList();
@@ -427,7 +440,7 @@ export default {
         password: "",
         role: [],
         roleDesc:[],
-        status: "",
+        status: true,
         mobile: "",
         group:'',
         groupName:'',

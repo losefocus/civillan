@@ -29,7 +29,8 @@ export default {
   padding: 5px 0!important
 }
 .el-table__header th{
-  background: #f3f3f3 !important
+  background: #f4f8fb !important;
+  color: #333
 }
 
 .el-table__expanded-cell[class*=cell]{
@@ -52,9 +53,9 @@ export default {
 .el-table__expanded-cell{
   border-right: none !important;
 }
-.el-table__expanded-cell .el-table th,.el-table__expanded-cell .el-table tr{
-  background: #f9f9fb
-}
+// .el-table__expanded-cell .el-table th,.el-table__expanded-cell .el-table tr{
+//   background: #f9f9fb
+// }
 #subTable.el-table::before{
   height: 0 !important;
 }
@@ -92,9 +93,12 @@ export default {
   // background: #dadada
 }
 .el-table__expand-icon>.el-icon{
-  font-size:20px;
-  font-weight: bold;
-  margin-left: -10px !important;
-  margin-top: -10px !important;
+  // font-size:20px;
+  // font-weight: bold;
+  // margin-left: -10px !important;
+  // margin-top: -10px !important;
+}
+.el-table__expanded-cell .el-table td{
+  border: none
 }
 </style>

@@ -9,29 +9,10 @@ export function fetchList(query) {
     })
   }
 
-
-/* 新增 */
-export function addObj(obj) {
+    /* 详情 */
+export function getObj(id) {
   return request({
-    url: '/admin/article/add',
-    method: 'post',
-    data: obj
+    url: '/admin/article/get?id='+id,
+    method: 'get',
   })
 }
-
-/* 删除 */
-export function delObj(id) {
-  return request({
-    url: '/admin/article/delete?id=' + id,
-    method: 'post'
-  })
-}
-
-/* 编辑 */
-export function updataObj(obj) {
-    return request({
-      url: '/admin/article/update',
-      method: 'post',
-      data: obj
-    })
-  }

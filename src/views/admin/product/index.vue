@@ -131,7 +131,7 @@
             <alarm v-if="alarmTemplatVisible == true" :product-info="productData"></alarm>
         </el-dialog>
         <el-dialog title="分类管理" :visible.sync="classifyTemplatVisible" width='690px'>
-            <category @showCategoryOptions="getParentOptions" @showCategoryHash="getParentHash"></category>
+            <category v-if="classifyTemplatVisible == true" @showCategoryOptions="getParentOptions" @showCategoryHash="getParentHash"></category>
         </el-dialog>
     </div>
 </template>

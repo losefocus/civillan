@@ -58,21 +58,23 @@
                 <el-form-item label="描述" style="width: 200px">
                     <el-input v-model="roleForm.description" style="width:150px;" size="mini" auto-complete="off"></el-input>
                 </el-form-item>
-                <el-form-item >
+                <!-- <el-form-item >
                     <el-checkbox v-model="roleForm.available" >已启用</el-checkbox>
-                </el-form-item>
-                <el-form-item  style="width: 150px">
-                    <div v-show="flag == 'add'">
+                </el-form-item> -->
+                <el-form-item  style="width: 230px" class="pull-right">
+
+                    <div v-show="flag == 'add'" class="pull-right">
                         <el-button size="mini" type="primary" @click="addRole('roleForm')" :loading="createdRoleLoading">添加</el-button>
                     </div>
-                   <div v-show="flag == 'edit'">
+                   <div v-show="flag == 'edit'" class="pull-right">
                         <el-button size="mini" type="primary" @click="handleEditRole('roleForm')" :loading="createdRoleLoading">保存</el-button>
-                        <el-button size="mini" type="info" @click="cancelEdit('roleForm')">取消</el-button>
+                        <el-button size="mini" type="info" @click="cancelEdit('roleForm')" style="margin-left:5px;">取消</el-button>
                    </div>
+                   <el-checkbox v-model="roleForm.available"  class="pull-right" style="margin-right:20px;">已启用</el-checkbox>
                 </el-form-item>
             </el-form>
             <div v-loading="roleListLoading">
-                <el-table :data="roleList" element-loading-text="给我一点时间" stripe border fit highlight-current-row style="width: 99%;margin-bottom:20px;margin-top:10px">
+                <el-table :data="roleList" element-loading-text="给我一点时间" stripe border fit highlight-current-row style="width: 100%;margin-bottom:20px;margin-top:10px">
                     <el-table-column align="center" label="角色">
                         <template slot-scope="scope">
                             <span>{{scope.row.role}}</span>

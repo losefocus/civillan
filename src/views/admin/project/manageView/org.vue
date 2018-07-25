@@ -57,21 +57,20 @@
                 <el-form-item label="排序" style="width: 140px">
                     <el-input v-model="orgTypeForm.sort" style="width:90px;" size="mini" auto-complete="off"></el-input>
                 </el-form-item>
-                <el-form-item >
-                    <el-checkbox v-model="orgTypeForm.status" >已启用</el-checkbox>
-                </el-form-item>
-                <el-form-item  style="width: 150px">
-                    <div v-show="flag == 'add'">
-                        <el-button size="mini" type="primary" @click="addType('orgTypeForm')" :loading="createLoading">添加</el-button>
+                
+                <el-form-item  style="width: 230px" class="pull-right">
+                    <div v-show="flag == 'add'" class="pull-right">
+                        <el-button size="mini" type="primary" @click="addType('orgTypeForm')" :loading="createLoading" style="margin-right:0;">添加</el-button>
                     </div>
-                   <div v-show="flag == 'edit'">
-                        <el-button size="mini" type="" @click="handleUpdateType('orgTypeForm')" :loading="createLoading">保存</el-button>
-                        <el-button size="mini" type="" @click="cancelEdit('orgTypeForm')">取消</el-button>
-                   </div>
+                    <div v-show="flag == 'edit'" class="pull-right">
+                        <el-button size="mini" type="primary" @click="handleUpdateType('orgTypeForm')" :loading="createLoading" >保存</el-button>
+                        <el-button size="mini" type="info" @click="cancelEdit('orgTypeForm')" style="margin-left:5px;">取消</el-button>
+                    </div>
+                    <el-checkbox v-model="orgTypeForm.status" class="pull-right" style="margin-right:20px;">已启用</el-checkbox>
                 </el-form-item>
             </el-form>
             <div v-loading="typelListLoading">
-                <el-table :data="orgTypeList"  element-loading-text="给我一点时间" stripe border fit highlight-current-row style="width: 99%;margin-bottom:20px;margin-top:10px">
+                <el-table :data="orgTypeList"  element-loading-text="给我一点时间" stripe border fit highlight-current-row style="width: 100%;margin-bottom:20px;margin-top:10px">
                     <el-table-column align="center" label="类型名称">
                         <template slot-scope="scope">
                             <span>{{scope.row.name}}</span>

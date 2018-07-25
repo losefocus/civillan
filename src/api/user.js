@@ -39,3 +39,10 @@ export function putObj(obj) {
   })
 }
 
+/* 修改 */
+export function get_parent(id) {
+  return request({
+    url: '/admin/user/get_parent?id='+id,
+    method: 'get',
+  })
+}

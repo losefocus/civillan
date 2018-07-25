@@ -20,7 +20,7 @@
                 <doc v-if="tabView === 'doc'" :project-info="viewData" ref="doc"></doc>
             </div>
         </div>
-        <el-card class="pull-right addNewContainer" :style="cardHeight" :class="{'show':cardVisibel}">
+        <el-card class="pull-right addNewContainer" :style="cardHeight" :class="{'show':cardVisibel}" >
             <i class="closeBtn el-icon-close" @click="cardVisibel = false"></i>
             <add-org v-if="tabView === 'org'" :project-info="viewData" ref="addOrg"></add-org>
             <add-per v-if="tabView === 'per'" :project-info="viewData" ref="addPer"></add-per>
@@ -101,6 +101,7 @@ export default {
     width: 300px;
     padding-top: 0 ;
     position: absolute;
+    min-height: 730px;
     top: -36px;
     right: -335px;
     /* right: -28px; */

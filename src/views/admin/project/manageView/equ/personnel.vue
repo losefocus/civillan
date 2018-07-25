@@ -1,6 +1,6 @@
 <template>
     <div class="clearfix">
-        <div>设 备 : {{dataInfo.name}}</div>
+        <div style="padding-bottom:10px;">设 备 : {{dataInfo.name}}</div>
         <div style="border:1px solid #ebeef5;padding:10px" v-loading="listLoading">
             <el-checkbox :indeterminate="isIndeterminate" v-model="checkAll" @change="handleCheckAllChange">全选</el-checkbox>
             <div style="margin: 15px 0;"></div>

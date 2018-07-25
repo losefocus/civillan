@@ -1,45 +1,53 @@
 <template>
     <div>
-        <div>设备名称: {{dataInfo.name}}</div>
-        <el-form :model="form" class="clearfix" ref="form" label-width="70px" size="mini">
-            <el-form-item label="报警标题" style="width: 310px">
-                <el-input v-model="form.title" size="mini" auto-complete="off"></el-input>
-            </el-form-item>
-            <el-form-item label="报警周期" style="width: 310px;;margin-left:30px">
-                <el-select v-model="form.cycle" placeholder="请选择" size="mini">
-                    <el-option
-                    v-for="item in options"
-                    :key="item.value"
-                    :label="item.label"
-                    :value="item.value">
-                    </el-option>
-                </el-select>
-            </el-form-item>
-            <el-form-item label="报警内容" style="width: 310px">
-                <el-input v-model="form.triggerMessage" size="mini" auto-complete="off"></el-input>
-            </el-form-item>
-            <el-form-item label="恢复内容" style="width: 310px;margin-left:30px">
-                <el-input v-model="form.recoverMessage" size="mini" auto-complete="off"></el-input>
-            </el-form-item>
-            <el-form-item label="触发条件" style="width: 310px;">
-                <el-input v-model="form.condition" type="textarea" :rows="2" size="mini" auto-complete="off"></el-input>
-            </el-form-item>
-            <el-form-item label="备注" style="width: 310px;margin-left:30px">
-                <el-input v-model="form.comment" type="textarea" :rows="2" size="mini" auto-complete="off"></el-input>
-            </el-form-item>
-            <el-form-item  :style="flag == 'add'?'width: 140px':'width: 220px'" class="pull-right" style="padding-top:5px">
-                <div v-if="flag == 'add'">
-                    <el-button size="mini" type="primary" class="pull-right" @click="handleAdd('form')" :loading="createdLoading">添加</el-button>
-                </div>
-                <div v-else>
-                    <el-button size="mini" type="info" class="pull-right" style="margin-left:10px" @click="cancelEdit('form')">取消</el-button>
-                    <el-button size="mini" type="primary" class="pull-right" @click="handleEdit('form')" :loading="createdLoading">保存</el-button>
-                </div>
-            </el-form-item>
-            <el-form-item class="pull-right">
-                <el-checkbox v-model="form.status" >已启用</el-checkbox>
-            </el-form-item>
-        </el-form>
+        <div class="clearfix addBtn" style="padding-bottom:20px;">
+            <el-button type="primary" size="mini" v-show="!isshow"  class="pull-left" @click="isshow = !isshow" >添加</el-button>
+            <el-button type="info" size="mini" v-show="isshow" class="pull-left" @click="cancelEdit" style="margin-left:0">取消</el-button>
+        </div>
+        <div style="padding-bottom:10px;">设备名称: {{dataInfo.name}}</div>
+        <el-collapse-transition>
+            <div v-show="isshow">
+                <el-form :model="form" class="clearfix" ref="form" label-width="70px" size="mini">
+                    <el-form-item label="报警标题" style="width: 310px">
+                        <el-input v-model="form.title" size="mini" auto-complete="off"></el-input>
+                    </el-form-item>
+                    <el-form-item label="报警周期" style="width: 310px;;margin-left:30px">
+                        <el-select v-model="form.cycle" placeholder="请选择" size="mini">
+                            <el-option
+                            v-for="item in options"
+                            :key="item.value"
+                            :label="item.label"
+                            :value="item.value">
+                            </el-option>
+                        </el-select>
+                    </el-form-item>
+                    <el-form-item label="报警内容" style="width: 310px">
+                        <el-input v-model="form.triggerMessage" size="mini" auto-complete="off"></el-input>
+                    </el-form-item>
+                    <el-form-item label="恢复内容" style="width: 310px;margin-left:30px">
+                        <el-input v-model="form.recoverMessage" size="mini" auto-complete="off"></el-input>
+                    </el-form-item>
+                    <el-form-item label="触发条件" style="width: 310px;">
+                        <el-input v-model="form.condition" type="textarea" :rows="2" size="mini" auto-complete="off"></el-input>
+                    </el-form-item>
+                    <el-form-item label="备注" style="width: 310px;margin-left:30px">
+                        <el-input v-model="form.comment" type="textarea" :rows="2" size="mini" auto-complete="off"></el-input>
+                    </el-form-item>
+                    <el-form-item  :style="flag == 'add'?'width: 140px':'width: 220px'" class="pull-right" style="padding-top:5px">
+                        <div v-if="flag == 'add'">
+                            <el-button size="mini" type="primary" class="pull-right" @click="handleAdd('form')" :loading="createdLoading">添加</el-button>
+                        </div>
+                        <div v-else>
+                            <el-button size="mini" type="info" class="pull-right" style="margin-left:10px" @click="cancelEdit('form')">取消</el-button>
+                            <el-button size="mini" type="primary" class="pull-right" @click="handleEdit('form')" :loading="createdLoading">保存</el-button>
+                        </div>
+                    </el-form-item>
+                    <el-form-item class="pull-right">
+                        <el-checkbox v-model="form.status" >已启用</el-checkbox>
+                    </el-form-item>
+                </el-form>
+            </div>
+        </el-collapse-transition>
         <div v-loading="listLoading">
             <el-table :data="list" stripe border fit highlight-current-row style="width: 100%;margin-bottom:20px;margin-top:10px">
                 <el-table-column align="center" label="报警标题">
@@ -86,6 +94,7 @@ export default {
     props:['dataInfo'],
     data(){
         return {
+            isshow:false,
             listLoading:false,
             createdLoading:false,
             options:[
@@ -214,6 +223,7 @@ export default {
                 status:true
             }
             this.createdLoading = false
+            this.isshow = false
         }
     },
     watch:{
@@ -226,5 +236,9 @@ export default {
     width:80px;
     margin-bottom: 10px
 }
-
+.addBtn{
+    position: absolute;
+    top: 20px;
+    left: 120px;
+  }
 </style>

@@ -35,6 +35,23 @@
                 <el-checkbox v-model="form.status" >已启用</el-checkbox>
             </el-form-item>
         </el-form>
+        <div style="padding-bottom:10px;">
+            <el-upload
+                class="upload-demo"
+                ref="upload"
+                :headers="headers"
+                action="/product/product/import"
+                :limit="10"
+                :data="params"
+                name="file"
+                :show-file-list ="false"
+                :before-upload="beforeAvatarUpload"
+                :on-success="uploadSuccess"
+                :on-error="uploadError"
+                :auto-upload="true">
+                    <el-button slot="trigger" size="mini" type="">导入</el-button>
+            </el-upload>
+        </div>
         <div v-loading="listLoading">
             <el-table :data="list" element-loading-text="给我一点时间" stripe border fit highlight-current-row style="width: 100%;margin-bottom:20px">
                 <el-table-column align="center" label="变量">
@@ -78,7 +95,7 @@
     </div>
 </template>
 <script>
-
+import { getToken } from "@/util/auth";
 import {get_templateObj,set_templateObj} from "@/api/product";
 export default {
     props:['productInfo'],
@@ -109,6 +126,8 @@ export default {
                     label: 'char'
                 },
             ],
+            headers:{Authorization: "Bearer " + getToken()},
+            params:{product_id:this.productInfo.id},
             form:{
                 name:'',
                 label:'',
@@ -140,14 +159,15 @@ export default {
             let id
             this.productInfo.productTemplate.forEach(element => {
                 if(element.type === 1)id = element.id
+                this.params.id = id
             });
             get_templateObj(id).then(res => {
-                let data = res.data.result
-                this.templateData = data
+                let data_ = res.data.result
+                this.templateData = data_
                 this.list = []
                 this.total = 0
-                if(data.content && data.content !=''){
-                    this.list = JSON.parse(data.content)
+                if(data_.content && data_.content !=''){
+                    this.list = JSON.parse(data_.content.replace(new RegExp("'",'gi'),'"'))
                     this.total = this.list.length
                 }
                 this.listLoading = false
@@ -219,6 +239,30 @@ export default {
             }
             this.createdLoading = false
         },
+        uploadSuccess(response, file, fileList){
+            this.$notify({
+                title: '成功',
+                message: "导入成功",
+                type: "success",
+                duration: 2000
+            });
+            this.getList()
+        },
+        uploadError(){
+            this.$notify.error({
+                title: '错误',
+                message: '导入失败，请检查文件是否正确'
+            });
+        },
+        beforeAvatarUpload(file){
+            console.log(file)
+            const isJPG = file.type === 'application/vnd.ms-excel';
+            // const isLt2M = file.size / 1024 / 1024 < 2; 文件大小2M
+            if (!isJPG) {
+            this.$message.error('只允许上传 CSV 格式文件!');
+            }
+            return isJPG;
+        }
     }
 }
 </script>

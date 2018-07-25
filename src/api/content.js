@@ -1,10 +1,19 @@
 import request from '@/router/axios'
+/* 标签列表 */
+export function fetchTagList(query) {
+  return request({
+    url: '/admin/article/tag/list',
+    method: 'get',
+    params: query
+  })
+}
 
 /* 分类列表 */
-export function fetchCategoryList() {
+export function fetchCategoryList(query) {
   return request({
     url: '/admin/article/category/list',
     method: 'get',
+    params: query
   })
 }
 
@@ -48,5 +57,13 @@ export function updataObj(obj) {
       url: '/admin/article/update',
       method: 'post',
       data: obj
+    })
+  }
+
+  /* 详情 */
+export function getObj(id) {
+    return request({
+      url: '/admin/article/get?id='+id,
+      method: 'get',
     })
   }
