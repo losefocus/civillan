@@ -7,10 +7,10 @@
                     <el-collapse-item v-for="(item,index) in list_1" :key="index" :name="item.id">
                         <template slot="title">
                         <span style="font-size:16px;font-weight: bold">{{item.title}}</span>
-                        <span style="padding-left:40px;">
+                        <span class="pull-right" style="padding-right:10px">{{(item.updateAt)?item.updateAt:item.createdAt | parseTime('{y}-{m}-{d}')}}</span>
+                        <span style="padding-right:20px;" class="pull-right">
                             <el-tag type="info" size="mini" style="margin-left:5px" v-for="(ele,i) in item.articleTags" :key="i">{{ele.tagName}}</el-tag>
                         </span>
-                        <span class="pull-right" style="padding-right:10px">{{(item.updateAt)?item.updateAt:item.createdAt | parseTime('{y}-{m}-{d}')}}</span>
                         </template>
                         <div style="overflow:auto;border-top:1px solid #ebeef5;padding-top:10px;min-height:40px" v-loading="contentLoading"><p v-html="content"></p></div>
                     </el-collapse-item>
@@ -22,6 +22,9 @@
                     <el-collapse-item v-for="(item,index) in list_2" :key="index" :name="item.id">
                         <template slot="title">
                         <span style="font-size:16px;font-weight: bold">{{item.title}}</span>
+                        <span style="padding-right:20px;" class="pull-right">
+                            <el-tag type="info" size="mini" style="margin-left:5px" v-for="(ele,i) in item.articleTags" :key="i">{{ele.tagName}}</el-tag>
+                        </span>
                         </template>
                         <div style="overflow:auto;border-top:1px solid #ebeef5;padding-top:10px;min-height:40px" v-loading="contentLoading"><p v-html="content"></p></div>
                     </el-collapse-item>

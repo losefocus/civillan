@@ -30,7 +30,7 @@ export default {
 }
 .el-table__header th{
   background: #f4f8fb !important;
-  color: #333
+  color: #333;
 }
 
 .el-table__expanded-cell[class*=cell]{

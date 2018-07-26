@@ -13,7 +13,7 @@
                 </el-select>
             </el-form-item>
             <el-form-item label="" style="width: 100px;margin-right:5px">
-                <el-input v-model="form.name" size="mini" auto-complete="off" placeholder="名称"></el-input>
+                <el-input v-model="form.name" size="mini" auto-complete="off" placeholder="显示名称"></el-input>
             </el-form-item>
             <el-form-item label="" style="width: 100px;margin-right:5px">
                 <el-input v-model="form.label" size="mini" auto-complete="off" placeholder="标识"></el-input>
@@ -53,8 +53,8 @@
             </el-upload>
         </div>
         <div v-loading="listLoading">
-            <el-table :data="list" element-loading-text="给我一点时间" stripe border fit highlight-current-row style="width: 100%;margin-bottom:20px">
-                <el-table-column align="center" label="变量">
+            <el-table :data="list" stripe border fit highlight-current-row style="width: 100%;margin-bottom:20px">
+                <el-table-column align="center" label="显示名称">
                     <template slot-scope="scope">
                         <span>{{scope.row.name}}</span>
                     </template>

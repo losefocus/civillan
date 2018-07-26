@@ -15,12 +15,10 @@
                                 <el-table :data="scope.row.children" ref="subTable" id="subTable" size="mini">
                                     <el-table-column align="left" label="项目名称" min-width="250">
                                         <template slot-scope="pro">
-                                            <div style="padding-left:20px;">
-                                                <div style="height:40px" class="pull-left">
-                                                    <img style="width:60px;height:40px" :src="scope.row.thumbnailUrl+scope.row.thumbnailPath">
-                                                </div>
-                                                <el-tooltip class="item" effect="dark" :content="scope.row.name" placement="top-start" :open-delay="300">
-                                                    <span style="white-space:nowrap;cursor: pointer;"><a style="line-height:40px;padding-left:20px">{{scope.row.name}}</a></span>
+                                            <div style="white-space:nowrap;width:100%;height:40px;padding-left:20px;">
+                                                <img style="height:40px;width:60px;" class="pull-left" :src="pro.row.thumbnailUrl+pro.row.thumbnailPath">
+                                                <el-tooltip class="item" effect="dark" :content="pro.row.name" placement="top-start" :open-delay="300">
+                                                    <span style="white-space:nowrap;cursor: pointer;"><a style="overflow: hidden;text-overflow:ellipsis;line-height:40px;padding:0 10px;width:calc(100% - 80px)" @click="toInfo(pro.row)">{{pro.row.name}}</a></span>
                                                 </el-tooltip>
                                             </div>
                                         </template>
@@ -37,11 +35,12 @@
                                     </el-table-column>      
                                     <el-table-column align="center" label="操作" class-name="lastTd" min-width="80">
                                         <template slot-scope="pro">
-                                            <el-dropdown trigger="click" @command="handleCommand" placement="bottom">
+                                            <el-dropdown trigger="click" @command="handleCommand" placement="bottom" style="padding-left:20px;">
                                                 <span style="cursor:pointer">
                                                     操作<i class="el-icon-arrow-down el-icon--right"></i>
                                                 </span >
                                                 <el-dropdown-menu slot="dropdown">
+                                                    <el-dropdown-item :command="composeValue('info',pro.row)">详情</el-dropdown-item>
                                                     <el-dropdown-item 
                                                     v-for="(item,index) in btnList" 
                                                     :key="index" 
@@ -60,12 +59,15 @@
                         </el-table-column>
                         <el-table-column align="left" label="项目名称" min-width="250">
                             <template slot-scope="scope">
-                                <div style="height:40px" class="pull-left">
-                                    <img style="width:60px;height:40px" :src="scope.row.thumbnailUrl+scope.row.thumbnailPath">
+                                <div style="white-space:nowrap;width:100%;height:40px">
+                                    <img style="height:40px;width:60px;" class="pull-left" :src="scope.row.thumbnailUrl+scope.row.thumbnailPath">
+                                    <el-tooltip class="item" effect="dark" :content="scope.row.name" placement="top-start" :open-delay="300">
+                                        <span style="white-space:nowrap;">
+                                            <a v-if="scope.row.children==0" style="cursor: pointer;overflow: hidden;text-overflow:ellipsis;line-height:40px;padding:0 10px;width:calc(100% - 80px)" @click="toInfo(scope.row)">{{scope.row.name}}</a>
+                                            <span v-else style="overflow: hidden;text-overflow:ellipsis;line-height:40px;padding:0 10px;width:calc(100% - 80px)">{{scope.row.name}}</span>
+                                        </span>
+                                    </el-tooltip>
                                 </div>
-                                <el-tooltip class="item" effect="dark" :content="scope.row.name" placement="top-start" :open-delay="300">
-                                    <span style="white-space:nowrap;cursor: pointer;"><a style="line-height:40px;padding-left:20px">{{scope.row.name}}</a></span>
-                                </el-tooltip>
                             </template>
                         </el-table-column>
                         <el-table-column align="left" label="工期" min-width="170">
@@ -85,6 +87,7 @@
                                         操作<i class="el-icon-arrow-down el-icon--right"></i>
                                     </span >
                                     <el-dropdown-menu slot="dropdown">
+                                        <el-dropdown-item v-if="pro.row.children.length ==0" :command="composeValue('info',pro.row)">详情</el-dropdown-item>
                                         <el-dropdown-item
                                         v-if="pro.row.children.length ==0"
                                         v-for="(item,index) in btnList" 
@@ -110,7 +113,7 @@
                 <div class="tit"><h3>{{(flag == 'add')?'添加':'修改'}}项目</h3><span>{{(flag == 'add')?'Add':'Edit'}} Project</span><i class="closeBtn el-icon-close" @click="cardVisibel = false"></i></div>
                 <el-form label-width="55px" :model="form" :rules="rules" ref="form" status-icon label-position="left">
                     <el-form-item label="上级" prop="parentId" >
-                        <el-select v-model="form.parentId" size="small" :loading='listLoading' placeholder="请选择">
+                        <el-select v-model="form.parentId" size="small" :loading='listLoading' placeholder="请选择" :disabled="flag=='edit'">
                             <el-option
                             v-for="item in parentIdOptions"
                             :key="item.value"
@@ -170,7 +173,7 @@
                     <el-form-item label="备注" prop="comment">
                         <el-input
                         type="textarea"
-                        :autosize="{ minRows: 2, maxRows: 4}"
+                        :autosize="{ minRows: 4, maxRows: 4}"
                         placeholder="请输入内容"
                         v-model="form.comment">
                         </el-input>
@@ -259,6 +262,12 @@ export default {
             list:[],
             total:null,
             btnList:[
+                // {
+                //     value:'info',
+                //     label:'详情',
+                //     btn:'project_btn_info',
+                //     flag:false
+                // },
                 {
                     value:'org',
                     label:'机构',
@@ -331,6 +340,12 @@ export default {
         ...mapGetters(["permissions","adminerHash"])
     },
     methods:{
+        toInfo(info){
+            console.log(info)
+            this.showView = 'manage'
+            this.$refs.proManage.tabView = 'info'
+            this.viewData = info
+        },
         getCardHeight(){
             this.cardHeight.height = document.body.clientHeight - 107  - 30 + 'px'
         },
@@ -508,6 +523,7 @@ export default {
             this.tm=[]
             this.imageName=''
             this.fileList=[]
+            this.uploadLoaing = false
         },
         handleFilter(){
             this.listQuery.page_index = 1;

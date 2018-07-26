@@ -4,7 +4,7 @@
         <div v-loading="listLoading"   style="width:100%">
             <div class="filter-container">
                 <el-button  size="small" type="primary" @click="handleAdd">添加产品</el-button>
-                <el-button  size="small" type="primary" @click="classifyTemplatVisible=true">产品分类管理</el-button>
+                <el-button  size="small" type="primary" @click="classifyTemplatVisible=true">分类管理</el-button>
                 <el-button class="pull-right" type="primary" size="small" v-waves @click="handleFilter">搜索</el-button>
                 <el-input @keyup.enter.native="handleFilter" style="width: 200px;" size="small" suffix-icon="el-icon-search" class="pull-right" placeholder="产品搜索" v-model="listQuery.keyword"></el-input>
             </div>
@@ -23,7 +23,7 @@
                         </el-tooltip>
                     </template>
                 </el-table-column>
-                <el-table-column align="center" label="别名/型号">
+                <el-table-column align="center" label="型号">
                     <template slot-scope="scope">
                         <span>{{scope.row.alias}}</span>
                     </template>

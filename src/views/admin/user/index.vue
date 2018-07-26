@@ -97,7 +97,7 @@
           <input type="hidden" v-model="form.deptId" />
         </el-form-item> -->
 
-        <el-form-item label="所属分组" prop="groupName">
+        <el-form-item label="所属分组" prop="groupIds">
           <!-- <el-input v-model="form.groupName" placeholder="选择分组" @focus="handleDept()" readonly></el-input> -->
           <!-- <input type="hidden" v-model="form.group" /> -->
           <el-cascader :options="groupOptions" v-model="groupIds" :show-all-levels="false" change-on-select @change="changeGroup"></el-cascader>
@@ -152,6 +152,13 @@ export default {
     waves
   },
   data() {
+    var validateGroup = (rule, value, callback) => {
+        if (this.groupIds.length == 0) {
+            callback(new Error('请选择分组'));
+        } else {
+            callback();
+        }
+    };
     return {
       treeDeptData: [],
       checkedKeys: [],
@@ -204,12 +211,8 @@ export default {
             trigger: "blur"
           }
         ],
-        groupName: [
-          {
-            required: true,
-            message: "请选择分组",
-            trigger: "blur"
-          }
+        groupIds: [
+           { validator: validateGroup, message: '请选择分组', trigger: 'blur' ,required: true,}
         ],
         role: [
           {
@@ -268,6 +271,7 @@ export default {
   created() {
     this.getList();
     this.handleDept();
+    this.getRoleList()
     this.sys_user_add = this.permissions["sys_user_add"];
     this.sys_user_upd = this.permissions["sys_user_upd"];
     this.sys_user_del = this.permissions["sys_user_del"];
@@ -318,6 +322,11 @@ export default {
       this.dialogStatus = "create";
       this.dialogFormVisible = true;
     },
+    getRoleList(){
+      roleList().then(response => {
+          this.rolesOptions = response.data.result;
+        });
+    },
     handleUpdate(row) {
       getObj(row.id).then(response => {
         this.form = response.data.result;
@@ -331,9 +340,7 @@ export default {
           this.role[i] = row.roleList[i].roleId ;
           this.roleDesc[i] = row.roleList[i].roleDesc;
         }
-        roleList().then(response => {
-          this.rolesOptions = response.data.result;
-        });
+        
         get_parent(this.form.group).then(res => {
           let groups = new Array
           res.data.result.forEach(ele => {

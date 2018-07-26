@@ -74,7 +74,7 @@
                 </el-form-item>
             </el-form>
             <div v-loading="roleListLoading">
-                <el-table :data="roleList" element-loading-text="给我一点时间" stripe border fit highlight-current-row style="width: 100%;margin-bottom:20px;margin-top:10px">
+                <el-table :data="roleList" stripe border fit highlight-current-row style="width: 100%;margin-bottom:20px;margin-top:10px">
                     <el-table-column align="center" label="角色">
                         <template slot-scope="scope">
                             <span>{{scope.row.role}}</span>
@@ -153,6 +153,7 @@ export default {
             this.listQuery.projectId = this.projectInfo.id
             fetchUserList(this.listQuery).then(res => {
                 this.list = res.data.result.items
+                console.log(this.list)
                 this.total = res.data.result.total
                 this.listLoading = false
             })

@@ -20,11 +20,11 @@
           <span>{{ scope.row.type }}</span>
         </template>
       </el-table-column>
-      <el-table-column align="center" label="描述">
+      <!-- <el-table-column align="center" label="描述">
         <template slot-scope="scope">
           <span>{{ scope.row.description }}</span>
         </template>
-      </el-table-column>
+      </el-table-column> -->
       <el-table-column align="center" label="数据值">
         <template slot-scope="scope">
           <span>{{ scope.row.value }}</span>

@@ -12,8 +12,8 @@
                 <el-radio-button label="doc">文档资料</el-radio-button>
             </el-radio-group>
             </div>
-            <div style="padding-top:20px; ">
-                <info v-if="tabView === 'info'" :project-info="viewData" ref="info"></info>
+            <div style="padding-top:20px;position:relative">
+                <info v-if="tabView === 'info'" :project-info="viewData" ref="info" style="width:100%;"></info>
                 <org v-if="tabView === 'org'" :project-info="viewData" ref="org"></org>
                 <per v-if="tabView === 'per'" :project-info="viewData" ref="per"></per>
                 <equ v-if="tabView === 'equ'" :project-info="viewData" ref="equ"></equ>

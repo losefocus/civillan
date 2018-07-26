@@ -26,7 +26,6 @@ axios.interceptors.request.use(config => {
   }
   return config
 }, error => {
-  console.log(11111111)
   return Promise.reject(error)
 })
 // HTTPresponse拦截
@@ -41,7 +40,6 @@ axios.interceptors.response.use(data => {
     message: errorCode[code] || errorCode['default'],
     type: 'error'
   })
-  console.log(22222222)
   return Promise.reject(new Error(error))
 })
 

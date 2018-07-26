@@ -22,6 +22,11 @@ export default {
           href: "/wel/index",
           parentId: 0
         },
+        {
+          label: "帮助中心",
+          href: "/admin/help",
+          parentId: 1
+        },
         // {
         //   label: "文档",
         //   href: "https://www.kancloud.cn/lengleng/pig-guide/550709",

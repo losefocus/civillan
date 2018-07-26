@@ -1,7 +1,7 @@
 <template>
   <div class="sidebar-container" :class="{'is-active':isCollapse}">
     <logo :isCollapse="isCollapse"></logo>
-    <el-menu unique-opened :default-active="nowTagValue" class="el-menu-vertical-demo" mode="vertical" :show-timeout="200" :collapse="isCollapse">
+    <el-menu unique-opened :default-active="nowTagValue" class="el-menu-vertical-demo" mode="vertical" :show-timeout="200" :collapse="isCollapse" :default-openeds="defaultOpened">
       <sidebar-item :menu="menu" :isCollapse="isCollapse"></sidebar-item>
     </el-menu>
   </div>
@@ -18,7 +18,9 @@ export default {
   name: "sidebar",
   components: { SidebarItem, logo },
   data() {
-    return {};
+    return {
+      defaultOpened:["基础数据"]
+    };
   },
   created() {
     if (validatenull(this.menu)) {
