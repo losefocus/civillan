@@ -219,6 +219,8 @@ export default {
                 name:'',
                 sort:'',
                 status:true,
+                thumbnailPath:'',
+                thumbnailBaseUrl:''
             }
             this.createdLoading = false
         }

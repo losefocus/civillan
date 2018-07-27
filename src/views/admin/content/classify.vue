@@ -19,6 +19,7 @@
             </el-form-item>
             <el-form-item label="图片" prop="thumbnailUrl" style="width: 215px;">
                 <el-upload
+                v-loading='uploadLoaing'
                 class="avatar-uploader"
                 ref="upload"
                 :headers="headers"
@@ -27,9 +28,10 @@
                 :data="params"
                 name="uploadFile"
                 :show-file-list="false"
+                :before-upload='beforeUpload'
                 :on-success="uploadSuccess"
                 :auto-upload="true">
-                <img v-if="form.thumbnailUrl!='' && form.thumbnailUrl!=undefined" :src="form.thumbnailBaseUrl+form.thumbnailPath" class="avatar">
+                <img v-if="form.thumbnailBaseUrl!='' && form.thumbnailBaseUrl!=undefined" :src="form.thumbnailBaseUrl+form.thumbnailPath" class="avatar">
                 <i v-else class="el-icon-plus avatar-uploader-icon"></i>
                 </el-upload>
             </el-form-item>
@@ -107,10 +109,13 @@ export default {
                 parentId:'',
                 name:'',
                 sort:'',
-                status:'',
+                status:true,
+                thumbnailPath:'',
+                thumbnailBaseUrl:''
             },
             headers:{Authorization: "Bearer " + getToken()},
             params:{component :'project'},
+            uploadLoaing:false,
             flag:'add',
             listQuery:{
                 page_index: 1,
@@ -140,9 +145,14 @@ export default {
             this.listQuery.page_index = val;
             this.getList();
         },
+        beforeUpload(){
+            this.uploadLoaing = true
+        },
         uploadSuccess(response, file, fileList){
-            this.form.thumbnailPath = response.result.thumbnailPath
-            this.form.thumbnailBaseUrl = response.result.thumbnailBaseUrl
+            this.form.thumbnailPath = response.result.path
+            this.form.thumbnailBaseUrl = response.result.baseUrl
+console.log(this.form)
+            this.uploadLoaing = false
         },
         getList(){
             this.resetTem()
@@ -216,7 +226,9 @@ export default {
                 parentId:'',
                 name:'',
                 sort:'',
-                status:'',
+                status:true,
+                thumbnailPath:'',
+                thumbnailBaseUrl:''
             }
             this.createdLoading = false
         },
