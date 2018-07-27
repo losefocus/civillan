@@ -4,7 +4,7 @@
       <el-button v-if="attachment_btn_del" class="filter-item" @click="deletes_query" type="primary" icon="edit" size="small">批量删除</el-button>
     </div>
 
-    <el-table :key='tableKey' :data="list" v-loading="listLoading" stripe fit highlight-current-row style="width: 100%" @selection-change="handleSelectionChange">
+    <el-table :key='tableKey' :data="list" v-loading="listLoading" fit highlight-current-row style="width: 100%" @selection-change="handleSelectionChange">
 
       <!-- <el-table-column align="center" label="序号">
         <template slot-scope="scope">

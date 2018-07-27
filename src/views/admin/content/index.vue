@@ -69,7 +69,7 @@
         <el-button type="info" size="small" v-show="isshow" class="pull-right" @click="cancelForm" style="width:80px;">取消</el-button>
         
         <div v-loading="listLoading">
-            <el-table :data="list" stripe fit highlight-current-row style="width: 100%;margin-bottom:20px;margin-top:10px">
+            <el-table :data="list" fit highlight-current-row style="width: 100%;margin-bottom:20px;margin-top:10px">
                 <el-table-column align="center" label="图片">
                     <template slot-scope="scope">
                         <div style="height:40px">

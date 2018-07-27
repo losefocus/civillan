@@ -8,7 +8,7 @@
                 <el-button class="pull-right" type="primary" size="small" v-waves @click="handleFilter">搜索</el-button>
                 <el-input @keyup.enter.native="handleFilter" style="width: 200px;" size="small" suffix-icon="el-icon-search" class="pull-right" placeholder="产品搜索" v-model="listQuery.keyword"></el-input>
             </div>
-            <el-table :data="list" stripe fit highlight-current-row style="width: 100%;margin-bottom:25px;margin-top:15px">
+            <el-table :data="list" fit highlight-current-row style="width: 100%;margin-bottom:25px;margin-top:15px">
                 <el-table-column align="center" label="缩略图">
                     <template slot-scope="scope">
                         <div style="height:40px">

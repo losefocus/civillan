@@ -2,18 +2,20 @@
   <div class="logo">
     <transition name="fade">
       <span v-if="isCollapse" class="logo_title is-bold " key="0" :class="{'is-text':!type,'is-img':type}">
-        <template v-if="type">
+        <!-- <template v-if="type">
           <img :src="website.logo" width="40" height="40" />
         </template>
         <template v-else>
           {{website.logo}}
-        </template>
+        </template> -->
+          <img style="width:40px;height:40px;margin:12px 0 0 2px;" src="../../../assets/img/logo_2.png">
       </span>
     </transition>
     <transition-group name="fade">
       <template v-if="!isCollapse">
-        <span class="logo_title is-bold" key="1">{{website.title}} </span>
-        <span class="logo_subtitle" key="2">{{website.author}}</span>
+        <!-- <span class="logo_title is-bold" key="1">{{website.title}} </span>
+        <span class="logo_subtitle" key="2">{{website.author}}</span> -->
+        <span class="logo_title" key="1"><span class="logoImg"></span></span>
       </template>
     </transition-group>
   </div>
@@ -65,7 +67,7 @@ export default {
   box-sizing: border-box;
 }
 .logo_title {
-  padding: 0 5px 0 0;
+  padding: 0 0 0 0;
   color: #fff;
   font-size: 28px;
   &.is-bold {
@@ -85,5 +87,13 @@ export default {
 .logo_subtitle {
   font-size: 16px;
   padding-top: 5px;
+}
+.logoImg{
+  display: block;
+  // margin-left:10px;
+  width:184px;
+  height:64px;
+  background: url('../../../assets/img/logo_1.png')no-repeat center;
+  background-size: contain
 }
 </style>

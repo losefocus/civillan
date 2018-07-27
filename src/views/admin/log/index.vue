@@ -9,7 +9,7 @@
         <el-button class="filter-item" type="primary" v-waves icon="search" @click="handleFilter" size="small">搜索</el-button>
       </div>
     </div>
-    <el-table :key='tableKey' :data="list" v-loading="listLoading" stripe fit highlight-current-row style="width: 100%">
+    <el-table :key='tableKey' :data="list" v-loading="listLoading" fit highlight-current-row style="width: 100%">
       <el-table-column align="center" label="序号">
         <template slot-scope="scope">
           <span>{{ getSerialNumber(scope.$index) }}</span>

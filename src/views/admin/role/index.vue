@@ -5,7 +5,7 @@
       </el-button>
     </div>
 
-    <el-table :key='tableKey' :data="list" v-loading="listLoading" stripe fit highlight-current-row style="width: 99%">
+    <el-table :key='tableKey' :data="list" v-loading="listLoading" fit highlight-current-row style="width: 99%">
 
       <el-table-column align="center" label="序号">
         <template slot-scope="scope">

@@ -4,7 +4,7 @@
             <el-button class="filter-item" style="" @click="handleAdd" size="small" type="primary">添加人员</el-button>
             <el-button class="filter-item" style="" @click="objectTypeVisible = true" size="small" type="primary" icon="edit" >角色管理</el-button>
         </div>
-        <el-table :data="list" v-loading="listLoading" stripe fit highlight-current-row style="width: 99%;margin-bottom:20px">
+        <el-table :data="list" v-loading="listLoading" fit highlight-current-row style="width: 99%;margin-bottom:20px">
             <el-table-column align="center" label="姓名(角色)" min-width="110">
                 <template slot-scope="scope">
                     <span style="white-space:nowrap;cursor:pointer;"><a>{{scope.row.name}}({{scope.row.userRole[0].projectRole.role}})</a></span>
@@ -74,7 +74,7 @@
                 </el-form-item>
             </el-form>
             <div v-loading="roleListLoading">
-                <el-table :data="roleList" stripe border fit highlight-current-row style="width: 100%;margin-bottom:20px;margin-top:10px">
+                <el-table :data="roleList" border fit highlight-current-row style="width: 100%;margin-bottom:20px;margin-top:10px">
                     <el-table-column align="center" label="角色">
                         <template slot-scope="scope">
                             <span>{{scope.row.role}}</span>

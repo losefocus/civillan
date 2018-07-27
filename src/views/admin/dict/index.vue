@@ -9,7 +9,7 @@
       <el-button v-if="sys_dict_add" class="filter-item" @click="handleCreate" type="primary" icon="edit" size="small">添加
       </el-button>
     </div>
-    <el-table :key='tableKey' :data="list" v-loading="listLoading" stripe fit highlight-current-row style="width: 100%">
+    <el-table :key='tableKey' :data="list" v-loading="listLoading" fit highlight-current-row style="width: 100%">
       <el-table-column align="center" label="编号">
         <template slot-scope="scope">
           <span>{{ scope.row.id }}</span>

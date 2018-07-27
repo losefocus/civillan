@@ -54,7 +54,7 @@
             </el-upload>
         </div>
         <div v-loading="listLoading">
-            <el-table :data="list" @selection-change="handleSelectionChange" stripe border fit highlight-current-row style="width: 100%;margin-bottom:20px;margin-top:10px">
+            <el-table :data="list" @selection-change="handleSelectionChange" border fit highlight-current-row style="width: 100%;margin-bottom:20px;margin-top:10px">
                 <el-table-column type="selection" align="center" width="50">
                 </el-table-column>
                 <el-table-column align="center" label="变量">

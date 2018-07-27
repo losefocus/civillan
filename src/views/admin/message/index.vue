@@ -33,7 +33,7 @@
         <el-button type="info" size="small" v-show="isshow" class="pull-left" @click="isshow = !isshow" style="width:80px;margin-left:0">取消</el-button>
         </div>
 
-        <el-table :data="list" stripe style="width: 100%" v-loading="listLoading">
+        <el-table :data="list" style="width: 100%" v-loading="listLoading">
             <el-table-column align="center" label="消息标题" >
                 <template slot-scope="scope">
                     <span>{{ scope.row.title }}</span>

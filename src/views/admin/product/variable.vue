@@ -53,7 +53,7 @@
             </el-upload>
         </div>
         <div v-loading="listLoading">
-            <el-table :data="list" stripe border fit highlight-current-row style="width: 100%;margin-bottom:20px">
+            <el-table :data="list" border fit highlight-current-row style="width: 100%;margin-bottom:20px">
                 <el-table-column align="center" label="显示名称">
                     <template slot-scope="scope">
                         <span>{{scope.row.name}}</span>

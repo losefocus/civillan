@@ -13,7 +13,7 @@
                 </el-option>
             </el-select>
         </div>
-        <el-table :data="listFilter" v-loading="listLoading" stripe fit highlight-current-row style="width: 99%;margin-bottom: 20px;">
+        <el-table :data="listFilter" v-loading="listLoading" fit highlight-current-row style="width: 99%;margin-bottom: 20px;">
             <el-table-column align="left" label="机构名称" min-width="170px">
                 <template slot-scope="scope">
                     <el-tooltip class="item" effect="dark" :content="scope.row.name" placement="top-start" :open-delay="300">
@@ -83,7 +83,7 @@
                 </el-form-item>
             </el-form>
             <div v-loading="typelListLoading">
-                <el-table :data="orgTypeList"  element-loading-text="给我一点时间" stripe border fit highlight-current-row style="width: 100%;margin-bottom:20px;margin-top:10px">
+                <el-table :data="orgTypeList" border fit highlight-current-row style="width: 100%;margin-bottom:20px;margin-top:10px">
                     <el-table-column align="center" label="类型名称">
                         <template slot-scope="scope">
                             <span>{{scope.row.name}}</span>

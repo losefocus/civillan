@@ -4,7 +4,7 @@
             <el-button class="filter-item" style="" @click="handleAdd" size="small" type="primary">添加设备</el-button>
             <el-button class="filter-item" style="" @click="handleGroup" size="small" type="primary" icon="edit" >分组管理</el-button>
         </div>
-        <el-table :data="list" v-loading="listLoading" stripe fit highlight-current-row style="width: 99%;margin-bottom:20px">
+        <el-table :data="list" v-loading="listLoading" fit highlight-current-row style="width: 99%;margin-bottom:20px">
             <el-table-column align="center" label="缩略图">
                 <template slot-scope="scope">
                     <div style="height:40px">

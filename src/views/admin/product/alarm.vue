@@ -70,7 +70,7 @@
             </el-upload>
         </div>
         <div v-loading="listLoading">
-            <el-table :data="list" element-loading-text="给我一点时间" stripe border fit highlight-current-row style="width: 100%;margin-bottom:20px">
+            <el-table :data="list" border fit highlight-current-row style="width: 100%;margin-bottom:20px">
                 <el-table-column align="center" label="报警标题">
                     <template slot-scope="scope">
                         <span>{{scope.row.title}}</span>
