@@ -58,7 +58,7 @@
                 ref="upload"
                 :headers="headers"
                 action="/product/product/import"
-                :limit="10"
+                :limit="999"
                 :data="params"
                 name="file"
                 :show-file-list ="false"

@@ -11,7 +11,7 @@
                     ref="upload"
                     :headers="headers"
                     action="/project/project_file/upload"
-                    :limit="10"
+                    :limit="999"
                     :data="params"
                     name="uploadFile"
                     :show-file-list ="false"

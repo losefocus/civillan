@@ -42,7 +42,7 @@
                 ref="upload"
                 :headers="headers"
                 action="/device/device_sensor/import"
-                :limit="10"
+                :limit="999"
                 :data="params"
                 name="file"
                 :show-file-list ="false"

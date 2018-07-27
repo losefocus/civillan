@@ -24,7 +24,7 @@
                     ref="upload"
                     :headers="headers"
                     action="/file/attachment/upload"
-                    :limit="10"
+                    :limit="999"
                     :data="params"
                     name="uploadFile"
                     :show-file-list="false"
