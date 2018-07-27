@@ -2,15 +2,28 @@
     <div style="padding:20px;border:1px solid #ebeef5">
         <div class="filter-container">
             <el-button class="filter-item" style="" @click="handleAdd" size="small" type="primary">添加机构</el-button>
-            <el-button class="filter-item" style="" @click="objectTypeVisible = true"  size="small" type="primary" icon="edit" >机构类型
-            </el-button>
+            <el-button class="filter-item" style="" @click="objectTypeVisible = true"  size="small" type="primary" icon="edit" >机构类型</el-button>
+            <el-select v-model="orgType" @change="filterType" placeholder="请选择机构类型" size="small" style="width:150px;margin-left:10px;" class="filter-item">
+                <el-option label="全部" value="0"></el-option>
+                <el-option
+                v-for="item in orgTypeOptions"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value">
+                </el-option>
+            </el-select>
         </div>
-        <el-table :data="list" v-loading="listLoading" stripe fit highlight-current-row style="width: 99%;margin-bottom: 20px;">
+        <el-table :data="listFilter" v-loading="listLoading" stripe fit highlight-current-row style="width: 99%;margin-bottom: 20px;">
             <el-table-column align="left" label="机构名称" min-width="170px">
                 <template slot-scope="scope">
                     <el-tooltip class="item" effect="dark" :content="scope.row.name" placement="top-start" :open-delay="300">
                         <span style="white-space:nowrap;cursor:pointer;"><a>{{scope.row.name}}</a></span>
                     </el-tooltip>
+                </template>
+            </el-table-column>
+            <el-table-column align="center" label="类型">
+                <template slot-scope="scope">
+                    <span>{{orgTypeHash.get(scope.row.typeId)}}</span>
                 </template>
             </el-table-column>
             <el-table-column align="center" label="联络人">
@@ -118,6 +131,7 @@ export default {
             listLoading:false,
             typelListLoading:false,
             list:[],
+            listFilter:[],
             objectTypeVisible:false,
             orgTypeForm:{
                 name:'',
@@ -138,6 +152,9 @@ export default {
             },
             typeTotal:null,
             createLoading:false,
+            orgTypeOptions:[],
+            orgTypeHash:{},
+            orgType:''
         }
     },
     created() {
@@ -149,6 +166,14 @@ export default {
     },
     computed: {},
     methods:{
+        filterType(){
+            if(this.orgType == 0) this.listFilter = this.list
+            else{
+                this.listFilter = this.list.filter(item => {
+                    return item.typeId == this.orgType
+                })
+            }
+        },
         handleAdd(){
             this.$parent.cardVisibel = true
             this.$parent.$refs.addOrg.flag = 'add'
@@ -160,6 +185,7 @@ export default {
             this.listQuery.projectId = this.projectInfo.id
             fetchList(this.listQuery).then(res => {
                 this.list = res.data.result.items
+                this.listFilter = this.list
                 this.total = res.data.result.total
                 this.listLoading = false
             })
@@ -206,13 +232,15 @@ export default {
             fetchTypeList(this.typeListQuery).then(res=>{
                 this.orgTypeList = res.data.result.items
                 this.typeTotal = res.data.result.total
-                let orgTypeOptions = []
+                this.orgTypeOptions = []
+                this.orgTypeHash = new Map()
                 this.orgTypeList.forEach(element => {
                     element.value = element.id
                     element.label = element.name
-                    orgTypeOptions.push(element)
+                    this.orgTypeOptions.push(element)
+                    this.orgTypeHash.set(element.id,element.name)
                 });
-                this.$store.commit("SET_TYPEOPTIONS",orgTypeOptions);
+                this.$store.commit("SET_TYPEOPTIONS",this.orgTypeOptions);
                 this.typelListLoading = false
             })
         },
