@@ -1,23 +1,29 @@
 <template>
-  <div class="logo">
+  <div class="logo" :style="isCollapse?'width:64px':'width:230px'">
     <transition name="fade">
-      <span v-if="isCollapse" class="logo_title is-bold " key="0" :class="{'is-text':!type,'is-img':type}">
-        <!-- <template v-if="type">
+      <!-- <span v-if="isCollapse" class="logo_title is-bold " key="0" :class="{'is-text':!type,'is-img':type}">
+        <template v-if="type">
           <img :src="website.logo" width="40" height="40" />
         </template>
         <template v-else>
           {{website.logo}}
-        </template> -->
+        </template>
           <img style="width:40px;height:40px;margin:12px 0 0 2px;" src="../../../assets/img/logo_2.png">
-      </span>
+      </span> -->
+      <div v-if="isCollapse">
+        <span class="logoImg_s"></span>
+      </div>
     </transition>
-    <transition-group name="fade">
-      <template v-if="!isCollapse">
-        <!-- <span class="logo_title is-bold" key="1">{{website.title}} </span>
-        <span class="logo_subtitle" key="2">{{website.author}}</span> -->
+    <transition name="fade">
+      <!-- <template v-if="!isCollapse">
+        <span class="logo_title is-bold" key="1">{{website.title}} </span>
+        <span class="logo_subtitle" key="2">{{website.author}}</span>
         <span class="logo_title" key="1"><span class="logoImg"></span></span>
-      </template>
-    </transition-group>
+      </template> -->
+      <div v-if="!isCollapse">
+        <span class="logoImg_l"></span>
+      </div>
+    </transition>
   </div>
 </template>
 
@@ -64,7 +70,8 @@ export default {
   font-size: 20px;
   font-weight: 600;
   overflow: hidden;
-  box-sizing: border-box;
+  // box-sizing: border-box;
+  transition:all .6s
 }
 .logo_title {
   padding: 0 0 0 0;
@@ -88,9 +95,15 @@ export default {
   font-size: 16px;
   padding-top: 5px;
 }
-.logoImg{
+.logoImg_s{
   display: block;
-  // margin-left:10px;
+  width:38px;
+  height:38px;
+  background: url('../../../assets/img/logo_2.png')no-repeat center;
+  background-size: contain
+}
+.logoImg_l{
+  display: block;
   width:184px;
   height:64px;
   background: url('../../../assets/img/logo_1.png')no-repeat center;

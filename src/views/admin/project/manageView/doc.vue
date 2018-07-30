@@ -4,7 +4,7 @@
             <el-button class="filter-item" style="" @click="handleAdd" size="small" type="primary">添加文件</el-button>
         </div>
         <el-table :data="list" v-loading="listLoading" fit highlight-current-row style="width: 99%;margin-bottom:20px;">
-            <el-table-column align="center" label="文档标题">
+            <el-table-column align="left" label="文档标题">
                 <template slot-scope="scope">
                     <span>{{scope.row.name}}</span>
                 </template>

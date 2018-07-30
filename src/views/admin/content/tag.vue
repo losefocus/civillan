@@ -85,6 +85,8 @@ export default {
         getList(){
             this.resetTem()
             this.listLoading = true
+            this.listQuery.sort_by = 'sort'
+            this.listQuery.direction = 'asc'
             fetchList(this.listQuery).then(res => {
                 this.list = res.data.result.items
                 this.total = res.data.result.total

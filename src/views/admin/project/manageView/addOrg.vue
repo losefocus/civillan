@@ -126,6 +126,7 @@ export default {
                 status:true
             }
             this.createLoading = false
+            this.$refs.addNewForm.resetFields()
         }
     }
 }

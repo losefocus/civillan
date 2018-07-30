@@ -174,6 +174,7 @@ export default {
             this.$parent.$refs.addPer.form.status = (row.status == 1)?true:false
             this.$parent.$refs.addPer.form.projectOrgan = {id :row.projectOrgan.id}
             this.$parent.$refs.addPer.role = row.userRole[0].projectRole.id
+            this.$parent.$refs.addPer.userPhone = row.phone
         },
         deletePer(row){
             this.$confirm(

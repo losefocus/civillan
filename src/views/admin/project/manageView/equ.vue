@@ -12,7 +12,7 @@
                     </div>
                 </template>
             </el-table-column>
-            <el-table-column align="center" label="设备名称">
+            <el-table-column align="left" label="设备名称">
                 <template slot-scope="scope">
                     <span style="white-space:nowrap;cursor:pointer;"><a>{{scope.row.name}}</a></span>
                 </template>

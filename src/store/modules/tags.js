@@ -8,13 +8,18 @@ const tagObj = {
     close: true,
 }
 function setFistTag(list) {
-    if (list.length == 1) {
-        list[0].close = false;
-    } else {
-        list.some(a => {
-            a.close = true
-        })
-    }
+    console.log(list)
+    list.some(a => {
+        if(a.value == '/wel/index') a.close = false
+        else a.close = true
+    })
+    // if (list.length == 1) {
+    //     list[0].close = false;
+    // } else {
+    //     list.some(a => {
+    //         a.close = true
+    //     })
+    // }
     return list;
 
 }

@@ -70,21 +70,21 @@
         
         <div v-loading="listLoading">
             <el-table :data="list" fit highlight-current-row style="width: 100%;margin-bottom:20px;margin-top:10px">
-                <el-table-column align="center" label="图片">
+                <el-table-column align="center" label="图片" width="90">
                     <template slot-scope="scope">
                         <div style="height:40px">
                         <img style="width:60px;height:40px" :src="scope.row.thumbnailBaseUrl+scope.row.thumbnailPath">
                         </div>
                     </template>
                 </el-table-column>
-                <el-table-column align="center" label="标题">
+                <el-table-column align="left" label="标题" min-width="120">
                     <template slot-scope="scope">
-                        <span>{{scope.row.title}}</span>
+                        <span style="white-space:nowrap;cursor: pointer;">{{scope.row.title}}</span>
                     </template>
                 </el-table-column>
-                <el-table-column align="center" label="URL">
+                <el-table-column align="left" label="URL" min-width="120">
                     <template slot-scope="scope">
-                        <span>{{scope.row.title}}</span>
+                        <span style="white-space:nowrap;cursor: pointer;">{{scope.row.url}}</span>
                     </template>
                 </el-table-column>
                 <el-table-column align="center" label="分类">

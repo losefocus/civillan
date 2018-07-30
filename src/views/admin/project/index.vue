@@ -9,7 +9,7 @@
                     <el-input @keyup.enter.native="handleFilter" style="width: 200px;" size="small" suffix-icon="el-icon-search" class="pull-right" placeholder="项目搜索" v-model="listQuery.keyword"></el-input>
                 </div>
                 <div v-loading="listLoading" >
-                    <el-table :data="list" fit style="width: 100%;margin-bottom:25px;margin-top:15px;" :row-class-name="setClassName">
+                    <el-table :data="list" fit style="width: 100%;margin-bottom:25px;margin-top:15px;" :row-class-name="setClassName" ref="projectTable">
                         <el-table-column type="expand">
                             <template slot-scope="scope">
                                 <el-table :data="scope.row.children" ref="subTable" id="subTable" size="mini">
@@ -40,7 +40,7 @@
                                                     操作<i class="el-icon-arrow-down el-icon--right"></i>
                                                 </span >
                                                 <el-dropdown-menu slot="dropdown">
-                                                    <el-dropdown-item :command="composeValue('info',pro.row)">详情</el-dropdown-item>
+                                                    <el-dropdown-item :command="composeValue('info',pro.row)">项目详情</el-dropdown-item>
                                                     <el-dropdown-item 
                                                     v-for="(item,index) in btnList" 
                                                     :key="index" 
@@ -48,8 +48,8 @@
                                                     :command="composeValue(item.value,pro.row)">
                                                     {{item.label}}
                                                     </el-dropdown-item>
-                                                    <el-dropdown-item divided v-if="project_btn_edit" :command="composeValue('edit',pro.row)">修改</el-dropdown-item>
-                                                    <el-dropdown-item  v-if="project_btn_del" :command="composeValue('del',pro.row)">删除</el-dropdown-item>
+                                                    <el-dropdown-item divided v-if="project_btn_edit" :command="composeValue('edit',pro.row)">修改项目</el-dropdown-item>
+                                                    <el-dropdown-item  v-if="project_btn_del" :command="composeValue('del',pro.row)">删除项目</el-dropdown-item>
                                                 </el-dropdown-menu>
                                             </el-dropdown>
                                         </template>
@@ -64,7 +64,7 @@
                                     <el-tooltip class="item" effect="dark" :content="scope.row.name" placement="top-start" :open-delay="300">
                                         <span style="white-space:nowrap;">
                                             <a v-if="scope.row.children==0" style="cursor: pointer;overflow: hidden;text-overflow:ellipsis;line-height:40px;padding:0 10px;width:calc(100% - 80px)" @click="toInfo(scope.row)">{{scope.row.name}}</a>
-                                            <span v-else style="overflow: hidden;text-overflow:ellipsis;line-height:40px;padding:0 10px;width:calc(100% - 80px)">{{scope.row.name}}</span>
+                                            <span v-else style="cursor: pointer;overflow: hidden;text-overflow:ellipsis;line-height:40px;padding:0 10px;width:calc(100% - 80px)" @click="expendTableRow(scope.row)">{{scope.row.name}}</span>
                                         </span>
                                     </el-tooltip>
                                 </div>
@@ -87,7 +87,7 @@
                                         操作<i class="el-icon-arrow-down el-icon--right"></i>
                                     </span >
                                     <el-dropdown-menu slot="dropdown">
-                                        <el-dropdown-item v-if="pro.row.children.length ==0" :command="composeValue('info',pro.row)">详情</el-dropdown-item>
+                                        <el-dropdown-item v-if="pro.row.children.length ==0" :command="composeValue('info',pro.row)">项目详情</el-dropdown-item>
                                         <el-dropdown-item
                                         v-if="pro.row.children.length ==0"
                                         v-for="(item,index) in btnList" 
@@ -96,8 +96,9 @@
                                         :command="composeValue(item.value,pro.row)">
                                         {{item.label}}
                                         </el-dropdown-item>
-                                        <el-dropdown-item :divided="pro.row.children.length == 0" v-if="project_btn_edit" :command="composeValue('edit',pro.row)">修改</el-dropdown-item>
-                                        <el-dropdown-item v-if="project_btn_del" :command="composeValue('del',pro.row)">删除</el-dropdown-item>
+                                        <el-dropdown-item :divided="pro.row.children.length == 0" v-if="project_btn_add" :command="composeValue('add',pro.row)">添加子项</el-dropdown-item>
+                                        <el-dropdown-item v-if="project_btn_edit" :command="composeValue('edit',pro.row)">修改项目</el-dropdown-item>
+                                        <el-dropdown-item v-if="project_btn_del" :command="composeValue('del',pro.row)">删除项目</el-dropdown-item>
                                     </el-dropdown-menu>
                                 </el-dropdown>
                             </template>
@@ -270,22 +271,22 @@ export default {
                 // },
                 {
                     value:'org',
-                    label:'机构',
+                    label:'机构设置',
                     btn:'project_btn_institutions',
                     flag:false
                 },{
                     value:'per',
-                    label:'人员',
+                    label:'人员管理',
                     btn:'project_btn_personnel',
                     flag:false
                 },{
                     value:'equ',
-                    label:'设备',
+                    label:'设备管理',
                     btn:'project_btn_device',
                     flag:false
                 },{
                     value:'doc',
-                    label:'文档',
+                    label:'文档资料',
                     btn:'project_btn_doc',
                     flag:false
                 },
@@ -320,6 +321,7 @@ export default {
             project_btn_del :false,
             cardHeight:{'height':null},
             cardVisibel:false,
+            expandRow:null,
         }
     },
     created() {
@@ -341,7 +343,6 @@ export default {
     },
     methods:{
         toInfo(info){
-            console.log(info)
             this.showView = 'manage'
             this.$refs.proManage.tabView = 'info'
             this.viewData = info
@@ -349,10 +350,16 @@ export default {
         getCardHeight(){
             this.cardHeight.height = document.body.clientHeight - 107  - 30 + 'px'
         },
-        handleAdd(){
+        expendTableRow(row){
+            this.$refs.projectTable.toggleRowExpansion(row);
+        },
+        handleAdd(row){
             this.cardVisibel = true
             this.flag = 'add'
             this.resetForm()
+            if(row)this.form.parentId = row.id
+            this.expandRow = row
+            //this.$refs.projectTable.toggleRowExpansion(this.expandRow,true);
         },
         setClassName({row, index}){
             return row.children.length != 0 ? '' : 'expand';
@@ -542,7 +549,8 @@ export default {
             this.showView = 'mapView'
         },
         handleCommand(command){
-            if(command.value == 'del') this.delProject(command.row)
+            if(command.value == 'add') this.handleAdd(command.row)
+            else if(command.value == 'del') this.delProject(command.row)
             else if(command.value == 'edit') this.updataForm(command.row)
             else{
                 this.showView = 'manage'

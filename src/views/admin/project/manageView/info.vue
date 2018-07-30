@@ -2,31 +2,44 @@
     <div >
         <div class="clearfix">
             <div class="pull-left imgBox">
-                <img :src="projectInfo.thumbnailUrl+projectInfo.thumbnailPath">
+                <img :src="info.thumbnailUrl+info.thumbnailPath">
             </div>
             <div class="pull-left text">
-                <h1>{{projectInfo.name}}</h1>
-                <p>工期：{{projectInfo.beginAt | parseTime('{y}-{m}-{d}')}} 至 {{projectInfo.endAt | parseTime('{y}-{m}-{d}')}}</p>
-                <p class="clearfix">
-                    <span class="pull-left">监理单位：</span>
-                    <span class="pull-left">
-                        <p v-for="(item , index) in projectInfo.organTypeList" v-if="item.organList.length!=0" :key="index" style="padding-right:10px;">{{index+1}}、{{item.organList[0].name}} </p>
-                    </span>
+                <h1>{{info.name}}</h1>
+                <p>工期：{{info.beginAt | parseTime('{y}-{m}-{d}')}} 至 {{info.endAt | parseTime('{y}-{m}-{d}')}}</p>
+                <p v-for="(item , index) in info.organTypeList" v-if="item.organList.length!=0" :key="index" style="padding-right:10px;">
+                    {{item.name}}：{{item.organList[0].name}} 
                 </p>
-                <P>管理员：{{adminerHash[projectInfo.adminer]}}</P>
+                <P>管理员：{{adminerHash[info.adminer]}}</P>
             </div>
         </div>
-         <div class="comment" style="width:800px">项目介绍：{{projectInfo.comment}}</div>
+         <div class="comment" style="width:800px">项目介绍：{{info.comment}}</div>
     </div>
 </template>
 <script>
 import { mapGetters } from "vuex";
+import {getObj} from "@/api/project_info";
+
 export default {
+    data(){
+        return{
+            info:null
+        }
+    },
     props:['projectInfo'],
+    created() {
+        this.getInfo();
+    },
     computed: {
         ...mapGetters(["adminerHash"])
     },
-    
+    methods:{
+        getInfo(){
+            getObj(this.projectInfo.id).then(res => {
+                this.info = res.data.result
+            })
+        }
+    }
 }
 </script>
 <style scoped lang="scss">

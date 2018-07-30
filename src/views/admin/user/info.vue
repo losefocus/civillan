@@ -5,7 +5,7 @@
         <div class="grid-content bg-purple">
           <el-form :model="ruleForm2" :rules="rules2" ref="ruleForm2" label-width="100px" class="demo-ruleForm">
             <el-form-item label="用户名" prop="username">
-              <el-input type="text" :value="userInfo.username" disabled></el-input>
+              <el-input type="text" :value="ruleForm2.username" disabled></el-input>
             </el-form-item>
             <el-form-item label="原密码" prop="pass">
               <el-input type="password" v-model="ruleForm2.password" auto-complete="off"></el-input>
@@ -16,12 +16,18 @@
             <el-form-item label="确认密码" prop="checkPass">
               <el-input type="password" v-model="ruleForm2.newpassword2" auto-complete="off"></el-input>
             </el-form-item>
+            <el-form-item label="真实姓名" prop="checkPass">
+              <el-input type="name" v-model="ruleForm2.name" auto-complete="off"></el-input>
+            </el-form-item>
+            <el-form-item label="邮箱" prop="checkPass">
+              <el-input type="email" v-model="ruleForm2.email" auto-complete="off"></el-input>
+            </el-form-item>
             <el-form-item label="手机号" prop="mobile">
-              <el-input v-model="userInfo.mobile" placeholder="验证码登录使用"></el-input>
+              <el-input v-model="ruleForm2.mobile" placeholder="验证码登录使用"></el-input>
             </el-form-item>
             <el-form-item label="头像">
               <my-upload field="uploadFile" @crop-upload-success="cropUploadSuccess" v-model="show" :width="300" :height="300" url="/file/attachment/upload" :headers="headers" img-format="png" :params="params"></my-upload>
-              <img :src="userInfo.avatar" style="width:200px;height:200px;">
+              <img :src="ruleForm2.avatarBaseUrl+ruleForm2.avatarPath" style="width:200px;height:200px;">
               <el-button type="primary" @click="toggleShow" size="mini">选择
                 <i class="el-icon-upload el-icon--right"></i>
               </el-button>
@@ -31,6 +37,7 @@
               <el-button @click="resetForm('ruleForm2')" size="small">重置</el-button>
             </el-form-item>
           </el-form>
+          {{userInfo}}
         </div>
       </el-col>
     </el-row>
@@ -84,11 +91,15 @@ export default {
         filename:'aa'
       },
       ruleForm2: {
+        username:"",
         password: "",
         newpassword1: "",
         newpassword2: "",
-        avatar: "",
-        mobile:""
+        avatarPath: "",
+        avatarBaseUrl: "",
+        mobile:"",
+        name:"",
+        email:"",
       },
       rules2: {
         newpassword1: [{ validator: validatePass, trigger: "blur" }],
@@ -101,11 +112,17 @@ export default {
       userInfo: state => state.user.userInfo
     }),
   },
+  created(){
+    console.log(this.userInfo)
+    this.ruleForm2 = this.userInfo
+    this.ruleForm2.password = ""
+  },
   methods: {
     submitForm(formName) {
       this.$refs[formName].validate(valid => {
+        console.log(this.ruleForm2)
         if (valid) {
-          this.ruleForm2.avatar = this.avatar;
+          // this.ruleForm2.avatar = this.avatar;
           request({
             url: "/admin/user/editInfo",
             method: "put",
@@ -163,7 +180,10 @@ export default {
      */
     cropUploadSuccess(jsonData, field) {
       console.log("-------- upload success --------");
+      let filename = jsonData.result.baseUrl + jsonData.result.path
       this.$store.commit("SET_AVATAR", jsonData.filename);
+      this.ruleForm2.avatarPath = jsonData.result.path
+      this.ruleForm2.avatarBaseUrl = jsonData.result.baseUrl
     }
   }
 };

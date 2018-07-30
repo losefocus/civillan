@@ -9,12 +9,12 @@
       <el-button v-if="sys_dict_add" class="filter-item" @click="handleCreate" type="primary" icon="edit" size="small">添加
       </el-button>
     </div>
-    <el-table :key='tableKey' :data="list" v-loading="listLoading" fit highlight-current-row style="width: 100%">
-      <el-table-column align="center" label="编号">
+    <el-table :key='tableKey' :data="list" v-loading="listLoading" fit highlight-current-row style="width: 100%" :span-method="objectSpanMethod">
+      <!-- <el-table-column align="center" label="编号">
         <template slot-scope="scope">
           <span>{{ scope.row.id }}</span>
         </template>
-      </el-table-column>
+      </el-table-column> -->
       <el-table-column align="center" label="类型">
         <template slot-scope="scope">
           <span>{{ scope.row.type }}</span>
@@ -126,7 +126,9 @@ export default {
         update: "编辑",
         create: "创建"
       },
-      tableKey: 0
+      tableKey: 0,
+      lastType:'',
+      rowspanIndex:0
     };
   },
   computed: {
@@ -148,6 +150,38 @@ export default {
     this.sys_dict_del = this.permissions["sys_dict_del"];
   },
   methods: {
+    objectSpanMethod({ row, column, rowIndex, columnIndex }) {
+      if (columnIndex === 0) {
+        this.lastType = row.type
+        if(this.rowspanIndex === rowIndex&&this.rowspanIndex!=this.list.length-1){
+          for(let i=this.rowspanIndex;i<this.list.length;i++){
+            if(this.list[i].type != this.lastType||i==this.list.length-1){
+              console.log(rowIndex);
+              if(i==this.list.length-1){
+                this.rowspanIndex = i+1
+              }else{
+              this.rowspanIndex = i
+              }
+              
+              break
+            }
+          }
+          console.log('aa'+rowIndex)
+          // return {
+          //     rowspan: 3,//parseInt(this.rowspanIndex - rowIndex)
+          //     colspan: 1
+          //   };
+          // return [1, 2]
+        } else{
+          console.log('bb'+rowIndex)
+          // return {
+          //     rowspan: 0,
+          //     colspan: 0
+          //   };
+          // return [0, 0];
+4        }
+      }
+    },
     getList() {
       this.listLoading = true;
       this.listQuery.sort_by = "create_time";

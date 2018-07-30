@@ -10,13 +10,6 @@
     </div>
 
     <el-table :key='tableKey' :data="list" v-loading="listLoading" fit highlight-current-row style="width: 100%">
-
-      <el-table-column align="center" label="序号">
-        <template slot-scope="scope">
-          <span>{{scope.row.id}}</span>
-        </template>
-      </el-table-column>
-
       <el-table-column align="center" label="用户名">
         <template slot-scope="scope">
           <span>
@@ -380,7 +373,6 @@ export default {
     update(formName) {
       const set = this.$refs;
       this.form.role = this.role;
-      console.log(this.form)
       set[formName].validate(valid => {
         if (valid) {
           this.dialogFormVisible = false;

@@ -1,14 +1,18 @@
 <template>
   <div class="login-container pull-height" @keyup.enter.native="handleLogin">
-    <div class="logoImg"></div>
-    <div class="login-info text-white animated fadeInLeft">
-      <h2 class="login-info-title">{{website.info.title}}</h2>
-      <ul class="login-info-list">
-        <li class="login-info-item" v-for="(item,index) in website.info.list" :key="index">
-          {{item}}
-        </li>
-      </ul>
+    <div class="login-left">
+      <div class="logoImg animated fadeInLeft"></div>
+      <div class="login-info text-white animated fadeInLeft">
+        <h2 class="login-info-title">{{website.info.title}}</h2>
+        <ul class="login-info-list">
+          <li class="login-info-item" v-for="(item,index) in website.info.list" :key="index">
+            {{item}}
+          </li>
+        </ul>
+      </div>
+      <div></div>
     </div>
+    
     <div class="login-border  animated fadeInRight">
       <div class="login-main">
         <h4 class="login-title">智慧云平台管理系统
@@ -67,14 +71,15 @@ export default {
   width: 195px;
   height: 45px;
   background: url("../../assets/img/logo.png")no-repeat center;
-  position: absolute;
-  top: 40px;
-  left:220px;
+  margin-top:40px;
+  // position: absolute;
+  // top: 40px;
+  // left:220px;
 }
 .login-container {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: space-around;
   background: rgba(0, 0, 0, 0.3);
   position: relative;
 }
@@ -89,9 +94,18 @@ export default {
   background-image: url("../../assets/img/login.png");
   background-size: cover;
 }
+.login-left{
+  height: 100%;
+  display: flex;
+  // align-items: center;
+  flex-direction:column;
+  // align-content:space-between;
+  justify-content:space-between
+  // justify-content: space-around;
+}
 .login-info {
-  margin-top: -110px;
-  padding-left: 220px;
+  margin-top: -150px;
+  // padding-left: 220px;
 }
 .login-info-title {
   line-height: 100px;
@@ -112,7 +126,7 @@ export default {
   background-color: #fff;
   border-radius: 6px;
   box-shadow: 1px 1px 2px #eee;
-  margin-right: 210px;
+  // margin-right: 210px;
   margin-top:-40px;
 }
 .login-main {
@@ -217,6 +231,11 @@ export default {
       height: 30px;
       width: 90px;
     }
+  }
+}
+@media screen and (max-width: 1280px){
+  .login-info-title{
+    font-size: 46px
   }
 }
 </style>

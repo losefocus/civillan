@@ -1,9 +1,9 @@
 <template>
   <div class="pull-chheight wel-contailer">
-    <div class="banner-text">
+    <!-- <div class="banner-text">
       <h2>{{website.wel.title}}</h2>
       <span :class="['actor',{typeing:isText}]">{{text}}</span>
-    </div>
+    </div> -->
   </div>
 </template>
 
@@ -85,7 +85,10 @@ export default {
 
 <style scoped="scoped" lang="scss">
 .wel-contailer {
-  position: relative;
+  // position: relative;
+  height: 1000px;
+  background: url('../assets/img/wel.png')no-repeat top;
+  background-size: contain
 }
 .banner-text {
   position: relative;

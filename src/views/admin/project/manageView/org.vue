@@ -229,6 +229,8 @@ export default {
         getTypeList(){       
             this.typeListQuery.projectId = this.projectInfo.id     
             this.typelListLoading = true
+            this.typeListQuery.sort_by = 'sort'
+            this.typeListQuery.direction = 'asc'
             fetchTypeList(this.typeListQuery).then(res=>{
                 this.orgTypeList = res.data.result.items
                 this.typeTotal = res.data.result.total

@@ -6,13 +6,6 @@
     </div>
 
     <el-table :key='tableKey' :data="list" v-loading="listLoading" fit highlight-current-row style="width: 99%">
-
-      <el-table-column align="center" label="序号">
-        <template slot-scope="scope">
-          <span>{{scope.row.roleId}}</span>
-        </template>
-      </el-table-column>
-
       <el-table-column label="角色名称">
         <template slot-scope="scope">
           <span>{{scope.row.roleName}}</span>
@@ -272,10 +265,8 @@ export default {
       this.dialogDeptVisible = false;
       this.form.roleDeptId = data.id;
       this.form.deptName = data.name;
-      console.log(data);
     },
     handleDelete(row) {
-      console.log(row)
        this.$confirm(
         "此操作将永久删除该角色(角色名:" + row.roleName + "), 是否继续?",
         "提示",

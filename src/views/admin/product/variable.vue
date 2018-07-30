@@ -12,13 +12,13 @@
                     </el-option>
                 </el-select>
             </el-form-item>
-            <el-form-item label="" style="width: 100px;margin-right:5px">
-                <el-input v-model="form.name" size="mini" auto-complete="off" placeholder="显示名称"></el-input>
+            <el-form-item label="" style="width: 140px;margin-right:5px">
+                <el-input v-model="form.name" size="mini" auto-complete="off" placeholder="名称"></el-input>
             </el-form-item>
             <el-form-item label="" style="width: 100px;margin-right:5px">
                 <el-input v-model="form.label" size="mini" auto-complete="off" placeholder="标识"></el-input>
             </el-form-item>
-            <el-form-item label="" style="width: 100px;margin-right:5px">
+            <el-form-item label="" style="width: 60px;margin-right:5px">
                 <el-input v-model="form.sort" size="mini" auto-complete="off" placeholder="排序"></el-input>
             </el-form-item>
             
@@ -54,7 +54,7 @@
         </div>
         <div v-loading="listLoading">
             <el-table :data="list" border fit highlight-current-row style="width: 100%;margin-bottom:20px">
-                <el-table-column align="center" label="显示名称">
+                <el-table-column align="center" label="名称">
                     <template slot-scope="scope">
                         <span>{{scope.row.name}}</span>
                     </template>
@@ -183,10 +183,21 @@ export default {
             this.setContent()
         },
         deleteList(index,rows){
-            rows.splice(index, 1);
-            let content = (rows.length!=0)?JSON.stringify(rows):''
-            this.templateData.content = content
-            this.setContent()
+            this.$confirm(
+                "此操作将永久删除该变量模板, 是否继续?",
+                "提示",
+                {
+                confirmButtonText: "确定",
+                cancelButtonText: "取消",
+                type: "warning"
+                }
+            ).then(() => {
+                rows.splice(index, 1);
+                let content = (rows.length!=0)?JSON.stringify(rows):''
+                this.templateData.content = content
+                this.setContent()
+            })
+            
         },
         updateList(index,rows){
             this.flag = 'edit'

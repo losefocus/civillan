@@ -35,6 +35,9 @@
             <el-form-item label="固件" prop="firmware">
                 <el-input v-model="form.firmware" size="small" placeholder="请输入固件"></el-input>
             </el-form-item>
+            <el-form-item label="key" prop="key">
+                <el-input v-model="form.key" size="small" placeholder="请输入key"></el-input>
+            </el-form-item>
             <el-form-item label="位置" prop="position">
                 <el-input v-model="form.position" size="small" readonly placeholder="请选择位置" @focus="positionPicker"></el-input>
             </el-form-item>
@@ -265,6 +268,7 @@ export default {
                 deviceGroup:{id:''}
             }
             this.disabled = false
+            this.$refs.form.resetFields()
         }
     }
 }

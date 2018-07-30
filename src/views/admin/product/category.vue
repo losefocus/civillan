@@ -1,8 +1,8 @@
 <template>
     <div>
         <el-form :model="form" class="clearfix" ref="form" size="small" label-width="50px">
-            <el-form-item label="分类" style="width: 220px;margin-right:5px">
-                <el-select v-model="form.parentId" size="mini" placeholder="上级分类">
+            <el-form-item label="上级" style="width: 220px;margin-right:5px">
+                <el-select v-model="form.parentId" size="mini" placeholder="请选择上级分类">
                     <el-option
                     v-for="item in categoryOptions"
                     :key="item.value"
@@ -46,14 +46,14 @@
         </el-form>
         <div v-loading="listLoading">
             <el-table :data="list" border fit highlight-current-row style="width: 100%;margin-bottom:20px;margin-top:10px">
-                <el-table-column align="center" label="缩略图">
+                <el-table-column align="center" label="缩略图" width="80">
                     <template slot-scope="scope">
                         <div style="height:40px">
                             <img style="width:60px;height:40px" :src="scope.row.thumbnailBaseUrl+scope.row.thumbnailPath">
                         </div>
                     </template>
                 </el-table-column>
-                <el-table-column align="center" label="名称">
+                <el-table-column align="center" label="名称" width="160">
                     <template slot-scope="scope">
                         <span>{{scope.row.name}}</span>
                     </template>
@@ -63,17 +63,17 @@
                         <span>{{categoryHash.get(scope.row.parentId)}}</span>
                     </template>
                 </el-table-column>
-                <el-table-column align="center" label="排序">
+                <el-table-column align="center" label="排序" width="50">
                     <template slot-scope="scope">
                         <span>{{scope.row.sort}}</span>
                     </template>
                 </el-table-column>
-                <el-table-column align="center" label="状态" >
+                <el-table-column align="center" label="状态">
                     <template slot-scope="scope">
                         <span>{{(scope.row.status == 1)?'已启用':'未启用'}}</span>
                     </template>
                 </el-table-column>
-                <el-table-column align="center" label="操作" width="160" style="float:right">
+                <el-table-column align="center" label="操作" width="140" style="float:right">
                     <template slot-scope="scope">
                         <el-button size="mini" type="" plain @click="updateList(scope.row)">修改</el-button>
                         <el-button size="mini" type="" plain @click="deleteList(scope.row)" style="margin-left: 0px;">删除</el-button>
@@ -150,6 +150,8 @@ export default {
         getList(){
             this.resetTem()
             this.listLoading = true
+            this.listQuery.sort_by = 'sort'
+            this.listQuery.direction = 'asc' //desc
             fetchList(this.listQuery).then(res => {
                 this.list = res.data.result.items
                 this.total = res.data.result.total
@@ -173,7 +175,7 @@ export default {
         },
         deleteList(row){
             this.$confirm(
-                "此操作将永久删除该配置(配置名:" + row.name + "), 是否继续?",
+                "此操作将永久删除该分类(分类名:" + row.name + "), 是否继续?",
                 "提示",
                 {
                 confirmButtonText: "确定",
@@ -236,7 +238,7 @@ export default {
     margin-bottom: 10px
 }
 .avatar-uploader{
-     height: 90px;
+     height: 80px;
      width: 170px;
 }
 .avatar-uploader .el-upload {
@@ -253,8 +255,8 @@ export default {
     font-size: 28px;
     color: #8c939d;
     width: 170px;
-    height: 90px;
-    line-height: 90px;
+    height: 80px;
+    line-height: 80px;
     text-align: center;
     border: 1px solid #dcdfe6;
     border-radius: 4px;
@@ -262,7 +264,7 @@ export default {
   }
   .avatar {
     width: 170px;
-    height: 90px;
+    height: 80px;
     display: block;
     border-radius: 4px;
   }

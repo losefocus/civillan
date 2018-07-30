@@ -51,7 +51,7 @@ export default {
     data(){
         var validataFileBaseUrl = (rule, value, callback) => {
             if(value === '' || value== undefined){
-                callback(new Error('请添加图片'));
+                callback(new Error('请添加文件'));
             }else{
                 callback()
             }
@@ -150,6 +150,7 @@ export default {
                 status:true
             }
             this.fileName = ''
+            this.$refs.form.resetFields()
         }
     }
 }

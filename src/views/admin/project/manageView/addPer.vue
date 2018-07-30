@@ -82,6 +82,7 @@ import { fetchOrganList,addObj,updateObj,fetchUserList} from "@/api/project_per"
 export default {
     props:['projectInfo'],
     data(){
+        var reg = 11 && /^((13|14|15|17|18)[0-9]{1}\d{8})$/;
         var validataOrganId = (rule, value, callback) => {
             if (value === '' || value== undefined) {
                 callback(new Error('请选择机构'));
@@ -89,7 +90,6 @@ export default {
                 callback();
             }
         };
-        var reg = 11 && /^((13|14|15|17|18)[0-9]{1}\d{8})$/;
         var validataPhone = (rule, value, callback) => {
             if (value === '' || value== undefined) {
                 callback(new Error('请输入手机号码'));
@@ -127,7 +127,8 @@ export default {
             }
         }
         var validataroleId = (rule, value, callback) => {
-            if(value.length == 0){
+            console.log(value)
+            if(value== undefined || value.length == 0){
                 callback(new Error('请选择角色'));
             }else{
                 callback()
@@ -171,7 +172,8 @@ export default {
             role:'',
             flag:'add',
             organOptions:[],
-            createLoading:false
+            createLoading:false,
+            userPhone:null,
         }
     },
     created() {
@@ -192,15 +194,18 @@ export default {
             this.form.avatarBaseUrl = response.result.baseUrl
             this.uploadLoaing = false
         },
-        //检查用户名是否存在
+        //检查用户名/电话是否存在
         checkDuplication(type){
             let data = {}
             data[type]=this.form[type]
-            fetchUserList(data).then(res => {
-                if(res.data.result.total != 0) this['duplication_'+type] = true 
-                else this['duplication_'+type] = false
-                this.$refs.forms.validateField(type);
-            })
+            if(this.form.phone!=this.userPhone){
+                fetchUserList(data).then(res => {
+                    if(res.data.result.total != 0) this['duplication_'+type] = true 
+                    else this['duplication_'+type] = false
+                    this.$refs.forms.validateField(type);
+                })
+            }
+            
         },
         selectRole(){
             this.form.userRole = [{projectRole:{id:parseInt(this.role)}}]
@@ -272,6 +277,8 @@ export default {
             }
             this.usernameDisabled = false
             this.role = ''
+            this.userPhone = null
+            this.$refs.forms.resetFields()
         },
 
     }

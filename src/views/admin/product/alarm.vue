@@ -191,10 +191,20 @@ export default {
             this.setContent()
         },
         deleteList(index,rows){
-            rows.splice(index, 1);
-            let content = (rows.length!=0)?JSON.stringify(rows):''
-            this.templateData.content = content
-            this.setContent()
+            this.$confirm(
+                "此操作将永久删除该警报模板, 是否继续?",
+                "提示",
+                {
+                confirmButtonText: "确定",
+                cancelButtonText: "取消",
+                type: "warning"
+                }
+            ).then(() => {
+                rows.splice(index, 1);
+                let content = (rows.length!=0)?JSON.stringify(rows):''
+                this.templateData.content = content
+                this.setContent()
+            })
         },
         updateList(index,rows){
             this.flag = 'edit'

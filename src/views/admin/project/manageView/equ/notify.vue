@@ -8,7 +8,7 @@
         <el-collapse-transition>
             <div v-show="isshow">
                 <el-form :model="form" class="clearfix" ref="form" label-width="70px" size="mini">
-                    <el-form-item label="报警标题" style="width: 650px">
+                    <el-form-item label="报警条目" style="width: 650px">
                         <el-select v-model="form.alarmId" placeholder="请选择" size="mini" :loading="alarmLoading">
                             <el-option
                             v-for="item in alarmOptions"
@@ -28,7 +28,7 @@
                             </el-option>
                         </el-select>
                     </el-form-item>
-                    <el-form-item label="报警周期" style="width: 310px;">
+                    <el-form-item label="通知频率" style="width: 310px;">
                         <el-select v-model="form.cycle" placeholder="请选择" size="mini">
                             <el-option
                             v-for="item in options"
