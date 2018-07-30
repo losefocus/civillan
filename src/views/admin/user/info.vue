@@ -37,7 +37,6 @@
               <el-button @click="resetForm('ruleForm2')" size="small">重置</el-button>
             </el-form-item>
           </el-form>
-          {{userInfo}}
         </div>
       </el-col>
     </el-row>
