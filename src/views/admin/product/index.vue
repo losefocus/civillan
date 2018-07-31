@@ -399,7 +399,6 @@ export default {
         },
         //变量模板
         variableTemplate(row){
-            console.log(row)
             this.variableTemplateVisible = true
             this.productData = row
         },

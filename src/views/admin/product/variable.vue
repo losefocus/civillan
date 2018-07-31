@@ -168,6 +168,9 @@ export default {
                 this.total = 0
                 if(data_.content && data_.content !=''){
                     this.list = JSON.parse(data_.content.replace(new RegExp("'",'gi'),'"'))
+                    this.list.sort((a,b)=>{
+                        return parseInt(a.sort) - parseInt(b.sort)
+                    })
                     this.total = this.list.length
                 }
                 this.listLoading = false

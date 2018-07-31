@@ -8,7 +8,6 @@ const tagObj = {
     close: true,
 }
 function setFistTag(list) {
-    console.log(list)
     list.some(a => {
         if(a.value == '/wel/index') a.close = false
         else a.close = true
