@@ -9,14 +9,14 @@
                 <el-input @keyup.enter.native="handleFilter" style="width: 200px;" size="small" suffix-icon="el-icon-search" class="pull-right" placeholder="产品搜索" v-model="listQuery.keyword"></el-input>
             </div>
             <el-table :data="list" fit highlight-current-row style="width: 100%;margin-bottom:25px;margin-top:15px">
-                <el-table-column align="center" label="缩略图">
+                <el-table-column align="center" label="缩略图" width="80">
                     <template slot-scope="scope">
                         <div style="height:40px">
                             <img style="width:60px;height:40px" :src="scope.row.thumbnailUrl+scope.row.thumbnailPath">
                         </div>
                     </template>
                 </el-table-column>
-                <el-table-column align="left" label="产品名称" min-width="170">
+                <el-table-column align="left" label="产品名称" min-width="130">
                     <template slot-scope="scope">
                         <el-tooltip class="item" effect="dark" :content="scope.row.name" placement="top-start" :open-delay="300">
                             <span style="white-space:nowrap;cursor: pointer;"><a>{{scope.row.name}}</a></span>
