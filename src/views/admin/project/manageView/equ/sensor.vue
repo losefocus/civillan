@@ -1,17 +1,8 @@
 <template>
     <div>
         <div style="padding-bottom:10px;">设 备 : {{dataInfo.name}}</div>
-        <el-form :model="form" class="clearfix" ref="form" label-width="0" size="mini" style="margin-bottom:10px;">
-            <el-form-item label="" style="width: 100px;margin-right:5px">
-                <el-input v-model="form.name" size="mini" auto-complete="off" placeholder="名称"></el-input>
-            </el-form-item>
-            <el-form-item label="" style="width: 100px;margin-right:5px">
-                <el-input v-model="form.label" size="mini" auto-complete="off" placeholder="标识"></el-input>
-            </el-form-item>
-            <el-form-item label="" style="width: 100px;margin-right:5px">
-                <el-input v-model="form.sort" size="mini" auto-complete="off" placeholder="排序"></el-input>
-            </el-form-item>
-            <el-form-item label="" style="width: 100px;margin-right:5px">
+        <el-form :model="form" class="clearfix" ref="form" :rules="rules" label-width="0" size="small" style="margin-bottom:10px;">
+            <el-form-item label="" prop="type" style="width: 100px;margin-right:5px">
                 <el-select v-model="form.type" placeholder="选择类型" size="mini">
                     <el-option
                     v-for="item in dicts"
@@ -20,6 +11,15 @@
                     :value="item.value">
                     </el-option>
                 </el-select>
+            </el-form-item>
+            <el-form-item label="" prop="name" style="width: 140px;margin-right:5px">
+                <el-input v-model="form.name" size="mini" auto-complete="off" placeholder="名称"></el-input>
+            </el-form-item>
+            <el-form-item label="" prop="label" style="width: 100px;margin-right:5px">
+                <el-input v-model="form.label" size="mini" auto-complete="off" placeholder="标识"></el-input>
+            </el-form-item>
+            <el-form-item label="" style="width: 60px;margin-right:5px">
+                <el-input v-model="form.sort" size="mini" auto-complete="off" placeholder="排序"></el-input>
             </el-form-item>
             <el-form-item  :style="flag == 'add'?'width: 80px':'width: 150px'" class="pull-right">
                 <div v-if="flag == 'add'">
@@ -107,7 +107,33 @@ export default {
     components:{downloadBtn},
     props:['dataInfo'],
     data(){
+        var validateType = (rule, value, callback) => {
+            if (value === '' || value== undefined) {
+                callback(new Error('请选择类型'));
+            } else {
+                callback();
+            }
+        };
+        var validateName = (rule, value, callback) => {
+            if (value === '' || value== undefined) {
+                callback(new Error('请输入名称'));
+            } else {
+                callback();
+            }
+        };
+        var validateLabel = (rule, value, callback) => {
+            if (value === '' || value== undefined) {
+                callback(new Error('请输入标识'));
+            } else {
+                callback();
+            }
+        };
         return {
+            rules: {
+                type: [{ validator: validateType,trigger: 'change' }],
+                name: [{ validator: validateName,trigger: 'blur' }],
+                label: [{ validator: validateLabel,trigger: 'blur' }],
+            },
             header:[],
             data:[],
             listLoading:false,
@@ -159,12 +185,12 @@ export default {
             this.getList();
         },
         getList(){
-            this.resetTem()
             this.listLoading = true
             getObj(this.listQuery).then(res => {
                 this.list = res.data.result.items
                 this.total = res.data.result.total
                 this.listLoading = false
+                this.resetTem()
             })
         },
         updateList(row){
@@ -190,25 +216,33 @@ export default {
             
         },
         handleAdd(){
-            let data = Object.assign({},this.form)
-            data.sort = parseInt(data.sort)
-            data.status = data.status?1:0
-            data.deviceId = this.dataInfo.id
-            this.createdLoading = true
-            addObj(data).then(res => {
-                this.getList(this.listQuery)
-                this.$parent.$parent.$parent.$parent.alertNotify('添加')
-                this.resetTem()
+            this.$refs.form.validate((valid) => {
+                if (valid) {
+                    let data = Object.assign({},this.form)
+                    data.sort = parseInt(data.sort)
+                    data.status = data.status?1:0
+                    data.deviceId = this.dataInfo.id
+                    this.createdLoading = true
+                    addObj(data).then(res => {
+                        this.getList(this.listQuery)
+                        this.$parent.$parent.$parent.$parent.alertNotify('添加')
+                        this.resetTem()
+                    })
+                }
             })
         },
         handleEdit(){
-            this.createdLoading = true
-            let data = Object.assign({},this.form)
-            data.status = data.status?1:0
-            editObj(data).then(res => {
-                this.getList(this.listQuery)
-                this.$parent.$parent.$parent.$parent.alertNotify('修改')
-                this.cancelEdit()
+            this.$refs.form.validate((valid) => {
+                if (valid) {
+                    this.createdLoading = true
+                    let data = Object.assign({},this.form)
+                    data.status = data.status?1:0
+                    editObj(data).then(res => {
+                        this.getList(this.listQuery)
+                        this.$parent.$parent.$parent.$parent.alertNotify('修改')
+                        this.cancelEdit()
+                    })
+                }
             })
         },
         cancelEdit(){
@@ -224,6 +258,7 @@ export default {
                 status:true
             }
             this.createdLoading = false
+            this.$refs.form.resetFields()
         },
         importexcel() {　
         　　require.ensure([], () => {　　　　　　　　

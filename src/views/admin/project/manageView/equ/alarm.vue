@@ -7,11 +7,11 @@
         <div style="padding-bottom:10px;">设备名称: {{dataInfo.name}}</div>
         <el-collapse-transition>
             <div v-show="isshow">
-                <el-form :model="form" class="clearfix" ref="form" label-width="70px" size="mini">
-                    <el-form-item label="报警标题" style="width: 310px">
+                <el-form :model="form" class="clearfix" ref="form" :rules="rules" label-width="70px" size="mini">
+                    <el-form-item label="报警标题" prop="title" style="width: 310px">
                         <el-input v-model="form.title" size="mini" auto-complete="off"></el-input>
                     </el-form-item>
-                    <el-form-item label="报警周期" style="width: 310px;;margin-left:30px">
+                    <el-form-item label="报警周期" prop="cycle" style="width: 310px;;margin-left:30px">
                         <el-select v-model="form.cycle" placeholder="请选择" size="mini">
                             <el-option
                             v-for="item in options"
@@ -21,13 +21,13 @@
                             </el-option>
                         </el-select>
                     </el-form-item>
-                    <el-form-item label="报警内容" style="width: 310px">
+                    <el-form-item label="报警内容" prop="triggerMessage" style="width: 310px">
                         <el-input v-model="form.triggerMessage" size="mini" auto-complete="off"></el-input>
                     </el-form-item>
-                    <el-form-item label="恢复内容" style="width: 310px;margin-left:30px">
+                    <el-form-item label="恢复内容" prop="recoverMessage" style="width: 310px;margin-left:30px">
                         <el-input v-model="form.recoverMessage" size="mini" auto-complete="off"></el-input>
                     </el-form-item>
-                    <el-form-item label="触发条件" style="width: 310px;">
+                    <el-form-item label="触发条件" prop="condition" style="width: 310px;">
                         <el-input v-model="form.condition" type="textarea" :rows="2" size="mini" auto-complete="off"></el-input>
                     </el-form-item>
                     <el-form-item label="备注" style="width: 310px;margin-left:30px">
@@ -93,7 +93,49 @@ import {getObj,addObj,delObj,editObj} from "@/api/device/alarm";
 export default {
     props:['dataInfo'],
     data(){
+        var validateTitle = (rule, value, callback) => {
+            if (value === '' || value== undefined) {
+                callback(new Error('请输入报警标题'));
+            } else {
+                callback();
+            }
+        };
+        var validateCycle = (rule, value, callback) => {
+            if (value === '' || value== undefined) {
+                callback(new Error('请选择报警周期'));
+            } else {
+                callback();
+            }
+        };
+        var validateTrigger = (rule, value, callback) => {
+            if (value === '' || value== undefined) {
+                callback(new Error('请输入报警内容'));
+            } else {
+                callback();
+            }
+        };
+        var validateRecover = (rule, value, callback) => {
+            if (value === '' || value== undefined) {
+                callback(new Error('请输入恢复内容'));
+            } else {
+                callback();
+            }
+        };
+        var validateCondition = (rule, value, callback) => {
+            if (value === '' || value== undefined) {
+                callback(new Error('请输入触发条件'));
+            } else {
+                callback();
+            }
+        };
         return {
+            rules: {
+                title: [{ validator: validateTitle,trigger: 'blur' }],
+                cycle: [{ validator: validateCycle,trigger: 'change' }],
+                triggerMessage: [{ validator: validateTrigger,trigger: 'blur' }],
+                recoverMessage: [{ validator: validateRecover,trigger: 'blur' }],
+                condition: [{ validator: validateCondition,trigger: 'blur' }],
+            },
             isshow:false,
             listLoading:false,
             createdLoading:false,
@@ -158,13 +200,14 @@ export default {
             this.getList();
         },
         getList(){
-            this.resetTem()
+            
             this.listLoading = true
             getObj(this.listQuery).then(res => {
                 this.list = res.data.result.items
                 this.total = res.data.result.total
                 this.listLoading = false
             })
+            this.resetTem()
         },
         updateList(row){
             this.flag = 'edit'
@@ -173,7 +216,7 @@ export default {
         },
         deleteList(row){
             this.$confirm(
-                "此操作将永久删除该配置(配置名:" + row.name + "), 是否继续?",
+                "此操作将永久删除该警报(警报标题:" + row.title + "), 是否继续?",
                 "提示",
                 {
                 confirmButtonText: "确定",
@@ -188,25 +231,33 @@ export default {
             })
         },
         handleAdd(){
-            let data = Object.assign({},this.form)
-            // data.sort = parseInt(data.sort)
-            data.status = data.status?1:0
-            data.deviceId = this.dataInfo.id
-            this.createdLoading = true
-            addObj(data).then(res => {
-                this.getList(this.listQuery)
-                this.$parent.$parent.$parent.$parent.alertNotify('添加')
-                this.resetTem()
+            this.$refs.form.validate((valid) => {
+                if (valid) {
+                    let data = Object.assign({},this.form)
+                    // data.sort = parseInt(data.sort)
+                    data.status = data.status?1:0
+                    data.deviceId = this.dataInfo.id
+                    this.createdLoading = true
+                    addObj(data).then(res => {
+                        this.getList(this.listQuery)
+                        this.$parent.$parent.$parent.$parent.alertNotify('添加')
+                        this.resetTem()
+                    })
+                }
             })
         },
         handleEdit(){
-            this.createdLoading = true
-            let data = Object.assign({},this.form)
-            data.status = data.status?1:0
-            editObj(data).then(res => {
-                this.getList(this.listQuery)
-                this.$parent.$parent.$parent.$parent.alertNotify('修改')
-                this.cancelEdit()
+            this.$refs.form.validate((valid) => {
+                if (valid) {
+                    this.createdLoading = true
+                    let data = Object.assign({},this.form)
+                    data.status = data.status?1:0
+                    editObj(data).then(res => {
+                        this.getList(this.listQuery)
+                        this.$parent.$parent.$parent.$parent.alertNotify('修改')
+                        this.cancelEdit()
+                    })
+                }
             })
         },
         cancelEdit(){
@@ -224,6 +275,7 @@ export default {
             }
             this.createdLoading = false
             this.isshow = false
+            this.$refs.form.resetFields()
         }
     },
     watch:{
@@ -234,7 +286,7 @@ export default {
 .el-form-item{
     float: left;
     width:80px;
-    margin-bottom: 10px
+    margin-bottom: 15px
 }
 .addBtn{
     position: absolute;

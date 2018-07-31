@@ -53,16 +53,9 @@ export default {
 .el-table__expanded-cell{
   border-right: none !important;
 }
-// .el-table__expanded-cell .el-table th,.el-table__expanded-cell .el-table tr{
-//   background: #f9f9fb
-// }
 #subTable.el-table::before{
   height: 0 !important;
 }
-// .el-form-item__error{
-//     padding-top: 2px !important
-// }
-
 .projectManage .el-dialog__body,#product .el-dialog__body{
     padding-top: 0 !important
 }

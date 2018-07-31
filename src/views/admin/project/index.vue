@@ -16,7 +16,8 @@
                                     <el-table-column align="left" label="项目名称" min-width="250">
                                         <template slot-scope="pro">
                                             <div style="white-space:nowrap;width:100%;height:40px;padding-left:20px;">
-                                                <img style="height:40px;width:60px;" class="pull-left" :src="pro.row.thumbnailUrl+pro.row.thumbnailPath">
+                                                <img v-if="pro.row.thumbnailUrl!=''" style="height:40px;width:60px;" class="pull-left" :src="pro.row.thumbnailUrl+pro.row.thumbnailPath">
+                                                <img v-else style="width:60px;height:40px" src="../../../assets/img/no_pic.png">
                                                 <el-tooltip class="item" effect="dark" :content="pro.row.name" placement="top-start" :open-delay="300">
                                                     <span style="white-space:nowrap;cursor: pointer;"><a style="overflow: hidden;text-overflow:ellipsis;line-height:40px;padding:0 10px;width:calc(100% - 80px)" @click="toInfo(pro.row)">{{pro.row.name}}</a></span>
                                                 </el-tooltip>
@@ -60,7 +61,8 @@
                         <el-table-column align="left" label="项目名称" min-width="250">
                             <template slot-scope="scope">
                                 <div style="white-space:nowrap;width:100%;height:40px">
-                                    <img style="height:40px;width:60px;" class="pull-left" :src="scope.row.thumbnailUrl+scope.row.thumbnailPath">
+                                    <img v-if="scope.row.thumbnailUrl!=''" style="height:40px;width:60px;" class="pull-left" :src="scope.row.thumbnailUrl+scope.row.thumbnailPath">
+                                    <img v-else style="width:60px;height:40px" src="../../../assets/img/no_pic.png">
                                     <el-tooltip class="item" effect="dark" :content="scope.row.name" placement="top-start" :open-delay="300">
                                         <span style="white-space:nowrap;">
                                             <a v-if="scope.row.children==0" style="cursor: pointer;overflow: hidden;text-overflow:ellipsis;line-height:40px;padding:0 10px;width:calc(100% - 80px)" @click="toInfo(scope.row)">{{scope.row.name}}</a>
@@ -87,7 +89,7 @@
                                         操作<i class="el-icon-arrow-down el-icon--right"></i>
                                     </span >
                                     <el-dropdown-menu slot="dropdown">
-                                        <el-dropdown-item v-if="pro.row.children.length ==0" :command="composeValue('info',pro.row)">项目详情</el-dropdown-item>
+                                        <el-dropdown-item v-if="'children' in pro.row && pro.row.children.length ==0" :command="composeValue('info',pro.row)">项目详情</el-dropdown-item>
                                         <el-dropdown-item
                                         v-if="pro.row.children.length ==0"
                                         v-for="(item,index) in btnList" 
@@ -103,7 +105,7 @@
                                 </el-dropdown>
                             </template>
                         </el-table-column>
-                    </el-table>    
+                    </el-table> 
                     <div v-show="!listLoading" class="pagination-container">
                         <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="listQuery.page_index" :page-sizes="[10,20,30, 50]" :page-size="listQuery.page_size" layout="total, prev, pager, next, jumper" :total="total">
                         </el-pagination>
@@ -263,12 +265,6 @@ export default {
             list:[],
             total:null,
             btnList:[
-                // {
-                //     value:'info',
-                //     label:'详情',
-                //     btn:'project_btn_info',
-                //     flag:false
-                // },
                 {
                     value:'org',
                     label:'机构设置',
@@ -351,7 +347,7 @@ export default {
             this.cardHeight.height = document.body.clientHeight - 107  - 30 + 'px'
         },
         expendTableRow(row){
-            this.$refs.projectTable.toggleRowExpansion(row);
+            this.$refs.projectTable.toggleRowExpansion(row,true);
         },
         handleAdd(row){
             this.cardVisibel = true
@@ -388,6 +384,7 @@ export default {
                 this.mapList = datas
                 this.list = this.arrayToJson(datas);
                 this.list.expand = true
+                console.log(this.list)
                 this.total = response.data.result.total;
                 this.listLoading = false;
             });
@@ -399,8 +396,8 @@ export default {
             let options = []
             options.push({value:0,label:'无'})
             for (let i=0; i<treeArray.length; i++) {
+                treeArray[i].children = [];
                 if("parentId" in treeArray[i] && treeArray[i].parentId == 0){
-                    treeArray[i].children = [];
                     tmpMap[treeArray[i].id]= treeArray[i]; 
                     options.push({value:treeArray[i].id,label:treeArray[i].name})
                 }
@@ -531,6 +528,7 @@ export default {
             this.imageName=''
             this.fileList=[]
             this.uploadLoaing = false
+            this.$refs[formName].resetFields();
         },
         handleFilter(){
             this.listQuery.page_index = 1;
@@ -577,6 +575,7 @@ export default {
 </script>
 
 <style scoped>
+
 .avatar-uploader{
      height: 110px;
 }

@@ -111,7 +111,6 @@ export default {
         },
         handleAdd(){
             let obj = Object.assign({},this.form)
-            obj.status = obj.status?1:0
             let [...dataList] = this.list
             dataList.push(obj)
             this.templateData.content = JSON.stringify(dataList)
@@ -127,12 +126,10 @@ export default {
         updateList(index,rows){
             this.flag = 'edit'
             this.form = Object.assign({},rows[index])
-            this.form.status = this.form.status==1?true:false
             this.editIndex = index
         },
         handleEdit(){
             let obj = Object.assign({},this.form)
-            obj.status = obj.status?1:0
             let [...dataList] = this.list
             dataList.splice(this.editIndex, 1,obj)
             this.templateData.content = JSON.stringify(dataList)
@@ -142,6 +139,7 @@ export default {
         // 保存变量
         setContent(){
             if(this.templateData.name == undefined)this.templateData.name = '设备配置'
+            this.templateData.status = 1
             setObj(this.templateData).then(res => {
                 if(res.data.success == true){
                     this.getList()
@@ -175,6 +173,7 @@ export default {
                 status:true
             }
             this.createdLoading = false
+            this.$refs.form.resetFields()
         },
     },
     watch:{

@@ -31,6 +31,7 @@
         <div class="clearfix" style="padding-bottom:20px;">
         <el-button type="primary" size="small" v-show="!isshow"  class="pull-left" @click="isshow = !isshow" style="width:80px;">添加</el-button>
         <el-button type="info" size="small" v-show="isshow" class="pull-left" @click="restTemp" style="width:80px;margin-left:0">取消</el-button>
+        <el-button type="primary" size="small" class="pull-right" disabled  style="width:80px;">清空</el-button>
         </div>
 
         <el-table :data="list" style="width: 100%" v-loading="listLoading">
@@ -61,7 +62,7 @@
             </el-table-column>
             <el-table-column align="center" label="操作">
                 <template slot-scope="scope">
-                    <el-button size="mini" type="" plain @click="handleDel(scope.row)">删除</el-button>
+                    <el-button size="mini" type="" disabled plain @click="handleDel(scope.row)">删除</el-button>
                 </template>
             </el-table-column>
         </el-table>

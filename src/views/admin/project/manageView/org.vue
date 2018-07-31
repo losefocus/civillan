@@ -60,18 +60,17 @@
         </div>
 
         <el-dialog id="orgType" title="机构类型"  :visible.sync="objectTypeVisible" width='690px'>
-            <el-form :model="orgTypeForm" class="clearfix" ref="orgTypeForm" size="mini">
-                <el-form-item label="名称" style="width: 140px">
+            <el-form :model="orgTypeForm" class="clearfix" :rules="rules" ref="orgTypeForm" size="mini" label-width="50px">
+                <el-form-item label="名称" prop="name" style="width: 140px">
                     <el-input v-model="orgTypeForm.name" style="width:90px;" size="mini" auto-complete="off"></el-input>
                 </el-form-item>
-                <el-form-item label="别名" style="width: 140px">
+                <el-form-item label="别名" prop="alias" style="width: 140px">
                     <el-input v-model="orgTypeForm.alias" style="width:90px;" size="mini" auto-complete="off"></el-input>
                 </el-form-item>
                 <el-form-item label="排序" style="width: 140px">
                     <el-input v-model="orgTypeForm.sort" style="width:90px;" size="mini" auto-complete="off"></el-input>
                 </el-form-item>
-                
-                <el-form-item  style="width: 230px" class="pull-right">
+                <el-form-item  style="width: 230px" class="pull-right" label-width="0">
                     <div v-show="flag == 'add'" class="pull-right">
                         <el-button size="mini" type="primary" @click="addType('orgTypeForm')" :loading="createLoading" style="margin-right:0;">添加</el-button>
                     </div>
@@ -127,7 +126,25 @@ import { fetchList,delObj,updateObj,fetchTypeList,addObjType,updateObjType,delOb
 export default {
     props:['projectInfo'],
     data(){
+        var validataAlias = (rule, value, callback) => {
+            if (value === '' || value== undefined) {
+                callback(new Error('请选择机构'));
+            }else {
+                callback();
+            }
+        };
+        var validataName = (rule, value, callback) => {
+            if (value === '' || value== undefined) {
+                callback(new Error('请选择机构'));
+            }else {
+                callback();
+            }
+        };
         return {
+            rules: {
+                alias: [{ validator: validataAlias, trigger: 'blur' }],
+                name: [{ validator: validataName, trigger: 'blur' }],
+            },
             listLoading:false,
             typelListLoading:false,
             list:[],
@@ -256,12 +273,12 @@ export default {
         },
         // 添加机构类型
         addType(formName){
-            let data = Object.assign({}, this.orgTypeForm);
-            data.projectId = this.projectInfo.id
-            data.sort = (Number(data.sort)<=0)?0:Number(data.sort)
-            data.status = data.status?1:0
             this.$refs[formName].validate((valid) => {
                 if (valid) {
+                    let data = Object.assign({}, this.orgTypeForm);
+                    data.projectId = this.projectInfo.id
+                    data.sort = (Number(data.sort)<=0)?0:Number(data.sort)
+                    data.status = data.status?1:0
                     this.createLoading = true
                     addObjType(data).then(res=>{
                         if(res.data.success == true){
@@ -298,21 +315,26 @@ export default {
             this.flag = 'edit'
             this.orgTypeForm= Object.assign({}, row);
             this.orgTypeForm.status = (this.orgTypeForm.status == 1)?true:false
+            this.$refs.orgTypeForm.resetFields()
         },
         // 修改机构类型
         handleUpdateType(formName){
-            let data = Object.assign({}, this.orgTypeForm);
-            data.sort = (Number(data.sort)<=0)?0:Number(data.sort)
-            data.status = data.status?1:0
-            delete data.value
-            delete data.label
-            this.createLoading = true
-            updateObjType(data).then(res => {
-                if(res.data.success == true){
-                    this.getTypeList()
-                    this.flag = 'add'
-                    this.$parent.$parent.alertNotify('修改')
-                    this.resetType()
+            this.$refs[formName].validate((valid) => {
+                if (valid) {
+                    let data = Object.assign({}, this.orgTypeForm);
+                    data.sort = (Number(data.sort)<=0)?0:Number(data.sort)
+                    data.status = data.status?1:0
+                    delete data.value
+                    delete data.label
+                    this.createLoading = true
+                    updateObjType(data).then(res => {
+                        if(res.data.success == true){
+                            this.getTypeList()
+                            this.flag = 'add'
+                            this.$parent.$parent.alertNotify('修改')
+                            this.resetType()
+                        }
+                    })
                 }
             })
         },
@@ -328,6 +350,7 @@ export default {
                 sort:'',
                 status:true,
             }
+            this.$refs.orgTypeForm.resetFields()
         }
         
     }

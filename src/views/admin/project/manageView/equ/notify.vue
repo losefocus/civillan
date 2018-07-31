@@ -183,13 +183,13 @@ export default {
             })
         },
         getList(){
-            this.resetTem()
             this.listLoading = true
             getObj(this.listQuery).then(res => {
                 this.list = res.data.result.items
                 this.total = res.data.result.total
                 this.listLoading = false
             })
+            this.resetTem()
         },
         deleteList(row){
             this.$confirm(
@@ -233,6 +233,7 @@ export default {
             }
             this.createdLoading = false
             this.isshow = false
+            this.$refs.form.resetFields()
         }
     },
     watch:{

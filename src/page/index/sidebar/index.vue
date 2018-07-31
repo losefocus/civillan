@@ -4,6 +4,7 @@
     <el-menu unique-opened :default-active="nowTagValue" class="el-menu-vertical-demo" mode="vertical" :show-timeout="200" :collapse="isCollapse" :default-openeds="defaultOpened">
       <sidebar-item :menu="menu" :isCollapse="isCollapse"></sidebar-item>
     </el-menu>
+    <div v-show="!isCollapse" class="bot">Copyright 2018 智握领程 版权所有.</div>
   </div>
 </template>
 
@@ -40,5 +41,15 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
+.bot{
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  font-size: 12px;
+  padding-bottom:20px;
+  width: 230px;
+  text-align:center;
+  color: #000000a6
+}
 </style>
 

@@ -7,7 +7,7 @@
         <el-table :data="list" v-loading="listLoading" fit highlight-current-row style="width: 99%;margin-bottom:20px">
             <el-table-column align="center" label="姓名(角色)" min-width="110">
                 <template slot-scope="scope">
-                    <span style="white-space:nowrap;cursor:pointer;"><a>{{scope.row.name}}({{scope.row.userRole[0].projectRole.role}})</a></span>
+                    <span style="white-space:nowrap;cursor:pointer;"><a>{{scope.row.name}}<span></span></a></span>
                 </template>
             </el-table-column>
             <el-table-column align="center" label="电话" min-width="110">
@@ -51,18 +51,14 @@
         </div>
 
         <el-dialog id="orgType" title="角色管理"  :visible.sync="objectTypeVisible" width='690px'>
-            <el-form :model="roleForm" class="clearfix" ref="roleForm" size="mini">
-                <el-form-item label="角色" style="width: 200px">
-                    <el-input v-model="roleForm.role" style="width:150px;" size="mini" auto-complete="off"></el-input>
+            <el-form :model="roleForm" class="clearfix" :inline="true" :rules="rules" ref="roleForm" size="mini" label-width="50px">
+                <el-form-item label="角色" prop="role" style="width: 180px">
+                    <el-input v-model="roleForm.role" style="width:130px;" size="mini" auto-complete="off"></el-input>
                 </el-form-item>
-                <el-form-item label="描述" style="width: 200px">
-                    <el-input v-model="roleForm.description" style="width:150px;" size="mini" auto-complete="off"></el-input>
+                <el-form-item label="描述" style="width: 180px">
+                    <el-input v-model="roleForm.description" style="width:130px;" size="mini" auto-complete="off"></el-input>
                 </el-form-item>
-                <!-- <el-form-item >
-                    <el-checkbox v-model="roleForm.available" >已启用</el-checkbox>
-                </el-form-item> -->
-                <el-form-item  style="width: 230px" class="pull-right">
-
+                <el-form-item  style="width: 230px" class="pull-right" label-width="0">
                     <div v-show="flag == 'add'" class="pull-right">
                         <el-button size="mini" type="primary" @click="addRole('roleForm')" :loading="createdRoleLoading">添加</el-button>
                     </div>
@@ -112,7 +108,18 @@ import { fetchUserList,delObj,fetchRoleList,addRoleObj,delRoleObj,updateRoleObj}
 export default {
     props:['projectInfo'],
     data(){
+        var validataRole = (rule, value, callback) => {
+            console.log(value)
+            if (value === '' || value== undefined) {
+                callback(new Error('请输入角色'));
+            }else {
+                callback();
+            }
+        };
         return {
+            rules: {
+                role: [{ validator: validataRole, trigger: 'blur' }],
+            },
             listLoading:false,
             roleListLoading:false,
             list:[],
@@ -153,7 +160,6 @@ export default {
             this.listQuery.projectId = this.projectInfo.id
             fetchUserList(this.listQuery).then(res => {
                 this.list = res.data.result.items
-                console.log(this.list)
                 this.total = res.data.result.total
                 this.listLoading = false
             })
@@ -285,8 +291,8 @@ export default {
 }
 </script>
 <style scoped>
-.el-form-item{
+/* .el-form-item{
     float: left;
     width:80px
-}
+} */
 </style>

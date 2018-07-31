@@ -40,6 +40,7 @@ axios.interceptors.response.use(data => {
     message: errorCode[code] || errorCode['default'],
     type: 'error'
   })
+  console.log(new Error(error))
   return Promise.reject(new Error(error))
 })
 

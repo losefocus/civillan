@@ -6,8 +6,8 @@
         </div>
         <el-collapse-transition>
             <div v-show="isshow">
-                <el-form :model="form" class="clearfix" ref="form" label-width="50px" size="medium">
-                    <el-form-item label="上级" style="width: 210px">
+                <el-form :model="form" class="clearfix" ref="form" :rules="rules" label-width="50px" size="mini">
+                    <el-form-item label="上级" prop="parentId" style="width: 210px">
                         <el-select v-model="form.parentId" size="mini" placeholder="请选择上级分组">
                             <el-option
                             v-for="item in parentOptions"
@@ -24,7 +24,7 @@
                             change-on-select>
                         </el-cascader> -->
                     </el-form-item>
-                    <el-form-item label="名称" style="width: 210px;margin-left:10px">
+                    <el-form-item label="名称" prop="name" style="width: 210px;margin-left:10px">
                         <el-input v-model="form.name" size="mini" auto-complete="off"></el-input>
                     </el-form-item>
                     <el-form-item label="排序" style="width: 210px;margin-left:10px">
@@ -53,7 +53,7 @@
                     </el-form-item>
                     <el-form-item  :style="flag == 'add'?'width: 140px':'width: 220px'" class="pull-right" style="padding-top:5px">
                         <div v-if="flag == 'add'">
-                            <el-button size="mini" type="primary" class="pull-right" @click="handleAdd('form')" :loading="createdLoading">添加</el-button>
+                            <el-button size="mini" type="primary" class="pull-right" @click="handleAdd('form')" :loading="createdLoading">保存</el-button>
                         </div>
                         <div v-else>
                             <el-button size="mini" type="info" class="pull-right" style="margin-left:10px" @click="cancelEdit('form')">取消</el-button>
@@ -112,7 +112,25 @@ import {getObj,addObj,delObj,editObj} from "@/api/device/group";
 export default {
     props:['dataInfo'],
     data(){
+        var validataParentId = (rule, value, callback) => {
+            if (value === '' || value== undefined) {
+                callback(new Error('请选择机构'));
+            }else {
+                callback();
+            }
+        };
+        var validataName = (rule, value, callback) => {
+            if (value === '' || value== undefined) {
+                callback(new Error('请选择机构'));
+            }else {
+                callback();
+            }
+        };
         return {
+            rules: {
+                parentId: [{ validator: validataParentId, trigger: 'change' }],
+                name: [{ validator: validataName, trigger: 'blur' }],
+            },
             isshow:false,
             listLoading:false,
             createdLoading:false,
@@ -190,7 +208,6 @@ export default {
             this.getList();
         },
         getList(){
-            this.resetTem()
             this.listLoading = true
             this.listQuery.projectId = this.$parent.$parent.projectInfo.id
             this.listQuery.sort_by = 'sort'
@@ -216,10 +233,11 @@ export default {
             this.isshow = true
             this.form = Object.assign({},row)
             this.form.status = this.form.status==1?true:false
+            this.$refs.form.resetFields()
         },
         deleteList(row){
             this.$confirm(
-                "此操作将永久删除该配置(配置名:" + row.name + "), 是否继续?",
+                "此操作将永久删除该分组(分组名称:" + row.name + "), 是否继续?",
                 "提示",
                 {
                 confirmButtonText: "确定",
@@ -231,30 +249,38 @@ export default {
                     this.getList()
                     this.$parent.$parent.$parent.$parent.alertNotify('删除')
                 })
-            })
+            }).catch(() => {})
         },
         handleAdd(){
-            let data = Object.assign({},this.form)
-            data.sort = parseInt(data.sort)
-            data.status = data.status?1:0
-            data.projectId = this.$parent.$parent.projectInfo.id
-            this.createdLoading = true
-            addObj(data).then(res => {
-                this.getList()
-                this.$parent.$parent.$parent.$parent.alertNotify('添加')
-                this.resetTem()
+            this.$refs.form.validate(valid => {
+                if (valid) {
+                    let data = Object.assign({},this.form)
+                    data.sort = parseInt(data.sort)
+                    data.status = data.status?1:0
+                    data.projectId = this.$parent.$parent.projectInfo.id
+                    this.createdLoading = true
+                    addObj(data).then(res => {
+                        this.getList()
+                        this.$parent.$parent.$parent.$parent.alertNotify('添加')
+                        this.resetTem()
+                    })
+                }
             })
         },
         handleEdit(){
-            this.createdLoading = true
-            let data = Object.assign({},this.form)
-            data.sort = parseInt(data.sort)
-            data.status = data.status?1:0
-            delete data.projectDevices
-            editObj(data).then(res => {
-                this.getList()
-                this.$parent.$parent.$parent.$parent.alertNotify('修改')
-                this.cancelEdit()
+            this.$refs.form.validate(valid => {
+                if (valid) {
+                    this.createdLoading = true
+                    let data = Object.assign({},this.form)
+                    data.sort = parseInt(data.sort)
+                    data.status = data.status?1:0
+                    delete data.projectDevices
+                    editObj(data).then(res => {
+                        this.getList()
+                        this.$parent.$parent.$parent.$parent.alertNotify('修改')
+                        this.cancelEdit()
+                    })
+                }
             })
         },
         cancelEdit(){
@@ -273,6 +299,7 @@ export default {
             }
             this.createdLoading = false
             this.isshow = false
+            this.$refs.form.resetFields()
         }
     },
     watch:{

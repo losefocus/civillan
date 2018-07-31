@@ -8,6 +8,7 @@
     <h1 class="top-title">
       <topMenu></topMenu>
     </h1>
+    <span style="font-size:14px;padding-right:20px">工程信息化智慧云平台 V1.0 Beta</span>
     <div class="top-button is-right">
       <el-tooltip class="item" effect="dark" content="主题色" placement="bottom" :open-delay="300">
         <span class="top-item">
