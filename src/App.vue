@@ -87,18 +87,13 @@ export default {
 #messageContent .el-upload{
   width: calc(100% - 2px)
 }
-
-.el-table__row.expanded{
-  // font-weight: bold;
-  // background: #dadada
-}
-.el-table__expand-icon>.el-icon{
-  // font-size:20px;
-  // font-weight: bold;
-  // margin-left: -10px !important;
-  // margin-top: -10px !important;
-}
 .el-table__expanded-cell .el-table td{
   border: none
+}
+#help .el-tabs__header{
+  margin-bottom: 30px !important
+}
+#help .el-collapse-item__header{
+  background-color: #fbfbfb!important
 }
 </style>

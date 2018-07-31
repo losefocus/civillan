@@ -1,11 +1,8 @@
 <template>
     <div>
-        <el-form :model="form" class="clearfix" ref="form" size="small" label-width="50px">
-            <el-form-item label="名称" style="width: 215px">
-                <el-input v-model="form.name" size="mini" auto-complete="off"></el-input>
-            </el-form-item>
-            <el-form-item label="上级分类" style="width: 220px;" label-width="75px">
-                <el-select v-model="form.parentId" size="mini" placeholder="请选择分类">
+        <el-form :model="form" class="clearfix" ref="form" :rules="rules" size="small" label-width="50px">
+            <el-form-item label="上级" prop="parentId" style="width: 220px;">
+                <el-select v-model="form.parentId" size="mini" placeholder="请选择上级分类">
                     <el-option
                     v-for="item in categoryOptions"
                     :key="item.value"
@@ -14,10 +11,13 @@
                     </el-option>
                 </el-select>
             </el-form-item>
+            <el-form-item label="名称" prop="name" style="width: 215px">
+                <el-input v-model="form.name" size="mini" auto-complete="off"></el-input>
+            </el-form-item>
             <el-form-item label="排序" style="width: 215px;">
                 <el-input v-model="form.sort" size="mini" auto-complete="off"></el-input>
             </el-form-item>
-            <el-form-item label="图片" prop="thumbnailUrl" style="width: 215px;">
+            <el-form-item label="图片" prop="thumbnailUrl" style="width: 220px;">
                 <el-upload
                 v-loading='uploadLoaing'
                 class="avatar-uploader"
@@ -35,8 +35,8 @@
                 <i v-else class="el-icon-plus avatar-uploader-icon"></i>
                 </el-upload>
             </el-form-item>
-            <el-form-item label="备注" style="width: 215px;" label-width="75px">
-                <el-input type="textarea" :rows="1" style="width:145px"></el-input>
+            <el-form-item label="备注" style="width: 215px;">
+                <el-input type="textarea" :rows="2"></el-input>
             </el-form-item>
             <el-form-item  class="pull-right" style="padding-top:5px;width: 350px">
                 
@@ -55,7 +55,8 @@
                 <el-table-column align="center" label="图片">
                     <template slot-scope="scope">
                         <div style="height:40px">
-                        <img style="width:60px;height:40px" :src="scope.row.thumbnailBaseUrl+scope.row.thumbnailPath">
+                        <img v-if="scope.row.thumbnailBaseUrl!=''" style="width:60px;height:40px" :src="scope.row.thumbnailBaseUrl+scope.row.thumbnailPath">
+                        <img v-else style="width:60px;height:40px" src="../../../assets/img/no_pic.png">
                         </div>
                     </template>
                 </el-table-column>
@@ -102,7 +103,29 @@ import {fetchList,addObj,delObj,editObj} from "@/api/content_classify";
 export default {
     props:['dataInfo'],
     data(){
+        var validateParentId = (rule, value, callback) => {
+            if (value === '' || value== undefined) {
+                callback(new Error('请选择上级分类'));
+            } else {
+                callback();
+            }
+        };
+        var validateName = (rule, value, callback) => {
+            if (value === '' || value== undefined) {
+                callback(new Error('请输入名称'));
+            } else {
+                callback();
+            }
+        };
         return {
+            rules:{
+                parentId: [
+                    { validator: validateParentId,trigger: 'change' },
+                ],
+                name:[
+                    { validator: validateName,trigger: 'blur' },
+                ],
+            },
             listLoading:false,
             createdLoading:false,
             form:{
@@ -151,11 +174,9 @@ export default {
         uploadSuccess(response, file, fileList){
             this.form.thumbnailPath = response.result.path
             this.form.thumbnailBaseUrl = response.result.baseUrl
-console.log(this.form)
             this.uploadLoaing = false
         },
         getList(){
-            this.resetTem()
             this.listLoading = true
             this.listQuery.sort_by = 'sort'
             this.listQuery.direction = 'asc'
@@ -198,25 +219,33 @@ console.log(this.form)
             })
         },
         handleAdd(){
-            let data = Object.assign({},this.form)
-            data.sort = parseInt(data.sort)
-            data.status = data.status?1:0
-            this.createdLoading = true
-            addObj(data).then(res => {
-                this.getList()
-                this.alertNotify('添加')
-                this.resetTem()
+            this.$refs.form.validate((valid) => {
+                if (valid) {
+                    let data = Object.assign({},this.form)
+                    data.sort = parseInt(data.sort)
+                    data.status = data.status?1:0
+                    this.createdLoading = true
+                    addObj(data).then(res => {
+                        this.getList()
+                        this.alertNotify('添加')
+                        this.resetTem()
+                    })
+                }
             })
         },
         handleEdit(){
-            this.createdLoading = true
-            let data = Object.assign({},this.form)
-            data.sort = parseInt(data.sort)
-            data.status = data.status?1:0
-            editObj(data).then(res => {
-                this.getList()
-                this.alertNotify('修改')
-                this.cancelEdit()
+            this.$refs.form.validate((valid) => {
+                if (valid) {
+                    this.createdLoading = true
+                    let data = Object.assign({},this.form)
+                    data.sort = parseInt(data.sort)
+                    data.status = data.status?1:0
+                    editObj(data).then(res => {
+                        this.getList()
+                        this.alertNotify('修改')
+                        this.cancelEdit()
+                    })
+                }
             })
         },
         cancelEdit(){
@@ -233,6 +262,7 @@ console.log(this.form)
                 thumbnailBaseUrl:''
             }
             this.createdLoading = false
+            this.$refs.form.resetFields();
         },
         alertNotify(str){
             this.$notify({
@@ -251,7 +281,7 @@ console.log(this.form)
 .el-form-item{
     float: left;
     width:80px;
-    margin-bottom: 10px
+    margin-bottom: 15px
 }
 .avatar-uploader{
     float: left;

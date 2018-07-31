@@ -1,12 +1,12 @@
 <template>
-    <div class="app-container calendar-list-container" v-loading="listLoading">
+    <div class="app-container calendar-list-container" v-loading="listLoading" id="help">
         <el-tabs v-model="activeName">
             <el-tab-pane label="说明文档" name="first" >
                 <span slot="label"><span style="font-size:24px">说明文档</span></span>
                 <el-collapse accordion v-model="activeObj" @change="getInfo">
                     <el-collapse-item v-for="(item,index) in list_1" :key="index" :name="item.id">
                         <template slot="title">
-                        <span style="font-size:16px;font-weight: bold">{{item.title}}</span>
+                        <span style="font-size:16px;font-weight: bold;padding-left:20px">{{item.title}}</span>
                         <span class="pull-right" style="padding-right:10px">{{(item.updateAt)?item.updateAt:item.createdAt | parseTime('{y}-{m}-{d}')}}</span>
                         <span style="padding-left:40px;">
                             <el-tag type="info" size="mini" style="margin-left:5px" v-for="(ele,i) in item.articleTags" :key="i">{{ele.tagName}}</el-tag>
@@ -21,7 +21,7 @@
                 <el-collapse accordion v-model="activeObj" @change="getInfo">
                     <el-collapse-item v-for="(item,index) in list_2" :key="index" :name="item.id">
                         <template slot="title">
-                        <span style="font-size:16px;font-weight: bold">{{item.title}}</span>
+                        <span style="font-size:16px;font-weight: bold;padding-left:20px">{{item.title}}</span>
                         <span style="padding-left:40px;">
                             <el-tag type="info" size="mini" style="margin-left:5px" v-for="(ele,i) in item.articleTags" :key="i">{{ele.tagName}}</el-tag>
                         </span>
@@ -98,4 +98,5 @@ export default {
 }
 </script>
 <style scoped>
+
 </style>

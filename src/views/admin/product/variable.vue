@@ -1,8 +1,8 @@
 <template>
     <div class="clearfix">
         <div>产 品 : {{productInfo.name}} </div>
-        <el-form :model="form" class="clearfix" ref="form" label-width="0" size="mini" style="padding-top:10px;">
-            <el-form-item label="" style="width: 100px;margin-right:5px">
+        <el-form :model="form" class="clearfix" ref="form" :rules="rules" label-width="0" size="mini" style="padding-top:10px;">
+            <el-form-item label="" prop="type" style="width: 100px;margin-right:5px">
                 <el-select v-model="form.type" placeholder="类型" size="mini">
                     <el-option
                     v-for="item in options"
@@ -12,13 +12,13 @@
                     </el-option>
                 </el-select>
             </el-form-item>
-            <el-form-item label="" style="width: 140px;margin-right:5px">
+            <el-form-item label="" prop="name" style="width: 140px;margin-right:5px">
                 <el-input v-model="form.name" size="mini" auto-complete="off" placeholder="名称"></el-input>
             </el-form-item>
-            <el-form-item label="" style="width: 100px;margin-right:5px">
+            <el-form-item label="" prop="label" style="width: 100px;margin-right:5px">
                 <el-input v-model="form.label" size="mini" auto-complete="off" placeholder="标识"></el-input>
             </el-form-item>
-            <el-form-item label="" style="width: 60px;margin-right:5px">
+            <el-form-item label="" prop="sort" style="width: 60px;margin-right:5px">
                 <el-input v-model="form.sort" size="mini" auto-complete="off" placeholder="排序"></el-input>
             </el-form-item>
             
@@ -100,7 +100,33 @@ import {get_templateObj,set_templateObj} from "@/api/product";
 export default {
     props:['productInfo'],
     data(){
+        var validateType = (rule, value, callback) => {
+            if (value === '' || value== undefined) {
+                callback(new Error('请选择类型'));
+            } else {
+                callback();
+            }
+        };
+        var validateName = (rule, value, callback) => {
+            if (value === '' || value== undefined) {
+                callback(new Error('请输入名称'));
+            } else {
+                callback();
+            }
+        };
+        var validateLabel = (rule, value, callback) => {
+            if (value === '' || value== undefined) {
+                callback(new Error('请输入标识'));
+            } else {
+                callback();
+            }
+        };
         return {
+            rules: {
+                type: [{ validator: validateType, message: '请选择类型', trigger: 'change' }],
+                name: [{ validator: validateName, message: '请输入名称', trigger: 'blur' }],
+                label: [{ validator: validateLabel, message: '请输入标识', trigger: 'blur' }],
+            },
             listLoading:false,
             flag:'add',
             textareax:'',
@@ -177,13 +203,17 @@ export default {
             })
         },
         handleAdd(){
-            let obj = Object.assign({},this.form)
-            obj.status = obj.status?1:0
-            let [...dataList] = this.list
-            dataList.push(obj)
-            this.templateData.content = JSON.stringify(dataList)
-            this.createdLoading = true
-            this.setContent()
+            this.$refs.form.validate((valid) => {
+                if (valid) {
+                    let obj = Object.assign({},this.form)
+                    obj.status = obj.status?1:0
+                    let [...dataList] = this.list
+                    dataList.push(obj)
+                    this.templateData.content = JSON.stringify(dataList)
+                    this.createdLoading = true
+                    this.setContent()
+                }
+            })
         },
         deleteList(index,rows){
             this.$confirm(
@@ -199,8 +229,7 @@ export default {
                 let content = (rows.length!=0)?JSON.stringify(rows):''
                 this.templateData.content = content
                 this.setContent()
-            })
-            
+            }).catch(() => {});
         },
         updateList(index,rows){
             this.flag = 'edit'
@@ -209,13 +238,18 @@ export default {
             this.editIndex = index
         },
         handleEdit(){
-            let obj = Object.assign({},this.form)
-            obj.status = obj.status?1:0
-            let [...dataList] = this.list
-            dataList.splice(this.editIndex, 1,obj)
-            this.templateData.content = JSON.stringify(dataList)
-            this.createdLoading = true
-            this.setContent()
+            this.$refs.form.validate((valid) => {
+                if (valid) {
+                    let obj = Object.assign({},this.form)
+                    obj.status = obj.status?1:0
+                    let [...dataList] = this.list
+                    dataList.splice(this.editIndex, 1,obj)
+                    this.templateData.content = JSON.stringify(dataList)
+                    this.createdLoading = true
+                    this.setContent()
+                }
+            })
+            
         },
         // 保存变量
         setContent(){
@@ -252,6 +286,7 @@ export default {
                 status:true
             }
             this.createdLoading = false
+            this.$refs.form.resetFields();
         },
         uploadSuccess(response, file, fileList){
             this.$notify({

@@ -1,7 +1,7 @@
 <template>
     <div>
-        <el-form :model="form" class="clearfix" ref="form" size="mini">
-            <el-form-item label="名称" style="width: 240px" label-width="70px" >
+        <el-form :model="form" class="clearfix" ref="form" :rules="rules" size="mini">
+            <el-form-item label="名称" prop="tagName" style="width: 240px" label-width="70px" >
                 <el-input v-model="form.tagName" size="mini" auto-complete="off" ></el-input>
             </el-form-item>
             <el-form-item label="排序" style="width: 240px;margin-left:10px;" label-width="70px" >
@@ -48,7 +48,19 @@ import { mapGetters } from "vuex";
 import {fetchList,addObj,delObj,editObj} from "@/api/content_tag";
 export default {
     data(){
+        var validateName = (rule, value, callback) => {
+            if (value === '' || value== undefined) {
+                callback(new Error('请输入名称'));
+            } else {
+                callback();
+            }
+        };
         return {
+            rules:{
+                tagName:[
+                    { validator: validateName,trigger: 'blur' },
+                ],
+            },
             listLoading:false,
             createdLoading:false,
             form:{
@@ -83,7 +95,6 @@ export default {
             this.getList();
         },
         getList(){
-            this.resetTem()
             this.listLoading = true
             this.listQuery.sort_by = 'sort'
             this.listQuery.direction = 'asc'
@@ -124,23 +135,31 @@ export default {
             })
         },
         handleAdd(){
-            let data = Object.assign({},this.form)
-            data.sort = parseInt(data.sort)
-            this.createdLoading = true
-            addObj(data).then(res => {
-                this.getList()
-                this.alertNotify('添加')
-                this.resetTem()
+            this.$refs.form.validate((valid) => {
+                if (valid) {
+                    let data = Object.assign({},this.form)
+                    data.sort = parseInt(data.sort)
+                    this.createdLoading = true
+                    addObj(data).then(res => {
+                        this.getList()
+                        this.alertNotify('添加')
+                        this.resetTem()
+                    })
+                }
             })
         },
         handleEdit(){
-            this.createdLoading = true
-            let data = Object.assign({},this.form)
-            data.sort = parseInt(data.sort)
-            editObj(data).then(res => {
-                this.getList()
-                this.alertNotify('修改')
-                this.cancelEdit()
+            this.$refs.form.validate((valid) => {
+                if (valid) {
+                    this.createdLoading = true
+                    let data = Object.assign({},this.form)
+                    data.sort = parseInt(data.sort)
+                    editObj(data).then(res => {
+                        this.getList()
+                        this.alertNotify('修改')
+                        this.cancelEdit()
+                    })
+                }
             })
         },
         cancelEdit(){
@@ -153,6 +172,7 @@ export default {
                 sort:'',
             }
             this.createdLoading = false
+            this.$refs.form.resetFields();
         },
         alertNotify(str){
             this.$notify({

@@ -1,7 +1,7 @@
 <template>
     <div>
-        <el-form :model="form" class="clearfix" ref="form" size="small" label-width="50px">
-            <el-form-item label="上级" style="width: 220px;margin-right:5px">
+        <el-form :model="form" class="clearfix" ref="form" :rules="rules" size="small" label-width="50px">
+            <el-form-item label="上级" prop="parentId" style="width: 220px;margin-right:5px">
                 <el-select v-model="form.parentId" size="mini" placeholder="请选择上级分类">
                     <el-option
                     v-for="item in categoryOptions"
@@ -11,7 +11,7 @@
                     </el-option>
                 </el-select>
             </el-form-item>
-            <el-form-item label="名称" style="width: 210px;margin-right:5px">
+            <el-form-item label="名称" prop="name" style="width: 210px;margin-right:5px">
                 <el-input v-model="form.name" size="mini" auto-complete="off" placeholder="名称"></el-input>
             </el-form-item>
             <el-form-item label="排序" style="width: 210px;">
@@ -49,7 +49,8 @@
                 <el-table-column align="center" label="缩略图" width="80">
                     <template slot-scope="scope">
                         <div style="height:40px">
-                            <img style="width:60px;height:40px" :src="scope.row.thumbnailBaseUrl+scope.row.thumbnailPath">
+                            <img v-if="scope.row.thumbnailBaseUrl!=''" style="width:60px;height:40px" :src="scope.row.thumbnailBaseUrl+scope.row.thumbnailPath">
+                            <img v-else style="width:60px;height:40px" src="../../../assets/img/no_pic.png">
                         </div>
                     </template>
                 </el-table-column>
@@ -96,7 +97,26 @@ import {fetchList,addObj,delObj,editObj} from "@/api/product_category";
 export default {
     props:['dataInfo'],
     data(){
+        var validateParentId = (rule, value, callback) => {
+            console.log(value)
+            if (value === '' || value== undefined) {
+                callback(new Error('请选择上级分类'));
+            } else {
+                callback();
+            }
+        };
+        var validateName = (rule, value, callback) => {
+            if (value === '' || value== undefined) {
+                callback(new Error('请选择类型'));
+            } else {
+                callback();
+            }
+        };
         return {
+            rules: {
+                parentId: [{ validator: validateParentId, message: '请选择上级分类', trigger: 'change' }],
+                name: [{ validator: validateName, message: '请输入名称', trigger: 'blur' }],
+            },
             listLoading:false,
             createdLoading:false,
             headers:{Authorization: "Bearer " + getToken()},
@@ -148,7 +168,6 @@ export default {
             this.getList();
         },
         getList(){
-            this.resetTem()
             this.listLoading = true
             this.listQuery.sort_by = 'sort'
             this.listQuery.direction = 'asc' //desc
@@ -187,28 +206,36 @@ export default {
                     this.getList()
                     this.$parent.$parent.alertNotify('删除')
                 })
-            })
+            }).catch(() => {});
         },
         handleAdd(){
-            let data = Object.assign({},this.form)
-            data.sort = parseInt(data.sort)
-            data.status = data.status?1:0
-            this.createdLoading = true
-            addObj(data).then(res => {
-                this.getList()
-                this.$parent.$parent.alertNotify('添加')
-                this.resetTem()
+            this.$refs.form.validate((valid) => {
+                if (valid) {
+                    let data = Object.assign({},this.form)
+                    data.sort = parseInt(data.sort)
+                    data.status = data.status?1:0
+                    this.createdLoading = true
+                    addObj(data).then(res => {
+                        this.getList()
+                        this.$parent.$parent.alertNotify('添加')
+                        this.resetTem()
+                    })
+                }
             })
         },
         handleEdit(){
-            this.createdLoading = true
-            let data = Object.assign({},this.form)
-            data.sort = parseInt(data.sort)
-            data.status = data.status?1:0
-            editObj(data).then(res => {
-                this.getList()
-                this.$parent.$parent.alertNotify('修改')
-                this.cancelEdit()
+            this.$refs.form.validate((valid) => {
+                if (valid) {
+                    this.createdLoading = true
+                    let data = Object.assign({},this.form)
+                    data.sort = parseInt(data.sort)
+                    data.status = data.status?1:0
+                    editObj(data).then(res => {
+                        this.getList()
+                        this.$parent.$parent.alertNotify('修改')
+                        this.cancelEdit()
+                    })
+                }
             })
         },
         cancelEdit(){
@@ -225,6 +252,7 @@ export default {
                 thumbnailBaseUrl:''
             }
             this.createdLoading = false
+            this.$refs.form.resetFields();
         }
     },
     watch:{
@@ -235,7 +263,7 @@ export default {
 .el-form-item{
     float: left;
     width:80px;
-    margin-bottom: 10px
+    margin-bottom: 15px
 }
 .avatar-uploader{
      height: 80px;

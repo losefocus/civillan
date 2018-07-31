@@ -30,7 +30,7 @@
         </el-collapse-transition>
         <div class="clearfix" style="padding-bottom:20px;">
         <el-button type="primary" size="small" v-show="!isshow"  class="pull-left" @click="isshow = !isshow" style="width:80px;">添加</el-button>
-        <el-button type="info" size="small" v-show="isshow" class="pull-left" @click="isshow = !isshow" style="width:80px;margin-left:0">取消</el-button>
+        <el-button type="info" size="small" v-show="isshow" class="pull-left" @click="restTemp" style="width:80px;margin-left:0">取消</el-button>
         </div>
 
         <el-table :data="list" style="width: 100%" v-loading="listLoading">
@@ -248,6 +248,7 @@ export default {
             }
             this.createLoading = false
             this.isshow = false
+            this.$refs.form.resetFields();
         }
     }
 }

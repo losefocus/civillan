@@ -10,11 +10,11 @@
         
         <el-collapse-transition>
             <div v-show="isshow">
-            <el-form :model="form" class="clearfix" ref="form" label-width="70px" size="mini" style="padding-top:10px;">
-                <el-form-item label="报警标题" style="width: 310px">
+            <el-form :model="form" class="clearfix" ref="form" :rules="rules" label-width="70px" size="mini" style="padding-top:10px;">
+                <el-form-item label="报警标题" prop="title" style="width: 310px">
                     <el-input v-model="form.title" size="mini" auto-complete="off"></el-input>
                 </el-form-item>
-                <el-form-item label="报警周期" style="width: 310px;;margin-left:30px">
+                <el-form-item label="报警周期" prop="cycle" style="width: 310px;;margin-left:30px">
                     <el-select v-model="form.cycle" placeholder="请选择" size="mini">
                         <el-option
                         v-for="item in dicts"
@@ -24,13 +24,13 @@
                         </el-option>
                     </el-select>
                 </el-form-item>
-                <el-form-item label="报警内容" style="width: 310px">
+                <el-form-item label="报警内容" prop="triggerMessage" style="width: 310px">
                     <el-input v-model="form.triggerMessage" size="mini" auto-complete="off"></el-input>
                 </el-form-item>
-                <el-form-item label="恢复内容" style="width: 310px;margin-left:30px">
+                <el-form-item label="恢复内容" prop="recoverMessage" style="width: 310px;margin-left:30px">
                     <el-input v-model="form.recoverMessage" size="mini" auto-complete="off"></el-input>
                 </el-form-item>
-                <el-form-item label="触发条件" style="width: 310px;">
+                <el-form-item label="触发条件" prop="condition" style="width: 310px;">
                     <el-input v-model="form.condition" type="textarea" :rows="2" size="mini" auto-complete="off"></el-input>
                 </el-form-item>
                 <el-form-item label="备注" style="width: 310px;margin-left:30px">
@@ -114,7 +114,49 @@ import {get_templateObj,set_templateObj} from "@/api/product";
 export default {
     props:['productInfo'],
     data(){
+        var validateTitle = (rule, value, callback) => {
+            if (value === '' || value== undefined) {
+                callback(new Error('请输入报警标题'));
+            } else {
+                callback();
+            }
+        };
+        var validateCycle = (rule, value, callback) => {
+            if (value === '' || value== undefined) {
+                callback(new Error('请选择报警周期'));
+            } else {
+                callback();
+            }
+        };
+        var validateTrigger = (rule, value, callback) => {
+            if (value === '' || value== undefined) {
+                callback(new Error('请输入报警内容'));
+            } else {
+                callback();
+            }
+        };
+        var validateRecover = (rule, value, callback) => {
+            if (value === '' || value== undefined) {
+                callback(new Error('请输入恢复内容'));
+            } else {
+                callback();
+            }
+        };
+        var validateCondition = (rule, value, callback) => {
+            if (value === '' || value== undefined) {
+                callback(new Error('请输入触发条件'));
+            } else {
+                callback();
+            }
+        };
         return {
+            rules: {
+                title: [{ validator: validateTitle,trigger: 'blur' }],
+                cycle: [{ validator: validateCycle,trigger: 'change' }],
+                triggerMessage: [{ validator: validateTrigger,trigger: 'blur' }],
+                recoverMessage: [{ validator: validateRecover,trigger: 'blur' }],
+                condition: [{ validator: validateCondition,trigger: 'blur' }],
+            },
             isshow:false,
             listLoading:false,
             flag:'add',
@@ -182,13 +224,17 @@ export default {
             })
         },
         handleAdd(){
-            let obj = Object.assign({},this.form)
-            obj.status = obj.status?1:0
-            let [...dataList] = this.list
-            dataList.push(obj)
-            this.templateData.content = JSON.stringify(dataList)
-            this.createdLoading = true
-            this.setContent()
+            this.$refs.form.validate((valid) => {
+                if (valid) {
+                    let obj = Object.assign({},this.form)
+                    obj.status = obj.status?1:0
+                    let [...dataList] = this.list
+                    dataList.push(obj)
+                    this.templateData.content = JSON.stringify(dataList)
+                    this.createdLoading = true
+                    this.setContent()
+                }
+            })
         },
         deleteList(index,rows){
             this.$confirm(
@@ -204,7 +250,7 @@ export default {
                 let content = (rows.length!=0)?JSON.stringify(rows):''
                 this.templateData.content = content
                 this.setContent()
-            })
+            }).catch(() => {});
         },
         updateList(index,rows){
             this.flag = 'edit'
@@ -213,13 +259,17 @@ export default {
             this.editIndex = index
         },
         handleEdit(){
-            let obj = Object.assign({},this.form)
-            obj.status = obj.status?1:0
-            let [...dataList] = this.list
-            dataList.splice(this.editIndex, 1,obj)
-            this.templateData.content = JSON.stringify(dataList)
-            this.createdLoading = true
-            this.setContent()
+            this.$refs.form.validate((valid) => {
+                if (valid) {
+                    let obj = Object.assign({},this.form)
+                    obj.status = obj.status?1:0
+                    let [...dataList] = this.list
+                    dataList.splice(this.editIndex, 1,obj)
+                    this.templateData.content = JSON.stringify(dataList)
+                    this.createdLoading = true
+                    this.setContent()
+                }
+            })
         },
         setContent(){
             set_templateObj(this.templateData).then(res => {
@@ -256,6 +306,7 @@ export default {
                 status:true
             }
             this.createdLoading = false
+            this.$refs.form.resetFields();
         },
         uploadSuccess(response, file, fileList){
             this.$notify({

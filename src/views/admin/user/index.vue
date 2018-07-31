@@ -37,7 +37,7 @@
 
       <el-table-column align="center" label="角色">
         <template slot-scope="scope">
-          <span v-for="(role,index) in scope.row.roleList" :key="index">{{role.roleDesc}} </span>
+          <span v-for="(role,index) in scope.row.roleList" :key="index">{{role.roleName}} </span>
         </template>
       </el-table-column>
 
@@ -98,8 +98,8 @@
 
         <el-form-item label="角色" prop="role">
           <el-select class="filter-item" v-model="role" placeholder="请选择" multiple >
-            <el-option v-for="item in rolesOptions" :key="item.roleId" :label="item.roleDesc" :value="item.roleId" :disabled="isDisabled[item.status]">
-              <span style="float: left">{{ item.roleDesc }}</span>
+            <el-option v-for="item in rolesOptions" :key="item.roleId" :label="item.roleName" :value="item.roleId" :disabled="isDisabled[item.status]">
+              <span style="float: left">{{ item.roleName }}</span>
               <span style="float: right; color: #8492a6; font-size: 13px">{{ item.roleCode }}</span>
             </el-option>
           </el-select>
@@ -167,7 +167,7 @@ export default {
         page_size: 20
       },
       role: [],
-      roleDesc:[],
+      roleName:[],
       groupIds:[],
       form: {
         username: undefined,
@@ -328,10 +328,10 @@ export default {
         this.dialogFormVisible = true;
         this.dialogStatus = "update";
         this.role = [];
-        this.roleDesc = [];
+        this.roleName = [];
         for (var i = 0; i < row.roleList.length; i++) {
           this.role[i] = row.roleList[i].roleId ;
-          this.roleDesc[i] = row.roleList[i].roleDesc;
+          this.roleName[i] = row.roleList[i].roleName;
         }
         
         get_parent(this.form.group).then(res => {
@@ -350,7 +350,7 @@ export default {
         if (valid) {
           delete this.form.status
           delete this.form.groupName
-          delete this.form.roleDesc
+          delete this.form.roleName
           addObj(this.form).then(() => {
             this.dialogFormVisible = false;
             this.getList();
@@ -438,7 +438,7 @@ export default {
         username: "",
         password: "",
         role: [],
-        roleDesc:[],
+        roleName:[],
         status: true,
         mobile: "",
         group:'',

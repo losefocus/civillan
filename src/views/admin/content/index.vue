@@ -73,7 +73,8 @@
                 <el-table-column align="center" label="图片" width="90">
                     <template slot-scope="scope">
                         <div style="height:40px">
-                        <img style="width:60px;height:40px" :src="scope.row.thumbnailBaseUrl+scope.row.thumbnailPath">
+                        <img v-if="scope.row.thumbnailBaseUrl!=''" style="width:60px;height:40px" :src="scope.row.thumbnailBaseUrl+scope.row.thumbnailPath">
+                        <img v-else style="width:60px;height:40px" src="../../../assets/img/no_pic.png">
                         </div>
                     </template>
                 </el-table-column>
@@ -394,6 +395,7 @@ export default {
             this.$refs.myeditor.content = ''
             this.createLoading = false
             this.isshow = false
+            this.$refs.form.resetFields();
         }
     }
 }

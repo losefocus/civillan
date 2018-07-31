@@ -27,7 +27,8 @@
             </el-form-item>
             <el-form-item label="头像">
               <my-upload field="uploadFile" @crop-upload-success="cropUploadSuccess" v-model="show" :width="300" :height="300" url="/file/attachment/upload" :headers="headers" img-format="png" :params="params"></my-upload>
-              <img :src="ruleForm2.avatarBaseUrl+ruleForm2.avatarPath" style="width:200px;height:200px;">
+              <img v-if="ruleForm2.avatarBaseUrl!=''" :src="ruleForm2.avatarBaseUrl+ruleForm2.avatarPath" style="width:200px;height:200px;">
+              <img v-else style="width:200px;height:200px" src="../../../assets/img/no_photo.png">
               <el-button type="primary" @click="toggleShow" size="mini">选择
                 <i class="el-icon-upload el-icon--right"></i>
               </el-button>
