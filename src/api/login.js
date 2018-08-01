@@ -28,9 +28,9 @@ export function mobileLogin(mobile, code) {
 export const getUserInfo = (username) => {
   return request({
     url: '/admin/user/info',
-    headers: {
-      'Authorization': 'Basic cGlnOnBpZw=='
-    },
+    // headers: {
+    //   'Authorization': 'Basic cGlnOnBpZw=='
+    // },
     method: 'get',
     params:{username}
   })

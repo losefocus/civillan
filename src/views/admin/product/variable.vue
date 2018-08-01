@@ -64,17 +64,17 @@
                         <span>{{scope.row.label}}</span>
                     </template>
                 </el-table-column>
-                <el-table-column align="center" label="排序">
-                    <template slot-scope="scope">
-                        <span>{{scope.row.sort}}</span>
-                    </template>
-                </el-table-column>
                 <el-table-column align="center" label="类型">
                     <template slot-scope="scope">
                         <span>{{scope.row.type}}</span>
                     </template>
                 </el-table-column>
-                <el-table-column align="center" label="状态" >
+                <el-table-column align="center" label="排序" width="60">
+                    <template slot-scope="scope">
+                        <span>{{scope.row.sort}}</span>
+                    </template>
+                </el-table-column>
+                <el-table-column align="center" label="状态" width="60">
                     <template slot-scope="scope">
                         <i v-if="scope.row.status == 1" class="el-icon-circle-check" style="font-size:18px;color:#67c23a"></i>
                         <i v-else class="el-icon-circle-close" style="font-size:18px;color:#f56c6c"></i>

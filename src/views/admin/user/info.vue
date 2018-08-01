@@ -114,7 +114,7 @@ export default {
   },
   created(){
     console.log(this.userInfo)
-    this.ruleForm2 = this.userInfo
+    if(this.userInfo)this.ruleForm2 = this.userInfo
     this.ruleForm2.password = ""
   },
   methods: {

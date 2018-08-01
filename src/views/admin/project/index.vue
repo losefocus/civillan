@@ -91,14 +91,13 @@
                                     <el-dropdown-menu slot="dropdown">
                                         <el-dropdown-item v-if="'children' in pro.row && pro.row.children.length ==0" :command="composeValue('info',pro.row)">项目详情</el-dropdown-item>
                                         <el-dropdown-item
-                                        v-if="pro.row.children.length ==0"
                                         v-for="(item,index) in btnList" 
                                         :key="index"
                                         :disabled="!item.flag"
                                         :command="composeValue(item.value,pro.row)">
                                         {{item.label}}
                                         </el-dropdown-item>
-                                        <el-dropdown-item :divided="pro.row.children.length == 0" v-if="project_btn_add" :command="composeValue('add',pro.row)">添加子项</el-dropdown-item>
+                                        <el-dropdown-item divided v-if="project_btn_add" :command="composeValue('add',pro.row)">添加子项</el-dropdown-item>
                                         <el-dropdown-item v-if="project_btn_edit" :command="composeValue('edit',pro.row)">修改项目</el-dropdown-item>
                                         <el-dropdown-item v-if="project_btn_del" :command="composeValue('del',pro.row)">删除项目</el-dropdown-item>
                                     </el-dropdown-menu>
@@ -347,12 +346,11 @@ export default {
             this.cardHeight.height = document.body.clientHeight - 107  - 30 + 'px'
         },
         expendTableRow(row){
-            this.$refs.projectTable.toggleRowExpansion(row,true);
+            this.$refs.projectTable.toggleRowExpansion(row);
         },
         handleAdd(row){
             this.cardVisibel = true
             this.flag = 'add'
-            this.resetForm()
             if(row)this.form.parentId = row.id
             this.expandRow = row
             //this.$refs.projectTable.toggleRowExpansion(this.expandRow,true);
@@ -362,13 +360,19 @@ export default {
         },
         //管理员列表
         getRoleList(){
+            function isProjectAdmin(value){ 
+                return value.roleCode == "project_admin";
+            }
             this.adminerOptionsloading = true
             fetchAdminList().then(response => {
                 let datas = response.data.result.items;
                 let options = []
                 let hash ={}
                 for (let i=0; i<datas.length; i++) {
-                    options.push({value:datas[i].id,label:datas[i].username}) 
+                    let rolelist = datas[i].roleList
+                    if(rolelist.some(isProjectAdmin)){  //若rolelist数组中存在project_admin，则返回true
+                        options.push({value:datas[i].id,label:datas[i].username}) 
+                    }
                     hash[datas[i].id] = datas[i].username
                 } 
                 this.adminerOptions = options

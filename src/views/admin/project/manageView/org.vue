@@ -36,18 +36,18 @@
                     <span>{{scope.row.phone}}</span>
                 </template>
             </el-table-column>
-            <el-table-column align="center" label="地址">
+            <el-table-column align="center" label="地址" min-width="150px">
                 <template slot-scope="scope">
-                    <span>{{scope.row.address}}</span>
+                    <span style="white-space:nowrap;">{{scope.row.address}}</span>
                 </template>
             </el-table-column>
-            <el-table-column align="center" label="状态">
+            <el-table-column align="center" label="状态" width="70">
                 <template slot-scope="scope">
                     <i v-if="scope.row.status == 1" class="el-icon-circle-check" style="font-size:18px;color:#67c23a"></i>
                     <i v-else class="el-icon-circle-close" style="font-size:18px;color:#909399"></i>
                 </template>
             </el-table-column>
-            <el-table-column align="center" label="操作" min-width ="150">
+            <el-table-column align="center" label="操作" width ="150">
                 <template slot-scope="scope" >
                     <el-button size="mini" type="" plain @click="updateOrg(scope.row)">修改</el-button>
                     <el-button size="mini" type="" plain @click="deleteOrg(scope.row)" style="margin-left:0px">删除</el-button>

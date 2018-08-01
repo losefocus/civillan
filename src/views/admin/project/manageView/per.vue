@@ -7,7 +7,7 @@
         <el-table :data="list" v-loading="listLoading" fit highlight-current-row style="width: 99%;margin-bottom:20px">
             <el-table-column align="center" label="姓名(角色)" min-width="110">
                 <template slot-scope="scope">
-                    <span style="white-space:nowrap;cursor:pointer;"><a>{{scope.row.name}}<span></span></a></span>
+                    <span style="white-space:nowrap;">{{scope.row.name}}</span>
                 </template>
             </el-table-column>
             <el-table-column align="center" label="电话" min-width="110">

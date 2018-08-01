@@ -17,6 +17,11 @@
           </span>
         </template>
       </el-table-column>
+      <el-table-column align="center" label="真实姓名">
+        <template slot-scope="scope">
+          <span>{{scope.row.name}}</span>
+        </template>
+      </el-table-column>
       <el-table-column align="center" label="手机号">
         <template slot-scope="scope">
           <span>{{scope.row.mobile}}</span>
@@ -80,7 +85,9 @@
         <el-form-item label="用户名" prop="username">
           <el-input v-model="form.username" placeholder="请输用户名"></el-input>
         </el-form-item>
-
+        <el-form-item label="真实姓名" prop="name">
+          <el-input v-model="form.name" placeholder="请输真实姓名"></el-input>
+        </el-form-item>
         <el-form-item v-if="dialogStatus == 'create'" label="密码" placeholder="请输入密码" prop="password">
           <el-input type="password" v-model="form.password"></el-input>
         </el-form-item>
@@ -170,6 +177,7 @@ export default {
       roleName:[],
       groupIds:[],
       form: {
+        name:undefined,
         username: undefined,
         password: undefined,
         c: true,
@@ -436,6 +444,7 @@ export default {
       this.form = {
         id: undefined,
         username: "",
+        name:"",
         password: "",
         role: [],
         roleName:[],

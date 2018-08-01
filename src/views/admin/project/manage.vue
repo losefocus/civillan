@@ -2,7 +2,7 @@
     <div class=" clearfix projectManage" >
         <div class="pull-left containers">
             <div class="filter-container">
-            <el-button @click="toProjectIndex" size="small" >返回</el-button>
+            <el-button @click="toProjectIndex" size="small" >返回项目列表</el-button>
             <span style="margin-left:20px">项目名称: {{viewData.name}}</span>
             <el-radio-group v-model="tabView" size="small" style="margin-bottom: 30px;" class="pull-right">
                 <el-radio-button label="info">项目详情</el-radio-button>

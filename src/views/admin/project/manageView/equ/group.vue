@@ -68,6 +68,14 @@
         </el-collapse-transition>
         <div v-loading="listLoading">
             <el-table :data="list" border fit highlight-current-row style="width: 100%;margin-bottom:20px;margin-top:10px">
+                <el-table-column align="center" label="缩略图" width="80">
+                    <template slot-scope="scope">
+                        <div style="height:40px">
+                            <img v-if="scope.row.thumbnailBaseUrl!=''" style="width:60px;height:40px" :src="scope.row.thumbnailBaseUrl+scope.row.thumbnailPath">
+                            <img v-else style="width:60px;height:40px" src="../../../../../assets/img/no_pic.png">
+                        </div>
+                    </template>
+                </el-table-column>
                 <el-table-column align="center" label="名称">
                     <template slot-scope="scope">
                         <span>{{scope.row.name}}</span>
@@ -78,12 +86,12 @@
                         <span>{{parentHash.get(scope.row.parentId)}}</span>
                     </template>
                 </el-table-column>
-                <el-table-column align="center" label="排序">
+                <el-table-column align="center" label="排序" width="60">
                     <template slot-scope="scope">
                         <span>{{scope.row.sort}}</span>
                     </template>
                 </el-table-column>
-                <el-table-column align="center" label="状态" >
+                <el-table-column align="center" label="状态" width="60">
                     <template slot-scope="scope">
                         <i v-if="scope.row.status == 1" class="el-icon-circle-check" style="font-size:18px;color:#67c23a"></i>
                         <i v-else class="el-icon-circle-close" style="font-size:18px;color:#909399"></i>

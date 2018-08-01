@@ -4,32 +4,32 @@
             <el-button class="filter-item" style="" @click="handleAdd" size="small" type="primary">添加文件</el-button>
         </div>
         <el-table :data="list" v-loading="listLoading" fit highlight-current-row style="width: 99%;margin-bottom:20px;">
-            <el-table-column align="left" label="文档标题">
+            <el-table-column align="left" label="文档标题" min-width="150">
                 <template slot-scope="scope">
-                    <span>{{scope.row.name}}</span>
+                    <span style="white-space:nowrap;">{{scope.row.name}}</span>
                 </template>
             </el-table-column>
-            <el-table-column align="center" label="文件类型">
+            <el-table-column align="center" label="文件类型" min-width="60">
                 <template slot-scope="scope">
                     <span>{{scope.row.extension}}</span>
                 </template>
             </el-table-column>
-            <el-table-column align="center" label="上传用户">
+            <el-table-column align="center" label="上传用户" min-width="60">
                 <template slot-scope="scope">
-                    <span>{{adminerHash[scope.row.createdBy]}}</span>
+                    <span >{{adminerHash[scope.row.createdBy]}}</span>
                 </template>
             </el-table-column>
-            <el-table-column align="center" label="上传时间">
+            <el-table-column align="center" label="上传时间" min-width="80">
                 <template slot-scope="scope">
                     <span>{{scope.row.createdAt | parseTime('{y}-{m}-{d}')}}</span>
                 </template>
             </el-table-column>
-            <el-table-column align="center" label="状态">
+            <el-table-column align="center" label="状态" min-width="60">   
                 <template slot-scope="scope">
                     <span>{{(scope.row.status == 1)?'已公开':'未公开'}}</span>
                 </template>
             </el-table-column>
-            <el-table-column align="center" label="操作" width="250">
+            <el-table-column align="center" label="操作" width="220">
                 <template slot-scope="scope" >
                     <el-button size="mini" type="" plain><a :href="scope.row.fileBaseUrl+scope.row.filePath" download target="_blank">下载</a></el-button>
                     <el-button size="mini" type="" plain @click="updataDoc(scope.row)" style="margin-left:0px">修改</el-button>

@@ -86,7 +86,7 @@
                         <span>{{scope.row.recoverMessage}}</span>
                     </template>
                 </el-table-column>
-                <el-table-column align="center" label="状态" >
+                <el-table-column align="center" label="状态" width="60">
                     <template slot-scope="scope">
                         <i v-if="scope.row.status == 1" class="el-icon-circle-check" style="font-size:18px;color:#67c23a"></i>
                         <i v-else class="el-icon-circle-close" style="font-size:18px;color:#909399"></i>
@@ -257,6 +257,7 @@ export default {
             this.form = Object.assign({},rows[index])
             this.form.status = this.form.status==1?true:false
             this.editIndex = index
+            this.isshow = true
         },
         handleEdit(){
             this.$refs.form.validate((valid) => {
@@ -306,6 +307,7 @@ export default {
                 status:true
             }
             this.createdLoading = false
+            this.isshow = false
             this.$refs.form.resetFields();
         },
         uploadSuccess(response, file, fileList){
