@@ -14,7 +14,7 @@
                     <el-form-item label="报警周期" prop="cycle" style="width: 310px;;margin-left:30px">
                         <el-select v-model="form.cycle" placeholder="请选择" size="mini">
                             <el-option
-                            v-for="item in options"
+                            v-for="item in dicts"
                             :key="item.value"
                             :label="item.label"
                             :value="item.value">
@@ -30,7 +30,17 @@
                     <el-form-item label="触发条件" prop="condition" style="width: 310px;">
                         <el-input v-model="form.condition" type="textarea" :rows="2" size="mini" auto-complete="off"></el-input>
                     </el-form-item>
-                    <el-form-item label="备注" style="width: 310px;margin-left:30px">
+                    <el-form-item label="报警级别" prop="level" style="width: 310px;margin-left:30px;margin-bottom:38px">
+                        <el-select v-model="form.level" placeholder="请选择" size="mini">
+                            <el-option
+                            v-for="item in alarmDicts"
+                            :key="item.value"
+                            :label="item.label"
+                            :value="item.value">
+                            </el-option>
+                        </el-select>
+                    </el-form-item>
+                    <el-form-item label="备注" style="width: 310px;">
                         <el-input v-model="form.comment" type="textarea" :rows="2" size="mini" auto-complete="off"></el-input>
                     </el-form-item>
                     <el-form-item  :style="flag == 'add'?'width: 140px':'width: 220px'" class="pull-right" style="padding-top:5px">
@@ -42,7 +52,7 @@
                             <el-button size="mini" type="primary" class="pull-right" @click="handleEdit('form')" :loading="createdLoading">保存</el-button>
                         </div>
                     </el-form-item>
-                    <el-form-item class="pull-right">
+                    <el-form-item class="pull-right" style="padding-top:5px;">
                         <el-checkbox v-model="form.status" >已启用</el-checkbox>
                     </el-form-item>
                 </el-form>
@@ -63,6 +73,11 @@
                 <el-table-column align="center" label="恢复内容">
                     <template slot-scope="scope">
                         <span>{{scope.row.recoverMessage}}</span>
+                    </template>
+                </el-table-column>
+                <el-table-column align="center" label="报警级别" width="90">
+                    <template slot-scope="scope">
+                        <span>{{scope.row.level}}</span>
                     </template>
                 </el-table-column>
                 <el-table-column align="center" label="状态" width="60">
@@ -88,6 +103,7 @@
 <script>
 import { mapGetters } from "vuex";
 import { remote } from "@/api/dict";
+import { findByvalue } from "@/util/util";
 import {getObj,addObj,delObj,editObj} from "@/api/device/alarm";
 
 export default {
@@ -128,6 +144,13 @@ export default {
                 callback();
             }
         };
+        var validateLevel = (rule, value, callback) => {
+            if (value === '' || value== undefined) {
+                callback(new Error('请选择报警级别'));
+            } else {
+                callback();
+            }
+        };
         return {
             rules: {
                 title: [{ validator: validateTitle,trigger: 'blur' }],
@@ -135,31 +158,13 @@ export default {
                 triggerMessage: [{ validator: validateTrigger,trigger: 'blur' }],
                 recoverMessage: [{ validator: validateRecover,trigger: 'blur' }],
                 condition: [{ validator: validateCondition,trigger: 'blur' }],
+                level: [{ validator: validateLevel,trigger: 'change' }],
             },
             isshow:false,
             listLoading:false,
             createdLoading:false,
-            options:[
-                {
-                    value: 0,
-                    label: '从不通知'
-                },{
-                    value: 1,
-                    label: '仅一次'
-                },{
-                    value: 5,
-                    label: '每隔5分钟'
-                },{
-                    value: 30,
-                    label: '每隔30分钟'
-                },{
-                    value: 60,
-                    label: '每隔1小时'
-                },{
-                    value: 1440,
-                    label: '每隔1天'
-                }
-            ],
+            dicts:[],
+            alarmDicts:[],
             form:{
                 title:'',
                 condition:'',
@@ -179,13 +184,15 @@ export default {
         }
     },
     created() {
-        this.getList()
         remote("cycle").then(response => {
             this.dicts = response.data.result;
         });
+        remote("alarm_level").then(response => {
+            this.alarmDicts = response.data.result;
+        });
     },
     mounted() {
-
+        this.getList()
     },
     computed: {
         ...mapGetters(["alarmList"]),
@@ -203,6 +210,9 @@ export default {
             this.listLoading = true
             getObj(this.listQuery).then(res => {
                 this.list = res.data.result.items
+                this.list.forEach(ele => {
+                    ele.level = findByvalue(this.alarmDicts,ele.level)
+                });
                 this.total = res.data.result.total
                 this.listLoading = false
             })

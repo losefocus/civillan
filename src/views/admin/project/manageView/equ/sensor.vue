@@ -57,7 +57,7 @@
             <el-table :data="list" @selection-change="handleSelectionChange" border fit highlight-current-row style="width: 100%;margin-bottom:20px;margin-top:10px">
                 <el-table-column type="selection" align="center" width="50">
                 </el-table-column>
-                <el-table-column align="center" label="变量">
+                <el-table-column align="left" label="变量名称">
                     <template slot-scope="scope">
                         <span>{{scope.row.name}}</span>
                     </template>
@@ -67,14 +67,14 @@
                         <span>{{scope.row.label}}</span>
                     </template>
                 </el-table-column>
-                <el-table-column align="center" label="排序" width="60">
-                    <template slot-scope="scope">
-                        <span>{{scope.row.sort}}</span>
-                    </template>
-                </el-table-column>
                 <el-table-column align="center" label="类型" >
                     <template slot-scope="scope">
                         <span>{{scope.row.type}}</span>
+                    </template>
+                </el-table-column>
+                <el-table-column align="center" label="排序" width="60">
+                    <template slot-scope="scope">
+                        <span>{{scope.row.sort}}</span>
                     </template>
                 </el-table-column>
                 <el-table-column align="center" label="状态" width="60">
@@ -83,7 +83,7 @@
                         <i v-else class="el-icon-circle-close" style="font-size:18px;color:#909399"></i>
                     </template>
                 </el-table-column>
-                <el-table-column align="center" label="操作" width="160" style="float:right">
+                <el-table-column align="center" label="操作" width="140" style="float:right">
                     <template slot-scope="scope">
                         <el-button size="mini" type="" plain @click="updateList(scope.row)">修改</el-button>
                         <el-button size="mini" type="" plain @click="deleteList(scope.row)" style="margin-left:0">删除</el-button>
@@ -101,6 +101,7 @@
 import { mapGetters } from "vuex";
 import { remote } from "@/api/dict";
 import { getToken } from "@/util/auth";
+import { findByvalue } from "@/util/util";
 import {getObj,addObj,delObj,editObj,download} from "@/api/device/sensor";
 import downloadBtn from "./downloadBtn"
 export default {
@@ -154,18 +155,19 @@ export default {
             },
             total:null,
             list:null,
+            originalList:[],
             listSelection : [],
             headers:{Authorization: "Bearer " + getToken()},
             params:{device_id:this.dataInfo.id},
         }
     },
     created() {
-        this.getList()
         remote("data_type").then(response => {
             this.dicts = response.data.result;
         });
     },
     mounted() {
+        this.getList()
     },
     computed: {
         ...mapGetters(["sensorList"]),
@@ -188,6 +190,12 @@ export default {
             this.listLoading = true
             getObj(this.listQuery).then(res => {
                 this.list = res.data.result.items
+                this.list.forEach(ele => {
+                    ele.type = findByvalue(this.dicts,ele.type)
+                });
+                this.list.sort((a,b)=>{
+                    return parseInt(a.sort) - parseInt(b.sort)
+                })
                 this.total = res.data.result.total
                 this.listLoading = false
                 this.resetTem()
@@ -219,7 +227,7 @@ export default {
             this.$refs.form.validate((valid) => {
                 if (valid) {
                     let data = Object.assign({},this.form)
-                    data.sort = parseInt(data.sort)
+                    data.sort = (data.sort == "" || data.sort == undefined)?0:data.sort
                     data.status = data.status?1:0
                     data.deviceId = this.dataInfo.id
                     this.createdLoading = true
@@ -236,6 +244,7 @@ export default {
                 if (valid) {
                     this.createdLoading = true
                     let data = Object.assign({},this.form)
+                    data.sort = (data.sort == "" || data.sort == undefined)?0:data.sort
                     data.status = data.status?1:0
                     editObj(data).then(res => {
                         this.getList(this.listQuery)

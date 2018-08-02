@@ -13,7 +13,7 @@
                 </el-select>
             </el-form-item>
             <el-form-item label="" prop="name" style="width: 140px;margin-right:5px">
-                <el-input v-model="form.name" size="mini" auto-complete="off" placeholder="名称"></el-input>
+                <el-input v-model="form.name" size="mini" auto-complete="off" placeholder="变量名称"></el-input>
             </el-form-item>
             <el-form-item label="" prop="label" style="width: 100px;margin-right:5px">
                 <el-input v-model="form.label" size="mini" auto-complete="off" placeholder="标识"></el-input>
@@ -54,7 +54,7 @@
         </div>
         <div v-loading="listLoading">
             <el-table :data="list" border fit highlight-current-row style="width: 100%;margin-bottom:20px">
-                <el-table-column align="center" label="名称">
+                <el-table-column align="left" label="变量名称">
                     <template slot-scope="scope">
                         <span>{{scope.row.name}}</span>
                     </template>
@@ -80,10 +80,10 @@
                         <i v-else class="el-icon-circle-close" style="font-size:18px;color:#f56c6c"></i>
                     </template>
                 </el-table-column>
-                <el-table-column align="center" label="操作" width="160" style="float:right">
+                <el-table-column align="center" label="操作" width="140" style="float:right">
                     <template slot-scope="scope">
-                        <el-button size="mini" type="" plain @click="updateList(scope.$index, list)">修改</el-button>
-                        <el-button size="mini" type="" plain @click="deleteList(scope.$index, list)" style="margin-left:0">删除</el-button>
+                        <el-button size="mini" type="" plain @click="updateList(scope.$index, originalList)">修改</el-button>
+                        <el-button size="mini" type="" plain @click="deleteList(scope.$index, originalList)" style="margin-left:0">删除</el-button>
                     </template>
                 </el-table-column>
             </el-table>
@@ -96,6 +96,8 @@
 </template>
 <script>
 import { getToken } from "@/util/auth";
+import { remote } from "@/api/dict";
+import { findByvalue } from "@/util/util";
 import {get_templateObj,set_templateObj} from "@/api/product";
 export default {
     props:['productInfo'],
@@ -109,7 +111,7 @@ export default {
         };
         var validateName = (rule, value, callback) => {
             if (value === '' || value== undefined) {
-                callback(new Error('请输入名称'));
+                callback(new Error('请输入变量名称'));
             } else {
                 callback();
             }
@@ -123,13 +125,14 @@ export default {
         };
         return {
             rules: {
-                type: [{ validator: validateType, message: '请选择类型', trigger: 'change' }],
-                name: [{ validator: validateName, message: '请输入名称', trigger: 'blur' }],
-                label: [{ validator: validateLabel, message: '请输入标识', trigger: 'blur' }],
+                type: [{ validator: validateType, trigger: 'change' }],
+                name: [{ validator: validateName, trigger: 'blur' }],
+                label: [{ validator: validateLabel, trigger: 'blur' }],
             },
             listLoading:false,
             flag:'add',
             textareax:'',
+            originalList:[],
             list:[],
             listQuery:{
                 page_index: 1,
@@ -137,21 +140,7 @@ export default {
             },
             total:null,
             templateData:null,
-            options:[
-                {
-                    value: 'bool',
-                    label: 'bool'
-                },{
-                    value: 'float',
-                    label: 'float'
-                },{
-                    value: 'integer',
-                    label: 'integer'
-                },{
-                    value: 'char',
-                    label: 'char'
-                },
-            ],
+            options:[],
             headers:{Authorization: "Bearer " + getToken()},
             params:{product_id:this.productInfo.id},
             form:{
@@ -166,9 +155,12 @@ export default {
         }
     },
     created() {
-        this.getList()
+        remote("data_type").then(response => {
+            this.options = response.data.result;
+        });
     },
     mounted() {
+        this.getList()
     },
     computed: {},
     methods:{
@@ -191,9 +183,14 @@ export default {
                 let data_ = res.data.result
                 this.templateData = data_
                 this.list = []
+                this.originalList = []
                 this.total = 0
                 if(data_.content && data_.content !=''){
+                    this.originalList = JSON.parse(data_.content.replace(new RegExp("'",'gi'),'"'))
                     this.list = JSON.parse(data_.content.replace(new RegExp("'",'gi'),'"'))
+                    this.list.forEach(ele => {
+                        ele.type = findByvalue(this.options,ele.type)
+                    });
                     this.list.sort((a,b)=>{
                         return parseInt(a.sort) - parseInt(b.sort)
                     })
@@ -207,7 +204,8 @@ export default {
                 if (valid) {
                     let obj = Object.assign({},this.form)
                     obj.status = obj.status?1:0
-                    let [...dataList] = this.list
+                    obj.sort = (obj.sort == "" || obj.sort == undefined)?0:obj.sort
+                    let [...dataList] = this.originalList
                     dataList.push(obj)
                     this.templateData.content = JSON.stringify(dataList)
                     this.createdLoading = true
@@ -242,7 +240,8 @@ export default {
                 if (valid) {
                     let obj = Object.assign({},this.form)
                     obj.status = obj.status?1:0
-                    let [...dataList] = this.list
+                    obj.sort = (obj.sort == "" || obj.sort == undefined)?0:obj.sort
+                    let [...dataList] = this.originalList
                     dataList.splice(this.editIndex, 1,obj)
                     this.templateData.content = JSON.stringify(dataList)
                     this.createdLoading = true

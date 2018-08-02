@@ -31,10 +31,20 @@
                     <el-input v-model="form.recoverMessage" size="mini" auto-complete="off"></el-input>
                 </el-form-item>
                 <el-form-item label="触发条件" prop="condition" style="width: 310px;">
-                    <el-input v-model="form.condition" type="textarea" :rows="2" size="mini" auto-complete="off"></el-input>
+                    <el-input v-model="form.condition" type="textarea" :rows="2" resize="none" size="mini" auto-complete="off"></el-input>
                 </el-form-item>
-                <el-form-item label="备注" style="width: 310px;margin-left:30px">
-                    <el-input v-model="form.comment" type="textarea" :rows="2" size="mini" auto-complete="off"></el-input>
+                <el-form-item label="报警级别" prop="level" style="width: 310px;;margin-left:30px;margin-bottom:38px">
+                    <el-select v-model="form.level" placeholder="请选择" size="mini">
+                        <el-option
+                        v-for="item in alarmDicts"
+                        :key="item.value"
+                        :label="item.label"
+                        :value="item.value">
+                        </el-option>
+                    </el-select>
+                </el-form-item>
+                <el-form-item label="备注" style="width: 310px;">
+                    <el-input v-model="form.comment" type="textarea" :rows="2" resize="none" size="mini" auto-complete="off"></el-input>
                 </el-form-item>
                 <el-form-item  :style="flag == 'add'?'width: 140px':'width: 220px'" class="pull-right" style="padding-top:5px">
                     <div v-if="flag == 'add'">
@@ -71,7 +81,7 @@
         </div>
         <div v-loading="listLoading">
             <el-table :data="list" border fit highlight-current-row style="width: 100%;margin-bottom:20px">
-                <el-table-column align="center" label="报警标题">
+                <el-table-column align="left" label="报警标题">
                     <template slot-scope="scope">
                         <span>{{scope.row.title}}</span>
                     </template>
@@ -86,16 +96,21 @@
                         <span>{{scope.row.recoverMessage}}</span>
                     </template>
                 </el-table-column>
+                <el-table-column align="center" label="报警级别" width="90">
+                    <template slot-scope="scope">
+                        <span>{{scope.row.level}}</span>
+                    </template>
+                </el-table-column>
                 <el-table-column align="center" label="状态" width="60">
                     <template slot-scope="scope">
                         <i v-if="scope.row.status == 1" class="el-icon-circle-check" style="font-size:18px;color:#67c23a"></i>
                         <i v-else class="el-icon-circle-close" style="font-size:18px;color:#909399"></i>
                     </template>
                 </el-table-column>
-                <el-table-column align="center" label="操作" width="160" style="float:right">
+                <el-table-column align="center" label="操作" width="140" style="float:right;">
                     <template slot-scope="scope">
-                        <el-button size="mini" type="" plain @click="updateList(scope.$index, list)">修改</el-button>
-                        <el-button size="mini" type="" plain @click="deleteList(scope.$index, list)" style="margin-left:0">删除</el-button>
+                        <el-button size="mini" type="" plain @click="updateList(scope.$index, originalList)">修改</el-button>
+                        <el-button size="mini" type="" plain @click="deleteList(scope.$index, originalList)" style="margin-left:0">删除</el-button>
                     </template>
                 </el-table-column>
             </el-table>
@@ -149,6 +164,13 @@ export default {
                 callback();
             }
         };
+        var validateLevel = (rule, value, callback) => {
+            if (value === '' || value== undefined) {
+                callback(new Error('请选择报警级别'));
+            } else {
+                callback();
+            }
+        };
         return {
             rules: {
                 title: [{ validator: validateTitle,trigger: 'blur' }],
@@ -156,11 +178,13 @@ export default {
                 triggerMessage: [{ validator: validateTrigger,trigger: 'blur' }],
                 recoverMessage: [{ validator: validateRecover,trigger: 'blur' }],
                 condition: [{ validator: validateCondition,trigger: 'blur' }],
+                level: [{ validator: validateLevel,trigger: 'change' }],
             },
             isshow:false,
             listLoading:false,
             flag:'add',
             textareax:'',
+            originalList:[],
             list:[],
             listQuery:{
                 page_index: 1,
@@ -180,19 +204,20 @@ export default {
             },
             createdLoading:false,
             editIndex:null,
-            dicts:[]
+            dicts:[],
+            alarmDicts:[]
         }
     },
     created() {
-        this.getList()
         remote("cycle").then(response => {
             this.dicts = response.data.result;
-            // console.log(this.dicts)
-            // console.log(findByvalue(this.dicts,'30'))
         });
-        
+        remote("alarm_level").then(response => {
+            this.alarmDicts = response.data.result;
+        });
     },
     mounted() {
+        this.getList()
     },
     computed: {},
     methods:{
@@ -215,9 +240,14 @@ export default {
                 let data = res.data.result
                 this.templateData = data
                 this.list = []
+                this.originalList = []
                 this.total = 0
                 if(data.content && data.content !=''){
+                    this.originalList = JSON.parse(data.content)
                     this.list = JSON.parse(data.content)
+                    this.list.forEach(ele => {
+                        ele.level = findByvalue(this.alarmDicts,ele.level)
+                    });
                     this.total = this.list.length
                 }
                 this.listLoading = false
@@ -228,7 +258,7 @@ export default {
                 if (valid) {
                     let obj = Object.assign({},this.form)
                     obj.status = obj.status?1:0
-                    let [...dataList] = this.list
+                    let [...dataList] = this.originalList
                     dataList.push(obj)
                     this.templateData.content = JSON.stringify(dataList)
                     this.createdLoading = true
@@ -264,7 +294,7 @@ export default {
                 if (valid) {
                     let obj = Object.assign({},this.form)
                     obj.status = obj.status?1:0
-                    let [...dataList] = this.list
+                    let [...dataList] = this.originalList
                     dataList.splice(this.editIndex, 1,obj)
                     this.templateData.content = JSON.stringify(dataList)
                     this.createdLoading = true
