@@ -127,7 +127,6 @@ export default {
             }
         }
         var validataroleId = (rule, value, callback) => {
-            console.log(value)
             if(value== undefined || value.length == 0){
                 callback(new Error('请选择角色'));
             }else{

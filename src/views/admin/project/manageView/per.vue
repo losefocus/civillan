@@ -7,7 +7,9 @@
         <el-table :data="list" v-loading="listLoading" fit highlight-current-row style="width: 99%;margin-bottom:20px">
             <el-table-column align="center" label="姓名(角色)" min-width="110">
                 <template slot-scope="scope">
-                    <span style="white-space:nowrap;">{{scope.row.name}}</span>
+                    <span style="white-space:nowrap;">{{scope.row.name}}
+                        <span v-if="scope.row.userRole.length!=0">({{scope.row.userRole[0].projectRole.name}})</span>
+                    </span>
                 </template>
             </el-table-column>
             <el-table-column align="center" label="电话" min-width="110">
@@ -51,14 +53,17 @@
         </div>
 
         <el-dialog id="orgType" title="角色管理"  :visible.sync="objectTypeVisible" width='690px'>
-            <el-form :model="roleForm" class="clearfix" :inline="true" :rules="rules" ref="roleForm" size="mini" label-width="50px">
-                <el-form-item label="角色" prop="role" style="width: 180px">
-                    <el-input v-model="roleForm.role" style="width:130px;" size="mini" auto-complete="off"></el-input>
+            <el-form :model="roleForm" class="clearfix" :rules="rules" ref="roleForm" size="mini" label-width="50px">
+                <el-form-item label="角色" prop="name" style="width: 140px">
+                    <el-input v-model="roleForm.name" style="width:90px;" size="mini" auto-complete="off"></el-input>
                 </el-form-item>
-                <el-form-item label="描述" style="width: 180px">
-                    <el-input v-model="roleForm.description" style="width:130px;" size="mini" auto-complete="off"></el-input>
+                <el-form-item label="别名" prop="alias" style="width: 140px">
+                    <el-input v-model="roleForm.alias" style="width:90px;" size="mini" auto-complete="off"></el-input>
                 </el-form-item>
-                <el-form-item  style="width: 230px" class="pull-right" label-width="0">
+                <el-form-item label="描述" style="width: 140px">
+                    <el-input v-model="roleForm.description" style="width:90px;" size="mini" auto-complete="off"></el-input>
+                </el-form-item>
+                <el-form-item  style="width: 230px;" class="pull-right" label-width="0">
                     <div v-show="flag == 'add'" class="pull-right">
                         <el-button size="mini" type="primary" @click="addRole('roleForm')" :loading="createdRoleLoading">添加</el-button>
                     </div>
@@ -66,14 +71,19 @@
                         <el-button size="mini" type="primary" @click="handleEditRole('roleForm')" :loading="createdRoleLoading">保存</el-button>
                         <el-button size="mini" type="info" @click="cancelEdit('roleForm')" style="margin-left:5px;">取消</el-button>
                    </div>
-                   <el-checkbox v-model="roleForm.available"  class="pull-right" style="margin-right:20px;">已启用</el-checkbox>
+                   <el-checkbox v-model="roleForm.status"  class="pull-right" style="margin-right:20px;">已启用</el-checkbox>
                 </el-form-item>
             </el-form>
             <div v-loading="roleListLoading">
                 <el-table :data="roleList" border fit highlight-current-row style="width: 100%;margin-bottom:20px;margin-top:10px">
                     <el-table-column align="center" label="角色">
                         <template slot-scope="scope">
-                            <span>{{scope.row.role}}</span>
+                            <span>{{scope.row.name}}</span>
+                        </template>
+                    </el-table-column>
+                    <el-table-column align="center" label="别名">
+                        <template slot-scope="scope">
+                            <span>{{scope.row.alias}}</span>
                         </template>
                     </el-table-column>
                     <el-table-column align="center" label="描述">
@@ -83,7 +93,7 @@
                     </el-table-column>
                     <el-table-column align="center" label="状态">
                         <template slot-scope="scope">
-                            <i v-if="scope.row.available == 1" class="el-icon-circle-check" style="font-size:18px;color:#67c23a"></i>
+                            <i v-if="scope.row.status == 1" class="el-icon-circle-check" style="font-size:18px;color:#67c23a"></i>
                             <i v-else class="el-icon-circle-close" style="font-size:18px;color:#909399"></i>
                         </template>
                     </el-table-column>
@@ -109,16 +119,23 @@ export default {
     props:['projectInfo'],
     data(){
         var validataRole = (rule, value, callback) => {
-            console.log(value)
             if (value === '' || value== undefined) {
                 callback(new Error('请输入角色'));
             }else {
                 callback();
             }
         };
+        var validataAlias = (rule, value, callback) => {
+            if (value === '' || value== undefined) {
+                callback(new Error('请输入别名'));
+            }else {
+                callback();
+            }
+        };
         return {
             rules: {
-                role: [{ validator: validataRole, trigger: 'blur' }],
+                name: [{ validator: validataRole, trigger: 'blur' }],
+                alias: [{ validator: validataAlias, trigger: 'blur' }],
             },
             listLoading:false,
             roleListLoading:false,
@@ -130,7 +147,7 @@ export default {
             total:null,
             objectTypeVisible:false,
             roleForm:{
-                available:true
+                status:true
             },
             roleList:[],
             roleListQuery: {
@@ -208,7 +225,7 @@ export default {
                 let roleOptions = []
                 this.roleList.forEach(element => {
                     element.value = element.id
-                    element.label = element.role
+                    element.label = element.name
                     roleOptions.push(element)
                 });
                 this.$store.commit("SET_ROLEOPTIONS",roleOptions);
@@ -225,8 +242,8 @@ export default {
         },
         addRole(formName){
             let data = Object.assign({}, this.roleForm);
-            data.available = data.available?1:0
             data.projectId = this.projectInfo.id
+            data.status = data.status?1:0
             this.$refs[formName].validate((valid) => {
                 if (valid) {
                     this.createdRoleLoading = true
@@ -244,11 +261,11 @@ export default {
         updateRole(row){
             this.flag = 'edit'
             this.roleForm= Object.assign({}, row);
-            this.roleForm.available = (this.roleForm.available == 1)?true:false
+            this.roleForm.status = (this.roleForm.status == 1)?true:false
         },
         handleEditRole(formName){
             let data = Object.assign({}, this.roleForm);
-            data.available = data.available?1:0
+            data.status = data.status?1:0
             delete data.label
             delete data.value
             this.$refs[formName].validate((valid) => {
@@ -284,15 +301,15 @@ export default {
         },
         cancelEdit(){
             this.flag = 'add'
-            this.roleForm = {available:true}
+            this.roleForm = {status:true}
             this.createdRoleLoading = false
         }
     }
 }
 </script>
 <style scoped>
-/* .el-form-item{
+.el-form-item{
     float: left;
     width:80px
-} */
+}
 </style>
