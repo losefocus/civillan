@@ -7,9 +7,9 @@
         <div style="padding-bottom:10px;">设 备 : {{dataInfo.name}}</div>
         <el-collapse-transition>
             <div v-show="isshow">
-                <el-form :model="form" class="clearfix" ref="form" label-width="70px" size="mini">
-                    <el-form-item label="报警条目" style="width: 650px">
-                        <el-select v-model="form.alarmId" placeholder="请选择" size="mini" :loading="alarmLoading">
+                <el-form :model="form" class="clearfix" :rules="rules" ref="form" label-width="70px" size="mini">
+                    <el-form-item label="报警条目" prop="alarmId" style="width: 650px">
+                        <el-select v-model="form.alarmId" placeholder="请选择报警条目" size="mini" :loading="alarmLoading">
                             <el-option
                             v-for="item in alarmOptions"
                             :key="item.value"
@@ -18,8 +18,8 @@
                             </el-option>
                         </el-select>
                     </el-form-item>
-                    <el-form-item label="通知对象"  style="width: 650px">
-                        <el-select v-model="form.puserIds" multiple placeholder="请选择" size="mini" :loading="userLoading">
+                    <el-form-item label="通知对象" prop="puserIds" style="width: 650px">
+                        <el-select v-model="form.puserIds" multiple placeholder="请选择通知对象" size="mini" :loading="userLoading">
                             <el-option
                             v-for="item in userOptions"
                             :key="item.value"
@@ -28,8 +28,8 @@
                             </el-option>
                         </el-select>
                     </el-form-item>
-                    <el-form-item label="通知频率" style="width: 310px;">
-                        <el-select v-model="form.cycle" placeholder="请选择" size="mini">
+                    <el-form-item label="通知频率" prop="cycle" style="width: 310px;">
+                        <el-select v-model="form.cycle" placeholder="请选择通知频率" size="mini">
                             <el-option
                             v-for="item in options"
                             :key="item.value"
@@ -38,8 +38,8 @@
                             </el-option>
                         </el-select>
                     </el-form-item>
-                    <el-form-item label="通知方式" style="width: 310px;margin-left:30px">
-                        <el-select v-model="form.notifyTypes" placeholder="请选择" size="mini" >
+                    <el-form-item label="通知方式" prop="notifyTypes" style="width: 310px;margin-left:30px">
+                        <el-select v-model="form.notifyTypes" placeholder="请选择通知方式" size="mini" >
                             <el-option
                             v-for="item in typeOptions"
                             :key="item.value"
@@ -49,7 +49,7 @@
                         </el-select>
                     </el-form-item>
                     <el-form-item  style="width: 140px;padding-top:5px" class="pull-right">
-                        <el-button size="mini" type="primary" class="pull-right" @click="handleAdd('form')" :loading="createdLoading">添加</el-button>
+                        <el-button size="mini" type="primary" class="pull-right" @click="handleAdd('form')" :loading="createdLoading">保存</el-button>
                     </el-form-item>
                     <el-form-item class="pull-right">
                         <el-checkbox v-model="form.status" >已启用</el-checkbox>
@@ -80,7 +80,7 @@
                         <i v-else class="el-icon-circle-close" style="font-size:18px;color:#909399"></i>
                     </template>
                 </el-table-column>
-                <el-table-column align="center" label="操作" width="160" style="float:right">
+                <el-table-column align="center" label="操作" width="80" style="float:right">
                     <template slot-scope="scope">
                         <el-button size="mini" type="" plain @click="deleteList(scope.row)">删除</el-button>
                     </template>
@@ -101,7 +101,41 @@ import {getAlarmObj,getUserObj,getObj,addObj,delObj,editObj} from "@/api/device/
 export default {
     props:['dataInfo'],
     data(){
+        var validataAlarmId = (rule, value, callback) => {
+            if (value === '' || value== undefined) {
+                callback(new Error('请选择报警条目'));
+            }else {
+                callback();
+            }
+        };
+        var validataPuserIds = (rule, value, callback) => {
+            if (value.length == 0) {
+                callback(new Error('请选择通知对象'));
+            }else {
+                callback();
+            }
+        };
+        var validataCycle = (rule, value, callback) => {
+            if (value === '' || value== undefined) {
+                callback(new Error('请选择通知频率'));
+            }else {
+                callback();
+            }
+        };
+        var validataNotifyTypes = (rule, value, callback) => {
+            if (value === '' || value== undefined) {
+                callback(new Error('请选择通知方式'));
+            }else {
+                callback();
+            }
+        };
         return {
+            rules: {
+                alarmId: [{ validator: validataAlarmId, trigger: 'change' }],
+                puserIds: [{ validator: validataPuserIds, trigger: 'change' }],
+                cycle: [{ validator: validataCycle, trigger: 'change' }],
+                notifyTypes: [{ validator: validataNotifyTypes, trigger: 'change' }],
+            },
             isshow:false,
             listLoading:false,
             createdLoading:false,
@@ -189,7 +223,7 @@ export default {
                 this.total = res.data.result.total
                 this.listLoading = false
             })
-            this.resetTem()
+            //this.resetTem()
         },
         deleteList(row){
             this.$confirm(
@@ -208,15 +242,19 @@ export default {
             })
         },
         handleAdd(formName){
-            let data = Object.assign({},this.form)
-            data.status = data.status?1:0
-            data.deviceId = this.dataInfo.id
-            data.puserIds = data.puserIds.join()
-            this.createdLoading = true
-            addObj(data).then(res => {
-                this.getList(this.listQuery)
-                this.$parent.$parent.$parent.$parent.alertNotify('添加')
-                this.cancelEdit()
+            this.$refs.form.validate(valid => {
+                if (valid) {
+                    let data = Object.assign({},this.form)
+                    data.status = data.status?1:0
+                    data.deviceId = this.dataInfo.id
+                    data.puserIds = data.puserIds.join()
+                    this.createdLoading = true
+                    addObj(data).then(res => {
+                        this.getList(this.listQuery)
+                        this.$parent.$parent.$parent.$parent.alertNotify('添加')
+                        this.cancelEdit()
+                    })
+                }
             })
         },
         cancelEdit(){
@@ -244,7 +282,7 @@ export default {
 .el-form-item{
     float: left;
     width:80px;
-    margin-bottom: 10px
+    margin-bottom: 15px
 }
 .addBtn{
     position: absolute;

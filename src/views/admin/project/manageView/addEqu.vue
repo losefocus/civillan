@@ -221,12 +221,22 @@ export default {
             // data.deviceGroup={id:data.deviceGroup.id[data.deviceGroup.id.length-1]} 
             data.protocol = "string"
             data.passage = "string"
+            this.createLoading = true
             this.$refs[formName].validate((valid) => {
                 if (valid) {
                     addObj(data).then( res => {
-                        this.$parent.$parent.$refs.equ.getList()
                         this.cancel()
-                        this.$parent.$parent.$parent.alertNotify('添加')
+                        if(res.data.success == true){
+                            this.$parent.$parent.$refs.equ.getList()
+                            this.$parent.$parent.$parent.alertNotify('添加')
+                        }else{
+                            this.$notify({
+                                title: '失败',
+                                message: '添加设备失败',
+                                type: 'error'
+                            });
+                        }
+                        
                     })
                 }
             })
@@ -241,9 +251,17 @@ export default {
                     // data.deviceGroup={id:data.deviceGroup.id[data.deviceGroup.id.length-1]} 
                     this.createLoading = true
                     updataObj(data).then(response => {
-                        this.$parent.$parent.$refs.equ.getList()
-                        this.cancel()
-                        this.$parent.$parent.$parent.alertNotify('修改')
+                            this.cancel()
+                        if(res.data.success == true){
+                            this.$parent.$parent.$refs.equ.getList()
+                            this.$parent.$parent.$parent.alertNotify('修改')
+                        }else{
+                            this.$notify({
+                                title: '失败',
+                                message: '修改设备失败',
+                                type: 'error'
+                            });
+                        }
                     })
                 }
             });

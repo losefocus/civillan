@@ -200,7 +200,6 @@ export default {
             this.getList();
         },
         getList(){
-            
             this.listLoading = true
             getObj(this.listQuery).then(res => {
                 this.list = res.data.result.items
@@ -213,6 +212,7 @@ export default {
             this.flag = 'edit'
             this.form = Object.assign({},row)
             this.form.status = this.form.status==1?true:false
+            this.isshow = true
         },
         deleteList(row){
             this.$confirm(
