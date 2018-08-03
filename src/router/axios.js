@@ -40,14 +40,23 @@ axios.interceptors.response.use(data => {
     message: errorCode[code] || errorCode['default'],
     type: 'error'
   })
-  // if(code == '401'){
-  //   removeToken()
-    
-  //   router.push({ path: "/login" })
-  // }
-  // store.dispatch("LogOut").then(() => {
-  //   location.reload(); // 为了重新实例化vue-router对象 避免bug
-  // });
+  if(code == '401'){
+    console.log(code)
+    store.commit('SET_MENU', [])
+    // 清除权限
+    store.commit('SET_PERMISSIONS', [])
+    // 清除用户信息
+    store.commit('SET_USER_INFO', {})
+    store.commit('SET_ACCESS_TOKEN', '')
+    store.commit('SET_REFRESH_TOKEN', '')
+    store.commit('SET_ROLES', [])
+    store.commit('DEL_ALL_TAG')
+    router.push({ path: "/login" })
+    // store.dispatch("LogOut").then(() => {
+    //   location.reload(); // 为了重新实例化vue-router对象 避免bug
+    // })
+  }
+  
   return Promise.reject(new Error(error))
 })
 

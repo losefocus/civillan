@@ -3,8 +3,9 @@
         <div class="filter-container">
             <el-button class="filter-item" style="" @click="handleAdd" size="small" type="primary">添加机构</el-button>
             <el-button class="filter-item" style="" @click="objectTypeVisible = true"  size="small" type="primary" icon="edit" >机构类型</el-button>
-            <el-select v-model="orgType" @change="filterType" placeholder="请选择机构类型" size="small" style="width:150px;margin-left:10px;" class="filter-item">
-                <el-option label="全部" value="0"></el-option>
+            <el-button class="pull-right" type="primary" size="small" v-waves  @click="handleFilter">搜索</el-button>
+            <el-input @keyup.enter.native="handleFilter" style="width: 150px;" size="small" suffix-icon="el-icon-search" class="pull-right" placeholder="机构名称" v-model="listQuery.name"></el-input>
+            <el-select v-model="listQuery.typeId" clearable @change="handleFilter" placeholder="按机构类型筛选" size="small" style="width:150px;margin-right:10px;" class="pull-right filter-item">
                 <el-option
                 v-for="item in orgTypeOptions"
                 :key="item.value"
@@ -13,7 +14,7 @@
                 </el-option>
             </el-select>
         </div>
-        <el-table :data="listFilter" v-loading="listLoading" fit highlight-current-row style="width: 99%;margin-bottom: 20px;">
+        <el-table :data="list" v-loading="listLoading" fit highlight-current-row style="width: 99%;margin-bottom: 20px;">
             <el-table-column align="left" label="机构名称" min-width="170px">
                 <template slot-scope="scope">
                     <el-tooltip class="item" effect="dark" :content="scope.row.name" placement="top-start" :open-delay="300">
@@ -122,6 +123,7 @@
 </template>
 <script>
 import { fetchList,delObj,updateObj,fetchTypeList,addObjType,updateObjType,delObjType} from "@/api/project_org";
+import waves from "@/directive/waves/index.js";
 // import { getBoolean } from '@/utils'
 export default {
     props:['projectInfo'],
@@ -148,7 +150,6 @@ export default {
             listLoading:false,
             typelListLoading:false,
             list:[],
-            listFilter:[],
             objectTypeVisible:false,
             orgTypeForm:{
                 name:'',
@@ -183,14 +184,6 @@ export default {
     },
     computed: {},
     methods:{
-        filterType(){
-            if(this.orgType == 0) this.listFilter = this.list
-            else{
-                this.listFilter = this.list.filter(item => {
-                    return item.typeId == this.orgType
-                })
-            }
-        },
         handleAdd(){
             this.$parent.cardVisibel = true
             this.$parent.$refs.addOrg.flag = 'add'
@@ -202,10 +195,15 @@ export default {
             this.listQuery.projectId = this.projectInfo.id
             fetchList(this.listQuery).then(res => {
                 this.list = res.data.result.items
-                this.listFilter = this.list
                 this.total = res.data.result.total
                 this.listLoading = false
             })
+        },
+        handleFilter(){
+            if(this.listQuery.name == '') delete this.listQuery.name
+            if(this.listQuery.adminer == '') delete this.listQuery.adminer
+            this.listQuery.page_index = 1;
+            this.getList()
         },
         handleSizeChange(val) {
             this.listQuery.page_size = val;

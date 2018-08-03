@@ -6,7 +6,15 @@
                 <el-button  size="small" type="primary" @click="handleAdd">添加产品</el-button>
                 <el-button  size="small" type="primary" @click="classifyTemplatVisible=true">分类管理</el-button>
                 <el-button class="pull-right" type="primary" size="small" v-waves @click="handleFilter">搜索</el-button>
-                <el-input @keyup.enter.native="handleFilter" style="width: 200px;" size="small" suffix-icon="el-icon-search" class="pull-right" placeholder="产品搜索" v-model="listQuery.keyword"></el-input>
+                <el-input @keyup.enter.native="handleFilter" style="width: 200px;" size="small" suffix-icon="el-icon-search" class="pull-right" placeholder="产品名称   " v-model="listQuery.name"></el-input>
+                <el-select v-model="listQuery.productCategory" clearable class="pull-right" placeholder="按角色筛选" style="width:150px;margin-right:10px" size="small"  @change="handleFilter">
+                <el-option
+                    v-for="item in categoryOptions_"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value">
+                    </el-option>
+                </el-select>
             </div>
             <el-table :data="list" fit highlight-current-row style="width: 100%;margin-bottom:25px;margin-top:15px">
                 <el-table-column align="center" label="缩略图" width="80">
@@ -38,7 +46,7 @@
                         </el-tooltip>
                     </template>
                 </el-table-column>
-                <el-table-column align="center" label="状态">
+                <el-table-column align="center" label="状态" width="60">
                     <template slot-scope="scope">
                         <span>
                             <i v-if="scope.row.status == 1" class="el-icon-circle-check" style="font-size:18px;color:#67c23a"></i>
@@ -57,7 +65,7 @@
                     </template>
                 </el-table-column>
                 
-                <el-table-column align="center" label="操作" min-width="80">
+                <el-table-column align="center" label="操作" width="90">
                     <template slot-scope="pro">
                         <el-dropdown trigger="click" @command="handleCommand" placement="bottom">
                             <span style="cursor:pointer">
@@ -203,6 +211,7 @@ export default {
                 status:true
             },
             categoryOptions:[],
+            categoryOptions_:[],
             categoryHash:{},
             imageName:'',
             fileList:[],
@@ -273,6 +282,7 @@ export default {
                 }
                 this.categoryHash = newMap
                 this.categoryOptions = toTree(data)
+                this.categoryOptions_ = toTree(data)
                 this.categoryOptions.unshift({value:0,label:'无'})
                 this.listLoading = false
             });
@@ -295,6 +305,7 @@ export default {
             })
         },
         handleFilter(){
+            if(this.listQuery.name == '') delete this.listQuery.name
             this.listQuery.page_index = 1;
             this.getList()
         },

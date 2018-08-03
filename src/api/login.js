@@ -38,7 +38,7 @@ export const getUserInfo = (username) => {
 
 export const logout = (accesstoken, refreshToken) => {
   return request({
-    url: '/auth/authentication/removeToken',
+    url: '/admin/user/logout',
     method: 'post',
     params: { accesstoken, refreshToken }
   })

@@ -6,7 +6,15 @@
                     <el-button size="small" type="primary" @click="handleAdd">添加项目</el-button>
                     <el-button style="" @click="toProjectMap"  size="small" type="primary">项目地图</el-button>
                     <el-button class="pull-right" type="primary" size="small" v-waves  @click="handleFilter">搜索</el-button>
-                    <el-input @keyup.enter.native="handleFilter" style="width: 200px;" size="small" suffix-icon="el-icon-search" class="pull-right" placeholder="项目搜索" v-model="listQuery.keyword"></el-input>
+                    <el-input @keyup.enter.native="handleFilter" style="width: 150px;" size="small" suffix-icon="el-icon-search" class="pull-right" placeholder="项目名称" v-model="listQuery.name"></el-input>
+                    <el-select v-model="listQuery.adminer" clearable class="pull-right" placeholder="按管理员筛选" style="width:150px;margin-right:10px" size="small"  @change="handleFilter">
+                        <el-option
+                        v-for="item in adminerOptions"
+                        :key="item.value"
+                        :label="item.label"
+                        :value="item.value">
+                        </el-option>
+                    </el-select>
                 </div>
                 <div v-loading="listLoading" >
                     <el-table :data="list" fit style="width: 100%;margin-bottom:25px;margin-top:15px;" :row-class-name="setClassName" ref="projectTable">
@@ -347,9 +355,9 @@ export default {
                 for (let i=0; i<datas.length; i++) {
                     let rolelist = datas[i].roleList
                     if(rolelist.some(isProjectAdmin)){  //若rolelist数组中存在project_admin，则返回true
-                        options.push({value:datas[i].id,label:datas[i].username}) 
+                        options.push({value:datas[i].id,label:datas[i].name+'('+datas[i].username+')'}) 
                     }
-                    hash[datas[i].id] = datas[i].username
+                    hash[datas[i].id] =datas[i].name!=''?datas[i].name+'('+datas[i].username+')':datas[i].username
                 } 
                 this.adminerOptions = options
                 this.$store.commit("SET_ADMINERHASH",hash);
@@ -510,6 +518,8 @@ export default {
             this.$refs[formName].resetFields();
         },
         handleFilter(){
+            if(this.listQuery.name == '') delete this.listQuery.name
+            if(this.listQuery.adminer == '') delete this.listQuery.adminer
             this.listQuery.page_index = 1;
             this.getList()
         },

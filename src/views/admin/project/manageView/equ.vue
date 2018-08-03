@@ -3,9 +3,19 @@
         <div class="filter-container">
             <el-button class="filter-item" style="" @click="handleAdd" size="small" type="primary">添加设备</el-button>
             <el-button class="filter-item" style="" @click="handleGroup" size="small" type="primary" icon="edit" >分组管理</el-button>
+            <el-button class="pull-right" type="primary" size="small" v-waves  @click="handleFilter">搜索</el-button>
+            <el-input @keyup.enter.native="handleFilter" style="width: 150px;" size="small" suffix-icon="el-icon-search" class="pull-right" placeholder="设备名称" v-model="listQuery.name"></el-input>
+            <el-select v-model="listQuery.deviceGroup" clearable class="pull-right" placeholder="按所在分组筛选" style="width:150px;margin-right:10px" size="small"  @change="handleFilter">
+                <el-option
+                v-for="item in groupOptions"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value">
+                </el-option>
+            </el-select>
         </div>
         <el-table :data="list" v-loading="listLoading" fit highlight-current-row style="width: 99%;margin-bottom:20px">
-            <el-table-column align="center" label="缩略图">
+            <el-table-column align="center" label="缩略图" width="80px">
                 <template slot-scope="scope">
                     <div style="height:40px">
                         <img v-if="scope.row.thumbnailBaseUrl!=''" style="width:60px;height:40px" :src="scope.row.thumbnailBaseUrl+scope.row.thumbnailPath">
@@ -174,7 +184,7 @@ export default {
 
     },
     computed: {
-        ...mapGetters(["permissions"])
+        ...mapGetters(["permissions","groupOptions"])
     },
     methods:{
         handleAdd(){
@@ -192,13 +202,19 @@ export default {
                 this.list = res.data.result.items
                 this.total = res.data.result.total
                 this.listLoading = false
-                let options = []
-                res.data.result.items.forEach(element => {
-                    let ele = {value:element.id,label:element.name}
-                    options.push(ele)
-                });
-
+                // let options = []
+                // res.data.result.items.forEach(element => {
+                //     let ele = {value:element.id,label:element.name}
+                //     options.push(ele)
+                // });
+                // console.log(options)
             })
+        },
+        handleFilter(){
+            if(this.listQuery.name == '') delete this.listQuery.name
+            if(this.listQuery.adminer == '') delete this.listQuery.adminer
+            this.listQuery.page_index = 1;
+            this.getList()
         },
         handleSizeChange(val) {
             this.listQuery.page_size = val;

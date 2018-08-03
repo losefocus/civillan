@@ -3,6 +3,16 @@
         <div class="filter-container">
             <el-button class="filter-item" style="" @click="handleAdd" size="small" type="primary">添加人员</el-button>
             <el-button class="filter-item" style="" @click="objectTypeVisible = true" size="small" type="primary" icon="edit" >角色管理</el-button>
+            <el-button class="pull-right" type="primary" size="small" v-waves  @click="handleFilter">搜索</el-button>
+            <el-input @keyup.enter.native="handleFilter" style="width: 150px;" size="small" suffix-icon="el-icon-search" class="pull-right" placeholder="人员姓名" v-model="listQuery.name"></el-input>
+            <!-- <el-select v-model="listQuery.roleId" clearable class="pull-right" placeholder="按角色筛选" style="width:150px;margin-right:10px" size="small"  @change="handleFilter">
+                <el-option
+                v-for="item in roleOptions"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value">
+                </el-option>
+            </el-select> -->
         </div>
         <el-table :data="list" v-loading="listLoading" fit highlight-current-row style="width: 99%;margin-bottom:20px">
             <el-table-column align="center" label="姓名(角色)" min-width="110">
@@ -150,6 +160,7 @@ export default {
                 status:true
             },
             roleList:[],
+            roleOptions:[],
             roleListQuery: {
                 page_index: 1,
                 page_size: 10
@@ -180,6 +191,12 @@ export default {
                 this.total = res.data.result.total
                 this.listLoading = false
             })
+        },
+        handleFilter(){
+            if(this.listQuery.name == '') delete this.listQuery.name
+            if(this.listQuery.adminer == '') delete this.listQuery.adminer
+            this.listQuery.page_index = 1;
+            this.getList()
         },
         handleSizeChange(val) {
             this.listQuery.page_size = val;
@@ -222,16 +239,17 @@ export default {
             fetchRoleList(this.roleListQuery).then(res => {
                 this.roleList = res.data.result.items
                 this.roleTotal = res.data.result.total
-                let roleOptions = []
+                this.roleOptions = []
                 this.roleList.forEach(element => {
                     element.value = element.id
                     element.label = element.name
-                    roleOptions.push(element)
+                    this.roleOptions.push(element)
                 });
-                this.$store.commit("SET_ROLEOPTIONS",roleOptions);
+                this.$store.commit("SET_ROLEOPTIONS",this.roleOptions);
                 this.roleListLoading = false
             })
         },
+        
         handleSizeChange_role(val) {
             this.roleListQuery.page_size = val;
             this.getRoleList();

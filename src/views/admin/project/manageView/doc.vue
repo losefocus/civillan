@@ -2,6 +2,8 @@
     <div style="padding:20px;border:1px solid #ebeef5">
         <div class="filter-container">
             <el-button class="filter-item" style="" @click="handleAdd" size="small" type="primary">添加文件</el-button>
+            <el-button class="pull-right" type="primary" size="small" v-waves  @click="handleFilter">搜索</el-button>
+            <el-input @keyup.enter.native="handleFilter" style="width: 150px;" size="small" suffix-icon="el-icon-search" class="pull-right" placeholder="文档标题" v-model="listQuery.name"></el-input>
         </div>
         <el-table :data="list" v-loading="listLoading" fit highlight-current-row style="width: 99%;margin-bottom:20px;">
             <el-table-column align="left" label="文档标题" min-width="150">
@@ -45,6 +47,7 @@
     </div>
 </template>
 <script>
+import { mapGetters } from "vuex";
 import {fetchList,delObj,updataObj} from "@/api/project_doc";
 export default {
     props:['projectInfo'],
@@ -60,7 +63,6 @@ export default {
             objectTypeVisible:false,
             flag:'add',
             createdLoading:false,
-            adminerHash:this.$parent.$parent.adminerHash
         }
     },
     created() {
@@ -69,7 +71,9 @@ export default {
     mounted() {
 
     },
-    computed: {},
+    computed: {
+        ...mapGetters(["adminerHash"])
+    },
     methods:{
         handleAdd(){
             this.$parent.cardVisibel = true
@@ -84,6 +88,11 @@ export default {
                 this.total = res.data.result.total
                 this.listLoading = false
             })
+        },
+        handleFilter(){
+            if(this.listQuery.name == '') delete this.listQuery.name
+            this.listQuery.page_index = 1;
+            this.getList()
         },
         handleSizeChange(val) {
             this.listQuery.page_size = val;
