@@ -42,13 +42,10 @@
                                                 </span >
                                                 <el-dropdown-menu slot="dropdown">
                                                     <el-dropdown-item :command="composeValue('info',pro.row)">项目详情</el-dropdown-item>
-                                                    <el-dropdown-item 
-                                                    v-for="(item,index) in btnList" 
-                                                    :key="index" 
-                                                    :disabled="!item.flag"
-                                                    :command="composeValue(item.value,pro.row)">
-                                                    {{item.label}}
-                                                    </el-dropdown-item>
+                                                    <el-dropdown-item v-if="project_btn_institutions" :command="composeValue('org',pro.row)">机构设置</el-dropdown-item>
+                                                    <el-dropdown-item v-if="project_btn_personnel" :command="composeValue('per',pro.row)">人员管理</el-dropdown-item>
+                                                    <el-dropdown-item v-if="project_btn_device" :command="composeValue('org',pro.row)">设备管理</el-dropdown-item>
+                                                    <el-dropdown-item v-if="project_btn_doc" :command="composeValue('doc',pro.row)">文档资料</el-dropdown-item>
                                                     <el-dropdown-item divided v-if="project_btn_edit" :command="composeValue('edit',pro.row)">修改项目</el-dropdown-item>
                                                     <el-dropdown-item  v-if="project_btn_del" :command="composeValue('del',pro.row)">删除项目</el-dropdown-item>
                                                 </el-dropdown-menu>
@@ -89,14 +86,11 @@
                                         操作<i class="el-icon-arrow-down el-icon--right"></i>
                                     </span >
                                     <el-dropdown-menu slot="dropdown">
-                                        <el-dropdown-item v-if="'children' in pro.row && pro.row.children.length ==0" :command="composeValue('info',pro.row)">项目详情</el-dropdown-item>
-                                        <el-dropdown-item
-                                        v-for="(item,index) in btnList" 
-                                        :key="index"
-                                        :disabled="!item.flag"
-                                        :command="composeValue(item.value,pro.row)">
-                                        {{item.label}}
-                                        </el-dropdown-item>
+                                        <el-dropdown-item :disabled="pro.row.children.length!=0" :command="composeValue('info',pro.row)">项目详情</el-dropdown-item>
+                                        <el-dropdown-item v-if="project_btn_institutions" :command="composeValue('org',pro.row)">机构设置</el-dropdown-item>
+                                        <el-dropdown-item v-if="project_btn_personnel" :command="composeValue('per',pro.row)">人员管理</el-dropdown-item>
+                                        <el-dropdown-item v-if="project_btn_device" :disabled="pro.row.children.length!=0" :command="composeValue('org',pro.row)">设备管理</el-dropdown-item>
+                                        <el-dropdown-item v-if="project_btn_doc" :command="composeValue('doc',pro.row)">文档资料</el-dropdown-item>
                                         <el-dropdown-item divided v-if="project_btn_add" :command="composeValue('add',pro.row)">添加子项</el-dropdown-item>
                                         <el-dropdown-item v-if="project_btn_edit" :command="composeValue('edit',pro.row)">修改项目</el-dropdown-item>
                                         <el-dropdown-item v-if="project_btn_del" :command="composeValue('del',pro.row)">删除项目</el-dropdown-item>
@@ -263,29 +257,6 @@ export default {
             mapList:[],
             list:[],
             total:null,
-            btnList:[
-                {
-                    value:'org',
-                    label:'机构设置',
-                    btn:'project_btn_institutions',
-                    flag:false
-                },{
-                    value:'per',
-                    label:'人员管理',
-                    btn:'project_btn_personnel',
-                    flag:false
-                },{
-                    value:'equ',
-                    label:'设备管理',
-                    btn:'project_btn_device',
-                    flag:false
-                },{
-                    value:'doc',
-                    label:'文档资料',
-                    btn:'project_btn_doc',
-                    flag:false
-                },
-            ],
             showView:'index',
             viewData:null,
             parentIdOptions:[],
@@ -314,6 +285,10 @@ export default {
             project_btn_add:false,
             project_btn_edit :false,
             project_btn_del :false,
+            project_btn_institutions:false,
+            project_btn_personnel:false,
+            project_btn_device:false,
+            project_btn_doc:false,
             cardHeight:{'height':null},
             cardVisibel:false,
             expandRow:null,
@@ -326,9 +301,10 @@ export default {
         this.project_btn_add = this.permissions["project_btn_add"];
         this.project_btn_edit = this.permissions["project_btn_edit"];
         this.project_btn_del = this.permissions["project_btn_del"];
-        this.btnList.forEach(element => {
-            element.flag = this.permissions[element.btn]
-        });
+        this.project_btn_institutions = this.permissions["project_btn_institutions"];
+        this.project_btn_personnel = this.permissions["project_btn_personnel"];
+        this.project_btn_device = this.permissions["project_btn_device"];
+        this.project_btn_doc = this.permissions["project_btn_doc"];
     },
     mounted() {
 
@@ -388,7 +364,6 @@ export default {
                 this.mapList = datas
                 this.list = this.arrayToJson(datas);
                 this.list.expand = true
-                console.log(this.list)
                 this.total = response.data.result.total;
                 this.listLoading = false;
             });

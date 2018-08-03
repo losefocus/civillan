@@ -42,7 +42,6 @@ export default {
                 resetUploader();
             })
             .catch((err) => {
-                console.log(err);
             })
         }
     }

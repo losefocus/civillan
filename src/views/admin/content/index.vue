@@ -359,7 +359,6 @@ export default {
             })
         },
         updataForm(formName){
-            console.log(this.form)
             this.form.content = this.$refs.myeditor.content
             this.$refs[formName].validate((valid) => {
                 if (valid) {

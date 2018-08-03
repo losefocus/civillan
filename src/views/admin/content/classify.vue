@@ -197,7 +197,6 @@ export default {
             })
         },
         updateList(row){
-            console.log(row)
             this.flag = 'edit'
             this.form = Object.assign({},row)
             this.form.status = this.form.status==1?true:false

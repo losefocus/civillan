@@ -113,16 +113,13 @@ export default {
     }),
   },
   created(){
-    console.log(this.userInfo)
     if(this.userInfo)this.ruleForm2 = this.userInfo
     this.ruleForm2.password = ""
   },
   methods: {
     submitForm(formName) {
       this.$refs[formName].validate(valid => {
-        console.log(this.ruleForm2)
         if (valid) {
-          // this.ruleForm2.avatar = this.avatar;
           request({
             url: "/admin/user/editInfo",
             method: "put",
@@ -137,7 +134,7 @@ export default {
                   duration: 2000
                 });
                 // 修改密码之后强制重新登录
-                if (this.ruleForm2.newpassword1 !== "") {
+                if (this.ruleForm2.newpassword1 !== "" && this.ruleForm2.newpassword1 !== undefined) {
                   this.$store.dispatch("LogOut").then(() => {
                     location.reload(); // 为了重新实例化vue-router对象 避免bug
                   });

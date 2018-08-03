@@ -37,6 +37,7 @@ router.beforeEach((to, from, next) => {
     })
   }
   if (store.getters.access_token) { // determine if there has token
+    console.log(store.getters.access_token)
     /* has token*/
     if (store.getters.isLock && to.path !== lockPage) {
       next({

@@ -31,7 +31,8 @@
       </el-tooltip>
       <el-dropdown trigger="click">
         <span class="el-dropdown-link" style="cursor: pointer;">
-          {{userName}}
+          <span v-if="userInfo.name!=''">{{userInfo.name}}({{userName}})</span>
+          <span v-else>{{userName}}</span>
           <i class="el-icon-arrow-down el-icon--right"></i>
         </span>
         <el-dropdown-menu slot="dropdown">

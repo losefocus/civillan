@@ -98,7 +98,6 @@ export default {
     props:['dataInfo'],
     data(){
         var validateParentId = (rule, value, callback) => {
-            console.log(value)
             if (value === '' || value== undefined) {
                 callback(new Error('请选择上级分类'));
             } else {

@@ -413,7 +413,6 @@ export default {
     // 批量删除文件
     deletes_query() {
       let ids = this.ids
-      console.log(ids)
       if(ids ===''){
         this.$message({
           message: '请先选择文件',

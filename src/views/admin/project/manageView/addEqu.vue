@@ -169,6 +169,10 @@ export default {
             flag:'add',
             productOptions:[],
             device_btn_add :false,
+            groupListQuery:{
+                page_index: 1,
+                page_size: 999
+            }
         }
     },
     created() {
@@ -194,18 +198,25 @@ export default {
             this.uploadLoaing = false
         },
         getProductList(){
-            fetchProductList().then(res => {
+            let obj = {
+                page_index: 1,
+                page_size: 999
+            }
+            fetchProductList(obj).then(res => {
                 let data = res.data.result.items
                 this.productOptions = []
                 data.forEach(ele => {
-                    let item = {value:ele.id, label:ele.alias}
+                    let item = {value:ele.id, label:ele.name+'('+ele.alias+')'}
                     this.productOptions.push(item)
                     this.productHash[ele.id] = ele.alias
                 });
             })
         },
         getGroupList(){
-            getGroupObj(this.projectInfo.id).then(res => {
+            this.groupListQuery.projectId = this.projectInfo.id
+            this.groupListQuery.sort_by = 'sort'
+            this.groupListQuery.direction = 'asc'
+            getGroupObj(this.groupListQuery).then(res => {
                 let groupOptions = toTree(res.data.result.items)
                 this.$store.commit("SET_GROUPOPTIONS", groupOptions);
             })

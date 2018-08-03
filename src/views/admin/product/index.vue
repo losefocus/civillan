@@ -354,7 +354,6 @@ export default {
                     let data = Object.assign({},this.form)
                     data.status = data.status?1:0
                     this.createLoading = true
-                    console.log(data)
                     addObj(data).then(res => {
                         this.getList();
                         this.createLoading = false;

@@ -10,10 +10,11 @@ export function fetchList(query) {
 }
 
   /* 所有产品列表 */
-export function fetchProductList() {
+export function fetchProductList(query) {
   return request({
     url: '/product/product/list',
     method: 'get',
+    params: query
   })
 }
 
@@ -43,10 +44,11 @@ export function updataObj(obj) {
 }
 
   /* 分组信息 */
-  export function getGroupObj(id) {
+  export function getGroupObj(query) {
     return request({
-      url: '/device/device_group/list?projectId='+id,
+      url: '/device/device_group/list',
       method: 'get',
+      params: query
     })
   }
 

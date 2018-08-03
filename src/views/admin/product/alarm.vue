@@ -356,7 +356,6 @@ export default {
             });
         },
         beforeAvatarUpload(file){
-            console.log(file)
             const isJPG = file.type === 'application/vnd.ms-excel';
             // const isLt2M = file.size / 1024 / 1024 < 2; 文件大小2M
             if (!isJPG) {

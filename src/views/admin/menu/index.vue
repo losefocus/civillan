@@ -159,7 +159,6 @@
         })
       },
       filterNode(value, data) {
-        // console.log(value);
         if (!value) return true
         return data.label.indexOf(value) !== -1
       },

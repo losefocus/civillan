@@ -40,7 +40,14 @@ axios.interceptors.response.use(data => {
     message: errorCode[code] || errorCode['default'],
     type: 'error'
   })
-  console.log(new Error(error))
+  // if(code == '401'){
+  //   removeToken()
+    
+  //   router.push({ path: "/login" })
+  // }
+  // store.dispatch("LogOut").then(() => {
+  //   location.reload(); // 为了重新实例化vue-router对象 避免bug
+  // });
   return Promise.reject(new Error(error))
 })
 
