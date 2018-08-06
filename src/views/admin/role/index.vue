@@ -76,10 +76,10 @@
       </div>
     </el-dialog>
 
-    <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogDeptVisible">
+    <!-- <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogDeptVisible">
       <el-tree class="filter-tree" :data="treeDeptData" :default-checked-keys="checkedKeys" check-strictly node-key="id" highlight-current ref="deptTree" @node-click="getNodeData" :props="defaultProps" :filter-node-method="filterNode" default-expand-all>
       </el-tree>
-    </el-dialog>
+    </el-dialog> -->
 
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogPermissionVisible">
       <el-tree class="filter-tree" :data="treeData" :default-checked-keys="checkedKeys" check-strictly node-key="id" highlight-current :props="defaultProps" show-checkbox ref="menuTree" :filter-node-method="filterNode" default-expand-all>
@@ -342,7 +342,7 @@ export default {
             return fetchRoleTree(roleCode);
           })
           .then(response => {
-            this.checkedKeys = response.data;
+            this.checkedKeys = response.data.result;
             this.$notify({
               title: "成功",
               message: "修改成功",

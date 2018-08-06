@@ -1,7 +1,7 @@
 <template>
     <div class="app-container calendar-list-container clearfix" id="product">
         
-        <div v-loading="listLoading"   style="width:100%">
+        <div  style="width:100%">
             <div class="filter-container">
                 <el-button  size="small" type="primary" @click="handleAdd">添加产品</el-button>
                 <el-button  size="small" type="primary" @click="classifyTemplatVisible=true">分类管理</el-button>
@@ -16,7 +16,7 @@
                     </el-option>
                 </el-select>
             </div>
-            <el-table :data="list" fit highlight-current-row style="width: 100%;margin-bottom:25px;margin-top:15px">
+            <el-table v-loading="listLoading"   :data="list" fit highlight-current-row style="width: 100%;margin-bottom:25px;margin-top:15px">
                 <el-table-column align="center" label="缩略图" width="80">
                     <template slot-scope="scope">
                         <div style="height:40px">

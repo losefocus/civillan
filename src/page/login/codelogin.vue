@@ -80,6 +80,7 @@ export default {
             this.timer();
             this.$message.success("验证码发送成功");
           } else {
+            console.log(123123)
             this.$message.error(response.data.msg);
           }
         });

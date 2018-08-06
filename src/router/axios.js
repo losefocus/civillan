@@ -31,6 +31,12 @@ axios.interceptors.request.use(config => {
 // HTTPresponse拦截
 axios.interceptors.response.use(data => {
   NProgress.done()
+  if(data.status == 200 && data.data.success == false){
+    Message({
+      message: data.data.message,
+      type: 'error'
+    })
+  }
   return data
 }, error => {
   NProgress.done()

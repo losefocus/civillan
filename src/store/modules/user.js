@@ -125,7 +125,6 @@ const user = {
     }) {
       return new Promise((resolve, reject) => {
         logout(state.access_token, state.refresh_token).then((res) => {
-          cconsole.log(commit)
           // 清除菜单
           commit('SET_MENU', [])
           // 清除权限
