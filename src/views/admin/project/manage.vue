@@ -10,6 +10,8 @@
                 <el-radio-button label="per">人员管理</el-radio-button>
                 <el-radio-button label="equ" :disabled="viewData.children.length != 0">设备管理</el-radio-button>
                 <el-radio-button label="doc">文档资料</el-radio-button>
+                <el-radio-button label="media">影像</el-radio-button>
+                <el-radio-button label="moni">监控</el-radio-button>
             </el-radio-group>
             </div>
             <div style="padding-top:20px;position:relative">
@@ -18,6 +20,8 @@
                 <per v-if="tabView === 'per'" :project-info="viewData" ref="per"></per>
                 <equ v-if="tabView === 'equ'" :project-info="viewData" ref="equ"></equ>
                 <doc v-if="tabView === 'doc'" :project-info="viewData" ref="doc"></doc>
+                <media v-if="tabView === 'media'" :project-info="viewData" ref="media"></media>
+                <moni v-if="tabView === 'moni'" :project-info="viewData" ref="moni"></moni>
             </div>
         </div>
         <el-card class="pull-right addNewContainer" :style="cardHeight" :class="{'show':cardVisibel}" >
@@ -26,6 +30,8 @@
             <add-per v-if="tabView === 'per'" :project-info="viewData" ref="addPer"></add-per>
             <add-equ v-if="tabView === 'equ'" :project-info="viewData" ref="addEqu"></add-equ>
             <add-doc v-if="tabView === 'doc'" :project-info="viewData" ref="addDoc"></add-doc>
+            <add-media v-if="tabView === 'media'" :project-info="viewData" ref="addMedia"></add-media>
+            <add-moni v-if="tabView === 'moni'" :project-info="viewData" ref="addMoni"></add-moni>
         </el-card>
     </div>
 </template>
@@ -35,10 +41,14 @@ import org from "./manageView/org";
 import per from "./manageView/per";
 import equ from "./manageView/equ";
 import doc from "./manageView/doc";
+import media from "./manageView/media";
+import moni from "./manageView/monitoring";
 import addOrg from "./manageView/addOrg";
 import addPer from "./manageView/addPer";
 import addEqu from "./manageView/addEqu";
 import addDoc from "./manageView/addDoc";
+import addMedia from "./manageView/addMedia";
+import addMoni from "./manageView/addMoni";
 
 export default {
     components:{
@@ -47,10 +57,14 @@ export default {
         per,
         equ,
         doc,
+        media,
+        moni,
         addOrg,
         addPer,
         addEqu,
-        addDoc
+        addDoc,
+        addMedia,
+        addMoni,
     },
     props:['viewData'],
     data(){
