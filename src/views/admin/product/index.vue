@@ -492,12 +492,12 @@ export default {
     width: 300px;
     padding-top: 0 ;
     position: absolute;
-    top: -16px;
+    top: -1px;
     right: -315px;
     z-index: 9
 }
 .addNewProject.show{
-    right: -8px;
+    right: -1px;
 }
 .addNewProject .tit{
     margin-top:-20px;

@@ -29,8 +29,9 @@ export default {
   padding: 5px 0!important
 }
 .el-table__header th{
-  background: #f4f8fb !important;
-  color: #333;
+  background: #f7f7f7 !important;
+  color: #666;
+  font-weight: bold
 }
 
 .el-table__expanded-cell[class*=cell]{

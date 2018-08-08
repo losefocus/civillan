@@ -54,14 +54,22 @@ import { fullscreenToggel, listenfullscreen } from "@/util/util";
 import topLock from "./top-lock";
 import topMenu from "./top-menu";
 import topTheme from "./top-theme";
+import {online} from "@/api/user";
 export default {
   components: { topLock, topMenu, topTheme },
   name: "top",
   data() {
-    return {};
+    return {
+      t:null
+    };
   },
   filters: {},
-  created() {this.initCollapse()},
+  created() {
+    this.initCollapse()
+    this.t = setInterval(()=>{
+      this.chechOnline()
+    },1000*60*5)
+  },
   mounted() {
     listenfullscreen(this.setScreen);
     window.onresize = () =>{
@@ -81,6 +89,11 @@ export default {
     ...mapGetters(["isFullScren", "isCollapse"])
   },
   methods: { 
+    chechOnline(){
+      online(this.userInfo.id).then(res => {
+        console.log(res)
+      })
+    },
     initCollapse(){
       var docWidth = document.body.clientWidth;
       if(docWidth <= 1400){
@@ -105,6 +118,7 @@ export default {
         type: "warning"
       }).then(() => {
         this.$store.dispatch("LogOut").then(() => {
+          clearTimeout(this.t)
           this.$router.push({ path: "/login" });
         });
       });

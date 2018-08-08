@@ -46,3 +46,11 @@ export function get_parent(id) {
     method: 'get',
   })
 }
+
+/* 在线状态 */
+export function online(id) {
+  return request({
+    url: '/admin/online?id='+id,
+    method: 'get',
+  })
+}

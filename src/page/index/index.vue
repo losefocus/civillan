@@ -69,12 +69,12 @@ export default {
     box-sizing: border-box;
     overflow-y: scroll;
     .router {
-      padding: 15px 8px;
-      background: #fff;
+      // padding: 15px 8px;
+      // background: #fff;
       min-height: 100%;
       height: auto;
       overflow: hidden;
-      border-radius: 5px;
+      // border-radius: 5px;
       box-sizing: border-box;
     }
   }

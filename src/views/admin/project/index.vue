@@ -1,5 +1,5 @@
 <template>
-    <div class="app-container calendar-list-container" style="min-height: 700px;">
+    <div class="app-container calendar-list-container" style="min-height: 741px;overflow:hidden">
         <div v-show="showView === 'index'"  class="clearfix">
             <div class="pull-left"  style="width:100%">
                 <div class="filter-container">
@@ -117,7 +117,7 @@
                     </div>
                 </div>
             </div>
-            <el-card class="pull-right addNewProject" :style="cardHeight" :class="{'show':cardVisibel}">
+            <el-card class="pull-right addNewProject" :class="{'show':cardVisibel}">
                 <div class="tit"><h3>{{(flag == 'add')?'添加':'修改'}}项目</h3><span>{{(flag == 'add')?'Add':'Edit'}} Project</span><i class="closeBtn el-icon-close" @click="cardVisibel = false"></i></div>
                 <el-form label-width="55px" :model="form" :rules="rules" ref="form" status-icon label-position="left">
                     <el-form-item label="上级" prop="parentId" >
@@ -301,7 +301,6 @@ export default {
             project_btn_personnel:false,
             project_btn_device:false,
             project_btn_doc:false,
-            cardHeight:{'height':null},
             cardVisibel:false,
             expandRow:null,
         }
@@ -329,9 +328,6 @@ export default {
             this.showView = 'manage'
             this.$refs.proManage.tabView = 'info'
             this.viewData = info
-        },
-        getCardHeight(){
-            this.cardHeight.height = document.body.clientHeight - 107  - 30 + 'px'
         },
         expendTableRow(row){
             this.$refs.projectTable.toggleRowExpansion(row);
@@ -518,6 +514,7 @@ export default {
             this.tm=[]
             this.imageName=''
             this.fileList=[]
+            this.createLoading = false
             this.uploadLoaing = false
             this.$refs[formName].resetFields();
         },
@@ -609,13 +606,13 @@ export default {
     width: 300px;
     padding-top: 0 ;
     position: absolute;
-    top: -16px;
+    top: -1px;
     right: -315px;
-    min-height: 730px;
+    min-height: 740px;
     z-index: 9;
 }
 .addNewProject.show{
-    right: -8px;
+    right: -1px;
 }
 .addNewProject .tit{
     margin-top:-20px;

@@ -24,7 +24,7 @@
                 <moni v-if="tabView === 'moni'" :project-info="viewData" ref="moni"></moni>
             </div>
         </div>
-        <el-card class="pull-right addNewContainer" :style="cardHeight" :class="{'show':cardVisibel}" >
+        <el-card class="pull-right addNewContainer" style="height:741px" :class="{'show':cardVisibel}" >
             <i class="closeBtn el-icon-close" @click="cardVisibel = false"></i>
             <add-org v-if="tabView === 'org'" :project-info="viewData" ref="addOrg"></add-org>
             <add-per v-if="tabView === 'per'" :project-info="viewData" ref="addPer"></add-per>
@@ -70,7 +70,6 @@ export default {
     data(){
         return {
             tabView:'info',
-            cardHeight:{'height':null},
             cardVisibel:false,
         }
     },
@@ -84,9 +83,6 @@ export default {
         
     },
     methods:{
-        getCardHeight(){
-            this.cardHeight.height = document.body.clientHeight - 107  - 30 + 'px'
-        },
         toProjectIndex(){
             this.$parent.showView = 'index'
             this.tabView = null
@@ -115,14 +111,14 @@ export default {
     width: 300px;
     padding-top: 0 ;
     position: absolute;
-    min-height: 730px;
-    top: -16px;
+    /* min-height: 730px; */
+    top: -21px;
     right: -335px;
     /* right: -28px; */
     z-index: 9
 }
 .addNewContainer.show{
-    right: -28px;
+    right: -21px;
 }
 .addNewContainer .tit{
     margin-top:-20px;
