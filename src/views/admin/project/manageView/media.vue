@@ -19,9 +19,9 @@
                     <span style="white-space:nowrap;">{{scope.row.name}}</span>
                 </template>
             </el-table-column>
-            <el-table-column align="center" label="类型" min-width="60">
+            <el-table-column align="center" label="类型" min-width="80">
                 <template slot-scope="scope">
-                    <span >{{scope.row.type}}</span>
+                    <span >{{typeHash.get(scope.row.type)}}</span>
                 </template>
             </el-table-column>
             <el-table-column align="left" label="外部地址" min-width="100">
@@ -45,7 +45,7 @@
                     <i v-else class="el-icon-circle-close" style="font-size:18px;color:#909399"></i>
                 </template>
             </el-table-column>
-            <el-table-column align="center" label="操作" width="220">
+            <el-table-column align="center" label="操作" width="200">
                 <template slot-scope="scope" >
                     <el-button v-if="scope.row.url==''" size="mini" type="" plain><a :href="scope.row.thumbnailFileBaseUrl+scope.row.thumbnailFilePath" download target="_blank">查看</a></el-button>
                     <el-button v-else size="mini" type="" plain><a :href="scope.row.url" target="_blank">查看</a></el-button>
@@ -64,6 +64,7 @@
 <script>
 import { mapGetters } from "vuex";
 import {fetchList,delObj,updataObj} from "@/api/project_media";
+import { remote } from "@/api/dict";
 export default {
     props:['projectInfo'],
     data(){
@@ -78,13 +79,20 @@ export default {
             objectTypeVisible:false,
             flag:'add',
             createdLoading:false,
+            typeHash:{}
         }
     },
     created() {
-        this.getList()
+        remote("media_type").then(response => {
+            this.typeHash = new Map;
+            response.data.result.forEach(ele => {
+                this.typeHash.set(parseInt(ele.value),ele.label)
+            });
+        });
+        
     },
     mounted() {
-
+        this.getList()
     },
     computed: {
         ...mapGetters(["adminerHash"])

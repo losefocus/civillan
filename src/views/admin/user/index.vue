@@ -97,7 +97,7 @@
           <input type="hidden" v-model="form.deptId" />
         </el-form-item> -->
 
-        <el-form-item label="所属分组" prop="groupIds">
+        <el-form-item label="所属分组">
           <!-- <el-input v-model="form.groupName" placeholder="选择分组" @focus="handleDept()" readonly></el-input> -->
           <!-- <input type="hidden" v-model="form.group" /> -->
           <el-cascader :options="groupOptions" v-model="groupIds" :show-all-levels="false" change-on-select @change="changeGroup"></el-cascader>
@@ -213,7 +213,7 @@ export default {
           }
         ],
         groupIds: [
-           { validator: validateGroup, message: '请选择分组', trigger: 'blur' ,required: true,}
+           { validator: validateGroup, message: '请选择分组', trigger: 'change' ,required: false,}
         ],
         role: [
           {

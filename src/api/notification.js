@@ -28,9 +28,10 @@ export function delObj(id) {
 }
 
 /* 人员列表 */
-export function fetchUserList() {
+export function fetchUserList(obj) {
   return request({
     url: '/project/project_user/list',
     method: 'get',
+    params: obj
   })
 }

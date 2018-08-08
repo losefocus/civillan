@@ -174,7 +174,11 @@ export default {
         },
         getUserList(){
             this.userId = []
-            fetchUserList().then(res => {
+            let el={
+                page_index:1,
+                page_size:9999,
+            }
+            fetchUserList(el).then(res => {
                 res.data.result.items.forEach(element => {
                     this.userIds.push(element.id)
                 });

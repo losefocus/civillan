@@ -54,8 +54,8 @@
                                                     <el-dropdown-item v-if="project_btn_personnel" :command="composeValue('per',pro.row)">人员管理</el-dropdown-item>
                                                     <el-dropdown-item v-if="project_btn_device" :command="composeValue('equ',pro.row)">设备管理</el-dropdown-item>
                                                     <el-dropdown-item v-if="project_btn_doc" :command="composeValue('doc',pro.row)">文档资料</el-dropdown-item>
-                                                    <el-dropdown-item v-if="project_btn_doc" :command="composeValue('media',pro.row)">影像</el-dropdown-item>
-                                                    <el-dropdown-item v-if="project_btn_doc" :command="composeValue('moni',pro.row)">监控</el-dropdown-item>
+                                                    <el-dropdown-item v-if="project_btn_doc" :command="composeValue('media',pro.row)">现场影像</el-dropdown-item>
+                                                    <el-dropdown-item v-if="project_btn_doc" :command="composeValue('moni',pro.row)">视频监控</el-dropdown-item>
                                                     <el-dropdown-item divided v-if="project_btn_edit" :command="composeValue('edit',pro.row)">修改项目</el-dropdown-item>
                                                     <el-dropdown-item  v-if="project_btn_del" :command="composeValue('del',pro.row)">删除项目</el-dropdown-item>
                                                 </el-dropdown-menu>
@@ -101,8 +101,8 @@
                                         <el-dropdown-item v-if="project_btn_personnel" :command="composeValue('per',pro.row)">人员管理</el-dropdown-item>
                                         <el-dropdown-item v-if="project_btn_device" :disabled="pro.row.children.length!=0" :command="composeValue('equ',pro.row)">设备管理</el-dropdown-item>
                                         <el-dropdown-item v-if="project_btn_doc" :command="composeValue('doc',pro.row)">文档资料</el-dropdown-item>
-                                        <el-dropdown-item v-if="project_btn_doc" :command="composeValue('media',pro.row)">影像</el-dropdown-item>
-                                        <el-dropdown-item v-if="project_btn_doc" :command="composeValue('moni',pro.row)">监控</el-dropdown-item>
+                                        <el-dropdown-item v-if="project_btn_doc" :command="composeValue('media',pro.row)">现场影像</el-dropdown-item>
+                                        <el-dropdown-item v-if="project_btn_doc" :command="composeValue('moni',pro.row)">视频监控</el-dropdown-item>
                                         <el-dropdown-item divided v-if="project_btn_add" :command="composeValue('add',pro.row)">添加子项</el-dropdown-item>
                                         <el-dropdown-item v-if="project_btn_edit" :command="composeValue('edit',pro.row)">修改项目</el-dropdown-item>
                                         <el-dropdown-item v-if="project_btn_del" :command="composeValue('del',pro.row)">删除项目</el-dropdown-item>
@@ -349,7 +349,7 @@ export default {
         //管理员列表
         getRoleList(){
             function isProjectAdmin(value){ 
-                return value.roleCode == "project_admin";
+                return value.roleCode == "ROLE_PROJECT_ADMIN";
             }
             this.adminerOptionsloading = true
             fetchAdminList().then(response => {

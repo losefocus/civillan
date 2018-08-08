@@ -10,8 +10,8 @@
                 <el-radio-button label="per">人员管理</el-radio-button>
                 <el-radio-button label="equ" :disabled="viewData.children.length != 0">设备管理</el-radio-button>
                 <el-radio-button label="doc">文档资料</el-radio-button>
-                <el-radio-button label="media">影像</el-radio-button>
-                <el-radio-button label="moni">监控</el-radio-button>
+                <el-radio-button label="media">现场影像</el-radio-button>
+                <el-radio-button label="moni">视频监控</el-radio-button>
             </el-radio-group>
             </div>
             <div style="padding-top:20px;position:relative">
