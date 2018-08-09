@@ -4,15 +4,44 @@
       <h2>{{website.wel.title}}</h2>
       <span :class="['actor',{typeing:isText}]">{{text}}</span>
     </div> -->
+    <div class="wel_ wel_1">
+      <div class="part_ part_1 border_">
+        <wel-project></wel-project>
+      </div>
+      <div class="part_ part_2 border_">
+        <wel-map :station-data="mapList"></wel-map>
+      </div>
+      <div class="part_ part_3 border_"></div>
+    </div>
+    <div class="wel_ wel_2">
+      <div class="part_ part_1">
+        <div class="part_1_1 border_"></div>
+        <div class="part_1_2 border_"></div>
+      </div>
+      <div class="part_ part_2 border_"></div>
+      
+    </div>
+    <div class="wel_ wel_3 border_"></div>
+    <div class="wel_ wel_4">
+      <div class="part_ part_1 border_"></div>
+      <div class="part_ part_2 border_"></div>
+    </div>
   </div>
 </template>
 
 <script>
 import { mapGetters } from "vuex";
+import welProject from "./wel_module/project";
+import welMap from "./wel_module/map";
 export default {
+  components:{
+    welProject,
+    welMap,
+  },
   name: "wel",
   data() {
     return {
+      mapList:[],
       DATA: [],
       text: "",
       actor: "",
@@ -86,9 +115,89 @@ export default {
 <style scoped="scoped" lang="scss">
 .wel-contailer {
   // position: relative;
-  height: 1000px;
-  background: url('../assets/img/wel.png')no-repeat top;
-  background-size: contain
+  // height: 1000px;
+  // background: url('../assets/img/wel.png')no-repeat top;
+  // background-size: contain
+  display: flex;
+  flex-wrap:wrap ;
+  align-items: center;
+  justify-content: space-between;
+  .border_{
+    border: 1px solid #EBEDF8;
+    box-sizing: border-box;
+    background: #fff;
+    border-radius: 5px;
+  }
+  .wel_{
+    height: 455px;
+    // background: #fff;
+    margin-bottom:10px;
+  }
+  .wel_1,.wel_3{
+    width: 59%;
+  }
+  .wel_2,.wel_4{
+    width: 40%;
+  }
+  .wel_1{
+    display: flex;
+    flex-wrap:wrap ;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom:15px;
+    .part_1{
+      width: 39.5%;
+      margin-bottom:15px;
+      height: 320px;
+    }
+    .part_2{
+      width: 59%;
+      margin-bottom:15px;
+      height: 320px;
+    }
+    .part_3{
+      width: 100%;
+      height: 120px;
+    }
+  }
+  .wel_2{
+    display: flex;
+    flex-wrap:wrap ;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom:15px;
+    .part_1{
+      width: 49%;
+      height: 220px;
+      .part_1_1{
+        margin-bottom:15px;
+      }
+      .part_1_1,.part_1_2{
+        background: yellow;
+        width: 100%;
+        height: 100%;
+      }
+    }
+    .part_2{
+      width: 49%;
+      height: 455px;
+      background: yellow
+    }
+  }
+  .wel_3,.wel_4{
+    height: 300px;
+  }
+  .wel_4{
+    display: flex;
+    flex-wrap:wrap ;
+    align-items: flex-start;
+    justify-content: space-between;
+    .part_{
+      width: 49%;
+      height: 100%;
+      background: green
+    }
+  }
 }
 .banner-text {
   position: relative;
@@ -131,6 +240,13 @@ export default {
 @keyframes blink {
   to {
     opacity: 0;
+  }
+}
+@media screen and (max-width: 1366px){
+  .wel_1,.wel_3,.wel_2,.wel_4{
+    width: 100% !important;
+    margin-bottom:15px !important;
+    
   }
 }
 </style>

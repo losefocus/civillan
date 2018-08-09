@@ -20,7 +20,9 @@ import * as filters from './filters' // 全局filter
 import './styles/common.scss'
 import VueAMap from 'vue-amap';
 import Clipboard from 'clipboard'; 
+import echarts from 'echarts'; 
 
+Vue.prototype.$echarts = echarts 
 Vue.prototype.Clipboard=Clipboard;
 Vue.use(VueAMap);
 
