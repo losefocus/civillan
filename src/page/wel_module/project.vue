@@ -7,13 +7,13 @@
                 <span>300</span>
             </div>
             <div class="p_r  pull-right">
-                <p><i class="icon_ el-icon-document"></i>进行中<span>200</span></p>
-                <p><i class="icon_ el-icon-time"></i>已结束<span>98</span></p>
-                <p><i class="icon_ el-icon-bell"></i>异&nbsp;&nbsp;&nbsp;&nbsp;常<span>2</span></p>
+                <p><i class="icon_ el-icon-document"></i>进行中<span class="data_">200</span></p>
+                <p><i class="icon_ el-icon-time"></i>已结束<span class="data_">98</span></p>
+                <p><i class="icon_ el-icon-bell"></i>异&nbsp;&nbsp;&nbsp;&nbsp;常<span class="data_">2</span></p>
             </div>
         </div>
         <div class="charts" style="width:100%">
-            <div id="myChart" ref="chart_p" :style="chartStyle"></div>
+            <div id="myChart" :style="chartStyle"></div>
         </div>
     </div>
 </template>
@@ -69,10 +69,6 @@ export default {
     },
     mounted(){
         this.drawLine();
-        this.$nextTick(()=>this.myChart.resize())
-        window.onresize = ()=>{
-            this.resizeChart()
-        }
     },
     computed: {
         ...mapGetters(["isCollapse"])
@@ -88,11 +84,7 @@ export default {
             this.myChart.setOption(this.options);
         }
     },
-    watch:{
-        isCollapse(oldVal,val){
-            setTimeout(this.resizeChart,300)
-        }
-    }
+    watch:{}
 }
 </script>
 <style scoped="scoped" lang="scss">
@@ -102,6 +94,7 @@ export default {
         font-family:PingFangSC-Medium;
         color:#333;
         line-height:22px;
+        font-weight: bold;
     }
     .p_l{
         width: 45%;
@@ -151,6 +144,11 @@ export default {
             }
             span{
                 padding-left: 20px;
+            }
+            .data_{
+                font-weight: bold;
+                font-size: 18px;
+                color: #333
             }
         }
     }

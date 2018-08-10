@@ -90,4 +90,11 @@ export default {
 #help .el-collapse-item__header{
   background-color: #fbfbfb!important
 }
+.notify .el-progress-bar__outer{
+    background-color:#0089C8 !important
+}
+.notify .el-progress__text{
+    color:#fff !important;
+    padding-left:10px;
+}
 </style>

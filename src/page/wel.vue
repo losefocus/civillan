@@ -6,25 +6,39 @@
     </div> -->
     <div class="wel_ wel_1">
       <div class="part_ part_1 border_">
-        <wel-project></wel-project>
+        <wel-project ref="chart_project"></wel-project>
       </div>
       <div class="part_ part_2 border_">
-        <wel-map :station-data="mapList"></wel-map>
+        <wel-map :data-info="mapList"></wel-map>
       </div>
-      <div class="part_ part_3 border_"></div>
+      <div class="part_ part_3 border_">
+        <wel-device></wel-device>
+      </div>
     </div>
     <div class="wel_ wel_2">
       <div class="part_ part_1">
-        <div class="part_1_1 border_"></div>
-        <div class="part_1_2 border_"></div>
+        <div class="part_1_1 border_">
+          <wel-data ref="chart_data"></wel-data>
+        </div>
+        <div class="part_1_2 border_">
+          <wel-alarm ref="chart_alarm"></wel-alarm>
+        </div>
       </div>
-      <div class="part_ part_2 border_"></div>
+      <div class="part_ part_2 border_">
+        <wel-notify></wel-notify>
+      </div>
       
     </div>
-    <div class="wel_ wel_3 border_"></div>
+    <div class="wel_ wel_3 border_">
+      <wel-data-l ref="chart_data_l"></wel-data-l>
+    </div>
     <div class="wel_ wel_4">
-      <div class="part_ part_1 border_"></div>
-      <div class="part_ part_2 border_"></div>
+      <div class="part_ part_1 border_">
+        <wel-device-list></wel-device-list>
+      </div>
+      <div class="part_ part_2 border_">
+        <wel-operate></wel-operate>
+      </div>
     </div>
   </div>
 </template>
@@ -33,10 +47,24 @@
 import { mapGetters } from "vuex";
 import welProject from "./wel_module/project";
 import welMap from "./wel_module/map";
+import welDevice from "./wel_module/device";
+import welData from "./wel_module/data";
+import welAlarm from "./wel_module/alarm";
+import welNotify from "./wel_module/notify";
+import welDataL from "./wel_module/data_l";
+import welDeviceList from "./wel_module/deviceList";
+import welOperate from "./wel_module/operate";
 export default {
   components:{
     welProject,
     welMap,
+    welDevice,
+    welData,
+    welAlarm,
+    welNotify,
+    welDataL,
+    welDeviceList,
+    welOperate
   },
   name: "wel",
   data() {
@@ -50,7 +78,7 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(["website"])
+    ...mapGetters(["website","isCollapse"])
   },
   created() {
     this.DATA = this.website.wel.list;
@@ -60,7 +88,18 @@ export default {
       this.setData();
     }, 2000);
   },
+  mounted(){
+    window.onresize = ()=>{
+        this.resizeChart_()
+      }
+    },
   methods: {
+    resizeChart_(){
+      this.$refs.chart_project.resizeChart()
+      this.$refs.chart_data.resizeChart()
+      this.$refs.chart_alarm.resizeChart()
+      this.$refs.chart_data_l.resizeChart()
+    },
     getData() {
       if (this.count < this.DATA.length - 1) {
         this.count++;
@@ -108,6 +147,11 @@ export default {
         }
       }, timespeed);
     }
+  },
+  watch:{
+    isCollapse(oldVal,val){
+        setTimeout(this.resizeChart_,300)
+    }
   }
 };
 </script>
@@ -127,6 +171,7 @@ export default {
     box-sizing: border-box;
     background: #fff;
     border-radius: 5px;
+    overflow: hidden;
   }
   .wel_{
     height: 455px;
@@ -173,7 +218,6 @@ export default {
         margin-bottom:15px;
       }
       .part_1_1,.part_1_2{
-        background: yellow;
         width: 100%;
         height: 100%;
       }
@@ -181,7 +225,6 @@ export default {
     .part_2{
       width: 49%;
       height: 455px;
-      background: yellow
     }
   }
   .wel_3,.wel_4{
@@ -195,7 +238,6 @@ export default {
     .part_{
       width: 49%;
       height: 100%;
-      background: green
     }
   }
 }
