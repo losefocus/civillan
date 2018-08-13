@@ -76,17 +76,20 @@ export default {
         line-height: 35px;
     }
 }
-    p{
-        float: left;
-    }
-    .l_1{
-        width: 55px;
-    }
-    .l_2{
-        width: calc(100% - 120px)
-    }
-    .l_3{
-        width: 50px;
-        float: right;
-    }
+p{
+    float: left;
+}
+.l_1{
+    width: 55px;
+}
+.l_2{
+    width: calc(100% - 120px);
+    overflow: hidden;
+    text-overflow:ellipsis;
+    white-space: nowrap;
+}
+.l_3{
+    width: 45px;
+    float: right;
+}
 </style>

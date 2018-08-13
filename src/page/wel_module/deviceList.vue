@@ -56,19 +56,6 @@ export default {
     color: #333;
     font-size: 12px;
     font-weight: bold;
-    p{
-        float: left;
-    }
-    .l_1{
-        width: 55px;
-    }
-    .l_2{
-        width: calc(100% - 120px)
-    }
-    .l_3{
-        width: 50px;
-        float: right;
-    }
 }
 .list{
     padding: 10px 20px;
@@ -78,18 +65,21 @@ export default {
         height: 32px;
         line-height: 32px;
     }
-    p{
-        float: left;
-    }
-    .l_1{
-        width: 55px;
-    }
-    .l_2{
-        width: calc(100% - 120px)
-    }
-    .l_3{
-        width: 50px;
-        float: right;
-    }
+}
+p{
+    float: left;
+}
+.l_1{
+    width: 55px;
+}
+.l_2{
+    width: calc(100% - 120px);
+    overflow: hidden;
+    text-overflow:ellipsis;
+    white-space: nowrap;
+}
+.l_3{
+    width: 45px;
+    float: right;
 }
 </style>

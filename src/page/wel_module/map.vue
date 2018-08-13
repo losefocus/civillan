@@ -89,6 +89,8 @@ export default {
         right:20px;
         bottom:20px;
         box-shadow: 0px 1px 4px 0px rgba(0,0,0,0.3);
+        border-radius: 2px;
+        overflow: hidden;
         .zoomIn,.zoomOut{
             display: block;
             width: 20px;
