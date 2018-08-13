@@ -89,6 +89,7 @@ export default {
     }, 2000);
   },
   mounted(){
+    setTimeout(this.resizeChart_,500)
     window.onresize = ()=>{
         this.resizeChart_()
       }
