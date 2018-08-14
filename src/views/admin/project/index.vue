@@ -23,11 +23,11 @@
                                 <el-table :data="scope.row.children" ref="subTable" id="subTable" size="mini">
                                     <el-table-column align="left" label="项目名称" min-width="250">
                                         <template slot-scope="pro">
-                                            <div style="white-space:nowrap;width:100%;height:40px;padding-left:20px;">
-                                                <img v-if="pro.row.thumbnailUrl!=''" style="height:40px;width:60px;" class="pull-left" :src="pro.row.thumbnailUrl+pro.row.thumbnailPath">
-                                                <img v-else style="width:60px;height:40px" src="../../../assets/img/no_pic.png">
+                                            <div style="white-space:nowrap;width:100%;height:45px;padding-left:20px;">
+                                                <img v-if="pro.row.thumbnailUrl!=''" style="height:45px;width:60px;" class="pull-left" :src="pro.row.thumbnailUrl+pro.row.thumbnailPath">
+                                                <img v-else style="width:60px;height:45px" src="../../../assets/img/no_pic.png">
                                                 <el-tooltip class="item" effect="dark" :content="pro.row.name" placement="top-start" :open-delay="300">
-                                                    <span style="white-space:nowrap;cursor: pointer;"><a style="overflow: hidden;text-overflow:ellipsis;line-height:40px;padding:0 10px;width:calc(100% - 80px)" @click="toInfo(pro.row)">{{pro.row.name}}</a></span>
+                                                    <span style="white-space:nowrap;cursor: pointer;"><a style="overflow: hidden;text-overflow:ellipsis;line-height:45px;padding:0 10px;width:calc(100% - 80px)" @click="toInfo(pro.row)">{{pro.row.name}}</a></span>
                                                 </el-tooltip>
                                             </div>
                                         </template>
@@ -67,13 +67,13 @@
                         </el-table-column>
                         <el-table-column align="left" label="项目名称" min-width="250">
                             <template slot-scope="scope">
-                                <div style="white-space:nowrap;width:100%;height:40px">
-                                    <img v-if="scope.row.thumbnailUrl!=''" style="height:40px;width:60px;" class="pull-left" :src="scope.row.thumbnailUrl+scope.row.thumbnailPath">
-                                    <img v-else style="width:60px;height:40px" src="../../../assets/img/no_pic.png">
+                                <div style="white-space:nowrap;width:100%;height:45px">
+                                    <img v-if="scope.row.thumbnailUrl!=''" style="height:45px;width:60px;" class="pull-left" :src="scope.row.thumbnailUrl+scope.row.thumbnailPath">
+                                    <img v-else style="width:60px;height:45px" src="../../../assets/img/no_pic.png">
                                     <el-tooltip class="item" effect="dark" :content="scope.row.name" placement="top-start" :open-delay="300">
                                         <span style="white-space:nowrap;">
-                                            <a v-if="scope.row.children==0" style="cursor: pointer;overflow: hidden;text-overflow:ellipsis;line-height:40px;padding:0 10px;width:calc(100% - 80px)" @click="toInfo(scope.row)">{{scope.row.name}}</a>
-                                            <span v-else style="cursor: pointer;overflow: hidden;text-overflow:ellipsis;line-height:40px;padding:0 10px;width:calc(100% - 80px)" @click="expendTableRow(scope.row)">{{scope.row.name}}</span>
+                                            <a v-if="scope.row.children==0" style="cursor: pointer;overflow: hidden;text-overflow:ellipsis;line-height:45px;padding:0 10px;width:calc(100% - 80px)" @click="toInfo(scope.row)">{{scope.row.name}}</a>
+                                            <span v-else style="cursor: pointer;overflow: hidden;text-overflow:ellipsis;line-height:45px;padding:0 10px;width:calc(100% - 80px)" @click="expendTableRow(scope.row)">{{scope.row.name}}</span>
                                         </span>
                                     </el-tooltip>
                                 </div>
@@ -309,6 +309,8 @@ export default {
         this.getList();
         this.getRoleList();
         this.getCardHeight()
+    },
+    mounted() {
         this.project_btn_add = this.permissions["project_btn_add"];
         this.project_btn_edit = this.permissions["project_btn_edit"];
         this.project_btn_del = this.permissions["project_btn_del"];
@@ -316,9 +318,6 @@ export default {
         this.project_btn_personnel = this.permissions["project_btn_personnel"];
         this.project_btn_device = this.permissions["project_btn_device"];
         this.project_btn_doc = this.permissions["project_btn_doc"];
-    },
-    mounted() {
-
     },
     computed: {
         ...mapGetters(["permissions","adminerHash"])

@@ -8,9 +8,9 @@
         <el-table :data="list" v-loading="listLoading" fit highlight-current-row style="width: 99%;margin-bottom:20px;">
             <el-table-column align="left" label="缩略图" width="80">
                 <template slot-scope="scope">
-                    <div style="height:40px">
-                        <img v-if="scope.row.thumbnailBaseUrl!=''" style="width:60px;height:40px" :src="scope.row.thumbnailFileBaseUrl+scope.row.thumbnailFilePath">
-                        <img v-else style="width:60px;height:40px" src="../../../../assets/img/no_pic.png">
+                    <div style="height:45px">
+                        <img v-if="scope.row.thumbnailBaseUrl!=''" style="width:60px;height:45px" :src="scope.row.thumbnailFileBaseUrl+scope.row.thumbnailFilePath">
+                        <img v-else style="width:60px;height:45px" src="../../../../assets/img/no_pic.png">
                     </div>
                 </template>
             </el-table-column>

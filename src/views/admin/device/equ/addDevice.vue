@@ -1,11 +1,21 @@
 <template>
-    <div>
+    <div class="addNewDevice">
         <div class="tit"><h3>{{(flag == 'add')?'添加':'修改'}}设备</h3><span>{{(flag == 'add')?'Add':'Edit'}} Equipment</span></div>
         <el-form label-width="55px" :model="form"  ref="form" :rules="rules" label-position="left">
             <el-form-item label="型号" prop="product.id">
                 <el-select v-model="form.product.id" size="small" placeholder="请选择型号" :disabled="disabled">
                     <el-option
                     v-for="item in productOptions"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value">
+                    </el-option>
+                </el-select>
+            </el-form-item>
+            <el-form-item label="项目" prop="projectId">
+                <el-select v-model="form.projectId" size="small" placeholder="请选择项目" @change="changeProject">
+                    <el-option
+                    v-for="item in projectOptions"
                     :key="item.value"
                     :label="item.label"
                     :value="item.value">
@@ -85,8 +95,8 @@
 import { mapGetters } from "vuex";
 import { getToken } from "@/util/auth";
 import { toTree } from "@/util/util";
-import {addObj,fetchProductList,updataObj,getGroupObj} from "@/api/project_equ";
-import mapPosition from "../mapPosition";
+import {addObj,fetchProductList,updataObj,getGroupObj,projectList} from "@/api/project_equ";
+import mapPosition from "../../project/mapPosition";
 export default {
     components:{
         mapPosition
@@ -172,19 +182,21 @@ export default {
             groupListQuery:{
                 page_index: 1,
                 page_size: 999
-            }
+            },
+            projectOptions:[],
+            projectHash:{},
+            groupOptions:[],
         }
     },
     created() {
-        this.getProductList()
-        this.getGroupList()
-        this.device_btn_add = this.permissions["device_btn_add"];
+        this.getProductList();
+        this.getprojectList();
     },
     mounted() {
-
+        this.device_btn_add = this.permissions["device_btn_add"];
     },
     computed: {
-        ...mapGetters(["permissions","groupOptions"])
+        ...mapGetters(["permissions"])
     },
     methods:{
         beforeUpload(){
@@ -197,28 +209,45 @@ export default {
             this.fileList = []
             this.uploadLoaing = false
         },
+        getprojectList(){
+            let obj = {
+                page_index: 1,
+                page_size: 9999
+            }
+            projectList(obj).then(res => {
+                let data = res.data.result.items
+                this.projectOptions = []
+                data.forEach(ele => {
+                    let item = {value:ele.id, label:ele.name}
+                    this.projectOptions.push(item)
+                    this.projectHash[ele.id] = ele.name
+                });
+            })
+        },
+        changeProject(val){
+            this.getGroupList(val)
+        },
         getProductList(){
             let obj = {
                 page_index: 1,
-                page_size: 999
+                page_size: 9999
             }
             fetchProductList(obj).then(res => {
                 let data = res.data.result.items
                 this.productOptions = []
                 data.forEach(ele => {
-                    let item = {value:ele.id, label:ele.name+'('+ele.alias+')'}
+                    let item = {value:ele.id, label:ele.name}
                     this.productOptions.push(item)
-                    this.productHash[ele.id] = ele.alias
+                    this.productHash[ele.id] = ele.name
                 });
             })
         },
-        getGroupList(){
-            this.groupListQuery.projectId = this.projectInfo.id
+        getGroupList(id){
+            this.groupListQuery.projectId = id
             this.groupListQuery.sort_by = 'sort'
             this.groupListQuery.direction = 'asc'
             getGroupObj(this.groupListQuery).then(res => {
-                let groupOptions = toTree(res.data.result.items)
-                this.$store.commit("SET_GROUPOPTIONS", groupOptions);
+                this.groupOptions = toTree(res.data.result.items)
             })
         },
         positionPicker(){
@@ -226,10 +255,8 @@ export default {
         },
         submitForm(formName){
             let data = Object.assign({},this.form)
-            data.projectId = this.projectInfo.id
+            console.log(data)
             data.status = data.status?1:0
-            // data.alias = this.productHash[data.productId]
-            // data.deviceGroup={id:data.deviceGroup.id[data.deviceGroup.id.length-1]} 
             data.protocol = "string"
             data.passage = "string"
             this.createLoading = true
@@ -238,8 +265,12 @@ export default {
                     addObj(data).then( res => {
                         this.cancel()
                         if(res.data.success == true){
-                            this.$parent.$parent.$refs.equ.getList()
-                            this.$parent.$parent.$parent.alertNotify('添加')
+                            this.$parent.$parent.getList()
+                            this.$notify({
+                                title: '添加',
+                                message: '添加设备成功',
+                                type: 'success'
+                            });
                         }else{
                             this.$notify({
                                 title: '失败',
@@ -258,14 +289,16 @@ export default {
                 if (valid) {
                     let data = Object.assign({},this.form)
                     data.status = data.status?1:0                   
-                    // data.alias = this.productHash[data.productId]
-                    // data.deviceGroup={id:data.deviceGroup.id[data.deviceGroup.id.length-1]} 
                     this.createLoading = true
                     updataObj(data).then(res => {
                             this.cancel()
                         if(res.data.success == true){
-                            this.$parent.$parent.$refs.equ.getList()
-                            this.$parent.$parent.$parent.alertNotify('修改')
+                            this.$parent.$parent.getList()
+                            this.$notify({
+                                title: '修改',
+                                message: '修改设备成功',
+                                type: 'success'
+                            });
                         }else{
                             this.$notify({
                                 title: '失败',
@@ -335,13 +368,37 @@ export default {
 .el-form-item{
     margin-bottom: 15px
 }
-.addNewProject{
-    width: 260px;
-    border: 1px solid #ebeef5;
-    padding: 10px 20px 0 20px
-}
 .el-form-item__error{
     padding-top: 0 !important
 }
-
+.addNewDevice .tit{
+    margin-top:-20px;
+    height: 60px;
+    border-bottom: 1px solid #dcdfe6;
+    position: relative;
+    margin-bottom: 20px;
+}
+.addNewDevice h3{
+    float: left;
+    line-height: 60px;
+    padding-left:20px;
+    font-weight: bold;
+}
+.addNewDevice .tit::before{
+    display: block;
+    content: '';
+    width: 4px;
+    background: #30a487;
+    height:20px;
+    position: absolute;
+    left: 0;
+    top: 20px;
+}
+.addNewDevice .tit span{
+    line-height: 70px;
+    color: #cacaca;
+    font-size: 12px;
+    padding-left: 20px;
+    letter-spacing: 1px;
+}
 </style>

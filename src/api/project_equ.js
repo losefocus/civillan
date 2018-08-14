@@ -17,6 +17,14 @@ export function fetchProductList(query) {
     params: query
   })
 }
+  /* 所有项目列表 */
+export function projectList(query) {
+  return request({
+    url: '/project/project/list',
+    method: 'get',
+    params: query
+  })
+}
 
 /* 新增 */
 export function addObj(obj) {

@@ -97,4 +97,66 @@ export default {
     color:#fff !important;
     padding-left:10px;
 }
+
+
+.amap-info-content{
+  background: none;
+  border: none;
+  padding: 0;
+}
+.amap-info-outer{
+  background: none;
+  border: none;
+  padding: 0;
+}
+.amap-marker-label{
+  padding: 0;
+  border: none;
+  background: none;
+}
+.amap-info-close:link{
+  text-decoration: none;
+}
+.amap-info-close{
+  color:#fff;
+  right:10px !important;
+}
+.info-group{
+  display: flex;
+  flex-wrap:wrap ;
+  justify-content: space-around;
+  padding: 0 5px;
+}
+.info-group li{
+  float: left;
+  width:46px;
+  height:19px;
+  font-size :12px;
+  text-align :center;
+  line-height :20px;
+  color :#ffffff;
+  background:rgba(173,173,173,1);
+  border-radius:2px;
+}
+.info-title{
+  width: 260px;
+  font-size:16px;
+  font-weight: bold;
+  text-overflow:ellipsis;
+  overflow:hidden;
+  white-space:nowrap;
+}
+.info-time{
+  width:165px;
+  height:25px;
+  background:rgba(0,0,0,0.5);
+  border-radius:25px 0 0 25px;
+  position:absolute;
+  right: 0;
+  bottom: 10px;
+  color: #ffffff;
+  text-align: center;
+  line-height: 25px;
+  font-size: 12px;
+}
 </style>

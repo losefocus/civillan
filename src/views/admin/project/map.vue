@@ -5,6 +5,7 @@
     </div>
 </template>
 <script>
+import {parseTime} from "@/filters/index";
 export default {
     props:['stationData'],
     data(){
@@ -20,7 +21,7 @@ export default {
     computed: {},
     methods:{
         getMapHeight(){
-            this.mapHeight.height = document.body.clientHeight - 107 - 100 - 45 + 'px'
+            this.mapHeight.height = document.body.clientHeight - 107 - 100 - 15 + 'px'
         },
         toProjectIndex(){
             this.$parent.showView = 'index'
@@ -35,12 +36,14 @@ export default {
 
             var markers = []
             this.stationData.forEach(function(data) {
+                if(data.position == '') return true
                 let item = {
                     position:[data.position.split(',')[0],data.position.split(',')[1]],
                     title:data.name,
-                    beginAt:data.beginAt,
-                    endAt:data.endAt,
+                    beginAt:parseTime(data.beginAt,'{y}-{m}-{d}'),
+                    endAt:parseTime(data.endAt,'{y}-{m}-{d}'),
                     adminer:data.adminer,
+                    url:data.thumbnailUrl+data.thumbnailPath
                 }
                 let position = [data.position.split(',')[0],data.position.split(',')[1]]
                 markers.push(item)
@@ -50,18 +53,19 @@ export default {
             markers.forEach(function(item,index) {
                 let marker = new AMap.Marker({
                     map: map,
-                    // icon: item.icon,
                     position: [item.position[0], item.position[1]],
                     offset: new AMap.Pixel(-12, -36),
                     title:item.title
                 });
-                marker.content = `<div class="info-title">项目名称：${item.title}</div>
-                <div class="info-title">开始时间：${item.beginAt}</div>
-                <div class="info-title">结束时间：${item.endAt}</div>
-                <div class="info-title">管理员：${item.adminer}</div>
-                <div class="info-content">当前坐标：${item.position[0]}, ${item.position[1]}</div>`;
+                marker.content =`<div style="width:290px;height:200px;background:#fff;">
+                    <div style="position:relative;width: 290px;height: 130px;background: url('${item.url}');background-size:100% 100%">
+                        <div class="info-time">${item.beginAt}<span class="info-Interval"> 至 </span>${item.endAt}</div>
+                    </div>
+                    <div class="info-title" style="padding-left:15px;line-height:40px;height:40px;">${item.title}</div>
+                    <ul class="info-group"><li>软基</li><li>路面</li><li>桥梁</li><li>试验室</li><li>拌和站</li></ul>
+                    </div>`
+
                 marker.on('click', markerClick);
-                // marker.emit('click', {target: marker});
             });
             
             function markerClick(e) {

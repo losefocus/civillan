@@ -1,25 +1,25 @@
 <template>
-    <div style="padding:20px;border:1px solid #ebeef5">
+    <div class="app-container device_" style="padding:20px;border:1px solid #ebeef5">
         <div class="filter-container">
             <el-button class="filter-item" style="" @click="handleAdd" size="small" type="primary">添加设备</el-button>
-            <el-button class="filter-item" style="" @click="handleGroup" size="small" type="primary" icon="edit" >分组管理</el-button>
+            <!-- <el-button class="filter-item" style="" @click="handleGroup" size="small" type="primary" icon="edit" >分组管理</el-button> -->
             <el-button class="pull-right" type="primary" size="small" v-waves  @click="handleFilter">搜索</el-button>
             <el-input @keyup.enter.native="handleFilter" style="width: 150px;" size="small" suffix-icon="el-icon-search" class="pull-right" placeholder="设备名称" v-model="listQuery.name"></el-input>
-            <el-select v-model="listQuery.deviceGroup" clearable class="pull-right" placeholder="按所在分组筛选" style="width:150px;margin-right:10px" size="small"  @change="handleFilter">
+            <!-- <el-select v-model="listQuery.deviceGroup" clearable class="pull-right" placeholder="按所在分组筛选" style="width:150px;margin-right:10px" size="small"  @change="handleFilter">
                 <el-option
                 v-for="item in groupOptions"
                 :key="item.value"
                 :label="item.label"
                 :value="item.value">
                 </el-option>
-            </el-select>
+            </el-select> -->
         </div>
         <el-table :data="list" v-loading="listLoading" fit highlight-current-row style="width: 99%;margin-bottom:20px">
             <el-table-column align="center" label="缩略图" width="80px">
                 <template slot-scope="scope">
                     <div style="height:45px">
                         <img v-if="scope.row.thumbnailBaseUrl!=''" style="width:60px;height:45px" :src="scope.row.thumbnailBaseUrl+scope.row.thumbnailPath">
-                        <img v-else style="width:60px;height:45px" src="../../../../assets/img/no_pic.png">
+                        <img v-else style="width:60px;height:45px" src="../../../assets/img/no_pic.png">
                     </div>
                 </template>
             </el-table-column>
@@ -109,9 +109,13 @@
         <el-dialog title="操作人员—绑定用户"  :visible.sync="personnelVisible" width='690px'>
             <personnel v-if="personnelVisible" :data-info="dataInfo" ref="personnel"></personnel>
         </el-dialog>
-        <el-dialog title="分组管理"  :visible.sync="groupVisible" width='690px'>
+        <!-- <el-dialog title="分组管理"  :visible.sync="groupVisible" width='690px'>
             <group v-if="groupVisible" ref="group"></group>
-        </el-dialog>
+        </el-dialog> -->
+        <el-card class="pull-right addNewContainer" :class="{'show':cardVisibel}" >
+            <i class="closeBtn el-icon-close" @click="cardVisibel = false"></i>
+            <add-device ref="addEqu"></add-device>
+        </el-card>
     </div>
 </template>
 <script>
@@ -122,8 +126,10 @@ import alarm from "./equ/alarm";
 import notify from "./equ/notify";
 import group from "./equ/group";
 import personnel from "./equ/personnel";
+import addDevice from "./equ/addDevice";
 import { mapGetters } from "vuex";
-import {fetchList,delObj,updataObj,getConfigObj,getSensorObj,getAlarmObj,getNotifyObj} from "@/api/project_equ";
+import waves from "@/directive/waves/index.js";
+import {fetchList,delObj,updataObj} from "@/api/project_equ";
 export default {
     components:{
         config,
@@ -132,9 +138,9 @@ export default {
         alarm,
         notify,
         group,
-        personnel
+        personnel,
+        addDevice
     },
-    props:['projectInfo'],
     data(){
         return {
             listLoading:false,
@@ -145,6 +151,7 @@ export default {
             },
             total:null,
             flag:'add',
+            cardVisibel:false,
             createdLoading:false,
             configVisible:false,//配置
             certiVisible:false,//证书
@@ -171,8 +178,6 @@ export default {
     },
     created() {
         this.getList()
-    },
-    mounted() {
         this.device_btn_edit = this.permissions["device_btn_edit"];
         this.device_btn_del = this.permissions["device_btn_del"];
         this.device_btn_certificate = this.permissions["device_btn_certificate"];
@@ -182,31 +187,27 @@ export default {
         this.device_btn_personnel = this.permissions["device_btn_personnel"];
         this.device_btn_config = this.permissions["device_btn_config"];
     },
+    mounted() {
+
+    },
     computed: {
         ...mapGetters(["permissions","groupOptions"])
     },
     methods:{
         handleAdd(){
-            this.$parent.cardVisibel = true
-            this.$parent.$refs.addEqu.flag = 'add'
-            this.$parent.$refs.addEqu.resetTemp()
+            this.cardVisibel = true
+            this.$refs.addEqu.flag = 'add'
+            this.$refs.addEqu.resetTemp()
         },
         handleGroup(){
             this.groupVisible = true
         },
         getList(){
             this.listLoading = true
-            this.listQuery.projectId = this.projectInfo.id
             fetchList(this.listQuery).then(res => {
                 this.list = res.data.result.items
                 this.total = res.data.result.total
                 this.listLoading = false
-                // let options = []
-                // res.data.result.items.forEach(element => {
-                //     let ele = {value:element.id,label:element.name}
-                //     options.push(ele)
-                // });
-                // console.log(options)
             })
         },
         handleFilter(){
@@ -236,22 +237,22 @@ export default {
                 this.listLoading = true
                 delObj(row.id).then(res => {
                     this.getList()
-                    this.$parent.$parent.alertNotify('删除')
+                    this.$notify({
+                        title: '删除',
+                        message: '删除设备成功',
+                        type: 'success'
+                    });
                 })
             })
         },
         updataEqu(row){
-            this.$parent.cardVisibel = true
-            this.$parent.$refs.addEqu.flag = 'updata'
-            this.$parent.$refs.addEqu.form = Object.assign({},row)
-            this.$parent.$refs.addEqu.form.status = row.status === 1?true:false
-            this.$parent.$refs.addEqu.form.deviceGroup = {id:row.deviceGroup.id}
-            this.$parent.$refs.addEqu.disabled = true
-        },
-        handleUpdataEqu(){
-            updataObj().then(res => {
-                this.$parent.$parent.alertNotify('修改')
-            })
+            this.cardVisibel = true
+            this.$refs.addEqu.flag = 'updata'
+            this.$refs.addEqu.form = Object.assign({},row)
+            this.$refs.addEqu.form.status = row.status === 1?true:false
+            this.$refs.addEqu.form.deviceGroup = {id:row.deviceGroup.id}
+            this.$refs.addEqu.disabled = true
+            this.$refs.addEqu.getGroupList()
         },
         handleCommand(command){
             if(command.value == 'edit') this.updataEqu(command.row)
@@ -293,4 +294,38 @@ export default {
 }
 </script>
 <style scoped>
+.device_{
+    position: relative;
+    min-height: 800px;
+    overflow: hidden;
+}
+.addNewContainer{
+    background: #fff;
+    width: 300px;
+    padding-top: 0 ;
+    position: absolute;
+    /* min-height: 730px; */
+    top: -1px;
+    right: -305px;
+    /* right: -28px; */
+    z-index: 9
+}
+.addNewContainer.show{
+    right: -1px;
+}
+
+.closeBtn{
+    position: absolute;
+    right: 20px;
+    top:0;
+    z-index: 9;
+    cursor: pointer;
+    float: right;
+    margin-top: 22px;
+    color: #6b6b6b;
+    transition: transform .3s ease-out 0s,-webkit-transform .3s ease-out 0s;
+}
+.closeBtn:hover{
+    transform: rotate(180deg)
+}
 </style>
