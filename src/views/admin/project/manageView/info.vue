@@ -434,6 +434,5 @@ export default {
         width: 100%;
         padding-top: 10px;
     }
-    .stats_value{}
 }
 </style>
