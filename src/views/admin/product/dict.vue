@@ -1,8 +1,8 @@
 <template>
     <div>
-        <el-form :model="form" class="clearfix" ref="form" :rules="rules" size="small" label-width="50px">
-            <el-form-item label="上级" prop="parentId" style="width: 220px;margin-right:5px">
-                <el-select v-model="form.parentId" size="mini" placeholder="请选择上级分类">
+        <el-form :model="form" class="clearfix" ref="form" :rules="rules" size="small" label-width="45px">
+            <el-form-item label="分类" prop="parentId" style="width: 180px;">
+                <el-select v-model="form.parentId" size="mini" placeholder="请选择分类">
                     <el-option
                     v-for="item in categoryOptions"
                     :key="item.value"
@@ -11,31 +11,16 @@
                     </el-option>
                 </el-select>
             </el-form-item>
-            <el-form-item label="名称" prop="name" style="width: 210px;margin-right:5px">
+            <el-form-item label="名称" prop="name" style="width: 180px;">
                 <el-input v-model="form.name" size="mini" auto-complete="off" placeholder="名称"></el-input>
             </el-form-item>
-            <el-form-item label="排序" style="width: 210px;">
+            <el-form-item label="标识" prop="name" style="width: 180px;">
+                <el-input v-model="form.name" size="mini" auto-complete="off" placeholder="标识"></el-input>
+            </el-form-item>
+            <el-form-item label="排序" style="width: 110px;">
                 <el-input v-model="form.sort" size="mini" auto-complete="off" placeholder="排序"></el-input>
             </el-form-item>
-            <el-form-item label="图片" style="width: 210px;">
-                <el-upload
-                    v-loading='uploadLoaing'
-                    class="avatar-uploader"
-                    ref="upload"
-                    :headers="headers"
-                    action="/file/attachment/upload"
-                    :limit="999"
-                    :data="params"
-                    name="uploadFile"
-                    :show-file-list="false"
-                    :before-upload='beforeUpload'
-                    :on-success="uploadSuccess"
-                    :auto-upload="true">
-                    <img v-if="form.thumbnailBaseUrl!='' && form.thumbnailBaseUrl!=undefined" :src="form.thumbnailBaseUrl+form.thumbnailPath" class="avatar">
-                    <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-                </el-upload>
-            </el-form-item>
-            <el-form-item  style="width: 300px;padding-top:50px" class="pull-right">
+            <el-form-item  style="width: 300px;" class="pull-right">
                 <el-button v-if="flag == 'add'" size="mini" type="primary" class="pull-right" style="margin-left:10px"  @click="handleAdd('form')" :loading="createdLoading">添加</el-button>
                 <div v-else>
                     <el-button size="mini" type="info" class="pull-right" style="margin-left:10px" @click="cancelEdit('form')">取消</el-button>
@@ -46,20 +31,12 @@
         </el-form>
         <div v-loading="listLoading">
             <el-table :data="list" border fit highlight-current-row style="width: 100%;margin-bottom:20px;margin-top:10px">
-                <el-table-column align="center" label="缩略图" width="80">
-                    <template slot-scope="scope">
-                        <div style="height:40px">
-                            <img v-if="scope.row.thumbnailBaseUrl!=''" style="width:60px;height:40px" :src="scope.row.thumbnailBaseUrl+scope.row.thumbnailPath">
-                            <img v-else style="width:60px;height:40px" src="../../../assets/img/no_pic.png">
-                        </div>
-                    </template>
-                </el-table-column>
-                <el-table-column align="center" label="名称" width="160">
+                <el-table-column align="center" label="显示名称">
                     <template slot-scope="scope">
                         <span>{{scope.row.name}}</span>
                     </template>
                 </el-table-column>
-                <el-table-column align="center" label="上级分类">
+                <el-table-column align="center" label="标识">
                     <template slot-scope="scope">
                         <span>{{categoryHash.get(scope.row.parentId)}}</span>
                     </template>

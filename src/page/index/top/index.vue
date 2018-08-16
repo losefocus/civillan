@@ -66,9 +66,9 @@ export default {
   filters: {},
   created() {
     this.initCollapse()
-    this.t = setInterval(()=>{
-      this.chechOnline()
-    },1000*60*5)
+    // this.t = setInterval(()=>{
+    //   this.chechOnline()
+    // },1000*60*5)
   },
   mounted() {
     listenfullscreen(this.setScreen);
@@ -103,7 +103,7 @@ export default {
       }
     },
     showCollapse() {
-      if(document.body.clientWidth>1024)this.$store.commit("SET_COLLAPSE");
+      if(document.body.clientWidth>1280)this.$store.commit("SET_COLLAPSE");
     },
     handleScreen() {
       fullscreenToggel();

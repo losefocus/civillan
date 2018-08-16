@@ -5,6 +5,7 @@
             <div class="filter-container">
                 <el-button  size="small" type="primary" @click="handleAdd">添加产品</el-button>
                 <el-button  size="small" type="primary" @click="classifyTemplatVisible=true">分类管理</el-button>
+                <el-button  size="small" type="primary" @click="dictTemplatVisible=true">参数字典</el-button>
                 <el-button class="pull-right" type="primary" size="small" v-waves @click="handleFilter">搜索</el-button>
                 <el-input @keyup.enter.native="handleFilter" style="width: 200px;" size="small" suffix-icon="el-icon-search" class="pull-right" placeholder="产品名称   " v-model="listQuery.name"></el-input>
                 <el-select v-model="listQuery.productCategory" clearable class="pull-right" placeholder="按角色筛选" style="width:150px;margin-right:10px" size="small"  @change="handleFilter">
@@ -142,6 +143,9 @@
         <el-dialog title="分类管理" :visible.sync="classifyTemplatVisible" width='690px'>
             <category v-if="classifyTemplatVisible == true" @showCategoryOptions="getParentOptions" @showCategoryHash="getParentHash"></category>
         </el-dialog>
+        <el-dialog title="参数字典" :visible.sync="dictTemplatVisible" width='690px'>
+            <dict v-if="dictTemplatVisible == true"></dict>
+        </el-dialog>
     </div>
 </template>
 <script>
@@ -150,6 +154,7 @@ import waves from "@/directive/waves/index.js";
 import variable from "./variable";
 import alarm from "./alarm";
 import category from "./category";
+import dict from "./dict";
 import { getToken} from "@/util/auth";
 import { toTree } from "@/util/util";
 import { fetchList,fetchCategoryList,addObj,delObj,updataObj} from "@/api/product";
@@ -157,7 +162,8 @@ export default {
     components:{
         variable,
         alarm,
-        category
+        category,
+        dict
     },
     data(){
         var validateName = (rule, value, callback) => {
@@ -222,6 +228,7 @@ export default {
             variableTemplateVisible:false,
             alarmTemplatVisible:false,
             classifyTemplatVisible:false,
+            dictTemplatVisible:false,
             productData:{name:null},
             templateData:{content:''},
             temploading:false,

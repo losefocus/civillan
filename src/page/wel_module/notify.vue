@@ -1,6 +1,6 @@
 <template>
     <div class="notify">
-        <div class="tit">警报</div>
+        <div class="tit">通知</div>
         <div class="content"><span class="data_">300</span>/<span>120</span>条</div>
         <div class="item">
             <div class="clearfix item_t">

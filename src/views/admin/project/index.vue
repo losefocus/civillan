@@ -53,6 +53,7 @@
                                                     <el-dropdown-item v-if="project_btn_institutions" :command="composeValue('org',pro.row)">机构设置</el-dropdown-item>
                                                     <el-dropdown-item v-if="project_btn_personnel" :command="composeValue('per',pro.row)">人员管理</el-dropdown-item>
                                                     <el-dropdown-item v-if="project_btn_device" :command="composeValue('equ',pro.row)">设备管理</el-dropdown-item>
+                                                    <el-dropdown-item v-if="project_btn_doc" :command="composeValue('config',pro.row)">作业配置</el-dropdown-item>
                                                     <el-dropdown-item v-if="project_btn_doc" :command="composeValue('doc',pro.row)">文档资料</el-dropdown-item>
                                                     <el-dropdown-item v-if="project_btn_doc" :command="composeValue('media',pro.row)">现场影像</el-dropdown-item>
                                                     <el-dropdown-item v-if="project_btn_doc" :command="composeValue('moni',pro.row)">视频监控</el-dropdown-item>
@@ -100,6 +101,7 @@
                                         <el-dropdown-item v-if="project_btn_institutions" :command="composeValue('org',pro.row)">机构设置</el-dropdown-item>
                                         <el-dropdown-item v-if="project_btn_personnel" :command="composeValue('per',pro.row)">人员管理</el-dropdown-item>
                                         <el-dropdown-item v-if="project_btn_device" :disabled="pro.row.children.length!=0" :command="composeValue('equ',pro.row)">设备管理</el-dropdown-item>
+                                        <el-dropdown-item v-if="project_btn_doc" :command="composeValue('config',pro.row)">作业配置</el-dropdown-item>
                                         <el-dropdown-item v-if="project_btn_doc" :command="composeValue('doc',pro.row)">文档资料</el-dropdown-item>
                                         <el-dropdown-item v-if="project_btn_doc" :command="composeValue('media',pro.row)">现场影像</el-dropdown-item>
                                         <el-dropdown-item v-if="project_btn_doc" :command="composeValue('moni',pro.row)">视频监控</el-dropdown-item>

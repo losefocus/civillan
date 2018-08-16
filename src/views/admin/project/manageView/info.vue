@@ -40,12 +40,11 @@
                 </li>
             </ul>
             <div class="analysis">
-                <div id="chart_analysis" style="width:100%;height:100%"></div>
-                <div class="title"></div>
+                <div id="chart_statistics" class="pull-right" style="width:49%;height:100%"></div>
+                <div id="chart_analysis" class="pull-left" style="width:49%;height:100%"></div>
             </div>
             <div class="progress">
                 <div id="chart_progress" style="width:100%;height:100%"></div>
-                <div class="title"></div>
             </div>
         </div>
     </div>
@@ -68,11 +67,12 @@ export default {
             userTotal:0,
             mediaTotal:0,
             documentTotal:0,
+            chart_statistics:null,
             chart_analysis:null,
             chart_progress:null,
-            options_analysis:{
+            options_statistics:{
                 title: {
-                    text: '统计分析',
+                    text: '警报统计',
                     padding:20
                 },
                 tooltip: {
@@ -83,11 +83,11 @@ export default {
                     top:'20px',
                     data:[
                         {
-                            name:'邮件营销',
+                            name:'软基处理',
                             icon:'circle'
                         },
                         {
-                            name:'联盟广告',
+                            name:'路基路面',
                             icon:'circle'
                         }
                     ]
@@ -120,7 +120,7 @@ export default {
                 },
                 series: [
                     {
-                        name:'邮件营销',
+                        name:'软基处理',
                         type:'line',
                         lineStyle:{
                             color:'#2C82BE'
@@ -134,7 +134,86 @@ export default {
                         data:[220, 112, 191, 234, 200, 330]
                     },
                     {
-                        name:'联盟广告',
+                        name:'路基路面',
+                        type:'line',
+                        lineStyle:{
+                            color:'#76DDFB'
+                        },
+                        showSymbol: false,
+                        itemStyle:{
+                            color:'#76DDFB',
+                            borderColor:'#76DDFB'
+                        },
+                        areaStyle: {normal: {}},
+                        data:[120, 132, 301, 134, 110, 230]
+                    },
+                ]
+            },
+            options_analysis:{
+                title: {
+                    text: '警报分析',
+                    padding:20
+                },
+                tooltip: {
+                    trigger: 'axis'
+                },
+                legend: {
+                    right:'20px',
+                    top:'20px',
+                    data:[
+                        {
+                            name:'软基处理',
+                            icon:'circle'
+                        },
+                        {
+                            name:'路基路面',
+                            icon:'circle'
+                        }
+                    ]
+                },
+                grid: {
+                    left: '4%',
+                    right: '4%',
+                    bottom: '20px',
+                    containLabel: true
+                },
+                xAxis: {
+                    type: 'category',
+                    axisTick:false,
+                    axisLine:{
+                        lineStyle:{
+                            width:0 
+                        }
+                    },
+                    boundaryGap: false,
+                    data: ['一','二','三','四','五','六']
+                },
+                yAxis: {
+                    type: 'value',
+                    axisLine:{
+                        lineStyle:{
+                            width:0 
+                        }
+                    },
+                    axisTick:false
+                },
+                series: [
+                    {
+                        name:'软基处理',
+                        type:'line',
+                        lineStyle:{
+                            color:'#2C82BE'
+                        },
+                        showSymbol: false,
+                        itemStyle:{
+                            color:'#2C82BE',
+                            borderColor:'#2C82BE'
+                        },
+                        areaStyle: {normal: {}},
+                        data:[220, 112, 191, 234, 200, 330]
+                    },
+                    {
+                        name:'路基路面',
                         type:'line',
                         lineStyle:{
                             color:'#76DDFB'
@@ -178,13 +257,22 @@ export default {
                 },
                 xAxis: {
                     type: 'value',
+                    boundaryGap: [0, 0.01],
+                    min: 0,
+                    max: 100,
+                    interval: 20,
                     axisTick:false,
                     axisLine:{
                         lineStyle:{
                             width:0 
                         }
                     },
-                    boundaryGap: false,
+                    axisLabel: {
+                        formatter: '{value}%',
+                        textStyle: {
+                            fontWeight: '80'
+                        }
+                    }
                 },
                 yAxis: {
                     type: 'category',
@@ -211,7 +299,7 @@ export default {
                                 )
                             },
                         },
-                        data: [18203, 23489, 29034, 104970]
+                        data: [28, 53, 85, 66]
                     }
                 ]
             },
@@ -224,6 +312,7 @@ export default {
         
     },
     mounted() {
+        this.getChart_statistics()
         this.getChart_analysis();
         this.getChart_progress();
         window.onresize = ()=>{
@@ -263,6 +352,10 @@ export default {
                 this.documentTotal = res.data.result.total
             })
         },
+        getChart_statistics(){
+            this.chart_statistics = this.$echarts.init(document.getElementById('chart_statistics'))
+            this.chart_statistics.setOption(this.options_statistics);
+        },
         getChart_analysis(){
             this.chart_analysis = this.$echarts.init(document.getElementById('chart_analysis'))
             this.chart_analysis.setOption(this.options_analysis);
@@ -272,6 +365,7 @@ export default {
             this.chart_progress.setOption(this.options_progress);
         },
         resizeChart(){
+            this.chart_statistics.resize();
             this.chart_analysis.resize();
             this.chart_progress.resize();
         }
@@ -285,12 +379,12 @@ export default {
 </script>
 <style scoped lang="scss">
 .deviceInfo{
-    height: 709px;
+    height: 700px;
     width: 100%
 }
 .info_{
     width: 435px;
-    height: 709px;
+    height: 700px;
     box-sizing: border-box;    
     border: 1px solid #EBEDF8;
     border-radius: 4px;
@@ -364,13 +458,12 @@ export default {
 }
 .charts_{
     width: calc(100% - 465px);
-    // height: 709px;
     border-radius: 4px;
     .stats{
         display: flex;
         flex-wrap:wrap ;
         justify-content: space-between;
-        padding-bottom: 20px;
+        padding-bottom: 17px;
         li{
             width: 23%;
             height: 106px;
@@ -382,8 +475,8 @@ export default {
             justify-content: center;
             align-items:center ;
             .stats_icon{
-                font-size: 36px;
-                
+                font-size: 30px;
+                line-height: 30px;
             }
             .stats_name{
                 font-size: 16px;
@@ -413,7 +506,7 @@ export default {
         height: 280px;
         border: 1px solid #EBEDF8;
         box-sizing: border-box;
-        margin-bottom: 22px;
+        margin-bottom: 17px;
 
     }
     .progress{

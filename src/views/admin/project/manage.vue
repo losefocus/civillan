@@ -4,11 +4,12 @@
             <div class="filter-container">
             <el-button @click="toProjectIndex" size="small" >返回项目列表</el-button>
             <span style="margin-left:20px" v-if="tabView!='info'">项目名称: {{viewData.name}}</span>
-            <el-radio-group v-model="tabView" size="small" style="margin-bottom: 30px;" class="pull-right">
+            <el-radio-group v-model="tabView" size="small" style="margin-bottom: 30px;" class="pull-right" @change="cardVisibel=false">
                 <el-radio-button label="info" :disabled="viewData.children.length != 0">项目详情</el-radio-button>
                 <el-radio-button label="org">机构设置</el-radio-button>
                 <el-radio-button label="per">人员管理</el-radio-button>
                 <el-radio-button label="equ" :disabled="viewData.children.length != 0">设备管理</el-radio-button>
+                <el-radio-button label="config">作业配置</el-radio-button>
                 <el-radio-button label="doc">文档资料</el-radio-button>
                 <el-radio-button label="media">现场影像</el-radio-button>
                 <el-radio-button label="moni">视频监控</el-radio-button>
@@ -19,6 +20,7 @@
                 <org v-if="tabView === 'org'" :project-info="viewData" ref="org"></org>
                 <per v-if="tabView === 'per'" :project-info="viewData" ref="per"></per>
                 <equ v-if="tabView === 'equ'" :project-info="viewData" ref="equ"></equ>
+                <config v-if="tabView === 'config'" :project-info="viewData" ref="config"></config>
                 <doc v-if="tabView === 'doc'" :project-info="viewData" ref="doc"></doc>
                 <media v-if="tabView === 'media'" :project-info="viewData" ref="media"></media>
                 <moni v-if="tabView === 'moni'" :project-info="viewData" ref="moni"></moni>
@@ -29,6 +31,7 @@
             <add-org v-if="tabView === 'org'" :project-info="viewData" ref="addOrg"></add-org>
             <add-per v-if="tabView === 'per'" :project-info="viewData" ref="addPer"></add-per>
             <add-equ v-if="tabView === 'equ'" :project-info="viewData" ref="addEqu"></add-equ>
+            <add-config v-if="tabView === 'config'" :project-info="viewData" ref="addConfig"></add-config>
             <add-doc v-if="tabView === 'doc'" :project-info="viewData" ref="addDoc"></add-doc>
             <add-media v-if="tabView === 'media'" :project-info="viewData" ref="addMedia"></add-media>
             <add-moni v-if="tabView === 'moni'" :project-info="viewData" ref="addMoni"></add-moni>
@@ -43,12 +46,14 @@ import equ from "./manageView/equ";
 import doc from "./manageView/doc";
 import media from "./manageView/media";
 import moni from "./manageView/monitoring";
+import config from "./manageView/config";
 import addOrg from "./manageView/addOrg";
 import addPer from "./manageView/addPer";
 import addEqu from "./manageView/addEqu";
 import addDoc from "./manageView/addDoc";
 import addMedia from "./manageView/addMedia";
 import addMoni from "./manageView/addMoni";
+import addConfig from "./manageView/addConfig";
 
 export default {
     components:{
@@ -59,12 +64,14 @@ export default {
         doc,
         media,
         moni,
+        config,
         addOrg,
         addPer,
         addEqu,
         addDoc,
         addMedia,
         addMoni,
+        addConfig
     },
     props:['viewData'],
     data(){

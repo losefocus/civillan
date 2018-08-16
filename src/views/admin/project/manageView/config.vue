@@ -1,39 +1,37 @@
 <template>
     <div style="padding:20px;border:1px solid #ebeef5">
         <div class="filter-container">
-            <el-button class="filter-item" style="" @click="handleAdd" size="small" type="primary">添加文件</el-button>
-            <el-button class="pull-right" type="primary" size="small" v-waves  @click="handleFilter">搜索</el-button>
-            <el-input @keyup.enter.native="handleFilter" style="width: 150px;" size="small" suffix-icon="el-icon-search" class="pull-right" placeholder="文档标题" v-model="listQuery.name"></el-input>
+            <el-button class="filter-item" style="" @click="handleAdd" size="small" type="primary">添加配置</el-button>
+            <el-button class="filter-item" style="" @click="handleAdd" size="small" type="primary">导入</el-button>
+            <el-button class="filter-item" style="" @click="handleAdd" size="small" type="primary">导出</el-button>
+            <!-- <el-button class="pull-right" type="primary" size="small" v-waves  @click="handleFilter">搜索</el-button>
+            <el-input @keyup.enter.native="handleFilter" style="width: 150px;" size="small" suffix-icon="el-icon-search" class="pull-right" placeholder="文档标题" v-model="listQuery.name"></el-input> -->
         </div>
         <el-table :data="list" v-loading="listLoading" fit highlight-current-row style="width: 99%;margin-bottom:20px;">
-            <el-table-column align="left" label="文档标题" min-width="150">
+            <el-table-column align="left" label="名称" min-width="150">
                 <template slot-scope="scope">
                     <span style="white-space:nowrap;">{{scope.row.name}}</span>
                 </template>
             </el-table-column>
-            <el-table-column align="center" label="文件类型" min-width="60">
+            <el-table-column align="center" label="标识" min-width="60">
                 <template slot-scope="scope">
                     <span>{{scope.row.extension}}</span>
                 </template>
             </el-table-column>
-            <el-table-column align="center" label="上传用户" min-width="80">
+            <el-table-column align="center" label="类型" min-width="80">
                 <template slot-scope="scope">
-                    <span style="white-space:nowrap;">{{adminerHash[scope.row.createdBy]}}</span>
+                    <span style="white-space:nowrap;">{{scope.row.type}}</span>
                 </template>
             </el-table-column>
-            <el-table-column align="center" label="上传时间" min-width="80">
+            <el-table-column align="center" label="排序" min-width="60">   
                 <template slot-scope="scope">
-                    <span>{{scope.row.createdAt | parseTime('{y}-{m}-{d}')}}</span>
-                </template>
-            </el-table-column>
-            <el-table-column align="center" label="状态" min-width="60">   
-                <template slot-scope="scope">
-                    <span>{{(scope.row.status == 1)?'已公开':'未公开'}}</span>
+                    <i v-if="scope.row.status == 1" class="el-icon-circle-check" style="font-size:18px;color:#67c23a"></i>
+                    <i v-else class="el-icon-circle-close" style="font-size:18px;color:#909399"></i>
                 </template>
             </el-table-column>
             <el-table-column align="center" label="操作" width="220">
                 <template slot-scope="scope" >
-                    <el-button size="mini" type="" plain><a :href="scope.row.fileBaseUrl+scope.row.filePath" download target="_blank">下载</a></el-button>
+                    <el-button size="mini" type="" plain>复制</el-button>
                     <el-button size="mini" type="" plain @click="updataDoc(scope.row)" style="margin-left:0px">修改</el-button>
                     <el-button size="mini" type="" plain @click="deleteDoc(scope.row)" style="margin-left:0px">删除</el-button>
                 </template>
@@ -48,7 +46,7 @@
 </template>
 <script>
 import { mapGetters } from "vuex";
-import {fetchList,delObj,updataObj} from "@/api/project_doc";
+import {fetchList,delObj} from "@/api/project_config";
 export default {
     props:['projectInfo'],
     data(){
@@ -60,9 +58,6 @@ export default {
                 page_size: 20
             },
             total:null,
-            objectTypeVisible:false,
-            flag:'add',
-            createdLoading:false,
         }
     },
     created() {
@@ -104,7 +99,7 @@ export default {
         },
         deleteDoc(row){
             this.$confirm(
-                "此操作将永久删除该文件(文件名:" + row.name + "), 是否继续?",
+                "此操作将永久删除该配置(配置名:" + row.name + "), 是否继续?",
                 "提示",
                 {
                 confirmButtonText: "确定",

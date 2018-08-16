@@ -25,11 +25,11 @@ export default {
                     top:'20px',
                     data:[
                         {
-                            name:'邮件营销',
+                            name:'统计一',
                             icon:'circle'
                         },
                         {
-                            name:'联盟广告',
+                            name:'统计二',
                             icon:'circle'
                         }
                     ]
@@ -62,7 +62,7 @@ export default {
                 },
                 series: [
                     {
-                        name:'邮件营销',
+                        name:'统计一',
                         type:'line',
                         lineStyle:{
                             color:'#2C82BE'
@@ -75,7 +75,7 @@ export default {
                         data:[220, 112, 191, 234, 200, 330]
                     },
                     {
-                        name:'联盟广告',
+                        name:'统计二',
                         type:'line',
                         lineStyle:{
                             color:'#76DDFB'
