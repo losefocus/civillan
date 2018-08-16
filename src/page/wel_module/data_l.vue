@@ -1,6 +1,6 @@
 <template>
     <div class="dataChart_l clearfix">
-        <div class="tit pull-left">警报</div>
+        <div class="tit pull-left">数据</div>
         <div class="charts pull-right" style="width:calc(100% - 60px)">
             <div id="chart_l" :style="chartStyle"></div>
         </div>

@@ -7,9 +7,9 @@
                 <span>300</span>
             </div>
             <div class="p_r  pull-right">
-                <p><i class="icon_ el-icon-document"></i>进行中<span class="data_">200</span></p>
-                <p><i class="icon_ el-icon-time"></i>已结束<span class="data_">98</span></p>
-                <p><i class="icon_ el-icon-bell"></i>异&nbsp;&nbsp;&nbsp;&nbsp;常<span class="data_">2</span></p>
+                <p><i class="icon_ iconfont icon-peizhihechajieguobaobiao"></i>进行中<span class="data_">200</span></p>
+                <p><i class="icon_ iconfont icon-shijian"></i>已结束<span class="data_">98</span></p>
+                <p><i class="icon_ iconfont icon-yichang"></i>异&nbsp;&nbsp;&nbsp;&nbsp;常<span class="data_">2</span></p>
             </div>
         </div>
         <div class="charts" style="width:100%">
@@ -139,8 +139,10 @@ export default {
             line-height: 20px;
             margin: auto;
             text-align: left;
+            font-size: 14px;
             .icon_{
                 padding-right:10px;
+                font-size: 16px;
             }
             span{
                 padding-left: 20px;

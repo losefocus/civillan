@@ -37,6 +37,7 @@ li{
     height: 118px;
     border-right: 1px solid #E8E8E8;
     box-sizing: border-box;
+    font-size: 14px;
     p{
         line-height: 20px;
         text-align: center;
@@ -70,6 +71,7 @@ li:last-child{
     padding-top:38px;
     border:none;
     font-weight: bold;
+    font-size: 16px;
     p{
         line-height: 22px;
         text-align: center;

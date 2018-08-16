@@ -91,15 +91,15 @@ export default {
   mounted(){
     setTimeout(this.resizeChart_,500)
     window.onresize = ()=>{
-        this.resizeChart_()
-      }
-    },
+      this.resizeChart_()
+    }
+  },
   methods: {
     resizeChart_(){
-      this.$refs.chart_project.resizeChart()
-      this.$refs.chart_data.resizeChart()
-      this.$refs.chart_alarm.resizeChart()
-      this.$refs.chart_data_l.resizeChart()
+      if(this.$refs.chart_project!=undefined) this.$refs.chart_project.resizeChart()
+      if(this.$refs.chart_data!=undefined) this.$refs.chart_data.resizeChart()
+      if(this.$refs.chart_alarm!=undefined) this.$refs.chart_alarm.resizeChart()
+      if(this.$refs.chart_data_l!=undefined) this.$refs.chart_data_l.resizeChart()
     },
     getData() {
       if (this.count < this.DATA.length - 1) {
@@ -151,7 +151,7 @@ export default {
   },
   watch:{
     isCollapse(oldVal,val){
-        setTimeout(this.resizeChart_,300)
+        setTimeout(this.resizeChart_,500)
     }
   }
 };
@@ -159,10 +159,6 @@ export default {
 
 <style scoped="scoped" lang="scss">
 .wel-contailer {
-  // position: relative;
-  // height: 1000px;
-  // background: url('../assets/img/wel.png')no-repeat top;
-  // background-size: contain
   display: flex;
   flex-wrap:wrap ;
   align-items: center;
@@ -176,7 +172,6 @@ export default {
   }
   .wel_{
     height: 455px;
-    // background: #fff;
     margin-bottom:10px;
   }
   .wel_1,.wel_3{

@@ -103,7 +103,7 @@ export default {
       }
     },
     showCollapse() {
-      this.$store.commit("SET_COLLAPSE");
+      if(document.body.clientWidth>1024)this.$store.commit("SET_COLLAPSE");
     },
     handleScreen() {
       fullscreenToggel();

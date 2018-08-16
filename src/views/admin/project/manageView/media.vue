@@ -6,7 +6,7 @@
             <el-input @keyup.enter.native="handleFilter" style="width: 150px;" size="small" suffix-icon="el-icon-search" class="pull-right" placeholder="文档标题" v-model="listQuery.name"></el-input> -->
         </div>
         <el-table :data="list" v-loading="listLoading" fit highlight-current-row style="width: 99%;margin-bottom:20px;">
-            <el-table-column align="left" label="缩略图" width="80">
+             <el-table-column align="left" label="缩略图" width="80">
                 <template slot-scope="scope">
                     <div style="height:45px">
                         <img v-if="scope.row.thumbnailBaseUrl!=''" style="width:60px;height:45px" :src="scope.row.thumbnailFileBaseUrl+scope.row.thumbnailFilePath">
@@ -44,7 +44,7 @@
                     <i v-if="scope.row.status == 1" class="el-icon-circle-check" style="font-size:18px;color:#67c23a"></i>
                     <i v-else class="el-icon-circle-close" style="font-size:18px;color:#909399"></i>
                 </template>
-            </el-table-column>
+            </el-table-column> 
             <el-table-column align="center" label="操作" width="200">
                 <template slot-scope="scope" >
                     <el-button v-if="scope.row.url==''" size="mini" type="" plain><a :href="scope.row.thumbnailFileBaseUrl+scope.row.thumbnailFilePath" download target="_blank">查看</a></el-button>
@@ -89,7 +89,6 @@ export default {
                 this.typeHash.set(parseInt(ele.value),ele.label)
             });
         });
-        
     },
     mounted() {
         this.getList()
