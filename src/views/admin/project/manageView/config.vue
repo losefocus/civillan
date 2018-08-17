@@ -15,15 +15,20 @@
             </el-table-column>
             <el-table-column align="center" label="标识" min-width="60">
                 <template slot-scope="scope">
-                    <span>{{scope.row.extension}}</span>
+                    <span>{{scope.row.key}}</span>
                 </template>
             </el-table-column>
             <el-table-column align="center" label="类型" min-width="80">
                 <template slot-scope="scope">
-                    <span style="white-space:nowrap;">{{scope.row.type}}</span>
+                    <span style="white-space:nowrap;">{{scope.row.typeId}}</span>
                 </template>
             </el-table-column>
             <el-table-column align="center" label="排序" min-width="60">   
+                <template slot-scope="scope">
+                    <span>{{scope.row.sort}}</span>
+                </template>
+            </el-table-column>
+            <el-table-column align="center" label="状态" min-width="60">   
                 <template slot-scope="scope">
                     <i v-if="scope.row.status == 1" class="el-icon-circle-check" style="font-size:18px;color:#67c23a"></i>
                     <i v-else class="el-icon-circle-close" style="font-size:18px;color:#909399"></i>
@@ -77,6 +82,8 @@ export default {
         },
         getList(){
             this.listLoading = true
+            this.listQuery.sort_by = 'sort'
+            this.listQuery.direction = 'asc'
             this.listQuery.projectId = this.projectInfo.id
             fetchList(this.listQuery).then(res => {
                 this.list = res.data.result.items
@@ -115,9 +122,15 @@ export default {
         },
         updataDoc(row){
             this.$parent.cardVisibel = true
-            this.$parent.$refs.addDoc.flag = 'updata'
-            this.$parent.$refs.addDoc.form = Object.assign({},row)
-            this.$parent.$refs.addDoc.form.status = (row.status === 1)?true:false
+            this.$parent.$refs.addConfig.flag = 'updata'
+            this.$parent.$refs.addConfig.form = Object.assign({},row)
+            this.$parent.$refs.addConfig.form.status = (row.status === 1)?true:false
+            // this.$parent.$refs.addConfig.config_content = JSON.parse(row.content)
+            let contents = JSON.parse(row.content)
+            contents.forEach(ele => {
+                ele.flag = false
+            });
+            this.$parent.$refs.addConfig.config_content = contents
         },
     }
 }
