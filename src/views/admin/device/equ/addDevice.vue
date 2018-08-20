@@ -3,13 +3,19 @@
         <div class="tit"><h3>{{(flag == 'add')?'添加':'修改'}}设备</h3><span>{{(flag == 'add')?'Add':'Edit'}} Equipment</span></div>
         <el-form label-width="55px" :model="form"  ref="form" :rules="rules" label-position="left">
             <el-form-item label="型号" prop="product.id">
-                <el-select v-model="form.product.id" size="small" placeholder="请选择型号" :disabled="disabled">
+                <el-select v-model="form.product.id" filterable :filter-method="productSearch" size="small" placeholder="请选择型号" :disabled="disabled">
                     <el-option
                     v-for="item in productOptions"
                     :key="item.value"
                     :label="item.label"
                     :value="item.value">
                     </el-option>
+                    <el-pagination layout="prev, pager, next"
+                    @current-change="productCurrentChange"
+                    :current-page="productListQuery.page_index"
+                    :page-size="productListQuery.page_size"
+                    :total="productTotal">
+                    </el-pagination>
                 </el-select>
             </el-form-item>
             <el-form-item label="项目" prop="projectId">
@@ -31,13 +37,6 @@
                     :value="item.value">
                     </el-option>
                 </el-select>
-                <!-- <el-cascader
-                    size="small" placeholder="请选择分组"
-                    :options="groupOptions"
-                    v-model="form.deviceGroup.id"
-                    :show-all-levels="false"
-                    change-on-select>
-                </el-cascader> -->
             </el-form-item>
             <el-form-item label="名称" prop="name">
                 <el-input v-model="form.name" size="small" placeholder="请输入名称"></el-input>
@@ -170,7 +169,6 @@ export default {
             },
             positionVisible:false,
             disabled:false,
-            productHash:{},
             imageName:'',
             fileList:[],
             headers:{Authorization: "Bearer " + getToken()},
@@ -178,6 +176,11 @@ export default {
             uploadLoaing:false,
             flag:'add',
             productOptions:[],
+            productListQuery:{
+                page_index: 1,
+                page_size: 10
+            },
+            productTotal:null,
             device_btn_add :false,
             groupListQuery:{
                 page_index: 1,
@@ -199,6 +202,7 @@ export default {
         ...mapGetters(["permissions"])
     },
     methods:{
+        
         beforeUpload(){
             this.uploadLoaing = true
         },
@@ -228,20 +232,26 @@ export default {
             this.getGroupList(val)
         },
         getProductList(){
-            let obj = {
-                page_index: 1,
-                page_size: 9999
-            }
-            fetchProductList(obj).then(res => {
+            fetchProductList(this.productListQuery).then(res => {
                 let data = res.data.result.items
+                this.productTotal = res.data.result.total
                 this.productOptions = []
                 data.forEach(ele => {
                     let item = {value:ele.id, label:ele.name}
                     this.productOptions.push(item)
-                    this.productHash[ele.id] = ele.name
                 });
             })
         },
+        productSearch(val){
+            this.productListQuery.name = val;
+            this.productListQuery.page_index = 1
+            this.getProductList()
+        },
+        productCurrentChange(val){
+            this.productListQuery.page_index = val;
+            this.getProductList()
+        },
+
         getGroupList(id){
             this.groupListQuery.projectId = id
             this.groupListQuery.sort_by = 'sort'

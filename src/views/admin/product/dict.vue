@@ -1,8 +1,8 @@
 <template>
     <div>
         <el-form :model="form" class="clearfix" ref="form" :rules="rules" size="small" label-width="45px">
-            <el-form-item label="分类" prop="parentId" style="width: 180px;">
-                <el-select v-model="form.parentId" size="mini" placeholder="请选择分类">
+            <el-form-item label="分类" prop="categoryId" style="width: 180px;">
+                <el-select v-model="form.categoryId" size="mini" placeholder="请选择分类">
                     <el-option
                     v-for="item in categoryOptions"
                     :key="item.value"
@@ -11,11 +11,11 @@
                     </el-option>
                 </el-select>
             </el-form-item>
-            <el-form-item label="名称" prop="name" style="width: 180px;">
-                <el-input v-model="form.name" size="mini" auto-complete="off" placeholder="名称"></el-input>
+            <el-form-item label="名称" prop="label" style="width: 180px;">
+                <el-input v-model="form.label" size="mini" auto-complete="off" placeholder="名称"></el-input>
             </el-form-item>
-            <el-form-item label="标识" prop="name" style="width: 180px;">
-                <el-input v-model="form.name" size="mini" auto-complete="off" placeholder="标识"></el-input>
+            <el-form-item label="标识" prop="code" style="width: 180px;">
+                <el-input v-model="form.code" size="mini" auto-complete="off" placeholder="标识"></el-input>
             </el-form-item>
             <el-form-item label="排序" style="width: 110px;">
                 <el-input v-model="form.sort" size="mini" auto-complete="off" placeholder="排序"></el-input>
@@ -33,12 +33,12 @@
             <el-table :data="list" border fit highlight-current-row style="width: 100%;margin-bottom:20px;margin-top:10px">
                 <el-table-column align="center" label="显示名称">
                     <template slot-scope="scope">
-                        <span>{{scope.row.name}}</span>
+                        <span>{{scope.row.label}}</span>
                     </template>
                 </el-table-column>
                 <el-table-column align="center" label="标识">
                     <template slot-scope="scope">
-                        <span>{{categoryHash.get(scope.row.parentId)}}</span>
+                        <span>{{scope.row.code}}</span>
                     </template>
                 </el-table-column>
                 <el-table-column align="center" label="排序" width="60">
@@ -67,45 +67,48 @@
     </div>
 </template>
 <script>
-import { getToken } from "@/util/auth";
 import { toTree } from "@/util/util";
 import { mapGetters } from "vuex";
-import {fetchList,addObj,delObj,editObj} from "@/api/product_category";
+import {fetchList,addObj,delObj,editObj,categoryList} from "@/api/product_dict";
 
 export default {
     props:['dataInfo'],
     data(){
-        var validateParentId = (rule, value, callback) => {
+        var validateCategoryId = (rule, value, callback) => {
             if (value === '' || value== undefined) {
-                callback(new Error('请选择上级分类'));
+                callback(new Error('请选择分类'));
             } else {
                 callback();
             }
         };
-        var validateName = (rule, value, callback) => {
+        var validateLabel = (rule, value, callback) => {
             if (value === '' || value== undefined) {
-                callback(new Error('请选择类型'));
+                callback(new Error('请输入名称'));
+            } else {
+                callback();
+            }
+        };
+        var validateCode = (rule, value, callback) => {
+            if (value === '' || value== undefined) {
+                callback(new Error('请输入名称'));
             } else {
                 callback();
             }
         };
         return {
             rules: {
-                parentId: [{ validator: validateParentId, message: '请选择上级分类', trigger: 'change' }],
-                name: [{ validator: validateName, message: '请输入名称', trigger: 'blur' }],
+                categoryId: [{ validator: validateCategoryId, message: '请选择分类', trigger: 'change' }],
+                label: [{ validator: validateLabel, message: '请输入名称', trigger: 'blur' }],
+                code: [{ validator: validateCode, message: '请输入名称', trigger: 'blur' }],
             },
             listLoading:false,
             createdLoading:false,
-            headers:{Authorization: "Bearer " + getToken()},
-            params:{component :'project'},
-            uploadLoaing:false,
             form:{
-                parentId:'',
-                name:'',
+                categoryId:'',
+                label:'',
+                code:'',
                 sort:'',
                 status:true,
-                thumbnailPath:'',
-                thumbnailBaseUrl:''
             },
             flag:'add',
             listQuery:{
@@ -120,21 +123,31 @@ export default {
     },
     created() {
         this.getList();
+        this.getCategoryList();
     },
     mounted() {
 
     },
     computed: {
-        ...mapGetters(["alarmList"]),
+        ...mapGetters([]),
     },
     methods:{
-        beforeUpload(){
-            this.uploadLoaing = true
-        },
-        uploadSuccess(response, file, fileList){
-            this.form.thumbnailPath = response.result.path
-            this.form.thumbnailBaseUrl = response.result.baseUrl
-            this.uploadLoaing = false
+        getCategoryList(){
+            let query = {
+                page_index: 1,
+                page_size: 10,
+                sort_by: 'sort',
+                direction: 'asc',
+            }
+            categoryList(query).then(res => {
+                let list = res.data.result.items
+                let newMap = new Map();
+                for (let i=0; i<list.length; i++) {
+                    newMap.set(list[i].id,list[i].name)
+                }
+                this.categoryHash = newMap
+                this.categoryOptions = toTree(list)
+            })
         },
         handleSizeChange(val) {
             this.listQuery.page_size = val;
@@ -152,16 +165,6 @@ export default {
                 this.list = res.data.result.items
                 this.total = res.data.result.total
                 this.listLoading = false
-                let newMap = new Map();
-                newMap.set(0,'无')
-                for (let i=0; i<this.list.length; i++) {
-                    newMap.set(this.list[i].id,this.list[i].name)
-                }
-                this.categoryHash = newMap
-                this.categoryOptions = toTree(this.list)
-                this.categoryOptions.unshift({value:0,label:'无'})
-                this.$emit('showCategoryOptions',this.categoryOptions);
-                this.$emit('showCategoryHash',this.categoryHash);
             })
         },
         updateList(row){
@@ -171,7 +174,7 @@ export default {
         },
         deleteList(row){
             this.$confirm(
-                "此操作将永久删除该分类(分类名:" + row.name + "), 是否继续?",
+                "此操作将永久删除该参数(参数名:" + row.label + "), 是否继续?",
                 "提示",
                 {
                 confirmButtonText: "确定",
@@ -221,12 +224,11 @@ export default {
         },
         resetTem(){
             this.form={
-                parentId:'',
-                name:'',
+                categoryId:'',
+                label:'',
+                code:'',
                 sort:'',
                 status:true,
-                thumbnailPath:'',
-                thumbnailBaseUrl:''
             }
             this.createdLoading = false
             this.$refs.form.resetFields();

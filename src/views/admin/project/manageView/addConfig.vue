@@ -6,7 +6,15 @@
                 <el-input v-model="form.name" size="small" placeholder="请输入名称"></el-input>
             </el-form-item>
             <el-form-item label="类型" prop="typeId">
-                <el-input v-model="form.typeId" size="small" placeholder="请输入类型"></el-input>
+                <!-- <el-input v-model="form.typeId" size="small" placeholder="请输入类型"></el-input> -->
+                <el-select v-model="form.typeId" size="small" placeholder="请选择类型" @change="changeType">
+                    <el-option
+                    v-for="item in typeOptions"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value">
+                    </el-option>
+                </el-select>
             </el-form-item>
             <el-form-item label="标识" prop="key">
                 <el-input v-model="form.key" size="small" placeholder="请输入标识"></el-input>
@@ -23,29 +31,33 @@
         <div>
             <el-form id="content_form" ref="content_form" :inline="true" label-width="0" size="mini">
                 <el-form-item label="" prop="typeId" style="width:100px">
-                    <el-input v-model="content_form.key" size="mini" placeholder="配置项"></el-input>
+                    <!-- <el-input v-model="content_form.key" size="mini" placeholder="配置项"></el-input> -->
+                    <el-select v-model="content_form.name" size="mini" placeholder="配置项" @change="changeParams">
+                        <el-option
+                        v-for="item in paramsOption"
+                        :key="item.value"
+                        :label="item.label"
+                        :value="item.value+','+item.label">
+                        </el-option>
+                    </el-select>
                 </el-form-item>
-                <el-form-item label="" prop="key" style="width:90px">
+                <el-form-item label="" prop="value" style="width:90px">
                     <el-input v-model="content_form.value" size="mini" placeholder="值"></el-input>
                 </el-form-item>
                 <el-form-item label="" style="width:60px">
                     <el-button type="primary" size="mini" style="width:60px;" @click="addContent">添加</el-button>
                 </el-form-item>
             </el-form>
-            <!-- <el-input v-model="content_form.key" style="width:100px" size="mini" placeholder="配置项"></el-input>
-            <el-input v-model="content_form.value" style="width:90px" size="mini" placeholder="值"></el-input>
-            <el-button type="primary" size="mini" style="width:60px;">添加</el-button> -->
         </div>
         <el-table class="config_content" :data="config_content" border max-height="250" :show-header="false" style="width:100%;border-radius: 4px;margin:10px 0 20px 0;">
-            <el-table-column prop="key" align="center" label="配置项">
+            <el-table-column prop="name" align="center" label="配置项">
                 <template slot-scope="scope">
-                    <span>{{scope.row.key}}</span>    
+                    <span>{{scope.row.name}}</span>    
                 </template>
             </el-table-column>
             <el-table-column prop="value" align="center" label="值">
                 <template slot-scope="scope">
                     <span v-if="!scope.row.flag">{{scope.row.value}}</span>
-                    <!-- <el-input v-else v-model="tempValue" size="mini" style="height:23px;"></el-input> -->
                     <input v-else v-model="tempValue" :value="tempValue" autofocus style="height:20px;width:50px;border-radius: 4px;border: 1px solid #dcdfe6;text-align: center">
                 </template>
             </el-table-column>
@@ -66,7 +78,8 @@
     </div>
 </template>
 <script>
-import {addObj,editObj} from "@/api/project_config";
+import {addObj,editObj,categoryList,paramsList} from "@/api/project_config";
+import { toTree } from "@/util/util";
 export default {
     props:['projectInfo'],
     data(){
@@ -114,23 +127,65 @@ export default {
                 status:true,
             },
             content_form:{
-                key:'',
+                label:'',
+                name:'',
                 value:'',
                 flag:false
             },
-            config_content:[{key:'桩长',value:100,flag:false},{key:'轴长',value:200,flag:false}],
+            config_content:[],
             tempValue:null,
             lastIndex:null,
             createLoading:false,
             flag:'add',
+            typeOptions:[],
+            allListQuery:{
+                page_index: 1,
+                page_size: 999
+            },
+            paramsList:[],
+            paramsOption:[]
         }
     },
-    created() {},
+    created() {
+        
+    },
     mounted() {
-
+        this.getCategoryList()
+        this.getParamsList()
     },
     computed: {},
     methods:{
+        getCategoryList(){
+            categoryList(this.allListQuery).then(res => {
+                let list = res.data.result.items
+                this.typeOptions = list.map(item => {
+                    return { value: item.id, label: item.name };
+                });
+            })
+        },
+        getParamsList(){
+            paramsList(this.allListQuery).then(res => {
+                let list = res.data.result.items
+                this.paramsList = list.map(item => {
+                    return { value: item.code, label: item.label,categoryId:item.categoryId};
+                });
+            })
+        },
+        changeType(val){
+            this.content_form={
+                label:'',
+                name:'',
+                value:'',
+                flag:false
+            }
+            this.paramsOption = this.paramsList.filter(list => {
+                return list.categoryId == val
+            })
+        },
+        changeParams(val){
+            this.content_form.label = val.split(',')[0]
+            this.content_form.name = val.split(',')[1]
+        },
         submitForm(formName){
             this.$refs[formName].validate((valid) => {
                 if (valid) {
@@ -191,11 +246,20 @@ export default {
                 status:true
             }
             this.$refs.form.resetFields()
+            this.config_content = []
+            this.paramsOption = []
+            this.content_form={
+                label:'',
+                name:'',
+                value:'',
+                flag:false
+            }
         },
         addContent(){
             this.config_content.unshift(Object.assign({}, this.content_form))
             this.content_form = {
-                key:'',
+                label:'',
+                name:'',
                 value:'',
                 flag:false
             }
@@ -233,12 +297,11 @@ export default {
 .el-form-item__error{
     padding-top: 0 !important
 }
-.config_content{
-    
-    /* margin-top:10px;
+/* .config_content{
+    margin-top:10px;
     border: 1px solid #dcdfe6;
     border-radius: 4px;
     width: 260px;
-    max-height: 280px; */
-}
+    max-height: 280px;
+} */
 </style>

@@ -20,7 +20,7 @@
             </el-table-column>
             <el-table-column align="center" label="类型" min-width="80">
                 <template slot-scope="scope">
-                    <span style="white-space:nowrap;">{{scope.row.typeId}}</span>
+                    <span style="white-space:nowrap;">{{typeMap.get(scope.row.typeId)}}</span>
                 </template>
             </el-table-column>
             <el-table-column align="center" label="排序" min-width="60">   
@@ -36,9 +36,9 @@
             </el-table-column>
             <el-table-column align="center" label="操作" width="220">
                 <template slot-scope="scope" >
-                    <el-button size="mini" type="" plain>复制</el-button>
-                    <el-button size="mini" type="" plain @click="updataDoc(scope.row)" style="margin-left:0px">修改</el-button>
-                    <el-button size="mini" type="" plain @click="deleteDoc(scope.row)" style="margin-left:0px">删除</el-button>
+                    <el-button size="mini" type="" plain @click="copyObj(scope.row)">复制</el-button>
+                    <el-button size="mini" type="" plain @click="updataObj(scope.row)" style="margin-left:0px">修改</el-button>
+                    <el-button size="mini" type="" plain @click="deleteObj(scope.row)" style="margin-left:0px">删除</el-button>
                 </template>
             </el-table-column>
         </el-table>
@@ -51,7 +51,7 @@
 </template>
 <script>
 import { mapGetters } from "vuex";
-import {fetchList,delObj} from "@/api/project_config";
+import {fetchList,delObj,categoryList} from "@/api/project_config";
 export default {
     props:['projectInfo'],
     data(){
@@ -63,22 +63,32 @@ export default {
                 page_size: 20
             },
             total:null,
+            typeMap:null
         }
     },
     created() {
-        this.getList()
+        this.getCategoryList()
     },
     mounted() {
-
+        this.getList()
     },
     computed: {
         ...mapGetters(["adminerHash"])
     },
     methods:{
+        getCategoryList(){
+            categoryList(this.allListQuery).then(res => {
+                let list = res.data.result.items
+                this.typeMap = new Map()
+                for (let i=0; i<list.length; i++) {
+                    this.typeMap.set(list[i].id,list[i].name)
+                }
+            })
+        },
         handleAdd(){
             this.$parent.cardVisibel = true
-            this.$parent.$refs.addDoc.flag = 'add'
-            this.$parent.$refs.addDoc.resetTemp()
+            this.$parent.$refs.addConfig.flag = 'add'
+            this.$parent.$refs.addConfig.resetTemp()
         },
         getList(){
             this.listLoading = true
@@ -104,7 +114,7 @@ export default {
             this.listQuery.page_index = val;
             this.getList();
         },
-        deleteDoc(row){
+        deleteObj(row){
             this.$confirm(
                 "此操作将永久删除该配置(配置名:" + row.name + "), 是否继续?",
                 "提示",
@@ -120,18 +130,31 @@ export default {
                 })
             })
         },
-        updataDoc(row){
+        updataObj(row){
             this.$parent.cardVisibel = true
             this.$parent.$refs.addConfig.flag = 'updata'
             this.$parent.$refs.addConfig.form = Object.assign({},row)
             this.$parent.$refs.addConfig.form.status = (row.status === 1)?true:false
-            // this.$parent.$refs.addConfig.config_content = JSON.parse(row.content)
             let contents = JSON.parse(row.content)
             contents.forEach(ele => {
                 ele.flag = false
             });
             this.$parent.$refs.addConfig.config_content = contents
+            this.$parent.$refs.addConfig.changeType(row.typeId)
         },
+        copyObj(row){
+            this.$parent.cardVisibel = true
+            this.$parent.$refs.addConfig.flag = 'add'
+            this.$parent.$refs.addConfig.form = Object.assign({},row)
+            delete this.$parent.$refs.addConfig.form.id
+            this.$parent.$refs.addConfig.form.status = (row.status === 1)?true:false
+            let contents = JSON.parse(row.content)
+            contents.forEach(ele => {
+                ele.flag = false
+            });
+            this.$parent.$refs.addConfig.config_content = contents
+            this.$parent.$refs.addConfig.changeType(row.typeId)
+        }
     }
 }
 </script>

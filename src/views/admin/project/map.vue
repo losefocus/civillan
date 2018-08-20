@@ -55,7 +55,7 @@ export default {
                     map: map,
                     position: [item.position[0], item.position[1]],
                     offset: new AMap.Pixel(-12, -36),
-                    title:item.title
+                    title:item.title,
                 });
                 marker.content =`<div style="width:290px;height:200px;background:#fff;">
                     <div style="position:relative;width: 290px;height: 130px;background: url('${item.url}');background-size:100% 100%">

@@ -243,11 +243,14 @@ export default {
                 legend: {
                     right:'20px',
                     top:'20px',
+                    borderRadius: 2,
+
                     data:[
                         {
                             name:'进度',
                             icon:'circle'
                         },
+                        
                     ]
                 },
                 grid: {

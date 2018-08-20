@@ -89,10 +89,6 @@ export default {
         },
         getList(){
             this.listLoading = true
-            // let id
-            // this.productInfo.productTemplate.forEach(element => {
-            //     if(element.type === 1)id = element.id
-            // });
             let data_ = {
                 device_id:this.dataInfo.id,
                 key:'device_config'
