@@ -57,7 +57,7 @@
                     <span>{{scope.row.createdAt | parseTime('{y}-{m}-{d}')}}</span>
                 </template>
             </el-table-column>
-            <el-table-column align="center" label="状态">
+            <el-table-column align="center" label="状态" width="100">
                 <template slot-scope="scope">
                     <!-- <span>{{(scope.row.status == 1)?'已启用':'未启用'}}</span> -->
                     <i v-if="scope.row.status == 1" class="el-icon-circle-check" style="font-size:18px;color:#67c23a"></i>

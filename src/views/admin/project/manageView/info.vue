@@ -40,8 +40,8 @@
                 </li>
             </ul>
             <div class="analysis">
-                <div id="chart_statistics" class="pull-right" style="width:49%;height:100%"></div>
-                <div id="chart_analysis" class="pull-left" style="width:49%;height:100%"></div>
+                <div id="chart_statistics" class="pull-left " style="width:49%;height:100%"></div>
+                <div id="chart_analysis" class="pull-right" style="width:49%;height:100%"></div>
             </div>
             <div class="progress">
                 <div id="chart_progress" style="width:100%;height:100%"></div>
@@ -96,6 +96,7 @@ export default {
                     left: '4%',
                     right: '4%',
                     bottom: '20px',
+                    top:'30%',
                     containLabel: true
                 },
                 xAxis: {
@@ -107,7 +108,7 @@ export default {
                         }
                     },
                     boundaryGap: false,
-                    data: ['一','二','三','四','五','六']
+                    data: ['08-01','08-02','08-03','08-04','08-05','08-06'] 
                 },
                 yAxis: {
                     type: 'value',
@@ -186,7 +187,7 @@ export default {
                         }
                     },
                     boundaryGap: false,
-                    data: ['一','二','三','四','五','六']
+                    data: ['08-01','08-02','08-03','08-04','08-05','08-06'] 
                 },
                 yAxis: {
                     type: 'value',
@@ -210,7 +211,7 @@ export default {
                             borderColor:'#2C82BE'
                         },
                         areaStyle: {normal: {}},
-                        data:[220, 112, 191, 234, 200, 330]
+                        data:[120, 312, 291, 134, 200, 430]
                     },
                     {
                         name:'路基路面',
@@ -224,7 +225,7 @@ export default {
                             borderColor:'#76DDFB'
                         },
                         areaStyle: {normal: {}},
-                        data:[120, 132, 301, 134, 110, 230]
+                        data:[220, 332, 261, 534, 99, 130]
                     },
                 ]
             },
@@ -288,6 +289,7 @@ export default {
                     {
                         name: '进度',
                         type: 'bar',
+                        barWidth:'60%',
                         itemStyle: {
                             normal: {
                                 color: new this.$echarts.graphic.LinearGradient(

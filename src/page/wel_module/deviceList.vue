@@ -2,7 +2,7 @@
     <div>
         <div class="clearfix top_">
             <div class="tit pull-left">最新设备</div>
-            <div class="pull-right more_">更多 > </div>
+            <div class="pull-right more_" @click="toAllDevice">更多 > </div>
         </div>
         <div class="list_tit clearfix">
             <p class="l_1">用户</p>
@@ -30,7 +30,19 @@
 </template>
 <script>
 export default {
-    
+    data(){
+        return{
+
+        }
+    },
+    created(){},
+    mounted(){},
+    computed: {},
+    methods: {
+        toAllDevice(){
+            this.$router.push({ path:'/admin/device'});
+        }
+    }
 }
 </script>
 <style scoped="scoped" lang="scss">
@@ -45,6 +57,7 @@ export default {
     .more_{
         font-size: 12px;
         color: #999;
+        cursor: pointer;
     }
 }
 .list_tit{

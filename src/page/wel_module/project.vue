@@ -3,7 +3,7 @@
         <div class="tit">项目</div>
         <div class="clearfix">
             <div class="p_l pull-left">
-                <p>总项目</p>
+                <p>总数量</p>
                 <span>300</span>
             </div>
             <div class="p_r  pull-right">
