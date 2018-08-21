@@ -1,20 +1,47 @@
 <template>
     <div class="deviceInfo clearfix" v-loading="loading">
         <div class="pull-left info_" >
-            <div class="tit">{{info.name}}</div>
-            <div class="tm">项目工期<span>{{info.beginAt | parseTime('{y}-{m}-{d}')}} 至 {{info.endAt | parseTime('{y}-{m}-{d}')}}</span></div>
-            <el-progress :percentage="percentage"></el-progress>
-            <div class="image"><img :src="info.thumbnailUrl+info.thumbnailPath"></div>
-            <div class="text">{{info.comment}}</div>
-            <ul class="organType clearfix">
-                <li v-for="(item,index) in info.organTypeList" :key="index">
-                    <i class="pull-left icon el-icon-location"></i>
-                    <div class="pull-left typeText">
-                        <p class="typeName">{{item.name}}</p>
-                        <p class="organName">{{item.organList[0].name}}</p>
-                    </div>
-                </li>
+            <div class="image">
+                <img v-if="info.thumbnailPath&&info.thumbnailUrl!=''&&info.thumbnailPath!=''" :src="info.thumbnailUrl+info.thumbnailPath">
+                <img v-else style="width:100%;height:100%" src="../../../../assets/img/no_pic.png">
+                <div class="tm">{{info.beginAt | parseTime('{y}-{m}-{d}')}} 至 {{info.endAt | parseTime('{y}-{m}-{d}')}}</div>
+            </div>
+            <div class="parcent_ clearfix">
+                <span class="pull-left">项目进度</span>
+                <div class="pull-left progress_"><el-progress :percentage="percentage"></el-progress></div>
+            </div>
+            <ul class="organList">
+                <li></li>
             </ul>
+            <el-table :data="organList" style="width: 100%;border: 1px solid #EBEDF8;border-bottom:none;border-radius: 4px;" height="176">
+                <el-table-column align="left" label="联络人" width="70">
+                    <template slot-scope="scope">
+                        <span style="white-space:nowrap;">{{scope.row.contact}}</span>
+                    </template>
+                </el-table-column>
+                <el-table-column align="left" label="电话" width="120">
+                    <template slot-scope="scope">
+                        <span style="white-space:nowrap;">{{scope.row.phone}}</span>
+                    </template>
+                </el-table-column>
+                <el-table-column align="left" label="类型" width="80">
+                    <template slot-scope="scope">
+                        <span style="white-space:nowrap;">{{scope.row.organName}}</span>
+                    </template>
+                </el-table-column>
+                <el-table-column align="left" label="机构名称" >
+                    <template slot-scope="scope">
+                        <el-tooltip class="item" effect="dark" :content="scope.row.name" placement="top-start" :open-delay="300">
+                            <span style="white-space:nowrap;">{{scope.row.name}}</span>
+                        </el-tooltip>
+                    </template>
+                </el-table-column>
+            </el-table>
+            <div class="text">
+                <p class="text_tit">项目介绍</p>
+                <p v-if="info.comment == ''" style="text-align: center;font-size:16px">暂无介绍</p>
+                <p class="comment">{{info.comment}}</p>
+            </div>
         </div>
         <div class="pull-right charts_">
             <ul class="stats">
@@ -51,7 +78,7 @@
 </template>
 <script>
 import { mapGetters } from "vuex";
-import {getObj,deviceList,userList,mediaList,docList} from "@/api/project_info";
+import {getObj,deviceList,userList,mediaList,docList,organList} from "@/api/project_info";
 export default {
     data(){
         return{
@@ -63,6 +90,7 @@ export default {
                 page_index: 1,
                 page_size: 9999
             },
+            organList:[],
             deviceTotal:0,
             userTotal:0,
             mediaTotal:0,
@@ -94,7 +122,7 @@ export default {
                 },
                 grid: {
                     left: '4%',
-                    right: '4%',
+                    right: '5%',
                     bottom: '20px',
                     top:'30%',
                     containLabel: true
@@ -152,7 +180,7 @@ export default {
             },
             options_analysis:{
                 title: {
-                    text: '警报分析',
+                    text: '作业统计',
                     padding:20
                 },
                 tooltip: {
@@ -174,7 +202,7 @@ export default {
                 },
                 grid: {
                     left: '4%',
-                    right: '4%',
+                    right: '5%',
                     bottom: '20px',
                     containLabel: true
                 },
@@ -312,11 +340,11 @@ export default {
     },
     props:['projectInfo'],
     created() {
-        this.getInfo();
-        this.getDeviceList();
         
     },
     mounted() {
+        this.getInfo();
+        this.getDeviceList();
         this.getChart_statistics()
         this.getChart_analysis();
         this.getChart_progress();
@@ -340,6 +368,12 @@ export default {
                 this.info = res.data.result
                 let nowTm = Math.round(new Date().getTime()/1000)
                 this.percentage = (nowTm > this.info.endAt)?100:Math.round((nowTm - this.info.beginAt) / (this.info.endAt - this.info.beginAt) * 100)
+                let OList = res.data.result.organTypeList
+                OList.forEach(ele => {
+                    ele.organList.forEach(elm => {
+                        this.organList.push({organName:ele.name,contact:elm.contact,name:elm.name,phone:elm.phone,})
+                    })
+                });
                 this.loading = false
             })
         },
@@ -391,78 +425,62 @@ export default {
     width: 435px;
     height: 700px;
     box-sizing: border-box;    
-    border: 1px solid #EBEDF8;
-    border-radius: 4px;
-    padding: 30px;
-    .tit{
-        font-size: 22px;
-        line-height: 24px;
-        color: #333;
-        padding-bottom: 20px;
-    }
-    .tm{
-        height: 24px;
-        line-height: 24px;
-        color: #999;
-        padding-bottom: 5px;
-        span{
-            padding-left: 20px;
-        }
-    }
     .image{
         width: 100%;
-        height: 130px;
-        margin-top: 40px;
+        height: 170px;
+        position: relative;
+        border-radius: 4px;
+        overflow: hidden;
         img{
             width: 100%;
             height: 100%;
         }
-    }
-    .text{
-        font-size: 14px;
-        line-height: 24px;
-        max-height: 155px;
-        overflow: hidden;
-        text-overflow:ellipsis;
-        // white-space: nowrap;
-        color:#999;
-        padding: 15px 0 30px 0;
-    }
-    .organType {
-        display: flex;
-        flex-wrap:wrap ;
-        justify-content: space-between;
-        font-size: 14px;
-        
-        li{
-            width: 48%;
-            padding-top:30px;
-            .icon{
-                color: #787F87;
-                padding: 7px 15px 0 0 ;
-            }
-            .typeText{
-                width: calc(100% - 40px);
-                .typeName{
-                    color: #333;    
-                                   
-                }
-                .organName{
-                    font-size: 12px;
-                    color: #666;
-                    line-height: 18px; 
-                    height: 36px;
-                    overflow: hidden;
-                    text-overflow:ellipsis;
-                }
-            }
+        .tm{
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            text-align: center;
+            width: 100%;
+            height: 35px;
+            line-height: 35px;
+            color: #fff;
+            background: rgba(0, 0, 0, 0.35);
+            font-size: 14px;
         }
     }
-    
-    
+    .parcent_{
+        height: 57px;
+        line-height: 57px;
+        font-size: 14px;
+        padding-left:20px;
+        .progress_{
+            width: calc(100% - 100px);
+            padding: 20px 0 0 20px
+        }
+    }
+    .text{
+        height: 278px;
+        border-radius: 4px;
+        border: 1px solid #EBEDF8;
+        margin-top: 17px;
+        padding: 0 25px;
+        font-size: 12px;
+        color: #999;
+        line-height: 24px;
+        .text_tit{
+            font-size: 20px;
+            color:#333;
+            padding: 20px 0;
+            font-weight: bold;
+        }
+        .comment{
+            height: 214px;
+            overflow-y: auto;
+        }
+    } 
 }
 .charts_{
-    width: calc(100% - 465px);
+    width: calc(100% - 455px);
     border-radius: 4px;
     .stats{
         display: flex;

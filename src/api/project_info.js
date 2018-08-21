@@ -7,6 +7,14 @@ export function getObj(id) {
     method: 'get',
   })
 }
+/* 机构列表 */
+export function organList(query) {
+  return request({
+    url: '/project/project_organ/list',
+    method: 'get',
+    params: query
+  })
+}
 /* 设备列表 */
 export function deviceList(query) {
   return request({

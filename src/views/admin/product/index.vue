@@ -8,7 +8,7 @@
                 <el-button  size="small" type="primary" @click="dictTemplatVisible=true">参数字典</el-button>
                 <el-button class="pull-right" type="primary" size="small" v-waves @click="handleFilter">搜索</el-button>
                 <el-input @keyup.enter.native="handleFilter" style="width: 200px;" size="small" suffix-icon="el-icon-search" class="pull-right" placeholder="产品名称   " v-model="listQuery.name"></el-input>
-                <el-select v-model="listQuery.productCategory" clearable class="pull-right" placeholder="按角色筛选" style="width:150px;margin-right:10px" size="small"  @change="handleFilter">
+                <el-select v-model="listQuery.productCategory" clearable class="pull-right" placeholder="按分类筛选" style="width:150px;margin-right:10px" size="small"  @change="handleFilter">
                 <el-option
                     v-for="item in categoryOptions_"
                     :key="item.value"

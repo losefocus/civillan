@@ -19,7 +19,7 @@
                     <span style="white-space:nowrap;">{{scope.row.name}}</span>
                 </template>
             </el-table-column>
-            <el-table-column align="center" label="类型" min-width="80">
+            <el-table-column align="center" label="类型" width="80">
                 <template slot-scope="scope">
                     <span >{{typeHash.get(scope.row.type)}}</span>
                 </template>
@@ -34,12 +34,12 @@
                     <span style="white-space:nowrap;">{{adminerHash[scope.row.createdBy]}}</span>
                 </template>
             </el-table-column>
-            <el-table-column align="center" label="添加时间" min-width="80">
+            <el-table-column align="center" label="添加时间" width="100">
                 <template slot-scope="scope">
                     <span>{{scope.row.createdAt | parseTime('{y}-{m}-{d}')}}</span>
                 </template>
             </el-table-column>
-            <el-table-column align="center" label="状态" min-width="60">   
+            <el-table-column align="center" label="状态" width="60">   
                 <template slot-scope="scope">
                     <i v-if="scope.row.status == 1" class="el-icon-circle-check" style="font-size:18px;color:#67c23a"></i>
                     <i v-else class="el-icon-circle-close" style="font-size:18px;color:#909399"></i>

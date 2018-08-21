@@ -1,6 +1,6 @@
 <template>
     <div>
-        <div class="tit"><h3>{{(flag == 'add')?'添加':'修改'}}影像</h3><span>{{(flag == 'add')?'Add':'Edit'}} Document</span></div>
+        <div class="tit"><h3>{{(flag == 'add')?'添加':'修改'}}影像</h3><span>{{(flag == 'add')?'Add':'Edit'}} Media</span></div>
         <el-form label-width="55px" :model="form" ref="form" :rules="rules" label-position="left">
             <el-form-item label="名称" prop="name">
                 <el-input v-model="form.name" size="small" placeholder="请输入标题"></el-input>
@@ -15,10 +15,10 @@
                     </el-option>
                 </el-select>
             </el-form-item>
-            <el-form-item label="url" prop="url" v-if="form.type == 2">
+            <el-form-item label="url" prop="url" v-if="form.type == 2 || form.type == 4">
                 <el-input v-model="form.url" size="small" placeholder="请输入地址"></el-input>
             </el-form-item>
-            <el-form-item :label="form.type==2?'缩略图':'文件'" prop="thumbnailFileBaseUrl" >
+            <el-form-item :label="form.type==2||form.type==4?'缩略图':'文件'" prop="thumbnailFileBaseUrl" >
                 <el-upload
                     v-loading='uploadLoaing'
                     class="avatar-uploader"

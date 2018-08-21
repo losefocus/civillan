@@ -57,10 +57,9 @@ export default {
 #subTable.el-table::before{
   height: 0 !important;
 }
-.projectManage .el-dialog__body,#product .el-dialog__body{
+.projectManage .el-dialog__body,#product .el-dialog__body,.device_ .el-dialog__body{
     padding-top: 0 !important
 }
-
 #mapPosition .el-dialog__header{
     position: absolute;
     right: 0;
@@ -72,8 +71,6 @@ export default {
 #mapPosition .amap-ui-poi-picker-search-results-container.amap-pl-pc.dock-bottom{
     display: none!important;
 }
-
-
 .expand .el-table__expand-column .cell {
     display: none !important;
 }
