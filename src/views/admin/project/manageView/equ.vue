@@ -73,7 +73,7 @@
                             <el-dropdown-item  v-if="device_btn_config" :command="composeValue('configVisible',scope.row)">设备配置</el-dropdown-item>
                             <el-dropdown-item  v-if="device_btn_variable" :command="composeValue('sensorVisible',scope.row)">变量管理</el-dropdown-item>
                             <el-dropdown-item  v-if="device_btn_alert" :command="composeValue('alarmVisible',scope.row)">警报管理</el-dropdown-item>
-                            <el-dropdown-item  v-if="device_btn_notice" :command="composeValue('notifyVisible',scope.row)">通知管理</el-dropdown-item>
+                            <el-dropdown-item  v-if="device_btn_notice" :command="composeValue('notifyVisible',scope.row)">报警通知</el-dropdown-item>
                             <el-dropdown-item  v-if="device_btn_personnel" :command="composeValue('personnelVisible',scope.row)">操作人员</el-dropdown-item>
                             <el-dropdown-item  v-if="device_btn_certificate" :command="composeValue('certiVisible',scope.row)">证书下载</el-dropdown-item>
                             <el-dropdown-item divided v-if="device_btn_edit" :command="composeValue('edit',scope.row)">修改设备</el-dropdown-item>
@@ -102,7 +102,7 @@
         <el-dialog title="警报管理"  :visible.sync="alarmVisible" width='690px'>
             <alarm v-if="alarmVisible" :data-info="dataInfo" ref="alarm"></alarm>
         </el-dialog>
-        <el-dialog title="通知管理"  :visible.sync="notifyVisible" width='690px'>
+        <el-dialog title="报警通知"  :visible.sync="notifyVisible" width='690px'>
             <notify v-if="notifyVisible" :data-info="dataInfo" ref="notify"></notify>
         </el-dialog>
         <el-dialog title="操作人员—绑定用户"  :visible.sync="personnelVisible" width='690px'>
