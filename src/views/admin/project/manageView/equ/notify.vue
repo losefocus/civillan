@@ -39,7 +39,7 @@
                         </el-select>
                     </el-form-item>
                     <el-form-item label="通知方式" prop="notifyTypes" style="width: 310px;margin-left:30px">
-                        <el-select v-model="form.notifyTypes" placeholder="请选择通知方式" size="mini" >
+                        <el-select v-model="notifyTypes" multiple="" placeholder="请选择通知方式" size="mini" @change="changeNotifyTypes">
                             <el-option
                             v-for="item in typeOptions"
                             :key="item.value"
@@ -66,12 +66,12 @@
                 </el-table-column>
                 <el-table-column align="center" label="通知方式">
                     <template slot-scope="scope">
-                        <span>{{scope.row.notifyTypes}}</span>
+                        <span v-for="(item,index) in scope.row.notifyTypes.split(',')" :key="index" style="padding-left:5px;">{{map_type.get(item)}}</span>
                     </template>
                 </el-table-column>
                 <el-table-column align="center" label="通知频率">
                     <template slot-scope="scope">
-                        <span>{{scope.row.cycle}}</span>
+                        <span>{{map_cycle.get(parseInt(scope.row.cycle))}}</span>
                     </template>
                 </el-table-column>
                 <el-table-column align="center" label="状态" width="60">
@@ -140,7 +140,9 @@ export default {
             listLoading:false,
             createdLoading:false,
             options:[],
-            typeOptions:[],
+            typeOptions:[],//{value:'a',label:'a'},{value:'b',label:'b'}
+            map_cycle:null,
+            map_type:null,
             form:{
                 alarmId:'',
                 puserIds:[],
@@ -148,6 +150,7 @@ export default {
                 notifyTypes:'',
                 status:true
             },
+            notifyTypes:[],
             flag:'add',
             listQuery:{
                 deviceId:this.dataInfo.id,
@@ -163,23 +166,33 @@ export default {
         }
     },
     created() {
-        this.getList()
-        this.getAlarmList()
-        this.getUserList()
         remote("cycle").then(response => {
             this.options = response.data.result;
+            this.map_cycle = new Map()
+            this.options.forEach(ele => {
+                this.map_cycle.set(parseInt(ele.value),ele.label)
+            });
         });
         remote("notify_types").then(response => {
             this.typeOptions = response.data.result;
+            this.map_type = new Map()
+            this.typeOptions.forEach(ele => {
+                this.map_type.set(ele.value,ele.label)
+            });
         });
     },
     mounted() {
-
+        this.getList()
+        this.getAlarmList()
+        this.getUserList()
     },
     computed: {
         // ...mapGetters(["notifyList"]),
     },
     methods:{
+        changeNotifyTypes(){
+            this.form.notifyTypes = this.notifyTypes.join()
+        },
         handleSizeChange(val) {
             this.listQuery.page_size = val;
             this.getList();
@@ -237,6 +250,7 @@ export default {
             ).then(() => {
                 delObj(row.id).then(res => {
                     this.getList(this.listQuery)
+                    this.getUserList()
                     this.$parent.$parent.$parent.$parent.alertNotify('删除')
                 })
             })

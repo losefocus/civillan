@@ -67,7 +67,7 @@ li:last-child{
 }
 .tit{
     width: 5%;
-    background: #57B5FF;
+    background: #409EFF;
     padding-top:38px;
     border:none;
     font-weight: bold;

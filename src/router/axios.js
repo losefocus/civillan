@@ -46,8 +46,8 @@ axios.interceptors.response.use(data => {
     message: errorCode[code] || errorCode['default'],
     type: 'error'
   })
+  console.log(code)
   if(code == '401'){
-    console.log(code)
     store.commit('SET_MENU', [])
     // 清除权限
     store.commit('SET_PERMISSIONS', [])

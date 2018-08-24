@@ -66,7 +66,7 @@
                 </el-table-column>
                 <el-table-column align="center" label="类型">
                     <template slot-scope="scope">
-                        <span>{{scope.row.type}}</span>
+                        <span>{{type_map.get(parseInt(scope.row.type))}}</span>
                     </template>
                 </el-table-column>
                 <el-table-column align="center" label="排序" width="60">
@@ -82,8 +82,8 @@
                 </el-table-column>
                 <el-table-column align="center" label="操作" width="140" style="float:right">
                     <template slot-scope="scope">
-                        <el-button size="mini" type="" plain @click="updateList(scope.$index, originalList)">修改</el-button>
-                        <el-button size="mini" type="" plain @click="deleteList(scope.$index, originalList)" style="margin-left:0">删除</el-button>
+                        <el-button size="mini" type="" plain @click="updateList(scope.$index, list)">修改</el-button>
+                        <el-button size="mini" type="" plain @click="deleteList(scope.$index, list)" style="margin-left:0">删除</el-button>
                     </template>
                 </el-table-column>
             </el-table>
@@ -152,11 +152,16 @@ export default {
             },
             createdLoading:false,
             editIndex:null,
+            type_map:null,
         }
     },
     created() {
         remote("data_type").then(response => {
             this.options = response.data.result;
+            this.type_map = new Map()
+            this.options.forEach(ele => {
+                this.type_map.set(parseInt(ele.value),ele.label)
+            });
         });
     },
     mounted() {
@@ -188,11 +193,22 @@ export default {
                 if(data_.content && data_.content !=''){
                     this.originalList = JSON.parse(data_.content.replace(new RegExp("'",'gi'),'"'))
                     this.list = JSON.parse(data_.content.replace(new RegExp("'",'gi'),'"'))
-                    this.list.forEach(ele => {
-                        ele.type = findByvalue(this.options,ele.type)
-                    });
+                    // this.list.forEach(ele => {
+                    //     ele.type = findByvalue(this.options,ele.type)
+                    // });
                     this.list.sort((a,b)=>{
-                        return parseInt(a.sort) - parseInt(b.sort)
+                        if(parseInt(a.sort) != parseInt(b.sort)){
+                            return parseInt(a.sort) - parseInt(b.sort)
+                        }else{
+                            return a.status - b.status
+                        }
+                    })
+                    this.originalList.sort((a,b)=>{
+                        if(parseInt(a.sort) != parseInt(b.sort)){
+                            return parseInt(a.sort) - parseInt(b.sort)
+                        }else{
+                            return a.status - b.status
+                        }
                     })
                     this.total = this.list.length
                 }

@@ -38,11 +38,11 @@
 
       <el-table-column align="center" label="操作" width="220">
         <template slot-scope="scope">
-          <el-button size="mini" type="" v-if="roleManager_btn_edit" @click="handleUpdate(scope.row)" >编辑
+          <el-button size="mini" type="" v-if="roleManager_btn_edit" @click="handleUpdate(scope.row)" :disabled="scope.row.createdBy === 0">编辑
           </el-button>
-          <el-button size="mini" type="" v-if="roleManager_btn_del" @click="handleDelete(scope.row)" style="margin-left:0">删除
+          <el-button size="mini" type="" v-if="roleManager_btn_del" @click="handleDelete(scope.row)" style="margin-left:0" :disabled="scope.row.createdBy === 0">删除
           </el-button>
-          <el-button size="mini" type="" plain @click="handlePermission(scope.row)" v-if="roleManager_btn_perm" style="margin-left:0">权限
+          <el-button size="mini" type="" plain @click="handlePermission(scope.row)" v-if="roleManager_btn_perm" style="margin-left:0" :disabled="scope.row.createdBy === 0">权限
           </el-button>
         </template>
       </el-table-column>

@@ -53,7 +53,7 @@ export default {
                     splitArea : {show : false}//保留网格区域
                 },
                 series: [{
-                    name: '销量',
+                    name: '数量',
                     type: 'bar',
                     barWidth:'50%',
                     data: [{itemStyle:{color:'#76DDFB'},value:5},

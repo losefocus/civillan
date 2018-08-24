@@ -4,7 +4,7 @@
         <div  style="width:100%">
             <div class="filter-container">
                 <el-button  size="small" type="primary" @click="handleAdd">添加产品</el-button>
-                <el-button  size="small" type="primary" @click="classifyTemplatVisible=true">分类管理</el-button>
+                <el-button  size="small" type="primary" @click="classifyTemplatVisible=true">类型管理</el-button>
                 <el-button  size="small" type="primary" @click="dictTemplatVisible=true">参数字典</el-button>
                 <el-button class="pull-right" type="primary" size="small" v-waves @click="handleFilter">搜索</el-button>
                 <el-input @keyup.enter.native="handleFilter" style="width: 200px;" size="small" suffix-icon="el-icon-search" class="pull-right" placeholder="产品名称   " v-model="listQuery.name"></el-input>
@@ -38,7 +38,7 @@
                         <span>{{scope.row.alias}}</span>
                     </template>
                 </el-table-column>
-                <el-table-column align="center" label="所属分类" prop="productCategory.name">
+                <el-table-column align="center" label="所属类型" prop="productCategory.name">
                 </el-table-column>
                 <el-table-column align="center" label="产品标识" width="95">
                     <template slot-scope="scope">
@@ -96,7 +96,7 @@
                 <el-form-item label="型号" prop="alias">
                     <el-input v-model="form.alias" size="small" placeholder="请输入产品型号"></el-input>
                 </el-form-item>
-                <el-form-item label="分类" prop="productCategory.id">
+                <el-form-item label="类型" prop="productCategory.id">
                     <el-select v-model="form.productCategory.id" size="small" placeholder="请选择产品分类">
                         <el-option
                         v-for="item in categoryOptions"

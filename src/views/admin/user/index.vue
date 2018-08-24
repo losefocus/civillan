@@ -61,9 +61,9 @@
       </el-table-column>
       <el-table-column align="center" label="操作" width="200">
         <template slot-scope="scope">
-          <el-button v-if="sys_user_upd" size="mini" type="" @click="handleUpdate(scope.row)">编辑
+          <el-button v-if="sys_user_upd" size="mini" type="" @click="handleUpdate(scope.row)" :disabled="scope.row.createdAt === 0">编辑
           </el-button>
-          <el-button v-if="sys_user_del" size="mini" type="" @click="deletes(scope.row)" style="margin-left:0">删除
+          <el-button v-if="sys_user_del" size="mini" type="" @click="deletes(scope.row)" style="margin-left:0" :disabled="scope.row.createdAt === 0">删除
           </el-button>
         </template>
       </el-table-column>

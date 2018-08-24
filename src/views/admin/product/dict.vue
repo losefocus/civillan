@@ -1,8 +1,8 @@
 <template>
     <div>
         <el-form :model="form" class="clearfix" ref="form" :rules="rules" size="small" label-width="45px">
-            <el-form-item label="分类" prop="categoryId" style="width: 180px;">
-                <el-select v-model="form.categoryId" size="mini" placeholder="请选择分类">
+            <el-form-item label="类型" prop="categoryId" style="width: 180px;">
+                <el-select v-model="form.categoryId" size="mini" placeholder="请选择类型">
                     <el-option
                     v-for="item in categoryOptions"
                     :key="item.value"
@@ -76,7 +76,7 @@ export default {
     data(){
         var validateCategoryId = (rule, value, callback) => {
             if (value === '' || value== undefined) {
-                callback(new Error('请选择分类'));
+                callback(new Error('请选择类型'));
             } else {
                 callback();
             }
