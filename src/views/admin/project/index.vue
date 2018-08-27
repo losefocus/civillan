@@ -356,7 +356,8 @@ export default {
                 for (let i=0; i<datas.length; i++) {
                     let rolelist = datas[i].roleList
                     if(rolelist.some(isProjectAdmin)){  //若rolelist数组中存在project_admin，则返回true
-                        options.push({value:datas[i].id,label:datas[i].name+'('+datas[i].username+')'}) 
+                        let label = datas[i].name?datas[i].name+'('+datas[i].username+')':datas[i].username
+                        options.push({value:datas[i].id,label:label}) 
                     }
                     hash[datas[i].id] =datas[i].name!=''?datas[i].name+'('+datas[i].username+')':datas[i].username
                 } 

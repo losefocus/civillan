@@ -57,7 +57,7 @@ export default {
         activeObj:[],
         listQuery:{
             page_index:1,
-            page_size:10000,
+            page_size:9999,
         },
         listLoading:false,
         list_1:[],  

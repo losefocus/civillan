@@ -2,8 +2,8 @@
     <div style="padding:20px;border:1px solid #ebeef5">
         <div class="filter-container">
             <el-button class="filter-item" style="" @click="handleAdd" size="small" type="primary">添加配置</el-button>
-            <el-button class="filter-item" style="" @click="handleAdd" size="small" type="primary">导入</el-button>
-            <el-button class="filter-item" style="" @click="handleAdd" size="small" type="primary">导出</el-button>
+            <el-button class="filter-item" style="" size="small" type="primary">导入</el-button>
+            <el-button class="filter-item" style="" size="small" type="primary">导出</el-button>
             <!-- <el-button class="pull-right" type="primary" size="small" v-waves  @click="handleFilter">搜索</el-button>
             <el-input @keyup.enter.native="handleFilter" style="width: 150px;" size="small" suffix-icon="el-icon-search" class="pull-right" placeholder="文档标题" v-model="listQuery.name"></el-input> -->
         </div>

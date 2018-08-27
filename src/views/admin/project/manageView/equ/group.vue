@@ -99,8 +99,8 @@
                 </el-table-column>
                 <el-table-column align="center" label="操作" width="160" style="float:right">
                     <template slot-scope="scope">
-                        <el-button size="mini" type="" plain @click="updateList(scope.row)">修改</el-button>
-                        <el-button size="mini" type="" plain @click="deleteList(scope.row)">删除</el-button>
+                        <el-button size="mini" type="" plain @click="updateList(scope.row)" :disabled="scope.row.createdBy === 0">修改</el-button>
+                        <el-button size="mini" type="" plain @click="deleteList(scope.row)" :disabled="scope.row.createdBy === 0">删除</el-button>
                     </template>
                 </el-table-column>
             </el-table>

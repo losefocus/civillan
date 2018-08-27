@@ -109,8 +109,8 @@
                     </el-table-column>
                     <el-table-column align="center" label="操作" width="160">
                         <template slot-scope="scope">
-                            <el-button size="mini" type="" plain @click="updateRole(scope.row)">修改</el-button>
-                            <el-button size="mini" type="" plain @click="deleteRole(scope.row)" style="margin-left:0px">删除</el-button>
+                            <el-button size="mini" type="" plain @click="updateRole(scope.row)" :disabled="scope.row.createdBy === 0">修改</el-button>
+                            <el-button size="mini" type="" plain @click="deleteRole(scope.row)" :disabled="scope.row.createdBy === 0" style="margin-left:0px">删除</el-button>
                         </template>
                     </el-table-column>
                 </el-table>

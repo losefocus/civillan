@@ -2,73 +2,48 @@
   <div class="app-container calendar-list-container">
     <div class="filter-container clearfix">
       <div class="pull-right">
-        <el-select style="width: 200px;" class="filter-item" v-model="listQuery.type" filterable placeholder="请选择" size="small">
+        <el-select style="width: 200px;margin-right:10px;" class="filter-item" v-model="listQuery.type" clearable filterable placeholder="请选择" size="small" @change="handleFilter">
           <el-option v-for="item in dicts" :key="item.value" :label="item.label" :value="item.value">
           </el-option>
         </el-select>
-        <el-button class="filter-item" type="primary" v-waves icon="search" @click="handleFilter" size="small">搜索</el-button>
+        <el-button  class="filter-item pull-right" type="primary" v-waves icon="search" @click="handleFilter" size="small">搜索</el-button>
+        <el-input class="pull-right" @keyup.enter.native="handleFilter" style="width: 200px;margin-right:10px;" size="small" suffix-icon="el-icon-search" placeholder="用户名" v-model="listQuery.username"></el-input>
       </div>
     </div>
     <el-table :key='tableKey' :data="list" v-loading="listLoading" fit highlight-current-row style="width: 100%">
-      <el-table-column align="center" label="序号">
+
+      <el-table-column align="center" label="用户">
         <template slot-scope="scope">
-          <span>{{ getSerialNumber(scope.$index) }}</span>
+          <span>{{scope.row.username}}</span>
         </template>
       </el-table-column>
 
-      <el-table-column align="center" label="类型">
+      <el-table-column align="center" label="操作类型">
         <template slot-scope="scope">
-          <span>
-            <el-button type="success" size="mini" v-if="scope.row.type == 0">{{ scope.row.type | typeFilter }}</el-button>
-            <el-button type="danger" size="mini" v-if="scope.row.type ==9">{{ scope.row.type | typeFilter }}</el-button>
-          </span>
+          <span>{{ scope.row.type | typeFilter}}</span>
         </template>
-      </el-table-column>
-
-      <el-table-column label="请求接口" show-overflow-tooltip>
+      </el-table-column>s
+      
+      <el-table-column align="center" label="操作">
         <template slot-scope="scope">
-          <span>{{ scope.row.requestUri }}</span>
+          <span>{{scope.row.name}}</span>
         </template>
       </el-table-column>
 
       <el-table-column align="center" label="IP地址">
         <template slot-scope="scope">
-          <span>{{ scope.row.remoteAddr }}</span>
+          <span>{{ scope.row.ip }}</span>
         </template>
       </el-table-column>
 
-      <el-table-column align="center" label="请求方式">
+      <el-table-column align="center" label="操作时间">
         <template slot-scope="scope">
-          <span>{{ scope.row.method }}</span>
+          <span>{{ scope.row.createAt}}</span>
         </template>
       </el-table-column>
 
-      <el-table-column align="center" label="传入参数" show-overflow-tooltip>
-        <template slot-scope="scope">
-          <span>{{ scope.row.params }}</span>
-        </template>
-      </el-table-column>
-
-      <el-table-column align="center" label="请求时间">
-        <template slot-scope="scope">
-          <span>{{ scope.row.time}}</span>
-        </template>
-      </el-table-column>
-
-      <el-table-column align="center" label="创建时间">
-        <template slot-scope="scope">
-          <span>{{ scope.row.createTime | moment('YYYY-MM-DD HH:mm') }}</span>
-        </template>
-      </el-table-column>
-
-      <el-table-column align="center" label="操作">
-        <template slot-scope="scope">
-          <el-button size="mini" type="" v-if="sys_log_del" @click="handleDelete(scope.row)">删除
-          </el-button>
-        </template>
-      </el-table-column>
     </el-table>
-    <div v-show="!listLoading" class="pagination-container">
+    <div v-show="!listLoading" class="pagination-container" style="margin-top:10px;">
       <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="listQuery.page_index" :page-sizes="[10,20,30, 50]" :page-size="listQuery.page_size" layout="total, prev, pager, next, jumper" :total="total">
       </el-pagination>
     </div>
@@ -92,7 +67,13 @@ export default {
       total: null,
       sys_dict_add: false,
       listLoading: true,
-      dicts: [],
+      dicts: [
+        {label:'添加',value:'add'},
+        {label:'删除',value:'delete'},
+        {label:'修改',value:'update'},
+        {label:'查询',value:'query'},
+        {label:'登录',value:'login'},
+      ],
       listQuery: {
         page_index: 1,
         page_size: 20,
@@ -107,18 +88,21 @@ export default {
   filters: {
     typeFilter(type) {
       const typeMap = {
-        0: "正常",
-        9: "异常"
+        'add': "添加",
+        'delete': "删除",
+        'update': "修改",
+        'query': "查询",
+        'login': "登录",
       };
       return typeMap[type];
     }
   },
   created() {
     this.getList();
-    this.sys_log_del = this.permissions["sys_log_del"];
-    remote("log_type").then(response => {
-      this.dicts = response.data.result;
-    });
+    // this.sys_log_del = this.permissions["sys_log_del"];
+    // remote("log_type").then(response => {
+    //   this.dicts = response.data.result;
+    // });
   },
   methods: {
     getSerialNumber(index) {
@@ -126,7 +110,7 @@ export default {
     },
     getList() {
       this.listLoading = true;
-      this.listQuery.sort_by = "create_time";
+      this.listQuery.sort_by = "createNow";
       this.listQuery.direction = false;
       fetchList(this.listQuery).then(response => {
         this.list = response.data.result.items;
