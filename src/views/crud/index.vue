@@ -2,7 +2,7 @@
   <div class="app-container pull-auto">
     <el-button type="primary" @click="handleAdd" size="small">新 增</el-button>
     <br /><br />
-    <avue-crud ref="crud" :table-data="tableData" :table-option="tableOption" @row-update="handleUpdate" @row-save="handleSave" @row-del="handleDel">
+    <!-- <avue-crud ref="crud" :table-data="tableData" :table-option="tableOption" @row-update="handleUpdate" @row-save="handleSave" @row-del="handleDel">
       <template slot-scope="props" slot="expand">
         <el-form label-position="left" inline class="demo-table-expand">
           <el-form-item label="姓名">
@@ -35,7 +35,7 @@
       <template slot-scope="scope" slot="address">
         <a :href="scope.row.git" target="_blank">{{scope.row.address}}</a>
       </template>
-    </avue-crud>
+    </avue-crud> -->
   </div>
 </template>
 

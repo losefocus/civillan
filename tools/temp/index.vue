@@ -2,12 +2,12 @@
   <div class="pull-auto">
     <el-button type="primary" @click="handleAdd" size="small">新 增</el-button>
     <br /><br />
-    <avue-crud ref="crud" :page="page" :data="tableData" :table-loading="tableLoading" :option="tableOption" @current-change="currentChange" @row-update="rowUpdate" @row-save="rowSave" @row-del="rowDel">
+    <!-- <avue-crud ref="crud" :page="page" :data="tableData" :table-loading="tableLoading" :option="tableOption" @current-change="currentChange" @row-update="rowUpdate" @row-save="rowSave" @row-del="rowDel">
       <template slot-scope="scope" slot="menu">
         <el-button type="primary" icon="el-icon-check" size="small" plain @click="handleEdit(scope.row,scope.index)">编 辑</el-button>
         <el-button type="danger" icon="el-icon-delete" size="small" plain @click="handleDel(scope.row,scope.index)">删 除</el-button>
       </template>
-    </avue-crud>
+    </avue-crud> -->
   </div>
 </template>
 
