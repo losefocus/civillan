@@ -9,9 +9,10 @@
 </template>
 
 <script>
-import { resolveUrlPath } from "@/util/util";
-import { mapState, mapGetters } from "vuex";
-export default {
+  import {resolveUrlPath} from "@/util/util";
+  import {mapGetters, mapState} from "vuex";
+
+  export default {
   name: "top-menu",
   data() {
     return {

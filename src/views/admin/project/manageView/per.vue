@@ -124,8 +124,9 @@
     </div>
 </template>
 <script>
-import { fetchUserList,delObj,fetchRoleList,addRoleObj,delRoleObj,updateRoleObj} from "@/api/project_per";
-export default {
+  import {addRoleObj, delObj, delRoleObj, fetchRoleList, fetchUserList, updateRoleObj} from "@/api/project_per";
+
+  export default {
     props:['projectInfo'],
     data(){
         var validataRole = (rule, value, callback) => {

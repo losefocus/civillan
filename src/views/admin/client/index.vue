@@ -91,11 +91,11 @@
   </div>
 </template>
 <script>
-import { fetchList, getObj, addObj, putObj, delObj } from "@/api/client";
-import waves from "@/directive/waves/index.js"; // 水波纹指令
-import { mapGetters } from "vuex";
+  import {addObj, delObj, fetchList, getObj, putObj} from "@/api/client";
+  import waves from "@/directive/waves/index.js"; // 水波纹指令
+  import {mapGetters} from "vuex";
 
-export default {
+  export default {
   name: "client",
   directives: {
     waves

@@ -1,5 +1,5 @@
 import Cookies from 'js-cookie'
-import store from '@/store'
+
 const TokenKey = 'x-access-token'
 
 export function getToken() {

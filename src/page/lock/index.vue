@@ -13,9 +13,10 @@
   </div>
 </template>
 <script>
-import { mapGetters, mapState } from "vuex";
-import { resolveUrlPath } from "@/util/util";
-export default {
+  import {mapGetters, mapState} from "vuex";
+  import {resolveUrlPath} from "@/util/util";
+
+  export default {
   name: "lock",
   data() {
     return {

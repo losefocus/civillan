@@ -82,12 +82,13 @@
     </div>
 </template>
 <script>
-import { mapGetters } from "vuex";
-import { getToken } from "@/util/auth";
-import { toTree } from "@/util/util";
-import {addObj,fetchProductList,updataObj,getGroupObj} from "@/api/project_equ";
-import mapPosition from "../mapPosition";
-export default {
+  import {mapGetters} from "vuex";
+  import {getToken} from "@/util/auth";
+  import {toTree} from "@/util/util";
+  import {addObj, fetchProductList, getGroupObj, updataObj} from "@/api/project_equ";
+  import mapPosition from "../mapPosition";
+
+  export default {
     components:{
         mapPosition
     },

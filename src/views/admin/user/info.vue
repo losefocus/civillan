@@ -47,13 +47,13 @@
 
 
 <script>
-import { mapState } from "vuex";
-import myUpload from "vue-image-crop-upload";
-import { getToken } from "@/util/auth";
-import ElFormItem from "element-ui/packages/form/src/form-item.vue";
-import request from "@/router/axios";
+  import {mapState} from "vuex";
+  import myUpload from "vue-image-crop-upload";
+  import {getToken} from "@/util/auth";
+  import ElFormItem from "element-ui/packages/form/src/form-item.vue";
+  import request from "@/router/axios";
 
-export default {
+  export default {
   components: {
     ElFormItem,
     "my-upload": myUpload

@@ -24,9 +24,10 @@ const MSGINIT = "发送验证码",
   MSGERROR = "验证码发送失败",
   MSGSCUCCESS = "${time}秒后重发",
   MSGTIME = 60;
-import { isvalidatemobile } from "@/util/validate";
-import { mapGetters } from "vuex";
+import {isvalidatemobile} from "@/util/validate";
+import {mapGetters} from "vuex";
 import request from "@/router/axios";
+
 export default {
   name: "codelogin",
   data() {

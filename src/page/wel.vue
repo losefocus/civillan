@@ -44,17 +44,18 @@
 </template>
 
 <script>
-import { mapGetters } from "vuex";
-import welProject from "./wel_module/project";
-import welMap from "./wel_module/map";
-import welDevice from "./wel_module/device";
-import welData from "./wel_module/data";
-import welAlarm from "./wel_module/alarm";
-import welNotify from "./wel_module/notify";
-import welDataL from "./wel_module/data_l";
-import welDeviceList from "./wel_module/deviceList";
-import welOperate from "./wel_module/operate";
-export default {
+  import {mapGetters} from "vuex";
+  import welProject from "./wel_module/project";
+  import welMap from "./wel_module/map";
+  import welDevice from "./wel_module/device";
+  import welData from "./wel_module/data";
+  import welAlarm from "./wel_module/alarm";
+  import welNotify from "./wel_module/notify";
+  import welDataL from "./wel_module/data_l";
+  import welDeviceList from "./wel_module/deviceList";
+  import welOperate from "./wel_module/operate";
+
+  export default {
   components:{
     welProject,
     welMap,

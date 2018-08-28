@@ -1,4 +1,5 @@
 import request from '@/router/axios'
+
 /* 标签列表 */
 export function fetchTagList(query) {
   return request({

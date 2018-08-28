@@ -73,9 +73,10 @@
     </div>    
 </template>
 <script>
-import {fetchList,pushObj,delObj,fetchUserList} from "@/api/notification";
-import { findByvalue } from "@/util/util";
-export default {
+  import {delObj, fetchList, fetchUserList, pushObj} from "@/api/notification";
+  import {findByvalue} from "@/util/util";
+
+  export default {
     data() {
         var validateTitle = (rule, value, callback) => {
             if (value === '' || value== undefined) {

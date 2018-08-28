@@ -7,20 +7,14 @@ import './permission' // 权限
 import './errorLog' // 错误日志
 import router from './router/router'
 import store from './store'
-import AVUE from 'avue-cli/packages/index.js'
-import {
-  loadStyle
-} from './util/util'
+import {loadStyle} from './util/util'
 import * as urls from '@/config/env'
-import {
-  iconfontUrl,
-  iconfontVersion
-} from '@/config/env'
+import {iconfontUrl, iconfontVersion} from '@/config/env'
 import * as filters from './filters' // 全局filter
 import './styles/common.scss'
 import VueAMap from 'vue-amap';
-import Clipboard from 'clipboard'; 
-import echarts from 'echarts'; 
+import Clipboard from 'clipboard';
+import echarts from 'echarts';
 
 Vue.prototype.$echarts = echarts 
 Vue.prototype.Clipboard=Clipboard;

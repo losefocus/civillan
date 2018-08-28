@@ -59,8 +59,9 @@
 </template>
 
 <script>
-  import { fetchTree, getObj, addObj, delObj, putObj } from '@/api/group'
-  import { mapGetters } from 'vuex'
+  import {addObj, delObj, fetchTree, getObj, putObj} from '@/api/group'
+  import {mapGetters} from 'vuex'
+
   export default {
     name: 'menu',
     data() {

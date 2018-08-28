@@ -78,9 +78,10 @@
     </div>
 </template>
 <script>
-import {addObj,editObj,categoryList,paramsList} from "@/api/project_config";
-import { toTree } from "@/util/util";
-export default {
+  import {addObj, categoryList, editObj, paramsList} from "@/api/project_config";
+  import {toTree} from "@/util/util";
+
+  export default {
     props:['projectInfo'],
     data(){
         

@@ -101,11 +101,11 @@
 </template>
 
 <script>
-import { fetchList, getObj, addObj, putObj, delObj, applyObj } from "@/api/route";
-// import { tableOption } from "@/const/crud/route";
-import { mapGetters } from "vuex";
-import waves from "@/directive/waves/index.js"; // 水波纹指令
-export default {
+  import {addObj, applyObj, delObj, fetchList, getObj, putObj} from "@/api/route";
+  // import { tableOption } from "@/const/crud/route";
+  import {mapGetters} from "vuex";
+  import waves from "@/directive/waves/index.js"; // 水波纹指令
+  export default {
   name: "route",
   directives: {
     waves

@@ -57,10 +57,10 @@
     </div>
 </template>
 <script>
-import { getToken } from "@/util/auth";
-import {addObj,updataObj} from "@/api/project_moni";
+  import {getToken} from "@/util/auth";
+  import {addObj, updataObj} from "@/api/project_moni";
 
-export default {
+  export default {
     props:['projectInfo'],
     data(){
         var validataFileBaseUrl = (rule, value, callback) => {

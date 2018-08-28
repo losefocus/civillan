@@ -22,8 +22,9 @@
   </div>
 </template>
 <script>
-import { resolveUrlPath } from "@/util/util";
-export default {
+  import {resolveUrlPath} from "@/util/util";
+
+  export default {
   name: "SidebarItem",
   data() {
     return {};

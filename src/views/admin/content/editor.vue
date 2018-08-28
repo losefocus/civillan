@@ -4,10 +4,10 @@
     </div>
 </template>
 <script>
-import { VueEditor } from 'vue2-editor'
-import {addObj,updataObj,upload} from "@/api/content";
+  import {VueEditor} from 'vue2-editor'
+  import {addObj, updataObj, upload} from "@/api/content";
 
-export default {
+  export default {
     props:['editorContent'],
     components: {
       VueEditor

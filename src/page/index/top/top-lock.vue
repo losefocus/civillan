@@ -15,10 +15,11 @@
 </template>
 
 <script>
-import { fullscreenToggel } from "@/util/util";
-import { validatenull } from "@/util/validate";
-import { mapGetters } from "vuex";
-export default {
+  import {fullscreenToggel} from "@/util/util";
+  import {validatenull} from "@/util/validate";
+  import {mapGetters} from "vuex";
+
+  export default {
   name: "top-lock",
   data() {
     return {

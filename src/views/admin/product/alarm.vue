@@ -122,11 +122,12 @@
     </div>
 </template>
 <script>
-import { remote } from "@/api/dict";
-import { getToken } from "@/util/auth";
-import { findByvalue } from "@/util/util";
-import {get_templateObj,set_templateObj} from "@/api/product";
-export default {
+  import {remote} from "@/api/dict";
+  import {getToken} from "@/util/auth";
+  import {findByvalue} from "@/util/util";
+  import {get_templateObj, set_templateObj} from "@/api/product";
+
+  export default {
     props:['productInfo'],
     data(){
         var validateTitle = (rule, value, callback) => {

@@ -85,10 +85,11 @@
     </div>
 </template>
 <script>
-import { mapGetters } from "vuex";
-import { getToken } from "@/util/auth";
-import {fetchList,delObj,categoryList,batchDelObj} from "@/api/project_config";
-export default {
+  import {mapGetters} from "vuex";
+  import {getToken} from "@/util/auth";
+  import {batchDelObj, categoryList, delObj, fetchList} from "@/api/project_config";
+
+  export default {
     props:['projectInfo'],
     data(){
         return {

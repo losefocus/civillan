@@ -21,11 +21,12 @@
 </template>
 
 <script>
-import { mapGetters } from "vuex";
-import tags from "./tags";
-import top from "./top/";
-import sidebar from "./sidebar/";
-export default {
+  import {mapGetters} from "vuex";
+  import tags from "./tags";
+  import top from "./top/";
+  import sidebar from "./sidebar/";
+
+  export default {
   components: {
     top,
     tags,

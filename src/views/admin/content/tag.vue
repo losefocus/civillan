@@ -44,9 +44,10 @@
     </div>
 </template>
 <script>
-import { mapGetters } from "vuex";
-import {fetchList,addObj,delObj,editObj} from "@/api/content_tag";
-export default {
+  import {mapGetters} from "vuex";
+  import {addObj, delObj, editObj, fetchList} from "@/api/content_tag";
+
+  export default {
     data(){
         var validateName = (rule, value, callback) => {
             if (value === '' || value== undefined) {

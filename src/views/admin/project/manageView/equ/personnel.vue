@@ -13,8 +13,9 @@
 </template>
 
 <script>
-import {fetchUserList,addDeviceUser,getDeviceUser} from "@/api/project_per";
-export default {
+  import {addDeviceUser, fetchUserList, getDeviceUser} from "@/api/project_per";
+
+  export default {
     props:['dataInfo'],
     data() {
       return {

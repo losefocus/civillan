@@ -122,9 +122,8 @@
     </div>
 </template>
 <script>
-import { fetchList,delObj,updateObj,fetchTypeList,addObjType,updateObjType,delObjType} from "@/api/project_org";
-import waves from "@/directive/waves/index.js";
-// import { getBoolean } from '@/utils'
+  import {addObjType, delObj, delObjType, fetchList, fetchTypeList, updateObj, updateObjType} from "@/api/project_org";
+  // import { getBoolean } from '@/utils'
 export default {
     props:['projectInfo'],
     data(){

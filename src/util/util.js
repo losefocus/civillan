@@ -1,9 +1,5 @@
-import {
-  validatenull
-} from './validate'
-import {
-  baseUrl
-} from '@/config/env'
+import {validatenull} from './validate'
+import {baseUrl} from '@/config/env'
 
 export const initMenu = (router, menu) => {
   if (menu.length === 0) {

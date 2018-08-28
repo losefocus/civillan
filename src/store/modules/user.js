@@ -1,24 +1,9 @@
-import {
-  getToken,
-  setToken,
-  removeToken
-} from '@/util/auth'
-import {
-  setStore,
-  getStore
-} from '@/util/store'
-import {
-  validatenull
-} from '@/util/validate'
-import {
-  loginByUsername,
-  mobileLogin,
-  getUserInfo,
-  logout
-} from '@/api/login'
-import {
-  GetMenu
-} from '@/api/menu'
+import {getToken, removeToken, setToken} from '@/util/auth'
+import {getStore, setStore} from '@/util/store'
+import {validatenull} from '@/util/validate'
+import {getUserInfo, loginByUsername, logout, mobileLogin} from '@/api/login'
+import {GetMenu} from '@/api/menu'
+
 const user = {
   state: {
     userInfo: getStore({

@@ -40,9 +40,10 @@
 </template>
 
 <script>
-import { tableOption } from "@/const/crud/option";
-import { tableData } from "@/const/crud/data";
-export default {
+  import {tableOption} from "@/const/crud/option";
+  import {tableData} from "@/const/crud/data";
+
+  export default {
   name: "crud",
   data() {
     return {

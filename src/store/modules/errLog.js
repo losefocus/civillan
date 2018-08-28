@@ -1,4 +1,5 @@
-import { setStore, getStore } from '@/util/store'
+import {getStore, setStore} from '@/util/store'
+
 const errLog = {
     state: {
         errLog: getStore({ name: 'errLog' }) || [],

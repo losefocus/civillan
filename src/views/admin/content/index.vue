@@ -129,13 +129,14 @@
     </div>    
 </template>
 <script>
-import {fetchList,delObj,addObj,updataObj,getObj,fetchCategoryList,fetchTagList} from "@/api/content";
-import myEditor from './editor'
-import classify from "./classify";
-import tag from "./tag";
-import { getToken} from "@/util/auth";
-import { toTree } from "@/util/util";
-let Base64 = require('js-base64').Base64;
+  import {addObj, delObj, fetchCategoryList, fetchList, fetchTagList, getObj, updataObj} from "@/api/content";
+  import myEditor from './editor'
+  import classify from "./classify";
+  import tag from "./tag";
+  import {getToken} from "@/util/auth";
+  import {toTree} from "@/util/util";
+
+  let Base64 = require('js-base64').Base64;
 export default {
     components: {
         myEditor,

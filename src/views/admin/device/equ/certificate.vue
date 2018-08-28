@@ -26,8 +26,9 @@
     </div>
 </template>
 <script>
-import {generateObj,getObj} from "@/api/device/certificate";
-export default {
+  import {generateObj, getObj} from "@/api/device/certificate";
+
+  export default {
     props:['dataInfo'],
     data(){
         return {

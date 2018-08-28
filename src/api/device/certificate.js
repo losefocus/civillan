@@ -1,5 +1,6 @@
 import request from '@/router/axios'
-  /* 生成 */
+
+/* 生成 */
 export function generateObj(query) {
   return request({
     url: '/certificate/certificate/generate',

@@ -1,6 +1,5 @@
-import {
-  baseUrl
-} from '@/config/env'
+import {baseUrl} from '@/config/env'
+
 export const menu = [{
   id: 1,
   label: "控制台",

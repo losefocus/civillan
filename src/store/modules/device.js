@@ -1,18 +1,8 @@
-import {
-  setStore,
-  getStore,
-  removeStore
-} from '@/util/store'
-import {
-  validatenull
-} from '@/util/validate'
-import {
-  getDic
-} from '@/api/admin'
-import {
-  baseUrl
-} from '@/config/env';
-import website from '@/const/website'
+import {getStore, removeStore, setStore} from '@/util/store'
+import {validatenull} from '@/util/validate'
+import {getDic} from '@/api/admin'
+import {baseUrl} from '@/config/env';
+
 const device = {
 
   state: {

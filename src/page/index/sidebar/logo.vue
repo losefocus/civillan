@@ -28,8 +28,9 @@
 </template>
 
 <script>
-import { mapGetters } from "vuex";
-export default {
+  import {mapGetters} from "vuex";
+
+  export default {
   name: "logo",
   data() {
     return {};

@@ -119,18 +119,18 @@
     </div>
 </template>
 <script>
-import config from "./equ/config";
-import certi from "./equ/certificate";
-import sensor from "./equ/sensor";
-import alarm from "./equ/alarm";
-import notify from "./equ/notify";
-import group from "./equ/group";
-import personnel from "./equ/personnel";
-import addDevice from "./equ/addDevice";
-import { mapGetters } from "vuex";
-import waves from "@/directive/waves/index.js";
-import {fetchList,delObj,updataObj} from "@/api/project_equ";
-export default {
+  import config from "./equ/config";
+  import certi from "./equ/certificate";
+  import sensor from "./equ/sensor";
+  import alarm from "./equ/alarm";
+  import notify from "./equ/notify";
+  import group from "./equ/group";
+  import personnel from "./equ/personnel";
+  import addDevice from "./equ/addDevice";
+  import {mapGetters} from "vuex";
+  import {delObj, fetchList, updataObj} from "@/api/project_equ";
+
+  export default {
     components:{
         config,
         certi,

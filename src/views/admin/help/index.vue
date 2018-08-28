@@ -34,8 +34,9 @@
     </div>    
 </template>
 <script>
-import {fetchList,getObj} from "@/api/help";
-let Base64 = require('js-base64').Base64;
+  import {fetchList, getObj} from "@/api/help";
+
+  let Base64 = require('js-base64').Base64;
 export default {
     data() {
         var validateTitle = (rule, value, callback) => {

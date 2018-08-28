@@ -9,13 +9,13 @@
 </template>
 
 <script>
-import { setUrlPath } from "@/util/util";
-import { mapGetters } from "vuex";
-import SidebarItem from "./sidebarItem";
-import logo from "./logo";
-import { validatenull } from "@/util/validate";
-import { initMenu } from "@/util/util";
-export default {
+  import {initMenu, setUrlPath} from "@/util/util";
+  import {mapGetters} from "vuex";
+  import SidebarItem from "./sidebarItem";
+  import logo from "./logo";
+  import {validatenull} from "@/util/validate";
+
+  export default {
   name: "sidebar",
   components: { SidebarItem, logo },
   data() {

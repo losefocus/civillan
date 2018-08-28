@@ -1,4 +1,5 @@
 import request from '@/router/axios'
+
 /* 分类列表 */
 export function categoryList(query) {
     return request({

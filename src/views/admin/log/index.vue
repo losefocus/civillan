@@ -51,12 +51,12 @@
 </template>
 
 <script>
-import { delObj, fetchList } from "@/api/log";
-import { remote } from "@/api/dict";
-import waves from "@/directive/waves/index.js"; // 水波纹指令
-import { mapGetters } from "vuex";
+  import {delObj, fetchList} from "@/api/log";
+  import {remote} from "@/api/dict";
+  import waves from "@/directive/waves/index.js"; // 水波纹指令
+  import {mapGetters} from "vuex";
 
-export default {
+  export default {
   name: "table_log",
   directives: {
     waves

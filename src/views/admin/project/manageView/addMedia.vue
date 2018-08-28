@@ -57,10 +57,11 @@
     </div>
 </template>
 <script>
-import { getToken } from "@/util/auth";
-import {addObj,updataObj} from "@/api/project_media";
-import { remote } from "@/api/dict";
-export default {
+  import {getToken} from "@/util/auth";
+  import {addObj, updataObj} from "@/api/project_media";
+  import {remote} from "@/api/dict";
+
+  export default {
     props:['projectInfo'],
     data(){
         var validataFileBaseUrl = (rule, value, callback) => {

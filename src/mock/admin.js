@@ -1,5 +1,6 @@
 import Mock from 'mockjs'
-import { dateFormat } from '@/filters/'
+import {dateFormat} from '@/filters/'
+
 let userList = []
 for (let i = 0; i < 2; i++) {
     userList.push(Mock.mock({

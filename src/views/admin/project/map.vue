@@ -5,8 +5,9 @@
     </div>
 </template>
 <script>
-import {parseTime} from "@/filters/index";
-export default {
+  import {parseTime} from "@/filters/index";
+
+  export default {
     props:['stationData'],
     data(){
         return {

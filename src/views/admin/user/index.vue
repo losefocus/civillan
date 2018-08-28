@@ -132,17 +132,17 @@
 </template>
 
 <script>
-import { fetchList, getObj, addObj, putObj, delObj,get_parent } from "@/api/user";
-import { roleList, fetchDeptTree } from "@/api/role";
-import { fetchTree } from "@/api/group";
-import { treeAddValue } from "@/util/util";
-import waves from "@/directive/waves/index.js"; // 水波纹指令
-// import { parseTime } from '@/utils'
-import { mapGetters } from "vuex";
-import ElRadioGroup from "element-ui/packages/radio/src/radio-group";
-import ElOption from "element-ui/packages/select/src/option";
+  import {addObj, delObj, fetchList, get_parent, getObj, putObj} from "@/api/user";
+  import {fetchDeptTree, roleList} from "@/api/role";
+  import {fetchTree} from "@/api/group";
+  import {treeAddValue} from "@/util/util";
+  import waves from "@/directive/waves/index.js"; // 水波纹指令
+  // import { parseTime } from '@/utils'
+  import {mapGetters} from "vuex";
+  import ElRadioGroup from "element-ui/packages/radio/src/radio-group";
+  import ElOption from "element-ui/packages/select/src/option";
 
-export default {
+  export default {
   components: {
     ElOption,
     ElRadioGroup

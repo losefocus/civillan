@@ -4,10 +4,10 @@
 </template>
 
 <script>
-import { mapState, mapGetters } from "vuex";
-import NProgress from "nprogress"; // progress bar
-import "nprogress/nprogress.css"; // progress bar style
-export default {
+  import {mapGetters, mapState} from "vuex";
+  import NProgress from "nprogress"; // progress bar
+  import "nprogress/nprogress.css"; // progress bar style
+  export default {
   name: "AvueIframe",
   data() {
     return {

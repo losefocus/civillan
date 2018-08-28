@@ -67,11 +67,11 @@
     </div>
 </template>
 <script>
-import { toTree } from "@/util/util";
-import { mapGetters } from "vuex";
-import {fetchList,addObj,delObj,editObj,categoryList} from "@/api/product_dict";
+  import {toTree} from "@/util/util";
+  import {mapGetters} from "vuex";
+  import {addObj, categoryList, delObj, editObj, fetchList} from "@/api/product_dict";
 
-export default {
+  export default {
     props:['dataInfo'],
     data(){
         var validateCategoryId = (rule, value, callback) => {

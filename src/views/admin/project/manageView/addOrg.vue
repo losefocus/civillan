@@ -45,9 +45,10 @@
     </div>
 </template>
 <script>
-import { mapGetters } from "vuex";
-import { addObj,updateObj} from "@/api/project_org";
-export default {
+  import {mapGetters} from "vuex";
+  import {addObj, updateObj} from "@/api/project_org";
+
+  export default {
     props:['projectInfo'],
     data(){
         var validateName = (rule, value, callback) => {

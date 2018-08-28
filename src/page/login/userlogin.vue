@@ -34,10 +34,11 @@
 </template>
 
 <script>
-import { randomLenNum } from "@/util/util";
-import { mapGetters } from "vuex";
-import { setToken} from '@/util/auth'
-export default {
+  import {randomLenNum} from "@/util/util";
+  import {mapGetters} from "vuex";
+  import {setToken} from '@/util/auth'
+
+  export default {
   name: "userlogin",
   data() {
     const validateCode = (rule, value, callback) => {

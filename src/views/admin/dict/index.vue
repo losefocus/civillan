@@ -97,11 +97,11 @@
 </template>
 
 <script>
-import { fetchList, addObj, putObj, delObj } from "@/api/dict";
-import waves from "@/directive/waves/index.js"; // 水波纹指令
-import { mapGetters } from "vuex";
+  import {addObj, delObj, fetchList, putObj} from "@/api/dict";
+  import waves from "@/directive/waves/index.js"; // 水波纹指令
+  import {mapGetters} from "vuex";
 
-export default {
+  export default {
   name: "table_sys_dict",
   directives: {
     waves

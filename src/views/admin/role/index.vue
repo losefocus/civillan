@@ -92,21 +92,12 @@
 </template>
 
 <script>
-import {
-  fetchList,
-  getObj,
-  addObj,
-  putObj,
-  delObj,
-  permissionUpd,
-  fetchRoleTree,
-  fetchDeptTree
-} from "@/api/role";
-import { fetchTree } from "@/api/menu";
-import { mapGetters } from "vuex";
-import waves from "@/directive/waves/index.js"; // 水波纹指令
+  import {addObj, delObj, fetchDeptTree, fetchList, fetchRoleTree, getObj, permissionUpd, putObj} from "@/api/role";
+  import {fetchTree} from "@/api/menu";
+  import {mapGetters} from "vuex";
+  import waves from "@/directive/waves/index.js"; // 水波纹指令
 
-export default {
+  export default {
   name: "table_role",
   directives: {
     waves

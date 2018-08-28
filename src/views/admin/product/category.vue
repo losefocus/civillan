@@ -90,12 +90,12 @@
     </div>
 </template>
 <script>
-import { getToken } from "@/util/auth";
-import { toTree } from "@/util/util";
-import { mapGetters } from "vuex";
-import {fetchList,addObj,delObj,editObj} from "@/api/product_category";
+  import {getToken} from "@/util/auth";
+  import {toTree} from "@/util/util";
+  import {mapGetters} from "vuex";
+  import {addObj, delObj, editObj, fetchList} from "@/api/product_category";
 
-export default {
+  export default {
     props:['dataInfo'],
     data(){
         var validateParentId = (rule, value, callback) => {

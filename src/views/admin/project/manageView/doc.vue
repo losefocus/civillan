@@ -47,9 +47,10 @@
     </div>
 </template>
 <script>
-import { mapGetters } from "vuex";
-import {fetchList,delObj,updataObj} from "@/api/project_doc";
-export default {
+  import {mapGetters} from "vuex";
+  import {delObj, fetchList, updataObj} from "@/api/project_doc";
+
+  export default {
     props:['projectInfo'],
     data(){
         return {

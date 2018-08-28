@@ -1,7 +1,8 @@
-import { baseUrl, khglUrl, dicUrl } from '@/config/env'
+import {baseUrl, dicUrl, khglUrl} from '@/config/env'
 import request from '@/router/axios'
-import { userInfo, tableData } from '@/mock/user'
-import { menu, menuAll } from '@/mock/menu'
+import {tableData, userInfo} from '@/mock/user'
+import {menu, menuAll} from '@/mock/menu'
+
 export const loginByUsername = (username, password, code, randomStr) => {
   var grant_type = 'password'
   var scope = 'server'

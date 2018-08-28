@@ -76,10 +76,11 @@
     </div>
 </template>
 <script>
-import { mapGetters } from "vuex";
-import { getToken } from "@/util/auth";
-import { fetchOrganList,addObj,updateObj,fetchUserList} from "@/api/project_per";
-export default {
+  import {mapGetters} from "vuex";
+  import {getToken} from "@/util/auth";
+  import {addObj, fetchOrganList, fetchUserList, updateObj} from "@/api/project_per";
+
+  export default {
     props:['projectInfo'],
     data(){
         var reg = 11 && /^((13|14|15|17|18)[0-9]{1}\d{8})$/;

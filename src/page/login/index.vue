@@ -36,13 +36,14 @@
   </div>
 </template>
 <script>
-import userLogin from "./userlogin";
-import codeLogin from "./codelogin";
-import thirdLogin from "./thirdlogin";
-import topTheme from "../index/top/top-theme";
-import theme from "@/mixins/theme";
-import { mapGetters } from "vuex";
-export default {
+  import userLogin from "./userlogin";
+  import codeLogin from "./codelogin";
+  import thirdLogin from "./thirdlogin";
+  import topTheme from "../index/top/top-theme";
+  import theme from "@/mixins/theme";
+  import {mapGetters} from "vuex";
+
+  export default {
   name: "login",
   mixins: [theme()],
   components: {

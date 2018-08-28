@@ -28,9 +28,10 @@
   </div>
 </template>
 <script>
-import { resolveUrlPath, setUrlPath } from "@/util/util";
-import { mapState, mapGetters } from "vuex";
-export default {
+  import {resolveUrlPath, setUrlPath} from "@/util/util";
+  import {mapGetters, mapState} from "vuex";
+
+  export default {
   name: "tags",
   data() {
     return {

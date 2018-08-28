@@ -1,5 +1,6 @@
 import request from '@/router/axios'
-  /* 报警信息 */
+
+/* 报警信息 */
 export function getObj(query) {
   return request({
     url: '/device/device_alarm/list',

@@ -6,8 +6,9 @@
     </el-breadcrumb>
 </template>
 <script>
-import { mapGetters } from "vuex";
-export default {
+  import {mapGetters} from "vuex";
+
+  export default {
   name: "breadcrumb",
   data() {
     return {};

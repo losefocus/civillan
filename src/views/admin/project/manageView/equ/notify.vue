@@ -94,11 +94,11 @@
     </div>
 </template>
 <script>
-import { mapGetters } from "vuex";
-import { remote } from "@/api/dict";
-import {getAlarmObj,getUserObj,getObj,addObj,delObj,editObj} from "@/api/device/notify";
+  import {mapGetters} from "vuex";
+  import {remote} from "@/api/dict";
+  import {addObj, delObj, editObj, getAlarmObj, getObj, getUserObj} from "@/api/device/notify";
 
-export default {
+  export default {
     props:['dataInfo'],
     data(){
         var validataAlarmId = (rule, value, callback) => {

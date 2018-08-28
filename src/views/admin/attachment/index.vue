@@ -138,12 +138,12 @@
 </template>
 
 <script>
-import { fetchList, getObj, addObj, putObj, delObj ,delObj_query} from "@/api/attachment";
-// import { deptRoleList, fetchDeptTree } from "@/api/role";
-import waves from "@/directive/waves/index.js"; // 水波纹指令
-// import { parseTime } from '@/utils'
-import { mapGetters } from "vuex";
-// import ElRadioGroup from "element-ui/packages/radio/src/radio-group";
+  import {addObj, delObj, delObj_query, fetchList, getObj, putObj} from "@/api/attachment";
+  // import { deptRoleList, fetchDeptTree } from "@/api/role";
+  import waves from "@/directive/waves/index.js"; // 水波纹指令
+  // import { parseTime } from '@/utils'
+  import {mapGetters} from "vuex";
+  // import ElRadioGroup from "element-ui/packages/radio/src/radio-group";
 // import ElOption from "element-ui/packages/select/src/option";
 
 export default {

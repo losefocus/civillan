@@ -114,16 +114,17 @@
     </div>
 </template>
 <script>
-import config from "./equ/config";
-import certi from "./equ/certificate";
-import sensor from "./equ/sensor";
-import alarm from "./equ/alarm";
-import notify from "./equ/notify";
-import group from "./equ/group";
-import personnel from "./equ/personnel";
-import { mapGetters } from "vuex";
-import {fetchList,delObj,updataObj,getConfigObj,getSensorObj,getAlarmObj,getNotifyObj} from "@/api/project_equ";
-export default {
+  import config from "./equ/config";
+  import certi from "./equ/certificate";
+  import sensor from "./equ/sensor";
+  import alarm from "./equ/alarm";
+  import notify from "./equ/notify";
+  import group from "./equ/group";
+  import personnel from "./equ/personnel";
+  import {mapGetters} from "vuex";
+  import {delObj, fetchList, getAlarmObj, getConfigObj, getNotifyObj, getSensorObj, updataObj} from "@/api/project_equ";
+
+  export default {
     components:{
         config,
         certi,

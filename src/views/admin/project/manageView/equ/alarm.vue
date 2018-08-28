@@ -101,12 +101,12 @@
     </div>
 </template>
 <script>
-import { mapGetters } from "vuex";
-import { remote } from "@/api/dict";
-import { findByvalue } from "@/util/util";
-import {getObj,addObj,delObj,editObj} from "@/api/device/alarm";
+  import {mapGetters} from "vuex";
+  import {remote} from "@/api/dict";
+  import {findByvalue} from "@/util/util";
+  import {addObj, delObj, editObj, getObj} from "@/api/device/alarm";
 
-export default {
+  export default {
     props:['dataInfo'],
     data(){
         var validateTitle = (rule, value, callback) => {

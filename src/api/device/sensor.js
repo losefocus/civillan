@@ -1,5 +1,5 @@
 import request from '@/router/axios'
-  
+
 /* 变量信息 */
 export function getObj(query) {
   return request({

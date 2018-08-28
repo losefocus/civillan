@@ -12,9 +12,10 @@
 </template>
 
 <script>
-import { getList, addObj, putObj, delObj } from "./api.js";
-import tableOption from "./option.js";
-export default {
+  import {addObj, delObj, getList, putObj} from "./api.js";
+  import tableOption from "./option.js";
+
+  export default {
   name: "{{name}}",
   data() {
     return {

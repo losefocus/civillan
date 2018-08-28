@@ -149,16 +149,16 @@
     </div>
 </template>
 <script>
-import { mapGetters } from "vuex";
-import waves from "@/directive/waves/index.js";
-import variable from "./variable";
-import alarm from "./alarm";
-import category from "./category";
-import dict from "./dict";
-import { getToken} from "@/util/auth";
-import { toTree } from "@/util/util";
-import { fetchList,fetchCategoryList,addObj,delObj,updataObj} from "@/api/product";
-export default {
+  import {mapGetters} from "vuex";
+  import variable from "./variable";
+  import alarm from "./alarm";
+  import category from "./category";
+  import dict from "./dict";
+  import {getToken} from "@/util/auth";
+  import {toTree} from "@/util/util";
+  import {addObj, delObj, fetchCategoryList, fetchList, updataObj} from "@/api/product";
+
+  export default {
     components:{
         variable,
         alarm,

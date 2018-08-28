@@ -45,10 +45,10 @@
     </div>
 </template>
 <script>
-import { mapGetters } from "vuex";
-import {getObj,setObj} from "@/api/device/config";
+  import {mapGetters} from "vuex";
+  import {getObj, setObj} from "@/api/device/config";
 
-export default {
+  export default {
     props:['dataInfo'],
     data(){
         return {

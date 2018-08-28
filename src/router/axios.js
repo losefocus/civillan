@@ -7,11 +7,11 @@
 import axios from 'axios'
 import store from '../store'
 import router from '../router/router'
-import { getToken, setToken, removeToken } from '@/util/auth'
-import { Message } from 'element-ui'
+import {getToken, removeToken, setToken} from '@/util/auth'
+import {Message} from 'element-ui'
 import errorCode from '@/const/errorCode'
 import NProgress from 'nprogress' // progress bar
-import 'nprogress/nprogress.css'// progress bar style
+import 'nprogress/nprogress.css' // progress bar style
 // 超时时间
 axios.defaults.timeout = 30000
 // 跨域请求，允许保存cookie

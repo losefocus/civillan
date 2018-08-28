@@ -49,13 +49,14 @@
   </div>
 </template>
 <script>
-import { mapState, mapGetters } from "vuex";
-import { fullscreenToggel, listenfullscreen } from "@/util/util";
-import topLock from "./top-lock";
-import topMenu from "./top-menu";
-import topTheme from "./top-theme";
-import {online} from "@/api/user";
-export default {
+  import {mapGetters, mapState} from "vuex";
+  import {fullscreenToggel, listenfullscreen} from "@/util/util";
+  import topLock from "./top-lock";
+  import topMenu from "./top-menu";
+  import topTheme from "./top-theme";
+  import {online} from "@/api/user";
+
+  export default {
   components: { topLock, topMenu, topTheme },
   name: "top",
   data() {

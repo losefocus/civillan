@@ -2,15 +2,9 @@ import router from './router/router'
 import store from './store'
 import NProgress from 'nprogress' // progress bar
 import 'nprogress/nprogress.css' // progress bar style
-import {
-  getToken
-} from '@/util/auth'
-import {
-  setTitle
-} from '@/util/util'
-import {
-  validatenull
-} from '@/util/validate'
+import {getToken} from '@/util/auth'
+import {setTitle} from '@/util/util'
+import {validatenull} from '@/util/validate'
 
 // NProgress Configuration
 NProgress.configure({

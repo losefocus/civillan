@@ -112,12 +112,12 @@
     </div>
 </template>
 <script>
-import { getToken } from "@/util/auth";
-import { toTree } from "@/util/util";
-import { mapGetters } from "vuex";
-import {getObj,addObj,delObj,editObj} from "@/api/device/group";
+  import {getToken} from "@/util/auth";
+  import {toTree} from "@/util/util";
+  import {mapGetters} from "vuex";
+  import {addObj, delObj, editObj, getObj} from "@/api/device/group";
 
-export default {
+  export default {
     props:['dataInfo'],
     data(){
         var validataParentId = (rule, value, callback) => {

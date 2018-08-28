@@ -212,15 +212,14 @@
 </template>
 
 <script>
-import { getToken } from "@/util/auth";
-import { fetchList,fetchAdminList,addObj,uploadImg,delObj,editObj} from "@/api/project";
-import { mapGetters } from "vuex";
-import waves from "@/directive/waves/index.js";
-import mapView from "./map";
-import projectManage from "./manage";
-import mapPosition from "./mapPosition";
+  import {getToken} from "@/util/auth";
+  import {addObj, delObj, editObj, fetchAdminList, fetchList, uploadImg} from "@/api/project";
+  import {mapGetters} from "vuex";
+  import mapView from "./map";
+  import projectManage from "./manage";
+  import mapPosition from "./mapPosition";
 
-export default {
+  export default {
     components:{
         mapView,
         projectManage,

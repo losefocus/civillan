@@ -39,23 +39,23 @@
     </div>
 </template>
 <script>
-import info from "./manageView/info";
-import org from "./manageView/org";
-import per from "./manageView/per";
-import equ from "./manageView/equ";
-import doc from "./manageView/doc";
-import media from "./manageView/media";
-import moni from "./manageView/monitoring";
-import config from "./manageView/config";
-import addOrg from "./manageView/addOrg";
-import addPer from "./manageView/addPer";
-import addEqu from "./manageView/addEqu";
-import addDoc from "./manageView/addDoc";
-import addMedia from "./manageView/addMedia";
-import addMoni from "./manageView/addMoni";
-import addConfig from "./manageView/addConfig";
+  import info from "./manageView/info";
+  import org from "./manageView/org";
+  import per from "./manageView/per";
+  import equ from "./manageView/equ";
+  import doc from "./manageView/doc";
+  import media from "./manageView/media";
+  import moni from "./manageView/monitoring";
+  import config from "./manageView/config";
+  import addOrg from "./manageView/addOrg";
+  import addPer from "./manageView/addPer";
+  import addEqu from "./manageView/addEqu";
+  import addDoc from "./manageView/addDoc";
+  import addMedia from "./manageView/addMedia";
+  import addMoni from "./manageView/addMoni";
+  import addConfig from "./manageView/addConfig";
 
-export default {
+  export default {
     components:{
         info,
         org,

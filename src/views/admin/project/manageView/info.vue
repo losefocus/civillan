@@ -77,9 +77,10 @@
     </div>
 </template>
 <script>
-import { mapGetters } from "vuex";
-import {getObj,deviceList,userList,mediaList,docList,organList} from "@/api/project_info";
-export default {
+  import {mapGetters} from "vuex";
+  import {deviceList, docList, getObj, mediaList, organList, userList} from "@/api/project_info";
+
+  export default {
     data(){
         return{
             loading:true,

@@ -1,5 +1,6 @@
-import { setStore, getStore, removeStore } from '@/util/store'
-import { validatenull } from "@/util/validate"
+import {getStore, removeStore, setStore} from '@/util/store'
+import {validatenull} from "@/util/validate"
+
 const tagObj = {
     label: '',
     value: '',
