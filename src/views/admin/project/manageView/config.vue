@@ -3,7 +3,6 @@
         <div class="filter-container">
             <el-button class="filter-item" style="" @click="handleAdd" size="small" type="primary">添加配置</el-button>
             <el-button class="filter-item" style="" size="small" type="primary" @click="configTemplateVisible=true">导入</el-button>
-            <el-button class="filter-item" style="" size="small" type="primary">导出</el-button>
             <el-button class="pull-right" type="primary" size="small" v-waves  @click="handleFilter">搜索</el-button>
             <el-input @keyup.enter.native="handleFilter" style="width: 150px;" size="small" suffix-icon="el-icon-search" class="pull-right" placeholder="按名称搜索" v-model="listQuery.name"></el-input>
         </div>
@@ -44,7 +43,7 @@
             </el-table-column>
         </el-table>
         <div v-show="!listLoading" class="pagination-container">
-            <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="listQuery.page_index" :page-sizes="[10,20,30, 50]" :page-size="listQuery.page_size" layout="total,sizes, prev, pager, next, jumper" :total="total">
+            <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="listQuery.page_index" :page-sizes="[10,20,50,100]" :page-size="listQuery.page_size" layout="total,sizes, prev, pager, next, jumper" :total="total">
             </el-pagination>
         </div>
         <div>
@@ -55,9 +54,9 @@
             </el-select>
             <el-button type="primary" size="mini" @click="confirm">确认</el-button>
         </div>
-        <el-dialog title="导入"  :visible.sync="configTemplateVisible" width='300px'>
-            <div class="clearfix">
-                <el-select v-model="params.typeId" size="small" placeholder="请选择类型" style="width:160px;" class="pull-left">
+        <el-dialog title="导入" :visible.sync="configTemplateVisible" width='300px' >
+            <div class="clearfix" >
+                <el-select v-model="params.typeId" size="small" placeholder="请选择类型" style="width:100%;">
                     <el-option
                     v-for="item in typeOptions"
                     :key="item.value"
@@ -66,7 +65,7 @@
                     </el-option>
                 </el-select>
                 <el-upload
-                    class="upload-demo pull-right"
+                    class="upload-demo"
                     ref="upload"
                     :headers="headers"
                     action="/project/project_work_config/importWorkConfig"
@@ -78,7 +77,7 @@
                     :before-upload='beforeUpload'
                     :on-success="uploadSuccess"
                     :auto-upload="true">
-                        <el-button slot="trigger" size="small" type="primary">选择文件</el-button>
+                        <el-button slot="trigger" size="small" type="primary" style="width:260px;margin-top:10px;">选择文件</el-button>
                 </el-upload>
             </div>
         </el-dialog>
@@ -110,7 +109,7 @@
             configTemplateVisible:false,
             typeOptions:[],
             allChecked:false,
-            valueType:''
+            valueType:'',
         }
     },
     created() {
@@ -127,13 +126,15 @@
             if(this.params.typeId == null){
                 this.$message({
                     message: '请选择类型',
-                    type: 'warning'
+                    type: 'waring'
                 });
-                return
+                return false
             }
         },
         uploadSuccess(response, file, fileList){
+            this.configTemplateVisible = false
             if(response.success == true){
+                this.getList()
                 this.$message({
                     message: '上传成功',
                     type: 'success'
@@ -181,8 +182,23 @@
                     });
                 })
             }else if(this.valueType == 'export'){
-                console.log('export')
+                this.importexcel()
             }
+        },
+        importexcel() {　
+        　　require.ensure([], () => {　　　　　　　　
+                const { export_json_to_excel } = require('@/vendor/Export2Excel');　　//引入文件　　　　　　
+                const tHeader = ['名称', '标识', '类型','配置项']; //将对应的属性名转换成中文
+                const filterVal = ['name', 'key', 'type','content'];//table表格中对应的属性名　　　　　 　　　
+                let list = this.list.map(item => {
+                    return { name: item.name, key: item.key , type: this.typeMap.get(item.typeId) , content: item.content };
+                });　
+                const data = this.formatJson(filterVal, list);　　　　　　　　
+                export_json_to_excel(tHeader, data, 'excel文件');
+            })
+        },
+        formatJson(filterVal, jsonData) {
+            return jsonData.map(v => filterVal.map(j => v[j]));
         },
         getCategoryList(){
             categoryList(this.allListQuery).then(res => {
