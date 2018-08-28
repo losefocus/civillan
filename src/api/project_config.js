@@ -45,6 +45,14 @@ export function delObj(id) {
   })
 }
 
+ /* 批量删除 */
+ export function batchDelObj(ids) {
+  return request({
+    url: '/project/project_work_config/batchDelete?project_work_config_ids=' +ids,
+    method: 'post',
+  })
+}
+
   /* 编辑 */
 export function editObj(obj) {
   return request({
@@ -53,3 +61,4 @@ export function editObj(obj) {
     data: obj
   })
 }
+

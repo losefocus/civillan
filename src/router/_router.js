@@ -25,16 +25,18 @@ export default [{
   path: '/lock',
   name: '锁屏页',
   component: _import('lock/index')
-}, {
-  path: '/crud',
-  component: Layout,
-  redirect: '/crud/index',
-  children: [{
-    path: 'index',
-    name: 'crud实例',
-    component: _import('crud/index', 'views')
-  }]
-}, {
+}, 
+// {
+//   path: '/crud',
+//   component: Layout,
+//   redirect: '/crud/index',
+//   children: [{
+//     path: 'index',
+//     name: 'crud实例',
+//     component: _import('crud/index', 'views')
+//   }]
+// }, 
+{
   path: '/info',
   component: Layout,
   redirect: '/info/index',
