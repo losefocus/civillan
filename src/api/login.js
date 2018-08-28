@@ -3,13 +3,13 @@ import request from '@/router/axios'
 import {tableData, userInfo} from '@/mock/user'
 import {menu, menuAll} from '@/mock/menu'
 
-export const loginByUsername = (username, password, code, randomStr) => {
+export const loginByUsername = (username, password, code, randomStr, domain) => {
   var grant_type = 'password'
   var scope = 'server'
   return request({
     url:'/admin/user/login',
     method: 'post',
-    params: { username, password, randomStr, code }  //,grant_type , scope
+    params: { username, password, randomStr, code, domain }  //,grant_type , scope
   })
 }
 

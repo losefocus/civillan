@@ -40,7 +40,7 @@ const user = {
       dispatch
     }, userInfo) {
       return new Promise((resolve, reject) => {
-        loginByUsername(userInfo.username, userInfo.password, userInfo.code, userInfo.randomStr).then(response => {
+        loginByUsername(userInfo.username, userInfo.password, userInfo.code, userInfo.randomStr,userInfo.domain).then(response => {
           const data = response.data.result
           setToken(data.access_token)
           commit('SET_USER_NAME', userInfo.username)

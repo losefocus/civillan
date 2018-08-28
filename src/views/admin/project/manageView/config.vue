@@ -162,16 +162,23 @@
                     message: '请选择配置',
                     type: 'warning'
                 });
+                return
             }
             else if(this.valueType == ''){
                 this.$message({
                     message: '请选择操作',
                     type: 'warning'
                 });
+                return
             }
             if(this.valueType == 'batchDelete'){
                 batchDelObj(ids).then(res => {
                     this.getList()
+                    this.$notify({
+                        title: '成功',
+                        message: '批量删除成功',
+                        type: 'success'
+                    });
                 })
             }else if(this.valueType == 'export'){
                 console.log('export')

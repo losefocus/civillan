@@ -1,5 +1,10 @@
 <template>
   <el-form class="login-form" status-icon :rules="loginRules" ref="loginForm" :model="loginForm" label-width="0">
+    <el-form-item prop="domain">
+      <el-input size="small" @keyup.enter.native="handleLogin" v-model="loginForm.domain" auto-complete="off" placeholder="请输入域名" style="width:100%">
+        <i slot="prefix" class="icon-yonghu"></i>
+      </el-input>
+    </el-form-item>
     <el-form-item prop="username">
       <el-input size="small" @keyup.enter.native="handleLogin" v-model="loginForm.username" auto-complete="off" placeholder="请输入用户名" style="width:100%">
         <i slot="prefix" class="icon-yonghu"></i>
@@ -52,6 +57,7 @@
     };
     return {
       loginForm: {
+        domain:'',
         username: "admin",
         password: "123456",
         code: "",
