@@ -213,6 +213,7 @@
 
 <script>
   import {getToken} from "@/util/auth";
+  import waves from "@/directive/waves/index.js"; // 水波纹指令
   import {addObj, delObj, editObj, fetchAdminList, fetchList, uploadImg} from "@/api/project";
   import {mapGetters} from "vuex";
   import mapView from "./map";
@@ -220,6 +221,9 @@
   import mapPosition from "./mapPosition";
 
   export default {
+    directives: {
+        waves
+    },
     components:{
         mapView,
         projectManage,
