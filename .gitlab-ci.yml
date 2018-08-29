@@ -21,8 +21,7 @@ maven-build:
     # 启动
     - npm config set registry https://registry.npm.taobao.org && npm install
     - npm run build
-    - cd src/docker/
-    - docker build -t="civillan-background-web" .
+    - docker build -t="civillan-background-web" src/docker/
     - ssh test@192.168.0.232 -tt docker stop civillan-background-web
     - ssh test@192.168.0.232 -tt docker rm civillan-background-web
     - ssh test@192.168.0.232 -tt docker run -p 9991:9991 --name civillan-background-web -d civillan-background-web
