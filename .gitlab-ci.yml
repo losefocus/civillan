@@ -19,6 +19,8 @@ maven-build:
 #    - cnpm run build
 #    - npm run dev
     # 启动
+    - npm run build
+    - cd src/docker/
     - docker build -t="civillan-background-web" .
     - ssh test@192.168.0.232 -tt docker stop civillan-background-web
     - ssh test@192.168.0.232 -tt docker rm civillan-background-web
