@@ -262,13 +262,12 @@ export default {
                 //分类处理
                 let data = res2.data.result.items
                 let newMap = new Map();
-                newMap.set(0,'无')
                 for (let i=0; i<data.length; i++) {
                     newMap.set(data[i].id,data[i].name)
                 }
                 this.categoryHash = newMap
                 this.categoryOptions = toTree(data)
-                this.categoryOptions.unshift({value:0,label:'无'})
+                // this.categoryOptions.unshift({value:0,label:'无'})
                 this.listLoading = false
                 // 标签
                 this.tagOptions = res3.data.result.items
@@ -286,6 +285,7 @@ export default {
         },
         getParentOptions(msg) {
             this.categoryOptions = msg
+            console.log(msg)
         },
         getParentHash(msg) {
             this.categoryHash = msg

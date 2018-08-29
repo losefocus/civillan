@@ -42,7 +42,7 @@
                 </template>
             </el-table-column>
         </el-table>
-        <div v-show="!listLoading" class="pagination-container">
+        <div class="pagination-container">
             <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="listQuery.page_index" :page-sizes="[10,20,50,100]" :page-size="listQuery.page_size" layout="total,sizes, prev, pager, next, jumper" :total="total">
             </el-pagination>
         </div>
@@ -55,7 +55,7 @@
             <el-button type="primary" size="mini" @click="confirm">确认</el-button>
         </div>
         <el-dialog title="导入" :visible.sync="configTemplateVisible" width='300px' >
-            <div class="clearfix" >
+            <div class="clearfix" v-loading="uploading">
                 <el-select v-model="params.typeId" size="small" placeholder="请选择类型" style="width:100%;">
                     <el-option
                     v-for="item in typeOptions"
@@ -101,6 +101,7 @@
             total:null,
             multipleSelection:[],
             typeMap:null,
+            uploading:false,
             headers:{Authorization: "Bearer " + getToken()},
             params:{
                 projectId:this.projectInfo.id,
@@ -129,9 +130,13 @@
                     type: 'waring'
                 });
                 return false
+            }else{
+                this.uploading = true
+                return true
             }
         },
         uploadSuccess(response, file, fileList){
+            this.uploading = false
             this.configTemplateVisible = false
             if(response.success == true){
                 this.getList()

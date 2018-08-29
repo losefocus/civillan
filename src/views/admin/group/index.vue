@@ -100,7 +100,7 @@
           comment: undefined,
           tenant : '21fe87251b01541399c7c1a8cec741c5'
         },
-        currentId: -1,
+        currentId: 0,
         group_btn_add: false,
         group_btn_edit: false,
         group_btn_del: false

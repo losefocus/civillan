@@ -74,7 +74,7 @@ export default {
         getList(){
             this.listLoading = true
             fetchList(this.listQuery).then(res => {
-                let list = res.data.result.items
+                let list = res.data.result
                 list.forEach(ele => {
                     if(ele.categoryId == 1){
                         this.list_1.push(ele)

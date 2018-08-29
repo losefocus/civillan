@@ -38,7 +38,7 @@
 
       <el-table-column align="center" label="操作时间">
         <template slot-scope="scope">
-          <span>{{ scope.row.createTime}}</span>
+          <span>{{ scope.row.createAt}}</span>
         </template>
       </el-table-column>
 

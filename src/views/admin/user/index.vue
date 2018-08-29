@@ -100,11 +100,11 @@
         <el-form-item label="所属分组">
           <!-- <el-input v-model="form.groupName" placeholder="选择分组" @focus="handleDept()" readonly></el-input> -->
           <!-- <input type="hidden" v-model="form.group" /> -->
-          <el-cascader :options="groupOptions" v-model="groupIds" :show-all-levels="false" change-on-select @change="changeGroup"></el-cascader>
+          <el-cascader :options="groupOptions" v-model="groupIds" :show-all-levels="false" change-on-select @change="changeGroup" style="width:100%"></el-cascader>
         </el-form-item>
 
         <el-form-item label="角色" prop="role">
-          <el-select class="filter-item" v-model="role" placeholder="请选择" multiple >
+          <el-select class="filter-item" v-model="role" placeholder="请选择" multiple style="width:100%">
             <el-option v-for="item in rolesOptions" :key="item.roleId" :label="item.roleName" :value="item.roleId" :disabled="isDisabled[item.status]">
               <span style="float: left">{{ item.roleName }}</span>
               <span style="float: right; color: #8492a6; font-size: 13px">{{ item.roleCode }}</span>
@@ -303,6 +303,7 @@
       fetchTree().then(response => {
         this.treeDeptData = response.data.result;
         this.groupOptions = treeAddValue(response.data.result)
+        console.log(this.groupOptions)
         this.dialogDeptVisible = true;
       });
     },
