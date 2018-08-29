@@ -10,35 +10,52 @@
             <p class="l_3">日期</p>
         </div>
         <ul class="list">
-            <li>
-                <p class="l_1">张三</p>
-                <p class="l_2">三头搅拌桩0123</p>
-                <p class="l_3">08-27</p>
-            </li>
-            <li>
-                <p class="l_1">张三</p>
-                <p class="l_2">三头搅拌桩0123</p>
-                <p class="l_3">08-27</p>
-            </li>
-            <li>
-                <p class="l_1">张三</p>
-                <p class="l_2">三头搅拌桩0123</p>
-                <p class="l_3">08-27</p>
+            <li v-for="(item,index) in list" :key="index">
+                <p class="l_1">{{userMap.get(item.createdBy)}}</p>
+                <p class="l_2">{{item.name}}</p>
+                <p class="l_3">{{item.createdAt | parseTime('{m}-{d}')}}</p>
             </li>
         </ul>
     </div>
 </template>
 <script>
+  import { fetchList} from "@/api/project_equ";
+  import {fetchAdminList} from "@/api/project";
 export default {
     data(){
         return{
-
+            list:[],
+            listQuery: {
+                page_index: 1,
+                page_size: 5,
+            },
+            userMap:null
         }
     },
-    created(){},
-    mounted(){},
-    computed: {},
+    created(){
+        this.getUserMap()
+    },
+    mounted(){
+        this.getList()
+    },
+    computed: {
+        
+    },
     methods: {
+        getUserMap(){
+            fetchAdminList(this.listQuery).then(res => {
+                let list = res.data.result.items
+                this.userMap = new Map()
+                list.forEach(ele => {
+                    this.userMap.set(ele.id,ele.username)
+                })
+            })
+        },
+        getList(){
+            fetchList(this.listQuery).then(res => {
+                this.list = res.data.result.items
+            })
+        },
         toAllDevice(){
             this.$router.push({ path:'/admin/device'});
         }

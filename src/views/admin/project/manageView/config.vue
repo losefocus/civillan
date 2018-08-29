@@ -190,7 +190,7 @@
                 const { export_json_to_excel } = require('@/vendor/Export2Excel');　　//引入文件　　　　　　
                 const tHeader = ['名称', '标识', '类型','配置项']; //将对应的属性名转换成中文
                 const filterVal = ['name', 'key', 'type','content'];//table表格中对应的属性名　　　　　 　　　
-                let list = this.list.map(item => {
+                let list = this.multipleSelection.map(item => {
                     return { name: item.name, key: item.key , type: this.typeMap.get(item.typeId) , content: item.content };
                 });　
                 const data = this.formatJson(filterVal, list);　　　　　　　　

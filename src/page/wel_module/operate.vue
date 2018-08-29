@@ -10,47 +10,42 @@
             <p class="l_3">日期</p>
         </div>
         <ul class="list">
-            <li>
-                <p class="l_1">张三</p>
-                <p class="l_2">添加设备【三头搅拌桩0123】</p>
-                <p class="l_3">08-27</p>
-            </li>
-            <li>
-                <p class="l_1">张三</p>
-                <p class="l_2">添加设备【三头搅拌桩0123】</p>
-                <p class="l_3">08-27</p>
-            </li>
-            <li>
-                <p class="l_1">张三</p>
-                <p class="l_2">添加设备【三头搅拌桩0123】</p>
-                <p class="l_3">08-27</p>
-            </li>
-            <li>
-                <p class="l_1">张三</p>
-                <p class="l_2">添加设备【三头搅拌桩0123】</p>
-                <p class="l_3">08-27</p>
-            </li>
-            <li>
-                <p class="l_1">张三</p>
-                <p class="l_2">添加设备【三头搅拌桩0123】</p>
-                <p class="l_3">08-27</p>
+            <li v-for="(item,index) in list" :key="index">
+                <p class="l_1">{{item.username}}</p>
+                <p class="l_2">{{item.description}}</p>
+                <p class="l_3">{{item.createAt | parseTime('{m}-{d}')}}</p>
             </li>
         </ul>
     </div>
 </template>
 <script>
+import {fetchList} from "@/api/log";
+
 export default {
     data(){
         return{
-
+            list:[],
+            listQuery: {
+                page_index: 1,
+                page_size: 5,
+                sort_by:'createNow',
+                direction:false
+            },
         }
     },
     created(){},
-    mounted(){},
+    mounted(){
+        this.getList()
+    },
     computed: {},
     methods: {
+        getList(){
+            fetchList(this.listQuery).then(res => {
+                this.list = res.data.result.items
+            })
+        },
         toAllDevice(){
-            this.$router.push({ path:'/admin/device'});
+            this.$router.push({ path:'/admin/log'});
         }
     }
 }
