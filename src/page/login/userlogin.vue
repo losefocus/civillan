@@ -1,7 +1,7 @@
 <template>
   <el-form class="login-form" status-icon :rules="loginRules" ref="loginForm" :model="loginForm" label-width="0">
     <el-form-item prop="domain">
-      <el-input size="small" @keyup.enter.native="handleLogin" v-model="loginForm.domain" auto-complete="off" placeholder="请输入域名" style="width:100%">
+      <el-input size="small" @keyup.enter.native="handleLogin" v-model="loginForm.domain" auto-complete="off" placeholder="请输入公司代号" style="width:100%">
         <i slot="prefix" class="icon-yuming"></i>
       </el-input>
     </el-form-item>
@@ -71,7 +71,7 @@
       },
       loginRules: {
         domain: [
-          { required: true, message: "请输入域名", trigger: "blur" },
+          { required: true, message: "请输入公司代号", trigger: "blur" },
         ],
         username: [
           { required: true, message: "请输入用户名", trigger: "blur" },

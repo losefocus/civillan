@@ -33,7 +33,7 @@
             </el-table-column>
             <el-table-column align="center" label="操作" width="220">
                 <template slot-scope="scope" >
-                    <el-button size="mini" type="" plain><a :href="scope.row.fileBaseUrl+scope.row.filePath" download target="_blank">下载</a></el-button>
+                    <a :href="scope.row.fileBaseUrl+scope.row.filePath" download target="_blank"><el-button size="mini" type="" plain>下载</el-button></a>
                     <el-button size="mini" type="" plain @click="updataDoc(scope.row)" style="margin-left:0px">修改</el-button>
                     <el-button size="mini" type="" plain @click="deleteDoc(scope.row)" style="margin-left:0px">删除</el-button>
                 </template>

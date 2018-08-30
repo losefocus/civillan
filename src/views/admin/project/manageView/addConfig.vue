@@ -1,7 +1,7 @@
 <template>
     <div>
         <div class="tit"><h3>{{(flag == 'add')?'添加':'修改'}}配置</h3><span>{{(flag == 'add')?'Add':'Edit'}} Config</span></div>
-        <el-form label-width="55px" :model="form" ref="form" label-position="left">
+        <el-form label-width="55px" :model="form" ref="form" label-position="left" :rules="rules">
             <el-form-item label="名称" prop="name">
                 <el-input v-model="form.name" size="small" placeholder="请输入名称"></el-input>
             </el-form-item>
@@ -29,9 +29,8 @@
         </el-form>
         <p>配置内容</p>
         <div>
-            <el-form id="content_form" ref="content_form" :inline="true" label-width="0" size="mini">
-                <el-form-item label="" prop="typeId" style="width:100px">
-                    <!-- <el-input v-model="content_form.key" size="mini" placeholder="配置项"></el-input> -->
+            <el-form id="content_form" :model="content_form" ref="content_form" :inline="true" label-width="0" size="mini" :rules="rules_content">
+                <el-form-item label="" prop="name" style="width:100px">
                     <el-select v-model="content_form.name" size="mini" placeholder="配置项" @change="changeParams">
                         <el-option
                         v-for="item in paramsOption"
@@ -106,9 +105,22 @@
                 callback()
             }
         }
+        var validataName_c = (rule, value, callback) => {
+            if(value === '' || value== undefined){
+                callback(new Error('请选择配置项'));
+            }else{
+                callback()
+            }
+        }
+        var validataValue_c = (rule, value, callback) => {
+            if(value === '' || value== undefined){
+                callback(new Error('请输入值'));
+            }else{
+                callback()
+            }
+        }
         return {
             rules: {
-                
                 name: [
                     {  validator: validataName, trigger: 'blur' }
                 ],
@@ -116,7 +128,15 @@
                     {  validator: validataTypeId, trigger: 'change' }
                 ],
                 key: [
-                    {  validator: validataKey, trigger: 'change' }
+                    {  validator: validataKey, trigger: 'blur' }
+                ],
+            },
+            rules_content:{
+                name: [
+                    {  validator: validataName_c, trigger: 'change' }
+                ],
+                value: [
+                    {  validator: validataValue_c, trigger: 'blur' }
                 ],
             },
             form:{
@@ -188,6 +208,7 @@
             this.content_form.name = val.split(',')[1]
         },
         submitForm(formName){
+            this.resetContentForm()
             this.$refs[formName].validate((valid) => {
                 if (valid) {
                     this.createLoading = true
@@ -212,6 +233,7 @@
             
         },
         updataForm(formName){
+            this.resetContentForm()
             this.$refs[formName].validate((valid) => {
                 if (valid) {
                     this.createLoading = true
@@ -257,14 +279,12 @@
             }
         },
         addContent(){
-            this.config_content.unshift(Object.assign({}, this.content_form))
-            this.content_form = {
-                label:'',
-                name:'',
-                value:'',
-                flag:false
-            }
-            this.$refs.content_form.resetFields()
+            this.$refs.content_form.validate((valid) => {
+                if (valid) {
+                    this.config_content.unshift(Object.assign({}, this.content_form))
+                    this.resetContentForm()
+                }
+            })
         },
         editContent(index,rows){
             if(this.lastIndex!=null)rows[this.lastIndex].flag = false
@@ -280,6 +300,15 @@
         deleteContent(index,rows){
             rows.splice(index, 1);
         },
+        resetContentForm(){
+            this.content_form = {
+                label:'',
+                name:'',
+                value:'',
+                flag:false
+            }
+            this.$refs.content_form.resetFields()
+        }
     }
 }
 </script>

@@ -119,6 +119,7 @@
     </div>
 </template>
 <script>
+  import waves from "@/directive/waves/index.js";
   import config from "./equ/config";
   import certi from "./equ/certificate";
   import sensor from "./equ/sensor";
@@ -131,6 +132,9 @@
   import {delObj, fetchList, updataObj} from "@/api/project_equ";
 
   export default {
+    directives: {
+        waves
+    },
     components:{
         config,
         certi,
