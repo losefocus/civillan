@@ -46,20 +46,20 @@
         </template>
       </el-table-column>
 
-      <el-table-column align="center" label="创建时间">
+      <el-table-column align="center" label="创建时间" min-width="130">
         <template slot-scope="scope">
           <span>{{scope.row.createdAt | parseTime('{y}-{m}-{d} {h}:{i}')}}</span>
         </template>
       </el-table-column>
 
-      <el-table-column align="center" class-name="status-col" label="状态">
+      <el-table-column align="center" class-name="status-col" label="状态" width="60">
         <template slot-scope="scope">
           <!-- <el-tag size="small">{{scope.row.status | statusFilter}}</el-tag> -->
           <i v-if="scope.row.status == 1" class="el-icon-circle-check" style="font-size:18px;color:#67c23a"></i>
           <i v-else class="el-icon-circle-close" style="font-size:18px;color:#909399"></i>
         </template>
       </el-table-column>
-      <el-table-column align="center" label="操作" width="200">
+      <el-table-column align="center" label="操作" width="140">
         <template slot-scope="scope">
           <el-button v-if="sys_user_upd" size="mini" type="" @click="handleUpdate(scope.row)" :disabled="scope.row.createdBy === 0">编辑
           </el-button>

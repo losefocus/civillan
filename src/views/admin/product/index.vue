@@ -150,6 +150,7 @@
 </template>
 <script>
   import {mapGetters} from "vuex";
+  import waves from "@/directive/waves/index.js"; // 水波纹指令
   import variable from "./variable";
   import alarm from "./alarm";
   import category from "./category";
@@ -159,6 +160,9 @@
   import {addObj, delObj, fetchCategoryList, fetchList, updataObj} from "@/api/product";
 
   export default {
+    directives: {
+        waves
+    },
     components:{
         variable,
         alarm,
