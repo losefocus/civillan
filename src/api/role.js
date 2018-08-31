@@ -65,7 +65,7 @@ export function permissionUpd(roleId, menuIds) {
 
 export function fetchRoleTree(roleName) {
   return request({
-    url: '/admin/menu/roleTree?roleName=' + roleName,
+    url: '/admin/role/roleTree?roleName=' + roleName,
     method: 'get'
   })
 }

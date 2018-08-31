@@ -8,7 +8,7 @@ export function GetMenu() {
 }
 export function fetchTree(query) {
   return request({
-    url: '/admin/menu/allTree',
+    url: '/admin/role/allTree',
     method: 'get',
     params: query
   })
@@ -23,7 +23,7 @@ export function fetchAll() {
 
 export function fetchUserTree() {
   return request({
-    url: '/admin/menu/userTree',
+    url: '/admin/role/userTree',
     method: 'get'
   })
 }
