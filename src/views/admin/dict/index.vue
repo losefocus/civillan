@@ -54,7 +54,7 @@
         <template slot-scope="scope">
           <el-button v-if="sys_dict_upd" size="mini" type="" @click="handleUpdate(scope.row)">编辑
           </el-button>
-          <el-button v-if="sys_dict_del" size="mini" type="" @click="handleDelete(scope.row)" style="margin-left:0">删除
+          <el-button v-if="sys_dict_del" size="mini" type="" @click="handleDelete(scope.row)" style="margin-left:0" :disabled="scope.row.createdBy === 0">删除
           </el-button>
         </template>
       </el-table-column>
