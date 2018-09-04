@@ -8,8 +8,8 @@
         <el-collapse-transition>
             <div v-show="isshow">
                 <el-form :model="form" class="clearfix" :rules="rules" ref="form" label-width="70px" size="mini">
-                    <el-form-item label="报警条目" prop="alarmId" style="width: 650px">
-                        <el-select v-model="form.alarmId" placeholder="请选择报警条目" size="mini" :loading="alarmLoading">
+                    <el-form-item label="报警条目" prop="alarmId" style="width: 310px">
+                        <el-select v-model="form.alarmId" placeholder="请选择报警条目" style="width:100%" size="mini" :loading="alarmLoading">
                             <el-option
                             v-for="item in alarmOptions"
                             :key="item.value"
@@ -18,18 +18,8 @@
                             </el-option>
                         </el-select>
                     </el-form-item>
-                    <el-form-item label="通知对象" prop="puserIds" style="width: 650px">
-                        <el-select v-model="form.puserIds" multiple placeholder="请选择通知对象" size="mini" :loading="userLoading">
-                            <el-option
-                            v-for="item in userOptions"
-                            :key="item.value"
-                            :label="item.label"
-                            :value="item.value">
-                            </el-option>
-                        </el-select>
-                    </el-form-item>
-                    <el-form-item label="通知频率" prop="cycle" style="width: 310px;">
-                        <el-select v-model="form.cycle" placeholder="请选择通知频率" size="mini">
+                    <el-form-item label="通知频率" prop="cycle" style="width: 310px;margin-left:30px">
+                        <el-select v-model="form.cycle" placeholder="请选择通知频率" style="width:100%" size="mini">
                             <el-option
                             v-for="item in options"
                             :key="item.value"
@@ -38,8 +28,19 @@
                             </el-option>
                         </el-select>
                     </el-form-item>
+                    <el-form-item label="通知对象" prop="puserIds" style="width: 310px">
+                        <el-select v-model="form.puserIds" multiple placeholder="请选择通知对象" style="width:100%" size="mini" :loading="userLoading">
+                            <el-option
+                            v-for="item in userOptions"
+                            :key="item.value"
+                            :label="item.label"
+                            :value="item.value">
+                            </el-option>
+                        </el-select>
+                    </el-form-item>
+                    
                     <el-form-item label="通知方式" prop="notifyTypes" style="width: 310px;margin-left:30px">
-                        <el-select v-model="notifyTypes" multiple="" placeholder="请选择通知方式" size="mini" @change="changeNotifyTypes">
+                        <el-select v-model="notifyTypes" multiple="" placeholder="请选择通知方式" style="width:100%" size="mini" @change="changeNotifyTypes">
                             <el-option
                             v-for="item in typeOptions"
                             :key="item.value"
