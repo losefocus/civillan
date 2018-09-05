@@ -19,7 +19,7 @@
           <!-- <top-theme></top-theme> -->
         </h4>
         <el-tabs v-model="activeName">
-          <el-tab-pane label="用户密码" name="user">
+          <el-tab-pane label="账号信息" name="user">
             <userLogin></userLogin>
           </el-tab-pane>
           <!-- <el-tab-pane label="短信验证码" name="code">

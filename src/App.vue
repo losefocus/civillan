@@ -156,4 +156,11 @@ export default {
   line-height: 25px;
   font-size: 12px;
 }
+
+.amap-logo{
+  display: none !important;
+}
+.amap-copyright{
+  display: none !important;
+}
 </style>
