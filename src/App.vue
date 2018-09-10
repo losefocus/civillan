@@ -165,6 +165,6 @@ export default {
 }
 
 #pane-user .el-form-item__error{
-  padding-top: 0
+  padding-top: 0;
 }
 </style>
