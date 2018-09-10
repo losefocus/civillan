@@ -71,7 +71,6 @@
         {label:'添加',value:'add'},
         {label:'删除',value:'delete'},
         {label:'修改',value:'update'},
-        {label:'查询',value:'query'},
         {label:'登录',value:'login'},
       ],
       listQuery: {

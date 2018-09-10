@@ -75,7 +75,7 @@
           <el-input v-model="form.label" placeholder="标签名"></el-input>
         </el-form-item>
         <el-form-item label="类型" prop="type">
-          <el-input v-model="form.type" placeholder="类型"></el-input>
+          <el-input v-model="form.type" placeholder="类型" :disabled="form.createdBy === 0"></el-input>
         </el-form-item>
         <!-- <el-form-item label="描述" prop="description">
           <el-input v-model="form.description" placeholder="描述"></el-input>
@@ -223,6 +223,7 @@
       this.form.description = row.description;
       this.form.sort = row.sort;
       this.form.remarks = row.remarks;
+      this.form.createdBy = row.createdBy;
     },
     handleCreate() {
       this.dialogStatus = "create";
