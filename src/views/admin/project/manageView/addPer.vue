@@ -76,7 +76,7 @@
     </div>
 </template>
 <script>
-  import {mapGetters} from "vuex";
+  import {mapGetters,mapState} from "vuex";
   import {getToken} from "@/util/auth";
   import {addObj, fetchOrganList, fetchUserList, updateObj} from "@/api/project_per";
 
@@ -183,6 +183,9 @@
 
     },
     computed: {
+        ...mapState({
+            userInfo: state => state.user.userInfo,
+        }),
         ...mapGetters(["roleOptions"]),
     },
     methods:{
@@ -198,6 +201,7 @@
         checkDuplication(type){
             let data = {}
             data[type]=this.form[type]
+            data.tenant = this.userInfo.tenant
             if(this.form.phone!=this.userPhone){
                 fetchUserList(data).then(res => {
                     if(res.data.result.total != 0) this['duplication_'+type] = true 
@@ -255,6 +259,7 @@
                     let data = Object.assign({},this.form)
                     data.status = this.form.status?1:0
                     data.userRole = [{projectRole:{id:parseInt(this.role)}}]
+                    delete data.contactList
                     this.createLoading = true
                     updateObj(data).then(response => {
                         this.$parent.$parent.$refs.per.getList()

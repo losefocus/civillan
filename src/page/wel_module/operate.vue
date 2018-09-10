@@ -13,7 +13,7 @@
             <li v-for="(item,index) in list" :key="index">
                 <p class="l_1">{{item.username}}</p>
                 <p class="l_2">{{item.description}}</p>
-                <p class="l_3">{{item.createAt | parseTime('{m}-{d}')}}</p>
+                <p class="l_3">{{item.createNow | parseTime('{m}-{d}')}}</p>
             </li>
         </ul>
     </div>

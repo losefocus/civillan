@@ -12,7 +12,7 @@
                         <el-input v-model="form.title" size="mini" auto-complete="off"></el-input>
                     </el-form-item>
                     <el-form-item label="报警周期" prop="cycle" style="width: 310px;;margin-left:30px">
-                        <el-select v-model="form.cycle" placeholder="请选择" size="mini">
+                        <el-select v-model="form.cycle" placeholder="请选择" size="mini" style="width:100%">
                             <el-option
                             v-for="item in dicts"
                             :key="item.value"
@@ -31,7 +31,7 @@
                         <el-input v-model="form.condition" type="textarea" :rows="2" size="mini" auto-complete="off"></el-input>
                     </el-form-item>
                     <el-form-item label="报警级别" prop="level" style="width: 310px;margin-left:30px;margin-bottom:38px">
-                        <el-select v-model="form.level" placeholder="请选择" size="mini">
+                        <el-select v-model="form.level" placeholder="请选择" size="mini" style="width:100%">
                             <el-option
                             v-for="item in alarmDicts"
                             :key="item.value"
@@ -77,7 +77,7 @@
                 </el-table-column>
                 <el-table-column align="center" label="报警级别" width="90">
                     <template slot-scope="scope">
-                        <span>{{scope.row.level}}</span>
+                        <span>{{levelMap.get(scope.row.level)}}</span>
                     </template>
                 </el-table-column>
                 <el-table-column align="center" label="状态" width="60">
@@ -180,7 +180,8 @@
                 page_size: 10
             },
             total:null,
-            list:null
+            list:null,
+            levelMap:null,
         }
     },
     created() {
@@ -189,6 +190,11 @@
         });
         remote("alarm_level").then(response => {
             this.alarmDicts = response.data.result;
+            this.levelMap = new Map()
+            this.alarmDicts.forEach(res=>{
+                this.levelMap.set(res.value,res.label)
+            })
+            console.log(this.levelMap)
         });
     },
     mounted() {
@@ -210,9 +216,6 @@
             this.listLoading = true
             getObj(this.listQuery).then(res => {
                 this.list = res.data.result.items
-                this.list.forEach(ele => {
-                    ele.level = findByvalue(this.alarmDicts,ele.level)
-                });
                 this.total = res.data.result.total
                 this.listLoading = false
             })
@@ -222,6 +225,7 @@
             this.flag = 'edit'
             this.form = Object.assign({},row)
             this.form.status = this.form.status==1?true:false
+            this.form.cycle = this.form.cycle+''
             this.isshow = true
         },
         deleteList(row){
@@ -262,6 +266,7 @@
                     this.createdLoading = true
                     let data = Object.assign({},this.form)
                     data.status = data.status?1:0
+                    console.log(data)
                     editObj(data).then(res => {
                         this.getList(this.listQuery)
                         this.$parent.$parent.$parent.$parent.alertNotify('修改')

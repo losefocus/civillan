@@ -163,4 +163,8 @@ export default {
 .amap-copyright{
   display: none !important;
 }
+
+#pane-user .el-form-item__error{
+  padding-top: 0
+}
 </style>
