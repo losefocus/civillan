@@ -33,6 +33,13 @@
       </div>
     </div>
 
+    <el-dialog title="" :visible.sync="dialogCheckVisible">
+      <p style="text-align: center;font-size:16px">为了获得更好体验，平台不支持ie8及以下版本浏览器，推荐使用下列浏览器</p>
+      <ul class="browserList clearfix">
+        <li><img src="../../assets/img/chrome.png"></li>
+        <li><img src="../../assets/img/firefox.png"></li>
+      </ul>
+    </el-dialog>
   </div>
 </template>
 <script>
@@ -54,16 +61,43 @@
   },
   data() {
     return {
-      activeName: "user"
+      activeName: "user",
+      dialogCheckVisible:false
     };
   },
   created() {},
-  mounted() {},
+  mounted() {
+    this.checkBrowser()
+  },
   computed: {
     ...mapGetters(["website"])
   },
   props: [],
-  methods: {}
+  methods: {
+    checkBrowser(){
+      var userAgent = navigator.userAgent; //取得浏览器的userAgent字符串
+      var isOpera = userAgent.indexOf("Opera") > -1 || userAgent.indexOf("OPR/") > -1; //判断是否Opera浏览器
+      var isIE = userAgent.indexOf("compatible") > -1 && userAgent.indexOf("MSIE") > -1 && !isOpera; //判断是否IE浏览器
+      var isEdge = userAgent.indexOf("Edge") > -1 || userAgent.indexOf(") like Gecko")>-1; //判断是否IE的Edge浏览器
+      var isFF = userAgent.indexOf("Firefox") > -1; //判断是否Firefox浏览器
+      var isSafari = userAgent.indexOf("Safari") > -1 && userAgent.indexOf("Chrome") == -1; //判断是否Safari浏览器
+      var isChrome = userAgent.indexOf("Chrome") > -1 && userAgent.indexOf("Safari") > -1 && userAgent.indexOf("OPR/") == -1 && userAgent.indexOf("Edge") == -1; //判断Chrome浏览器
+      if(!(isChrome || isFF || isEdge)){
+        console.log(1223123)
+        this.dialogCheckVisible = true
+        
+      }else{
+        
+      }
+      //获取IE版本号
+      if(isIE){
+        var reIE = new RegExp("MSIE (\\d+\\.\\d+);");
+        reIE.test(userAgent);
+        var fIEVersion = parseFloat(RegExp["$1"]);	//IE版本号
+        
+      }
+    }
+  }
 };
 </script>
 
@@ -237,6 +271,23 @@
 @media screen and (max-width: 1280px){
   .login-info-title{
     font-size: 46px
+  }
+}
+
+.browserList{
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  margin-top:20px;
+  li{
+    width:50px;
+    height:50px;
+    margin: 0 20px;
+    cursor: pointer;
+    img{
+      width:100%;
+      height:100%;
+    }
   }
 }
 </style>

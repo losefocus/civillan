@@ -284,6 +284,7 @@
                 notifyTypes:'',
                 status:true
             }
+            this.notifyTypes = []
             this.createdLoading = false
             this.isshow = false
             this.$refs.form.resetFields()
