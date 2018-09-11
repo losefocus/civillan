@@ -33,7 +33,7 @@
       </div>
     </div>
 
-    <el-dialog title="" :visible.sync="dialogCheckVisible">
+    <el-dialog title="" :visible.sync="dialogCheckVisible" :showClose="false" :closeOnClickModal="false">
       <p style="text-align: center;font-size:16px">为了获得更好体验，平台不支持ie8及以下版本浏览器，推荐使用下列浏览器</p>
       <ul class="browserList clearfix">
         <li><img src="../../assets/img/chrome.png"></li>
@@ -82,18 +82,15 @@
       var isFF = userAgent.indexOf("Firefox") > -1; //判断是否Firefox浏览器
       var isSafari = userAgent.indexOf("Safari") > -1 && userAgent.indexOf("Chrome") == -1; //判断是否Safari浏览器
       var isChrome = userAgent.indexOf("Chrome") > -1 && userAgent.indexOf("Safari") > -1 && userAgent.indexOf("OPR/") == -1 && userAgent.indexOf("Edge") == -1; //判断Chrome浏览器
-      if(!(isChrome || isFF || isEdge)){
-        console.log(1223123)
-        this.dialogCheckVisible = true
-        
-      }else{
-        
-      }
+
       //获取IE版本号
       if(isIE){
         var reIE = new RegExp("MSIE (\\d+\\.\\d+);");
         reIE.test(userAgent);
         var fIEVersion = parseFloat(RegExp["$1"]);	//IE版本号
+
+        this.dialogCheckVisible = true
+      }else{
         
       }
     }

@@ -269,7 +269,7 @@
                     addRoleObj(data).then( res => {
                         if(res.data.success == true){
                             this.getRoleList()
-                            this.roleForm = {};
+                            this.roleForm = {status:true};
                             this.$parent.$parent.alertNotify('添加')
                             this.createdRoleLoading = false
                         }
