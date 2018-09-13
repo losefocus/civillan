@@ -2,7 +2,7 @@
   <div class="app-container calendar-list-container">
     <div class="filter-container clearfix">
       <div class="pull-right">
-        <el-select style="width: 200px;margin-right:10px;" class="filter-item" v-model="listQuery.type" clearable filterable placeholder="请选择" size="small" @change="handleFilter">
+        <el-select style="width: 200px!important;margin-right:10px;" class="filter-item" v-model="listQuery.type" clearable filterable placeholder="请选择" size="small" @change="handleFilter">
           <el-option v-for="item in dicts" :key="item.value" :label="item.label" :value="item.value">
           </el-option>
         </el-select>

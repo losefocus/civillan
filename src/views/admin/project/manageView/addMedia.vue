@@ -6,7 +6,7 @@
                 <el-input v-model="form.name" size="small" placeholder="请输入标题"></el-input>
             </el-form-item>
             <el-form-item label="类型" prop="type">
-                <el-select v-model="form.type" placeholder="请选择" size="small">
+                <el-select v-model="form.type" placeholder="请选择" size="small" @change="changeType">
                     <el-option
                     v-for="item in typeOptions"
                     :key="item.value"
@@ -114,8 +114,23 @@
     mounted() {},
     computed: {},
     methods:{
-        beforeUpload(){
-            this.uploadLoaing = true
+        changeType(){
+            console.log(this.form.type)
+            this.form.thumbnailFileBaseUrl = ''
+        },
+        beforeUpload(file){
+            if(this.form.type != 3){
+                const isLt3M = file.size / 1024 / 1024 < 3; //文件大小3M
+                if(!isLt3M){
+                    this.$message.error('上传文件大小不能超过 3MB!');
+                }else{
+                    this.uploadLoaing = true
+                }
+                return isLt3M;
+            }else{
+                this.uploadLoaing = true
+            }
+            
         },
         uploadSuccess(response, file, fileList){
             if(this.form.type == 3){

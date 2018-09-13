@@ -75,7 +75,7 @@
           <el-input v-model="form.label" placeholder="标签名"></el-input>
         </el-form-item>
         <el-form-item label="类型" prop="type">
-          <el-input v-model="form.type" placeholder="类型" :disabled="form.createdBy === 0"></el-input>
+          <el-input v-model="form.type" placeholder="类型" :disabled="form.createdBy === 0 && dialogStatus == 'update'"></el-input>
         </el-form-item>
         <!-- <el-form-item label="描述" prop="description">
           <el-input v-model="form.description" placeholder="描述"></el-input>
@@ -107,6 +107,34 @@
     waves
   },
   data() {
+    var validateValue = (rule, value, callback) => {
+      if (value === '' || value== undefined) {
+        callback(new Error('请输入数据值'));
+      } else {
+        callback();
+      }
+    };
+    var validateLabel = (rule, value, callback) => {
+      if (value === '' || value== undefined) {
+        callback(new Error('请输入标签名'));
+      } else {
+        callback();
+      }
+    };
+    var validateType = (rule, value, callback) => {
+      if (value === '' || value== undefined) {
+        callback(new Error('请输入类型'));
+      } else {
+        callback();
+      }
+    };
+    var validateRemarks = (rule, value, callback) => {
+      if (value === '' || value== undefined) {
+        callback(new Error('请输入备注信息'));
+      } else {
+        callback();
+      }
+    };
     return {
       list: null,
       total: null,
@@ -115,8 +143,13 @@
         page_index: 1,
         page_size: 20
       },
-      rules: {},
-      form: {},
+      rules: {
+        value:[{ validator: validateValue, message: '请输入数据值', trigger: 'blur' }],
+        label:[{ validator: validateLabel, message: '请输入标签名', trigger: 'blur' }],
+        type:[{ validator: validateType, message: '请输入类型', trigger: 'blur' }],
+        remarks:[{ validator: validateRemarks, message: '请输入备注信息', trigger: 'blur' }]
+      },
+      form: {sort:0},
       dialogFormVisible: false,
       dialogStatus: "",
       sys_dict_add: false,
@@ -251,6 +284,7 @@
     cancel(formName) {
       this.dialogFormVisible = false;
       const set = this.$refs;
+      this.form={sort:0}
       set[formName].resetFields();
     },
     update(formName) {

@@ -285,7 +285,6 @@ export default {
         },
         getParentOptions(msg) {
             this.categoryOptions = msg
-            console.log(msg)
         },
         getParentHash(msg) {
             this.categoryHash = msg

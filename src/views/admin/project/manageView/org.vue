@@ -5,7 +5,7 @@
             <el-button class="filter-item" style="" @click="objectTypeVisible = true"  size="small" type="primary" icon="edit" >机构类型</el-button>
             <el-button class="pull-right" type="primary" size="small" v-waves  @click="handleFilter">搜索</el-button>
             <el-input @keyup.enter.native="handleFilter" style="width: 150px;" size="small" suffix-icon="el-icon-search" class="pull-right" placeholder="机构名称" v-model="listQuery.name"></el-input>
-            <el-select v-model="listQuery.typeId" clearable @change="handleFilter" placeholder="按机构类型筛选" size="small" style="width:150px;margin-right:10px;" class="pull-right filter-item">
+            <el-select v-model="listQuery.typeId" clearable @change="handleFilter" placeholder="按机构类型筛选" size="small" style="width:150px!important;margin-right:10px;" class="pull-right filter-item">
                 <el-option
                 v-for="item in orgTypeOptions"
                 :key="item.value"
@@ -153,7 +153,7 @@ export default {
             orgTypeForm:{
                 name:'',
                 alias:'',
-                sort:'',
+                sort:0,
                 status:true,
             },
             orgTypeList:[],
@@ -344,7 +344,7 @@ export default {
             this.orgTypeForm={
                 name:'',
                 alias:'',
-                sort:'',
+                sort:0,
                 status:true,
             }
             this.$refs.orgTypeForm.resetFields()

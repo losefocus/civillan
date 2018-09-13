@@ -328,7 +328,6 @@ export default {
     //       this.role[i] = row.roleList[i].roleId;
     //     }
     //     deptRoleList(response.data.result.deptId).then(response => {
-    //       console.log(response.data)
     //       this.rolesOptions = response.data.result;
     //     });
     //   });

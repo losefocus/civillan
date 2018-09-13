@@ -194,7 +194,6 @@
             this.alarmDicts.forEach(res=>{
                 this.levelMap.set(res.value,res.label)
             })
-            console.log(this.levelMap)
         });
     },
     mounted() {
@@ -266,7 +265,6 @@
                     this.createdLoading = true
                     let data = Object.assign({},this.form)
                     data.status = data.status?1:0
-                    console.log(data)
                     editObj(data).then(res => {
                         this.getList(this.listQuery)
                         this.$parent.$parent.$parent.$parent.alertNotify('修改')

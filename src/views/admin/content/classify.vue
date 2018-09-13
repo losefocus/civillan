@@ -129,9 +129,9 @@
             listLoading:false,
             createdLoading:false,
             form:{
-                parentId:'',
+                parentId:0,
                 name:'',
-                sort:'',
+                sort:0,
                 status:true,
                 thumbnailPath:'',
                 thumbnailBaseUrl:''
@@ -254,9 +254,9 @@
         },
         resetTem(){
             this.form={
-                parentId:'',
+                parentId:0,
                 name:'',
-                sort:'',
+                sort:0,
                 status:true,
                 thumbnailPath:'',
                 thumbnailBaseUrl:''

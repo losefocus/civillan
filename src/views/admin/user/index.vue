@@ -303,7 +303,6 @@
       fetchTree().then(response => {
         this.treeDeptData = response.data.result;
         this.groupOptions = treeAddValue(response.data.result)
-        console.log(this.groupOptions)
         this.dialogDeptVisible = true;
       });
     },

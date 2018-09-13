@@ -66,7 +66,7 @@
             createdLoading:false,
             form:{
                 tagName:'',
-                sort:''
+                sort:0
             },
             flag:'add',
             listQuery:{
@@ -169,7 +169,7 @@
         resetTem(){
             this.form={
                 tagName:'',
-                sort:'',
+                sort:0,
             }
             this.createdLoading = false
             this.$refs.form.resetFields();

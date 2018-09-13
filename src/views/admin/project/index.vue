@@ -7,7 +7,7 @@
                     <el-button style="" @click="toProjectMap"  size="small" type="primary">项目地图</el-button>
                     <el-button class="pull-right" type="primary" size="small" v-waves  @click="handleFilter">搜索</el-button>
                     <el-input @keyup.enter.native="handleFilter" style="width: 150px;" size="small" suffix-icon="el-icon-search" class="pull-right" placeholder="项目名称" v-model="listQuery.name"></el-input>
-                    <el-select v-model="listQuery.adminer" clearable class="pull-right" placeholder="按管理员筛选" style="width:150px;margin-right:10px" size="small"  @change="handleFilter">
+                    <el-select v-model="listQuery.adminer" clearable class="pull-right" placeholder="按管理员筛选" style="width:150px!important;margin-right:10px" size="small"  @change="handleFilter">
                         <el-option
                         v-for="item in adminerOptions"
                         :key="item.value"
@@ -405,8 +405,14 @@
             }
             return r      
         },
-        beforeUpload(){
-            this.uploadLoaing = true
+        beforeUpload(file){
+            const isLt3M = file.size / 1024 / 1024 < 3; //文件大小3M
+            if(!isLt3M){
+                this.$message.error('上传图片大小不能超过 3MB!');
+            }else{
+                this.uploadLoaing = true
+            }
+            return isLt3M;
         },
         uploadSuccess(response, file, fileList){
             if(response.success == false){

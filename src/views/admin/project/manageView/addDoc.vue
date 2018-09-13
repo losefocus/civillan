@@ -15,6 +15,7 @@
                     :data="params"
                     name="uploadFile"
                     :show-file-list ="false"
+                    :before-upload='beforeUpload'
                     :on-success="uploadSuccess"
                     :file-list="fileList"
                     :auto-upload="true">
@@ -112,6 +113,15 @@
                 }
             })
             
+        },
+        beforeUpload(file){
+            const isLt3M = file.size / 1024 / 1024 < 3; //文件大小3M
+            if(!isLt3M){
+                this.$message.error('上传文件大小不能超过 3MB!');
+            }else{
+                // this.uploadLoaing = true
+            }
+            return isLt3M;
         },
         uploadSuccess(response, file, fileList){
             this.form.fileBaseUrl = response.result.baseUrl

@@ -107,7 +107,7 @@
                 categoryId:'',
                 label:'',
                 code:'',
-                sort:'',
+                sort:0,
                 status:true,
             },
             flag:'add',
@@ -227,7 +227,7 @@
                 categoryId:'',
                 label:'',
                 code:'',
-                sort:'',
+                sort:0,
                 status:true,
             }
             this.createdLoading = false

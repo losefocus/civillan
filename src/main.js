@@ -1,8 +1,12 @@
+
+// import 'es6-promise/auto'
 import Vue from 'vue'
 import VueAxios from 'vue-axios'
 import ElementUI from 'element-ui'
 import VueMoment from 'vue-moment'
 import axios from './router/axios'
+import App from './App';
+import 'babel-polyfill'
 import './permission' // 权限
 import './errorLog' // 错误日志
 import router from './router/router'
@@ -15,6 +19,7 @@ import './styles/common.scss'
 import VueAMap from 'vue-amap';
 import Clipboard from 'clipboard';
 import echarts from 'echarts';
+import AVUE from 'avue-cli/lib/avue.js'
 
 
 Vue.prototype.$echarts = echarts 
@@ -39,12 +44,12 @@ iconfontVersion.forEach(ele => {
 })
 
 // 默认加载根路径下的所有vue
-const name = 'App.vue'
-const App = (resolve) => {
-  require.ensure([], (require) => {
-    resolve(require.context('.', false, /\.vue$/)(`./${name}`))
-  }, 'app')
-}
+// const name = 'App.vue'
+// const App = (resolve) => {
+//   require.ensure([], (require) => {
+//     resolve(require.context('.', false, /\.vue$/)(`./${name}`))
+//   }, 'app')
+// }
 
 export function createApp() {
   const app = new Vue({

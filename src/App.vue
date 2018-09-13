@@ -57,7 +57,7 @@ export default {
 #subTable.el-table::before{
   height: 0 !important;
 }
-.projectManage .el-dialog__body,#product .el-dialog__body,.device_ .el-dialog__body{
+.projectManage .el-dialog__body,#product .el-dialog__body,.device_ .el-dialog__body,#messageContent .el-dialog__body{
     padding-top: 0 !important
 }
 #mapPosition .el-dialog__header{

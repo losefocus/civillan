@@ -142,7 +142,7 @@
             form:{
                 name:'',
                 key:'',
-                sort:'',
+                sort:0,
                 typeId:'',
                 content:'',
                 status:true,
@@ -263,7 +263,7 @@
             this.form = {
                 name:'',
                 key:'',
-                sort:'',
+                sort:0,
                 typeId:'',
                 content:'',
                 status:true

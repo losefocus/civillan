@@ -22,7 +22,8 @@ const createLintingRule = () => ({
 module.exports = {
 	context: path.resolve(__dirname, '../'),
 	entry: {
-		app: './src/entry-client.js'
+		// app: './src/entry-client.js'
+		app:  ["babel-polyfill", "./src/entry-client.js"]
 	},
 	output: {
 		path: config.build.assetsRoot,
@@ -58,7 +59,12 @@ module.exports = {
 			{
 				test: /\.js$/,
 				loader: 'babel-loader',
-				include: [resolve('src'), resolve('test'), resolve('node_modules/webpack-dev-server/client')]
+				include: [resolve('src'), resolve('test'),
+					// resolve('node_modules/webpack-dev-server/client'),
+					resolve('./node_modules/vue-moment'),
+					resolve('/node_modules/element-ui/src'), 
+					resolve('/node_modules/element-ui/packages'), 
+				]
 			},
 			{
 				test: /\.(png|jpe?g|gif|svg)(\?.*)?$/,

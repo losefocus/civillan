@@ -18,10 +18,15 @@
             <el-form-item label="" prop="label" style="width: 100px;margin-right:5px">
                 <el-input v-model="form.label" size="mini" auto-complete="off" placeholder="标识"></el-input>
             </el-form-item>
+            <el-form-item label="" prop="max_value" style="width: 100px;margin-right:5px" v-show="form.type == '1' || form.type == '2' || form.type == '4'">
+                <el-input v-model="form.max_value" size="mini" auto-complete="off" placeholder="最大值"></el-input>
+            </el-form-item>
+            <el-form-item label="" prop="min_value" style="width: 100px;margin-right:5px" v-show="form.type == '1' || form.type == '2' || form.type == '4'">
+                <el-input v-model="form.min_value" size="mini" auto-complete="off" placeholder="最小值"></el-input>
+            </el-form-item>
             <el-form-item label="" prop="sort" style="width: 60px;margin-right:5px">
                 <el-input v-model="form.sort" size="mini" auto-complete="off" placeholder="排序"></el-input>
             </el-form-item>
-            
             <el-form-item  :style="flag == 'add'?'width: 80px':'width: 150px'" class="pull-right">
                 <div v-if="flag == 'add'">
                     <el-button size="mini" type="primary" class="pull-right" @click="handleAdd('form')" :loading="createdLoading">添加</el-button>
@@ -139,6 +144,7 @@
                 page_index: 1,
                 page_size: 10
             },
+            listObj:{},
             total:null,
             templateData:null,
             options:[],
@@ -147,8 +153,10 @@
             form:{
                 name:'',
                 label:'',
-                sort:'',
+                sort:0,
                 type:'',
+                max_value:0,
+                min_value:0,
                 status:true
             },
             createdLoading:false,
@@ -166,7 +174,7 @@
         });
     },
     mounted() {
-        this.getList()
+        this.getList(1)
     },
     computed: {},
     methods:{
@@ -176,9 +184,26 @@
         },
         handleCurrentChange(val) {
             this.listQuery.page_index = val;
-            this.getList();
+            this.getList(val);
         },
-        getList(){
+        compare(prop) {
+            return function (obj1, obj2) {
+                var val1 = obj1[prop];
+                var val2 = obj2[prop];
+                if (!isNaN(Number(val1)) && !isNaN(Number(val2))) {
+                    val1 = Number(val1);
+                    val2 = Number(val2);
+                }
+                if (val1 < val2) {
+                    return -1;
+                } else if (val1 > val2) {
+                    return 1;
+                } else {
+                    return 0;
+                }            
+            } 
+        },
+        getList(index){
             this.listLoading = true
             let id
             this.productInfo.productTemplate.forEach(element => {
@@ -193,25 +218,13 @@
                 this.total = 0
                 if(data_.content && data_.content !=''){
                     this.originalList = JSON.parse(data_.content.replace(new RegExp("'",'gi'),'"'))
-                    this.list = JSON.parse(data_.content.replace(new RegExp("'",'gi'),'"'))
-                    // this.list.forEach(ele => {
-                    //     ele.type = findByvalue(this.options,ele.type)
-                    // });
-                    this.list.sort((a,b)=>{
-                        if(parseInt(a.sort) != parseInt(b.sort)){
-                            return parseInt(a.sort) - parseInt(b.sort)
-                        }else{
-                            return a.status - b.status
-                        }
-                    })
-                    this.originalList.sort((a,b)=>{
-                        if(parseInt(a.sort) != parseInt(b.sort)){
-                            return parseInt(a.sort) - parseInt(b.sort)
-                        }else{
-                            return a.status - b.status
-                        }
-                    })
-                    this.total = this.list.length
+                    let list_ = JSON.parse(data_.content.replace(new RegExp("'",'gi'),'"'))
+                    let length = list_.length
+                    list_.sort(this.compare('label'))
+                    this.originalList.sort(this.compare('label'))
+                    this.total = length
+                    this.list = list_.splice(index*10-10,index*10)
+                    
                 }
                 this.listLoading = false
             })
@@ -240,8 +253,9 @@
                 type: "warning"
                 }
             ).then(() => {
-                rows.splice(index, 1);
-                let content = (rows.length!=0)?JSON.stringify(rows):''
+                let [...dataList] = this.originalList
+                dataList.splice(index + (this.listQuery.page_index - 1)*10, 1);
+                let content = (dataList.length!=0)?JSON.stringify(dataList):''
                 this.templateData.content = content
                 this.setContent()
             }).catch(() => {});
@@ -259,19 +273,19 @@
                     obj.status = obj.status?1:0
                     obj.sort = (obj.sort == "" || obj.sort == undefined)?0:obj.sort
                     let [...dataList] = this.originalList
-                    dataList.splice(this.editIndex, 1,obj)
+                    dataList.splice(this.editIndex + (this.listQuery.page_index - 1)*10,1,obj)
                     this.templateData.content = JSON.stringify(dataList)
                     this.createdLoading = true
                     this.setContent()
                 }
-            })
-            
+            })  
         },
         // 保存变量
         setContent(){
             set_templateObj(this.templateData).then(res => {
                 if(res.data.success == true){
-                    this.getList()
+                    this.listQuery.page_index = 1
+                    this.getList(1)
                     this.cancelEdit()
                     this.$notify({
                         title: '成功',
@@ -297,8 +311,10 @@
             this.form={
                 name:'',
                 label:'',
-                sort:'',
+                sort:0,
                 type:'',
+                max_value:0,
+                min_value:0,
                 status:true
             }
             this.createdLoading = false
@@ -311,7 +327,7 @@
                 type: "success",
                 duration: 2000
             });
-            this.getList()
+            this.getList(1)
         },
         uploadError(){
             this.$notify.error({

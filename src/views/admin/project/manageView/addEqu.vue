@@ -2,8 +2,8 @@
     <div>
         <div class="tit"><h3>{{(flag == 'add')?'添加':'修改'}}设备</h3><span>{{(flag == 'add')?'Add':'Edit'}} Equipment</span></div>
         <el-form label-width="55px" :model="form"  ref="form" :rules="rules" label-position="left">
-            <el-form-item label="型号" prop="product.id">
-                <el-select v-model="form.product.id" size="small" placeholder="请选择型号" :disabled="disabled">
+            <el-form-item label="产品" prop="product.id">
+                <el-select v-model="form.product.id" size="small" placeholder="请选择产品" :disabled="disabled">
                     <el-option
                     v-for="item in productOptions"
                     :key="item.value"
@@ -188,8 +188,14 @@
         ...mapGetters(["permissions","groupOptions"])
     },
     methods:{
-        beforeUpload(){
-            this.uploadLoaing = true
+        beforeUpload(file){
+            const isLt3M = file.size / 1024 / 1024 < 3; //文件大小3M
+            if(!isLt3M){
+                this.$message.error('上传图片大小不能超过 3MB!');
+            }else{
+                this.uploadLoaing = true
+            }
+            return isLt3M;
         },
         uploadSuccess(response, file, fileList){
             this.form.thumbnailPath = response.result.path

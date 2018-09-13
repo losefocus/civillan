@@ -154,7 +154,6 @@
                     let data = Object.assign({},this.form)
                     data.status = data.status?1:0
                     this.createLoading = true
-                    console.log(data)
                     updataObj(data).then(res => {
                         this.$parent.$parent.$refs.moni.getList();
                         this.$parent.$parent.$parent.alertNotify('修改')

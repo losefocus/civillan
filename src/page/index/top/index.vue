@@ -92,7 +92,6 @@
   methods: { 
     chechOnline(){
       online(this.userInfo.id).then(res => {
-        console.log(res)
       })
     },
     initCollapse(){

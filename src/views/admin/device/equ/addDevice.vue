@@ -2,8 +2,8 @@
     <div class="addNewDevice">
         <div class="tit"><h3>{{(flag == 'add')?'添加':'修改'}}设备</h3><span>{{(flag == 'add')?'Add':'Edit'}} Equipment</span></div>
         <el-form label-width="55px" :model="form"  ref="form" :rules="rules" label-position="left">
-            <el-form-item label="型号" prop="product.id">
-                <el-select v-model="form.product.id" filterable :filter-method="productSearch" size="small" placeholder="请选择型号" :disabled="disabled">
+            <el-form-item label="产品" prop="product.id">
+                <el-select v-model="form.product.id" filterable :filter-method="productSearch" size="small" placeholder="请选择产品" :disabled="disabled">
                     <el-option
                     v-for="item in productOptions"
                     :key="item.value"
@@ -266,7 +266,6 @@
         },
         submitForm(formName){
             let data = Object.assign({},this.form)
-            console.log(data)
             data.status = data.status?1:0
             data.protocol = "string"
             data.passage = "string"

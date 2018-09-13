@@ -5,7 +5,7 @@
             <el-button class="filter-item" style="" @click="handleGroup" size="small" type="primary" icon="edit" >分组管理</el-button>
             <el-button class="pull-right" type="primary" size="small" v-waves  @click="handleFilter">搜索</el-button>
             <el-input @keyup.enter.native="handleFilter" style="width: 150px;" size="small" suffix-icon="el-icon-search" class="pull-right" placeholder="设备名称" v-model="listQuery.name"></el-input>
-            <el-select v-model="listQuery.deviceGroup" clearable class="pull-right" placeholder="按所在分组筛选" style="width:150px;margin-right:10px" size="small"  @change="handleFilter">
+            <el-select v-model="listQuery.deviceGroup" clearable class="pull-right" placeholder="按所在分组筛选" style="width:150px!important;margin-right:10px" size="small"  @change="handleFilter">
                 <el-option
                 v-for="item in groupOptions"
                 :key="item.value"
@@ -206,7 +206,6 @@
                 //     let ele = {value:element.id,label:element.name}
                 //     options.push(ele)
                 // });
-                // console.log(options)
             })
         },
         handleFilter(){

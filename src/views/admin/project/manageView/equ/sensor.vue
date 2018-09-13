@@ -18,6 +18,12 @@
             <el-form-item label="" prop="label" style="width: 100px;margin-right:5px">
                 <el-input v-model="form.label" size="mini" auto-complete="off" placeholder="标识"></el-input>
             </el-form-item>
+            <el-form-item label="" prop="max_value" style="width: 100px;margin-right:5px" v-show="form.type == 'float' || form.type == 'integer' || form.type == 'double'">
+                <el-input v-model="form.max_value" size="mini" auto-complete="off" placeholder="最大值"></el-input>
+            </el-form-item>
+            <el-form-item label="" prop="min_value" style="width: 100px;margin-right:5px" v-show="form.type == 'float' || form.type == 'integer' || form.type == 'double'">
+                <el-input v-model="form.min_value" size="mini" auto-complete="off" placeholder="最小值"></el-input>
+            </el-form-item>
             <el-form-item label="" style="width: 60px;margin-right:5px">
                 <el-input v-model="form.sort" size="mini" auto-complete="off" placeholder="排序"></el-input>
             </el-form-item>
@@ -72,6 +78,7 @@
                         <span>{{scope.row.type}}</span>
                     </template>
                 </el-table-column>
+
                 <el-table-column align="center" label="排序" width="60">
                     <template slot-scope="scope">
                         <span>{{scope.row.sort}}</span>
@@ -144,8 +151,10 @@
             form:{
                 name:'',
                 label:'',
-                sort:'',
+                sort:0,
                 type:'',
+                max_value:0,
+                min_value:0,
                 status:true
             },
             flag:'add',
@@ -263,8 +272,10 @@
             this.form={
                 name:'',
                 label:'',
-                sort:'',
+                sort:0,
                 type:'',
+                max_value:0,
+                min_value:0,
                 status:true
             }
             this.createdLoading = false

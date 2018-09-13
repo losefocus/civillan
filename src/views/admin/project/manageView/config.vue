@@ -48,7 +48,7 @@
         </div>
         <div>
             <el-checkbox v-model="allChecked" @change="checkAll">全选</el-checkbox>
-            <el-select v-model="valueType" placeholder="请选择操作" size="mini" style="width:120px;margin:0 10px">
+            <el-select v-model="valueType" placeholder="请选择操作" size="mini" style="width:120px!important;margin:0 10px">
                 <el-option label="批量删除" value="batchDelete"></el-option>
                 <el-option label="导出" value="export"></el-option>
             </el-select>
