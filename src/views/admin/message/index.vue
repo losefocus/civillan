@@ -240,7 +240,9 @@
                             duration: 2000
                         });
                         this.getList()
-                        
+                        this.restTemp()
+                    }).catch(err => {
+                        this.createLoading = false
                     })
                 }
             })

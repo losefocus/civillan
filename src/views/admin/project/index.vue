@@ -447,6 +447,8 @@
                         this.getList()
                         this.cancel(formName)
                         this.alertNotify('添加')
+                    }).catch(err => {
+                        this.createLoading = false
                     })
                 }
             });
@@ -500,6 +502,8 @@
                         this.getList()
                         this.cancel(formName)
                         this.alertNotify('修改')
+                    }).catch(err => {
+                        this.createLoading = false
                     })
                 }
             })

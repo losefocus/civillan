@@ -255,6 +255,8 @@
                             });
                         }
                         
+                    }).catch(err => {
+                        this.createLoading = false
                     })
                 }
             })
@@ -280,6 +282,8 @@
                                 type: 'error'
                             });
                         }
+                    }).catch(err => {
+                        this.createLoading = false
                     })
                 }
             });

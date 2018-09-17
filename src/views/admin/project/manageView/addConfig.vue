@@ -225,6 +225,8 @@
                         this.$parent.$parent.$refs.config.getList();
                         this.$parent.$parent.$parent.alertNotify('添加')
                         this.cancel()
+                    }).catch(err => {
+                        this.createLoading = false
                     })
                 }else{
                     
@@ -243,11 +245,12 @@
                         delete ele.flag
                     });
                     data.content = JSON.stringify(this.config_content)
-                    this.createLoading = true
                     editObj(data).then(res => {
                         this.$parent.$parent.$refs.config.getList();
                         this.$parent.$parent.$parent.alertNotify('修改')
                         this.cancel()
+                    }).catch(err => {
+                        this.createLoading = false
                     })
                 }
             })

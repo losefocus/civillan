@@ -94,6 +94,8 @@
                     });
                 }
                 this.saveLoading = false
+            }).catch(err => {
+                this.saveLoading = false
             })
         },
     }

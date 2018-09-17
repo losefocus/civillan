@@ -381,6 +381,8 @@
                         this.createLoading = false;
                         this.resetTemp()
                         this.alertNotify('添加');
+                    }).catch(err => {
+                        this.createLoading = false
                     })
                 }
             })

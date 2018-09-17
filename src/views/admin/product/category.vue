@@ -212,7 +212,7 @@
                     this.getList()
                     this.$parent.$parent.alertNotify('删除')
                 })
-            }).catch(() => {});
+            })
         },
         handleAdd(){
             this.$refs.form.validate((valid) => {
@@ -225,6 +225,8 @@
                         this.getList()
                         this.$parent.$parent.alertNotify('添加')
                         this.resetTem()
+                    }).catch(err => {
+                        this.createdLoading = false
                     })
                 }
             })
@@ -240,6 +242,8 @@
                         this.getList()
                         this.$parent.$parent.alertNotify('修改')
                         this.cancelEdit()
+                    }).catch(err => {
+                        this.createdLoading = false
                     })
                 }
             })

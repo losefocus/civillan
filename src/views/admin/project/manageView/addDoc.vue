@@ -107,6 +107,8 @@
                         this.$parent.$parent.$refs.doc.getList();
                         this.$parent.$parent.$parent.alertNotify('添加')
                         this.cancel()
+                    }).catch(err => {
+                        this.createLoading = false
                     })
                 }else{
                     
@@ -140,6 +142,8 @@
                         this.$parent.$parent.$refs.doc.getList();
                         this.$parent.$parent.$parent.alertNotify('修改')
                         this.cancel()
+                    }).catch(err => {
+                        this.createLoading = false
                     })
                 }
             })

@@ -158,6 +158,8 @@
                         duration: 2000
                     });
                 }
+            }).catch(err => {
+                this.createdLoading = false
             })
         },
         cancelEdit(){

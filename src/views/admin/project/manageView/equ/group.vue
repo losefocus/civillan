@@ -277,6 +277,8 @@
                         this.getList()
                         this.$parent.$parent.$parent.$parent.alertNotify('添加')
                         this.resetTem()
+                    }).catch(err => {
+                        this.createdLoading = false
                     })
                 }
             })
@@ -293,6 +295,8 @@
                         this.getList()
                         this.$parent.$parent.$parent.$parent.alertNotify('修改')
                         this.cancelEdit()
+                    }).catch(err => {
+                        this.createdLoading = false
                     })
                 }
             })
