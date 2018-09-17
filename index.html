@@ -12,7 +12,7 @@
   <link rel="stylesheet" href="<%= htmlWebpackPlugin.options.path %>/cdn/animate/3.5.2/animate.css">
   <link rel="stylesheet" href="<%= htmlWebpackPlugin.options.path %>/cdn/iconfont/1.0.0/index.css">
   <link rel="stylesheet" href="/static/cdn/iconfonts/iconfont.css">
-  <link href="/static/img/html_logo.png" rel="shortcut icon" />
+  <link rel="shortcut icon" href="/static/img/html_logo.png"  type="image/x-icon"/>
   <title>工程信息化智慧云平台管理系统</title>
   <link rel="manifest" href="manifest.json">
 </head>
@@ -38,6 +38,27 @@
       var s = document.getElementsByTagName("script")[0];
       s.parentNode.insertBefore(hm, s);
     })();
+
+    var userAgent = navigator.userAgent; //取得浏览器的userAgent字符串
+    var isOpera = userAgent.indexOf("Opera") > -1 || userAgent.indexOf("OPR/") > -1; //判断是否Opera浏览器
+    var isIE = userAgent.indexOf("compatible") > -1 && userAgent.indexOf("MSIE") > -1; //判断是否IE<11浏览器
+    var isIE11 = userAgent.indexOf('Trident') > -1 && userAgent.indexOf("rv:11.0") > -1//判断是否IE==11浏览器
+
+    var isEdge = userAgent.indexOf("Edge") > -1 || userAgent.indexOf(") like Gecko")>-1; //判断是否IE的Edge浏览器
+    var isFF = userAgent.indexOf("Firefox") > -1; //判断是否Firefox浏览器
+    var isSafari = userAgent.indexOf("Safari") > -1 && userAgent.indexOf("Chrome") == -1; //判断是否Safari浏览器
+    var isChrome = userAgent.indexOf("Chrome") > -1 && userAgent.indexOf("Safari") > -1 && userAgent.indexOf("OPR/") == -1 && userAgent.indexOf("Edge") == -1; //判断Chrome浏览器
+
+    //获取IE版本号
+    if(isIE){
+      var reIE = new RegExp("MSIE (\\d+\\.\\d+);");
+      reIE.test(userAgent);
+      var fIEVersion = parseFloat(RegExp["$1"]);	//IE版本号
+      console.log(fIEVersion)
+      alert('为了您的身体健康，换浏览器吧！不要再犹豫，就是现在，不要9998，也不要998，只要98，全新浏览器带回家，幸福生活你我他！！！')
+    }else{
+      console.log(2222222222)
+    }
 
   </script>
 </body>

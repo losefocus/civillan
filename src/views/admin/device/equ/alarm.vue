@@ -11,7 +11,7 @@
                     <el-form-item label="报警标题" prop="title" style="width: 310px">
                         <el-input v-model="form.title" size="mini" auto-complete="off"></el-input>
                     </el-form-item>
-                    <el-form-item label="报警周期" prop="cycle" style="width: 310px;;margin-left:30px">
+                    <el-form-item label="报警周期" prop="cycle" style="width: 310px;margin-left:30px;padding-bottom:1px;">
                         <el-select v-model="form.cycle" placeholder="请选择" size="mini">
                             <el-option
                             v-for="item in dicts"

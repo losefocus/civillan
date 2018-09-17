@@ -57,7 +57,7 @@
             </el-table-column>
             <el-table-column align="center" label="通知对象">
                 <template slot-scope="scope">
-                    <span>{{ scope.row.pushObject | pushObjectFilter()}}</span>
+                    <span>{{ scope.row.pushObject | pushObjectFilter}}</span>
                 </template>
             </el-table-column>
             <el-table-column align="center" label="操作">

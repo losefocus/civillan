@@ -1,12 +1,11 @@
-
-// import 'es6-promise/auto'
 import Vue from 'vue'
 import VueAxios from 'vue-axios'
 import ElementUI from 'element-ui'
 import VueMoment from 'vue-moment'
 import axios from './router/axios'
-import App from './App';
+import App from './App'
 import 'babel-polyfill'
+import 'es6-promise/auto'
 import './permission' // 权限
 import './errorLog' // 错误日志
 import router from './router/router'
@@ -63,3 +62,5 @@ export function createApp() {
     store
   }
 }
+
+
