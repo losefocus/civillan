@@ -30,7 +30,6 @@ const device = {
     }) || [],
   },
   actions: {
-    
   },
   mutations: {
 
