@@ -241,16 +241,12 @@
         },
         updataEqu(row){
             this.$parent.cardVisibel = true
-            this.$parent.$refs.addEqu.flag = 'updata'
+            this.$parent.$refs.addEqu.flag = 'update'
+            if(!row.product) row.product ={id:'暂无产品'}
             this.$parent.$refs.addEqu.form = Object.assign({},row)
             this.$parent.$refs.addEqu.form.status = row.status === 1?true:false
             this.$parent.$refs.addEqu.form.deviceGroup = {id:row.deviceGroup.id}
             this.$parent.$refs.addEqu.disabled = true
-        },
-        handleUpdataEqu(){
-            updataObj().then(res => {
-                this.$parent.$parent.alertNotify('修改')
-            })
         },
         handleCommand(command){
             if(command.value == 'edit') this.updataEqu(command.row)

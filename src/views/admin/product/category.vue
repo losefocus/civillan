@@ -1,7 +1,7 @@
 <template>
     <div>
         <el-form :model="form" class="clearfix" ref="form" :rules="rules" size="small" label-width="50px">
-            <el-form-item label="上级" prop="parentId" style="width: 220px;margin-right:5px">
+            <el-form-item label="上级" prop="parentId" style="width: 170px;margin-right:5px">
                 <el-select v-model="form.parentId" size="mini" placeholder="请选择上级分类">
                     <el-option
                     v-for="item in categoryOptions"
@@ -11,13 +11,16 @@
                     </el-option>
                 </el-select>
             </el-form-item>
-            <el-form-item label="名称" prop="name" style="width: 210px;margin-right:5px">
-                <el-input v-model="form.name" size="mini" auto-complete="off" placeholder="名称"></el-input>
+            <el-form-item label="名称" prop="name" style="width: 170px;margin-right:5px" >
+                <el-input v-model="form.name" size="mini" auto-complete="off" placeholder="名称" @blur="checkName"></el-input>
             </el-form-item>
-            <el-form-item label="排序" style="width: 210px;">
+            <el-form-item label="标识" prop="code" style="width: 170px;" >
+                <el-input v-model="form.code" size="mini" auto-complete="off" placeholder="标识" @blur="checkCode"></el-input>
+            </el-form-item>
+            <el-form-item label="排序" style="width: 130px;">
                 <el-input v-model="form.sort" size="mini" auto-complete="off" placeholder="排序"></el-input>
             </el-form-item>
-            <el-form-item label="图片" style="width: 210px;">
+            <el-form-item label="图片" style="width: 170px;">
                 <el-upload
                     v-loading='uploadLoaing'
                     class="avatar-uploader"
@@ -54,7 +57,7 @@
                         </div>
                     </template>
                 </el-table-column>
-                <el-table-column align="center" label="名称" width="160">
+                <el-table-column align="center" label="名称" width="120">
                     <template slot-scope="scope">
                         <span>{{scope.row.name}}</span>
                     </template>
@@ -64,6 +67,12 @@
                         <span>{{categoryHash.get(scope.row.parentId)}}</span>
                     </template>
                 </el-table-column>
+                <el-table-column align="center" label="标识" width="80">
+                    <template slot-scope="scope">
+                        <span>{{scope.row.code}}</span>
+                    </template>
+                </el-table-column>
+
                 <el-table-column align="center" label="排序" width="60">
                     <template slot-scope="scope">
                         <span>{{scope.row.sort}}</span>
@@ -107,15 +116,27 @@
         };
         var validateName = (rule, value, callback) => {
             if (value === '' || value== undefined) {
-                callback(new Error('请选择类型'));
+                callback(new Error('请输入名称'));
+            }else if(this.isName == true){
+                callback(new Error('名称不能重复'));
+            } else {
+                callback();
+            }
+        };
+        var validateCode = (rule, value, callback) => {
+            if (value === '' || value== undefined) {
+                callback(new Error('请输入标识'));
+            }else if(this.isCode == true){
+                callback(new Error('标识不能重复'));
             } else {
                 callback();
             }
         };
         return {
             rules: {
-                parentId: [{ validator: validateParentId, message: '请选择上级分类', trigger: 'change' }],
-                name: [{ validator: validateName, message: '请输入名称', trigger: 'blur' }],
+                parentId: [{ validator: validateParentId, message: '请选择上级分类', trigger: 'change' }],                
+                name: [{ validator: validateName, trigger: 'blur' }],
+                code: [{ validator: validateCode, trigger: 'blur' }],
             },
             listLoading:false,
             createdLoading:false,
@@ -138,7 +159,9 @@
             total:null,
             list:null,
             categoryOptions:[],
-            categoryHash:{0:'无'}
+            categoryHash:{0:'无'},
+            isName:false,
+            isCode:false,
         }
     },
     created() {
@@ -151,6 +174,20 @@
         ...mapGetters(["alarmList"]),
     },
     methods:{
+        checkName(){
+            let data = {name:this.form.name}
+            fetchList(data).then(res => {
+                this.isName = (res.data.result.total != 0)?true:false    
+                this.$refs.form.validateField('name')
+            })
+        },
+        checkCode(){
+            let data = {code:this.form.code}
+            fetchList(data).then(res => {
+                this.isCode = (res.data.result.total != 0)?true:false    
+                this.$refs.form.validateField('code')
+            })
+        },
         beforeUpload(file){
             const isLt3M = file.size / 1024 / 1024 < 3; //文件大小3M
             if(!isLt3M){
@@ -277,7 +314,7 @@
 }
 .avatar-uploader{
      height: 80px;
-     width: 170px;
+     width: 120px;
 }
 .avatar-uploader .el-upload {
     border: 1px dashed #d9d9d9;
@@ -292,7 +329,7 @@
   .avatar-uploader-icon {
     font-size: 28px;
     color: #8c939d;
-    width: 170px;
+    width: 120px;
     height: 80px;
     line-height: 80px;
     text-align: center;
@@ -301,7 +338,7 @@
     box-sizing: border-box
   }
   .avatar {
-    width: 170px;
+    width: 120px;
     height: 80px;
     display: block;
     border-radius: 4px;

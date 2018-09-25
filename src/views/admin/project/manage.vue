@@ -1,19 +1,21 @@
 <template>
     <div class=" clearfix projectManage" >
         <div class="pull-left containers">
-            <div class="filter-container">
-            <el-button @click="toProjectIndex" size="small" >返回项目列表</el-button>
-            <span style="margin-left:20px">项目名称: {{viewData.name}}</span>
-            <el-radio-group v-model="tabView" size="small" style="margin-bottom: 30px;" class="pull-right" @change="cardVisibel=false">
-                <el-radio-button label="info" :disabled="viewData.children.length != 0">项目详情</el-radio-button>
-                <el-radio-button label="org">机构设置</el-radio-button>
-                <el-radio-button label="per">人员管理</el-radio-button>
-                <el-radio-button label="equ" :disabled="viewData.children.length != 0">设备管理</el-radio-button>
-                <el-radio-button label="doc">文档资料</el-radio-button>
-                <el-radio-button label="media">现场影像</el-radio-button>
-                <!-- <el-radio-button label="moni">视频监控</el-radio-button> -->
-                <el-radio-button label="config">作业配置</el-radio-button>
-            </el-radio-group>
+            <div class="filter-container clearfix">
+                <!-- <div class="clearfix pull-left"> -->
+                    <el-button @click="toProjectIndex" size="small" class="pull-left">返回项目列表</el-button>
+                    <span style="margin-left:20px;" class="pull-left" :class="{projectName:true}">项目名称: {{viewData.name}}</span>
+                <!-- </div> -->
+                <el-radio-group v-model="tabView" size="small" class="pull-right" @change="cardVisibel=false">
+                    <el-radio-button label="info" :disabled="viewData.children.length != 0">项目详情</el-radio-button>
+                    <el-radio-button label="org">机构设置</el-radio-button>
+                    <el-radio-button label="per">人员管理</el-radio-button>
+                    <el-radio-button label="equ" :disabled="viewData.children.length != 0">设备管理</el-radio-button>
+                    <el-radio-button label="doc">文档资料</el-radio-button>
+                    <el-radio-button label="media">现场影像</el-radio-button>
+                    <!-- <el-radio-button label="moni">视频监控</el-radio-button> -->
+                    <el-radio-button label="config">作业配置</el-radio-button>
+                </el-radio-group>
             </div>
             <div style="padding-top:20px;position:relative">
                 <info v-if="tabView === 'info'" :project-info="viewData" ref="info"></info>
@@ -101,7 +103,14 @@
 }
 </script>
 <style scoped>
-
+.projectName{
+    max-width:290px;
+    height: 32px;
+    line-height: 32px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
 .el-form-item{
     margin-bottom: 15px
 }
