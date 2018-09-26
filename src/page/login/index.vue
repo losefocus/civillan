@@ -1,5 +1,6 @@
 <template>
   <div class="login-container pull-height" @keyup.enter.native="handleLogin">
+    <div class="bgImage" :style="bgStyle"></div>
     <div class="login-left">
       <div class="logoImg animated fadeInLeft"></div>
       <div class="login-info text-white animated fadeInLeft">
@@ -49,6 +50,7 @@
   import topTheme from "../index/top/top-theme";
   import theme from "@/mixins/theme";
   import {mapGetters} from "vuex";
+  import bgImg from '@/assets/img/login.png'
 
   export default {
   name: "login",
@@ -62,7 +64,8 @@
   data() {
     return {
       activeName: "user",
-      dialogCheckVisible:false
+      dialogCheckVisible:false,
+      bgStyle:{'background-image':'url("'+bgImg+'")'}
     };
   },
   created() {},
@@ -115,7 +118,7 @@
   background: rgba(0, 0, 0, 0.3);
   position: relative;
 }
-.login-container::before {
+.login-container .bgImage {
   z-index: -999;
   content: "";
   position: absolute;
@@ -124,7 +127,6 @@
   width: 100%;
   height: 100%;
   // background-image: url("../../assets/img/login.png");
-  background-image: url("../../../static/img/login.png");
   background-size: cover;
 }
 .login-left{

@@ -4,6 +4,24 @@
       <el-col :span="12">
         <div class="grid-content bg-purple">
           <el-form :model="ruleForm2" :rules="rules2" ref="ruleForm2" label-width="100px" class="demo-ruleForm">
+            <el-form-item label="头像">
+              <div style="border:1px solid #dcdfe6;border-radius:5px;cursor: pointer;width:200px;height:200px;">
+                <my-upload field="uploadFile" @crop-upload-success="cropUploadSuccess" v-model="show" :width="300" :height="300" url="/file/attachment/upload" :headers="headers" img-format="png" :params="params"></my-upload>
+                <img v-if="ruleForm2.avatarBaseUrl!=''" :src="ruleForm2.avatarBaseUrl+ruleForm2.avatarPath" style="width:200px;height:200px;" @click="toggleShow">
+                <!-- <img v-else style="width:200px;height:200px" src="../../../assets/img/no_photo.png" @click="toggleShow"> -->
+                <!-- <el-button type="primary" @click="toggleShow" size="mini">选择
+                  <i class="el-icon-upload el-icon--right"></i>
+                </el-button> -->
+                <i v-else class="el-icon-plus" @click="toggleShow" style="color:#8c939d;width:200px;height:200px;font-size:28px;line-height:200px;text-align: center;"></i>
+              </div>
+            </el-form-item>
+            <el-form-item label="主题色">
+              <div class="clearfix">
+                <top-theme class="pull-left"></top-theme>
+                <el-input class="pull-right" :value="themeVal" disabled style="width:calc(100% - 60px)"></el-input>
+              </div>
+              
+            </el-form-item>
             <el-form-item label="用户名" prop="username">
               <el-input type="text" :value="ruleForm2.username" disabled></el-input>
             </el-form-item>
@@ -25,14 +43,6 @@
             <el-form-item label="手机号" prop="mobile">
               <el-input v-model="ruleForm2.mobile" placeholder="验证码登录使用"></el-input>
             </el-form-item>
-            <el-form-item label="头像">
-              <my-upload field="uploadFile" @crop-upload-success="cropUploadSuccess" v-model="show" :width="300" :height="300" url="/file/attachment/upload" :headers="headers" img-format="png" :params="params"></my-upload>
-              <img v-if="ruleForm2.avatarBaseUrl!=''" :src="ruleForm2.avatarBaseUrl+ruleForm2.avatarPath" style="width:200px;height:200px;">
-              <img v-else style="width:200px;height:200px" src="../../../assets/img/no_photo.png">
-              <el-button type="primary" @click="toggleShow" size="mini">选择
-                <i class="el-icon-upload el-icon--right"></i>
-              </el-button>
-            </el-form-item>
             <el-form-item>
               <el-button type="primary" size="small" @click="submitForm('ruleForm2')">提交</el-button>
               <el-button @click="resetForm('ruleForm2')" size="small">重置</el-button>
@@ -52,12 +62,15 @@
   import {getToken} from "@/util/auth";
   import ElFormItem from "element-ui/packages/form/src/form-item.vue";
   import request from "@/router/axios";
-
+  import topTheme from "../../../page/index/top/top-theme";
+  import theme from "@/mixins/theme";
   export default {
   components: {
+    topTheme,
     ElFormItem,
     "my-upload": myUpload
   },
+  mixins: [theme()],
   data() {
     var validatePass = (rule, value, callback) => {
       if (value === "") {
@@ -115,6 +128,7 @@
   created(){
     if(this.userInfo)this.ruleForm2 = this.userInfo
     this.ruleForm2.password = ""
+    console.log(this.themeVal)
   },
   methods: {
     submitForm(formName) {
