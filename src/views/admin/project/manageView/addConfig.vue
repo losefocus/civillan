@@ -44,7 +44,7 @@
                     <el-input v-model="content_form.value" size="mini" placeholder="值"></el-input>
                 </el-form-item>
                 <el-form-item label="" style="width:60px">
-                    <el-button type="primary" size="mini" style="width:60px;" @click="addContent">添加</el-button>
+                    <el-button type="primary" size="mini" style="width:60px;" @click="addContent" icon="el-icon-plus"></el-button>
                 </el-form-item>
             </el-form>
         </div>

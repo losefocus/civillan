@@ -15,11 +15,11 @@
           <top-theme></top-theme>
         </span>
       </el-tooltip>
-      <el-tooltip class="item" effect="dark" content="锁屏" placement="bottom" :open-delay="300">
+      <!-- <el-tooltip class="item" effect="dark" content="锁屏" placement="bottom" :open-delay="300">
         <span class="top-item">
           <top-lock></top-lock>
         </span>
-      </el-tooltip>
+      </el-tooltip> -->
       <el-tooltip class="item" effect="dark" :content="isFullScren?'退出全屏':'全屏'" placement="bottom" :open-delay="300">
         <span class="top-item">
           <i :class="isFullScren?'icon-tuichuquanping':'icon-quanping'" @click="handleScreen"></i>
@@ -40,7 +40,7 @@
             <router-link to="/wel/index">控制台</router-link>
           </el-dropdown-item>
           <el-dropdown-item>
-            <router-link to="/info/index">用户资料</router-link>
+            <router-link to="/info/index">个人设置</router-link>
           </el-dropdown-item>
           <el-dropdown-item @click.native="logout" divided>退出系统</el-dropdown-item>
         </el-dropdown-menu>

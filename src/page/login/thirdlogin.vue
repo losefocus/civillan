@@ -43,7 +43,7 @@
     text-align: center;
   }
   & > .third-icon.qq {
-    border-color: #30a487;
+    border-color: #409eff;
   }
   & > .third-icon.wechat {
     border-color: #67c23a;

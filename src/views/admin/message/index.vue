@@ -75,6 +75,7 @@
 <script>
   import {delObj, fetchList, fetchUserList, pushObj} from "@/api/notification";
   import {findByvalue} from "@/util/util";
+  import {mapState} from "vuex";
 
   export default {
     data() {
@@ -149,6 +150,11 @@
         userIds:[]
       }
     },
+    computed: {
+        ...mapState({
+            userInfo: state => state.user.userInfo,
+        }),
+    },
     filters: {
         pushObjectFilter(pushObject) {
             const pushObjectMap = {
@@ -178,6 +184,7 @@
             let el={
                 page_index:1,
                 page_size:9999,
+                tenant:this.userInfo.tenant
             }
             fetchUserList(el).then(res => {
                 res.data.result.items.forEach(element => {
@@ -188,6 +195,7 @@
         },
         getList(){
             this.listLoading = true
+            this.listQuery.tenant = this.userInfo.tenant
             fetchList(this.listQuery).then(res => {
                 this.list = res.data.result.items
                 this.total = res.data.result.total
@@ -229,6 +237,7 @@
                                 message: '缺少前台用户信息',
                                 type: 'warning'
                             });
+                            this.createLoading = false
                             return
                         }
                     }
