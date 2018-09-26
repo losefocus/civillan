@@ -123,7 +123,8 @@
   top: 0;
   width: 100%;
   height: 100%;
-  background-image: url("../../assets/img/login.png");
+  // background-image: url("../../assets/img/login.png");
+  background-image: url("../../../static/img/login.png");
   background-size: cover;
 }
 .login-left{
