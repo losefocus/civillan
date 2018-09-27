@@ -21,7 +21,7 @@
                 <el-table-column align="center" label="缩略图" width="80">
                     <template slot-scope="scope">
                         <div style="height:40px">
-                            <img v-if="scope.row.thumbnailUrl!=''" style="width:60px;height:40px" :src="scope.row.thumbnailUrl+scope.row.thumbnailPath">
+                            <img v-if="scope.row.thumbnailUrl&&scope.row.thumbnailUrl!=''" style="width:60px;height:40px" :src="scope.row.thumbnailUrl+scope.row.thumbnailPath">
                             <img v-else style="width:60px;height:40px" src="../../../assets/img/no_pic.png">
                         </div>
                     </template>

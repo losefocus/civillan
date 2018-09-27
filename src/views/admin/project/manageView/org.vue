@@ -18,7 +18,7 @@
             <el-table-column align="left" label="机构名称" min-width="170px">
                 <template slot-scope="scope">
                     <el-tooltip class="item" effect="dark" :content="scope.row.name" placement="top-start" :open-delay="300">
-                        <span style="white-space:nowrap;cursor:pointer;"><a>{{scope.row.name}}</a></span>
+                        <span style="white-space:nowrap;cursor:pointer;">{{scope.row.name}}</span>
                     </el-tooltip>
                 </template>
             </el-table-column>

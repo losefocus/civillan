@@ -7,7 +7,7 @@
                     <el-button style="" @click="toProjectMap"  size="small" type="primary">项目地图</el-button>
                     <el-button class="pull-right" type="primary" size="small" v-waves  @click="handleFilter">搜索</el-button>
                     <el-input @keyup.enter.native="handleFilter" style="width: 150px;" size="small" suffix-icon="el-icon-search" class="pull-right" placeholder="项目名称" v-model="listQuery.name"></el-input>
-                    <el-select v-model="listQuery.adminer" clearable class="pull-right" placeholder="按管理员筛选" style="width:150px!important;margin-right:10px" size="small"  @change="handleFilter">
+                    <el-select v-model="listQuery.adminer" clearable class="pull-right" placeholder="按项目管理员筛选" style="width:150px!important;margin-right:10px" size="small"  @change="handleFilter">
                         <el-option
                         v-for="item in adminerOptions"
                         :key="item.value"
@@ -24,7 +24,7 @@
                                     <el-table-column align="left" label="项目名称" min-width="250">
                                         <template slot-scope="pro">
                                             <div style="white-space:nowrap;width:100%;height:45px;padding-left:20px;">
-                                                <img v-if="pro.row.thumbnailUrl!=''" style="height:45px;width:60px;" class="pull-left" :src="pro.row.thumbnailUrl+pro.row.thumbnailPath">
+                                                <img v-if="pro.row.thumbnailUrl&&pro.row.thumbnailUrl!=''" style="height:45px;width:60px;" class="pull-left" :src="pro.row.thumbnailUrl+pro.row.thumbnailPath">
                                                 <img v-else style="width:60px;height:45px" src="../../../assets/img/no_pic.png">
                                                 <el-tooltip class="item" effect="dark" :content="pro.row.name" placement="top-start" :open-delay="300">
                                                     <span style="white-space:nowrap;cursor: pointer;"><a style="overflow: hidden;text-overflow:ellipsis;line-height:45px;padding:0 10px;width:calc(100% - 80px)" @click="toInfo(pro.row)">{{pro.row.name}}</a></span>
@@ -68,7 +68,7 @@
                         <el-table-column align="left" label="项目名称" min-width="250">
                             <template slot-scope="scope">
                                 <div style="white-space:nowrap;width:100%;height:45px">
-                                    <img v-if="scope.row.thumbnailUrl!=''" style="height:45px;width:60px;" class="pull-left" :src="scope.row.thumbnailUrl+scope.row.thumbnailPath">
+                                    <img v-if="scope.row.thumbnailUrl&&scope.row.thumbnailUrl!=''" style="height:45px;width:60px;" class="pull-left" :src="scope.row.thumbnailUrl+scope.row.thumbnailPath">
                                     <img v-else style="width:60px;height:45px" src="../../../assets/img/no_pic.png">
                                     <el-tooltip class="item" effect="dark" :content="scope.row.name" placement="top-start" :open-delay="300">
                                         <span style="white-space:nowrap;">

@@ -18,14 +18,14 @@
             <el-table-column align="center" label="缩略图" width="80px">
                 <template slot-scope="scope">
                     <div style="height:45px">
-                        <img v-if="scope.row.thumbnailBaseUrl!=''" style="width:60px;height:45px" :src="scope.row.thumbnailBaseUrl+scope.row.thumbnailPath">
+                        <img v-if="scope.row.thumbnailBaseUrl&&scope.row.thumbnailBaseUrl!=''" style="width:60px;height:45px" :src="scope.row.thumbnailBaseUrl+scope.row.thumbnailPath">
                         <img v-else style="width:60px;height:45px" src="../../../../assets/img/no_pic.png">
                     </div>
                 </template>
             </el-table-column>
             <el-table-column align="left" label="设备名称">
                 <template slot-scope="scope">
-                    <span style="white-space:nowrap;cursor:pointer;"><a>{{scope.row.name}}</a></span>
+                    <span style="white-space:nowrap;cursor:pointer;">{{scope.row.name}}</span>
                 </template>
             </el-table-column>
             <el-table-column align="center" label="所在分组">

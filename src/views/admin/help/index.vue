@@ -12,7 +12,7 @@
                             <el-tag type="info" size="mini" style="margin-left:5px" v-for="(ele,i) in item.articleTags" :key="i">{{ele.tagName}}</el-tag>
                         </span>
                         </template>
-                        <div style="overflow:auto;border-top:1px solid #ebeef5;padding-top:10px;min-height:40px" v-loading="contentLoading"><p v-html="content"></p></div>
+                        <div style="overflow:auto;border-top:1px solid #ebeef5;padding:10px 20px 0;min-height:40px" v-loading="contentLoading"><p v-html="content"></p></div>
                     </el-collapse-item>
                 </el-collapse>
             </el-tab-pane>
@@ -26,7 +26,7 @@
                             <el-tag type="info" size="mini" style="margin-left:5px" v-for="(ele,i) in item.articleTags" :key="i">{{ele.tagName}}</el-tag>
                         </span>
                         </template>
-                        <div style="overflow:auto;border-top:1px solid #ebeef5;padding-top:10px;min-height:40px" v-loading="contentLoading"><p v-html="content"></p></div>
+                        <div style="overflow:auto;border-top:1px solid #ebeef5;padding:10px 20px 0 ;min-height:40px" v-loading="contentLoading"><p v-html="content"></p></div>
                     </el-collapse-item>
                 </el-collapse>
             </el-tab-pane>
