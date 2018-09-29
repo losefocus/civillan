@@ -5,6 +5,14 @@
             <el-button class="filter-item" style="" size="small" type="primary" @click="configTemplateVisible=true">导入</el-button>
             <el-button class="pull-right" type="primary" size="small" v-waves  @click="handleFilter">搜索</el-button>
             <el-input @keyup.enter.native="handleFilter" style="width: 150px;" size="small" suffix-icon="el-icon-search" class="pull-right" placeholder="按名称搜索" v-model="listQuery.name"></el-input>
+            <el-select v-model="listQuery.typeId" size="small" clearable class="pull-right" placeholder="按类型筛选" style="width: 150px !important;margin-right:20px;" @change="changeTypeFilter">
+                <el-option
+                v-for="item in typeOptions"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value">
+                </el-option>
+            </el-select>
         </div>
         <el-table :data="list" v-loading="listLoading" ref="multipleTable" fit highlight-current-row style="width: 99%;margin-bottom:20px;" @selection-change="handleSelectionChange">
             <el-table-column type="selection" min-width="55"></el-table-column>
@@ -232,6 +240,10 @@
                 this.total = res.data.result.total
                 this.listLoading = false
             })
+        },
+        changeTypeFilter(){
+            this.listQuery.page_index = 1;
+            this.getList()
         },
         handleFilter(){
             if(this.listQuery.name == '') delete this.listQuery.name

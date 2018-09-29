@@ -36,14 +36,14 @@
             <el-table-column align="center" label="key" >
                 <template slot-scope="scope">
                     <el-tooltip class="item" effect="dark" :content="scope.row.key" placement="top" :open-delay="300">
-                        <i style="cursor:pointer;color:#409eff" class="iconfont icon-fuzhi copy_key" :data-clipboard-text="scope.row.key" @click="copy()" ></i>
+                        <i style="cursor:pointer;color:#95989e" class="iconfont icon-fuzhi copy_key" :data-clipboard-text="scope.row.key" @click="copy()" ></i>
                     </el-tooltip>
                 </template>
             </el-table-column>
             <el-table-column align="center" label="secret">
                 <template slot-scope="scope">
                     <el-tooltip class="item" effect="dark" :content="scope.row.secret" placement="top" :open-delay="300">
-                        <i style="cursor:pointer;color:#409eff" class="iconfont icon-fuzhi copy_key" :data-clipboard-text="scope.row.secret" @click="copy()" ></i>
+                        <i style="cursor:pointer;color:#95989e" class="iconfont icon-fuzhi copy_key" :data-clipboard-text="scope.row.secret" @click="copy()" ></i>
                     </el-tooltip>
                 </template>
             </el-table-column>
@@ -242,7 +242,7 @@
         updataEqu(row){
             this.$parent.cardVisibel = true
             this.$parent.$refs.addEqu.flag = 'update'
-            if(!row.product) row.product ={id:'暂无产品'}
+            if(!row.product) row.product = {id:'暂无产品'}
             this.$parent.$refs.addEqu.form = Object.assign({},row)
             this.$parent.$refs.addEqu.form.status = row.status === 1?true:false
             this.$parent.$refs.addEqu.form.deviceGroup = {id:row.deviceGroup.id}

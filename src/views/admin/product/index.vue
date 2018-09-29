@@ -4,11 +4,11 @@
         <div  style="width:100%">
             <div class="filter-container">
                 <el-button  size="small" type="primary" @click="handleAdd">添加产品</el-button>
-                <el-button  size="small" type="primary" @click="classifyTemplatVisible=true">类型管理</el-button>
+                <el-button  size="small" type="primary" @click="classifyTemplatVisible=true">分类管理</el-button>
                 <el-button  size="small" type="primary" @click="dictTemplatVisible=true">参数字典</el-button>
                 <el-button class="pull-right" type="primary" size="small" v-waves @click="handleFilter">搜索</el-button>
                 <el-input @keyup.enter.native="handleFilter" style="width: 200px;" size="small" suffix-icon="el-icon-search" class="pull-right" placeholder="产品名称   " v-model="listQuery.name"></el-input>
-                <el-select v-model="listQuery.productCategory" clearable class="pull-right" placeholder="按分类筛选" style="width:150px !important;margin-right:10px" size="small"  @change="handleFilter">
+                <el-select v-model="listQuery.productCategory" clearable class="pull-right" placeholder="按分类筛选" style="width:150px !important;margin-right:10px" size="small"  @change="handleCategoryFilter">
                     <el-option
                     v-for="item in categoryOptions_"
                     :key="item.value"
@@ -43,7 +43,7 @@
                 <el-table-column align="center" label="产品标识" width="95">
                     <template slot-scope="scope">
                         <el-tooltip class="item" effect="dark" :content="scope.row.key" placement="top" :open-delay="300">
-                            <i style="cursor:pointer;color:#409eff" class="iconfont icon-fuzhi copy_key" :data-clipboard-text="scope.row.key" @click="copy"></i>
+                            <i style="cursor:pointer;color:#95989e" class="iconfont icon-fuzhi copy_key" :data-clipboard-text="scope.row.key" @click="copy"></i>
                         </el-tooltip>
                     </template>
                 </el-table-column>
@@ -295,6 +295,7 @@
                 this.categoryOptions = toTree(data)
                 this.categoryOptions_ = toTree(data)
                 this.categoryOptions.unshift({value:0,label:'无'})
+                this.categoryOptions_.unshift({value:0,label:'所有分类'})
                 this.listLoading = false
             });
         },
@@ -317,6 +318,12 @@
         },
         handleFilter(){
             if(this.listQuery.name == '') delete this.listQuery.name
+            this.listQuery.page_index = 1;
+            this.getList()
+        },
+        handleCategoryFilter(){
+            console(123123)
+            if(val == 0) {}
             this.listQuery.page_index = 1;
             this.getList()
         },

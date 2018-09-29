@@ -26,7 +26,7 @@
         <el-col :span="10">
           <div class="login-code">
             <span class="login-code-img" @click="refreshCode" v-if="code.type == 'text'">{{code.value}}</span>
-            <img :src="code.src" alt="验证码" class="login-code-img" @click="refreshCode" v-else/>
+            <img :src="code.src" alt="验证码" style="cursor: pointer;" class="login-code-img" @click="refreshCode" v-else/>
             <!-- <i class="icon-shuaxin login-code-icon" @click="refreshCode"></i> -->
           </div>
         </el-col>
@@ -129,5 +129,4 @@
 </script>
 
 <style>
-
 </style>
