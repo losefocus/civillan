@@ -131,7 +131,7 @@
                         </el-select>
                     </el-form-item>
                     <el-form-item label="名称" prop="name">
-                        <el-input v-model="form.name" size="small" placeholder="请输入内容"></el-input>
+                        <el-input v-model="form.name" size="small" placeholder="请输入项目名称"></el-input>
                     </el-form-item>
                     <el-form-item label="工期" prop="beginAt">
                         <el-date-picker
@@ -157,7 +157,7 @@
                         </el-select>                        
                     </el-form-item>
                     <el-form-item label="位置" prop="position">
-                        <el-input v-model="form.position" size="small" readonly placeholder="请选择位置" @focus="positionPicker"></el-input>
+                        <el-input v-model="form.position" size="small" readonly placeholder="点击打开地图选点" @focus="positionPicker"></el-input>
                     </el-form-item>
                     <el-form-item label="图片" prop="thumbnailPath">
                         <el-upload

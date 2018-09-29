@@ -19,13 +19,19 @@
                 </el-select>
             </el-form-item>
             <el-form-item label="项目" prop="projectId">
-                <el-select v-model="form.projectId" size="small" placeholder="请选择项目" @change="changeProject">
+                <el-select v-model="form.projectId" filterable :filter-method="projectSearch" size="small" placeholder="请选择项目" @change="changeProject">
                     <el-option
                     v-for="item in projectOptions"
                     :key="item.value"
                     :label="item.label"
                     :value="item.value">
                     </el-option>
+                    <el-pagination layout="prev, pager, next"
+                    @current-change="projectCurrentChange"
+                    :current-page="projectListQuery.page_index"
+                    :page-size="projectListQuery.page_size"
+                    :total="projectTotal">
+                    </el-pagination>
                 </el-select>
             </el-form-item>
             <el-form-item label="分组" prop="deviceGroup.id">
@@ -39,16 +45,16 @@
                 </el-select>
             </el-form-item>
             <el-form-item label="名称" prop="name">
-                <el-input v-model="form.name" size="small" placeholder="请输入名称"></el-input>
+                <el-input v-model="form.name" size="small" placeholder="请输入设备显示名称"></el-input>
             </el-form-item>
             <el-form-item label="固件" prop="firmware">
-                <el-input v-model="form.firmware" size="small" placeholder="请输入固件"></el-input>
+                <el-input v-model="form.firmware" size="small" placeholder="请输入固件版本号"></el-input>
             </el-form-item>
             <el-form-item label="key" prop="key">
-                <el-input v-model="form.key" size="small" placeholder="请输入key"></el-input>
+                <el-input v-model="form.key" size="small" placeholder="请输入设备唯一标识"></el-input>
             </el-form-item>
             <el-form-item label="位置" prop="position">
-                <el-input v-model="form.position" size="small" readonly placeholder="请选择位置" @focus="positionPicker"></el-input>
+                <el-input v-model="form.position" size="small" readonly placeholder="点击打开地图选点" @focus="positionPicker"></el-input>
             </el-form-item>
             <el-form-item label="图片" prop="thumbnailBaseUrl">
                 <el-upload
@@ -182,6 +188,11 @@
                 page_size: 10
             },
             productTotal:null,
+            projectListQuery:{
+                page_index: 1,
+                page_size: 5
+            },
+            projectTotal:null,
             device_btn_add :false,
             groupListQuery:{
                 page_index: 1,
@@ -215,12 +226,9 @@
             this.uploadLoaing = false
         },
         getprojectList(){
-            let obj = {
-                page_index: 1,
-                page_size: 9999
-            }
-            projectList(obj).then(res => {
+            projectList(this.projectListQuery).then(res => {
                 let data = res.data.result.items
+                this.projectTotal = res.data.result.total
                 this.projectOptions = []
                 data.forEach(ele => {
                     let item = {value:ele.id, label:ele.name}
@@ -252,7 +260,15 @@
             this.productListQuery.page_index = val;
             this.getProductList()
         },
-
+        projectSearch(val){
+            this.projectListQuery.name = val;
+            this.projectListQuery.page_index = 1
+            this.getprojectList()
+        },
+        projectCurrentChange(val){
+            this.projectListQuery.page_index = val;
+            this.getprojectList()
+        },
         getGroupList(id){
             this.groupListQuery.projectId = id
             this.groupListQuery.sort_by = 'sort'

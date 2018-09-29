@@ -2,9 +2,6 @@
     <div>
         <div class="tit"><h3>{{(flag == 'add')?'添加':'修改'}}配置</h3><span>{{(flag == 'add')?'Add':'Edit'}} Config</span></div>
         <el-form label-width="55px" :model="form" ref="form" label-position="left" :rules="rules">
-            <el-form-item label="名称" prop="name">
-                <el-input v-model="form.name" size="small" placeholder="请输入名称"></el-input>
-            </el-form-item>
             <el-form-item label="类型" prop="typeId">
                 <!-- <el-input v-model="form.typeId" size="small" placeholder="请输入类型"></el-input> -->
                 <el-select v-model="form.typeId" size="small" placeholder="请选择类型" @change="changeType">
@@ -15,6 +12,9 @@
                     :value="item.value">
                     </el-option>
                 </el-select>
+            </el-form-item>
+            <el-form-item label="名称" prop="name">
+                <el-input v-model="form.name" size="small" placeholder="请输入名称"></el-input>
             </el-form-item>
             <el-form-item label="标识" prop="key">
                 <el-input v-model="form.key" size="small" placeholder="请输入标识"></el-input>

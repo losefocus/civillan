@@ -5,14 +5,20 @@
             <!-- <el-button class="filter-item" style="" @click="handleGroup" size="small" type="primary" icon="edit" >分组管理</el-button> -->
             <el-button class="pull-right" type="primary" size="small" v-waves  @click="handleFilter">搜索</el-button>
             <el-input @keyup.enter.native="handleFilter" style="width: 150px;" size="small" suffix-icon="el-icon-search" class="pull-right" placeholder="设备名称" v-model="listQuery.name"></el-input>
-            <!-- <el-select v-model="listQuery.deviceGroup" clearable class="pull-right" placeholder="按所在分组筛选" style="width:150px;margin-right:10px" size="small"  @change="handleFilter">
+            <el-select v-model="listQuery.projectId" filterable clearable :filter-method="projectSearch" size="small" class="pull-right" style="width: 150px !important;margin-right:20px" placeholder="请项目筛选" @change="changeProject" @visible-change="visiblechange">
                 <el-option
-                v-for="item in groupOptions"
+                v-for="item in projectOptions"
                 :key="item.value"
                 :label="item.label"
                 :value="item.value">
                 </el-option>
-            </el-select> -->
+                <el-pagination layout="prev, pager, next"
+                @current-change="projectCurrentChange"
+                :current-page="projectListQuery.page_index"
+                :page-size="projectListQuery.page_size"
+                :total="projectTotal">
+                </el-pagination>
+            </el-select>
         </div>
         <el-table :data="list" v-loading="listLoading" fit highlight-current-row style="width: 99%;margin-bottom:20px">
             <el-table-column align="center" label="缩略图" width="80px">
@@ -129,7 +135,7 @@
   import personnel from "./equ/personnel";
   import addDevice from "./equ/addDevice";
   import {mapGetters} from "vuex";
-  import {delObj, fetchList, updataObj} from "@/api/project_equ";
+  import {delObj, fetchList, updataObj,projectList} from "@/api/project_equ";
 
   export default {
     directives: {
@@ -154,6 +160,12 @@
                 page_size: 20
             },
             total:null,
+            projectOptions:[],
+            projectListQuery:{
+                page_index: 1,
+                page_size: 5
+            },
+            projectTotal:null,
             flag:'add',
             cardVisibel:false,
             createdLoading:false,
@@ -182,6 +194,7 @@
     },
     created() {
         this.getList()
+        this.getprojectList()
         this.device_btn_edit = this.permissions["device_btn_edit"];
         this.device_btn_del = this.permissions["device_btn_del"];
         this.device_btn_certificate = this.permissions["device_btn_certificate"];
@@ -206,6 +219,17 @@
         handleGroup(){
             this.groupVisible = true
         },
+        getprojectList(){
+            projectList(this.projectListQuery).then(res => {
+                let data = res.data.result.items
+                this.projectTotal = res.data.result.total
+                this.projectOptions = []
+                data.forEach(ele => {
+                    let item = {value:ele.id, label:ele.name}
+                    this.projectOptions.push(item)
+                });
+            })
+        },
         getList(){
             this.listLoading = true
             fetchList(this.listQuery).then(res => {
@@ -213,6 +237,27 @@
                 this.total = res.data.result.total
                 this.listLoading = false
             })
+        },
+        projectSearch(val){
+            this.projectListQuery.name = val;
+            this.projectListQuery.page_index = 1
+            this.getprojectList()
+        },
+        projectCurrentChange(val){
+            this.projectListQuery.page_index = val;
+            this.getprojectList()
+        },
+        visiblechange(val){
+            if(val == true){
+                this.projectListQuery = {
+                    page_index: 1,
+                    page_size: 5
+                }
+                this.getprojectList()
+            }
+        },
+        changeProject(val){
+            this.getList()
         },
         handleFilter(){
             if(this.listQuery.name == '') delete this.listQuery.name

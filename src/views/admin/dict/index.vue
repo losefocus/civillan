@@ -68,14 +68,14 @@
         <el-form-item label="编号" prop="id" v-if="dialogStatus == 'update'">
           <el-input v-model="form.id" placeholder="编号" :disabled="true"></el-input>
         </el-form-item>
-        <el-form-item label="数据值" prop="value">
-          <el-input v-model="form.value" placeholder="数据值"></el-input>
+        <el-form-item label="显示名称" prop="label">
+          <el-input v-model="form.label" placeholder="中文显示名称"></el-input>
         </el-form-item>
-        <el-form-item label="标签名" prop="label">
-          <el-input v-model="form.label" placeholder="标签名"></el-input>
+        <el-form-item label="字典值" prop="value">
+          <el-input v-model="form.value" placeholder="字典值"></el-input>
         </el-form-item>
-        <el-form-item label="类型" prop="type">
-          <el-input v-model="form.type" placeholder="类型" :disabled="form.createdBy === 0 && dialogStatus == 'update'"></el-input>
+        <el-form-item label="字典标识" prop="type">
+          <el-input v-model="form.type" placeholder="英文、数字、下划线" :disabled="form.createdBy === 0 && dialogStatus == 'update'"></el-input>
         </el-form-item>
         <!-- <el-form-item label="描述" prop="description">
           <el-input v-model="form.description" placeholder="描述"></el-input>
