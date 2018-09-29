@@ -43,7 +43,7 @@
                 <el-table-column align="center" label="产品标识" width="95">
                     <template slot-scope="scope">
                         <el-tooltip class="item" effect="dark" :content="scope.row.key" placement="top" :open-delay="300">
-                            <i style="cursor:pointer;color:#409eff" class="iconfont icon-fuzhi copy_key" :data-clipboard-text="scope.row.key" @click="copy"></i>
+                            <i style="cursor:pointer;color:#95989e" class="iconfont icon-fuzhi copy_key" :data-clipboard-text="scope.row.key" @click="copy"></i>
                         </el-tooltip>
                     </template>
                 </el-table-column>

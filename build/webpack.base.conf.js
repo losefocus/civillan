@@ -59,11 +59,12 @@ module.exports = {
 			{
 				test: /\.js$/,
 				loader: 'babel-loader',
-				include: [resolve('src'), resolve('test'),
-					// resolve('node_modules/webpack-dev-server/client'),
+				include: [resolve('src'), resolve('test'),resolve('static'),
 					resolve('./node_modules/vue-moment'),
 					resolve('/node_modules/element-ui/src'), 
 					resolve('/node_modules/element-ui/packages'), 
+					resolve('./vendors'), 
+					resolve('node_modules/webpack-dev-server/client'),
 				]
 			},
 			{
