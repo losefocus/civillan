@@ -106,7 +106,7 @@
 .logoImg_l{
   display: block;
   width:184px;
-  height:64px;
+  height:40px;
   background: url('../../../assets/img/logo_1.png')no-repeat center;
   background-size: contain
 }

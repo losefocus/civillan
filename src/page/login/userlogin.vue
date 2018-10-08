@@ -33,7 +33,7 @@
       </el-row>
     </el-form-item>
     <el-form-item>
-      <el-button type="primary" size="small" @click.native.prevent="handleLogin" class="login-submit">登录</el-button>
+      <el-button type="primary" size="small" @click.native.prevent="handleLogin" class="login-submit" :loading="loginLoading">登录</el-button>
     </el-form-item>
   </el-form>
 </template>
@@ -85,7 +85,8 @@
           { min: 4, max: 4, message: "验证码长度为4位", trigger: "blur" }
         ]
       },
-      passwordType: "password"
+      passwordType: "password",
+      loginLoading:false
     };
   },
   created() {
@@ -112,13 +113,16 @@
     handleLogin() {
       this.$refs.loginForm.validate(valid => {
         if (valid) {
+          this.loginLoading = true
           this.$store.dispatch("LoginByUsername", this.loginForm).then(
             res => {
               this.$store.commit("ADD_TAG", this.tagWel);
               this.$router.push({ path: this.tagWel.value });
+              this.loginLoading = false;
             },
             error => {
               this.refreshCode();
+              this.loginLoading = false;
             }
           );
         }

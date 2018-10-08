@@ -104,9 +104,10 @@
 <style lang="scss">
 .logoImg{
   width: 195px;
-  height: 45px;
+  height: 60px;
   background: url("../../assets/img/logo.png")no-repeat center;
   margin-top:40px;
+  background-size: contain
   // position: absolute;
   // top: 40px;
   // left:220px;
