@@ -90,13 +90,7 @@
         <el-card class="addNewProject" :style="cardHeight" :class="{'show':cardVisibel}">
             <div class="tit"><h3>{{(flag == 'add')?'添加':'修改'}}产品</h3><span>{{(flag == 'add')?'Add':'Edit'}} Product</span><i class="closeBtn el-icon-close" @click="cardVisibel = false"></i></div>
             <el-form label-width="40px" :model="form" :rules="rules" ref="form" label-position="left">
-                <el-form-item label="名称" prop="name">
-                    <el-input v-model="form.name" size="small" placeholder="请输入产品名称"></el-input>
-                </el-form-item>
-                <el-form-item label="型号" prop="alias">
-                    <el-input v-model="form.alias" size="small" placeholder="请输入产品型号"></el-input>
-                </el-form-item>
-                <el-form-item label="类型" prop="productCategory.id">
+                <el-form-item label="分类" prop="productCategory.id">
                     <el-select v-model="form.productCategory.id" size="small" placeholder="请选择产品分类">
                         <el-option
                         v-for="item in categoryOptions"
@@ -106,6 +100,13 @@
                         </el-option>
                     </el-select>
                 </el-form-item>
+                <el-form-item label="名称" prop="name">
+                    <el-input v-model="form.name" size="small" placeholder="请输入产品名称"></el-input>
+                </el-form-item>
+                <el-form-item label="型号" prop="alias">
+                    <el-input v-model="form.alias" size="small" placeholder="请输入产品型号"></el-input>
+                </el-form-item>
+                
                 <el-form-item label="图片" prop="thumbnailUrl">
                     <el-upload
                     v-loading='uploadLoaing'
@@ -199,8 +200,8 @@
                 alias: [
                     { validator: validateAlias, message: '请输入产品型号', trigger: 'blur' },
                 ],
-                category: [
-                    { validator: validateCategory, message: '请输入产品分类', trigger: 'change' },
+                'productCategory.id': [
+                    { validator: validateCategory, message: '请选择产品分类', trigger: 'change' },
                 ],
 
             },
@@ -294,8 +295,7 @@
                 this.categoryHash = newMap
                 this.categoryOptions = toTree(data)
                 this.categoryOptions_ = toTree(data)
-                this.categoryOptions.unshift({value:0,label:'无'})
-                this.categoryOptions_.unshift({value:0,label:'所有分类'})
+                this.categoryOptions_.unshift({value:0,label:'全部分类'})
                 this.listLoading = false
             });
         },
@@ -317,13 +317,12 @@
             })
         },
         handleFilter(){
-            if(this.listQuery.name == '') delete this.listQuery.name
+            let name_ = this.listQuery.name.replace(/\s+/g,"")
+            if(name_ == '') delete this.listQuery.name
             this.listQuery.page_index = 1;
             this.getList()
         },
         handleCategoryFilter(){
-            console(123123)
-            if(val == 0) {}
             this.listQuery.page_index = 1;
             this.getList()
         },

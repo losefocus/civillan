@@ -1,7 +1,7 @@
 <template>
     <div>
         <el-form :model="form" class="clearfix" ref="form" :rules="rules" size="small" label-width="45px">
-            <el-form-item label="类型" prop="categoryId" style="width: 180px;">
+            <el-form-item label="分类" prop="categoryId" style="width: 180px;">
                 <el-select v-model="form.categoryId" size="mini" placeholder="请选择类型">
                     <el-option
                     v-for="item in categoryOptions"
@@ -21,14 +21,29 @@
                 <el-input v-model="form.sort" size="mini" auto-complete="off" placeholder="排序"></el-input>
             </el-form-item>
             <el-form-item  style="width: 300px;" class="pull-right">
-                <el-button v-if="flag == 'add'" size="mini" type="primary" class="pull-right" style="margin-left:10px"  @click="handleAdd('form')" :loading="createdLoading">添加</el-button>
+                <el-button v-if="flag == 'add'" size="mini" type="primary" class="pull-right" v-waves style="margin-left:10px"  @click="handleAdd('form')" :loading="createdLoading">添加</el-button>
                 <div v-else>
-                    <el-button size="mini" type="info" class="pull-right" style="margin-left:10px" @click="cancelEdit('form')">取消</el-button>
-                    <el-button size="mini" type="primary" class="pull-right" @click="handleEdit('form')" :loading="createdLoading">保存</el-button>
+                    <el-button size="mini" type="info" class="pull-right" v-waves style="margin-left:10px" @click="cancelEdit('form')">取消</el-button>
+                    <el-button size="mini" type="primary" class="pull-right" v-waves @click="handleEdit('form')" :loading="createdLoading">保存</el-button>
                 </div>
                 <el-checkbox v-model="form.status" class="pull-right">已启用</el-checkbox>
             </el-form-item>
         </el-form>
+        <div class="filterCategory clearfix">
+            <div class="pull-left" style="width:150px;margin-right:10px;">
+                <el-select v-model="categoryId"  size="mini" clearable placeholder="按分类筛选" @change="handleCategoryChange">
+                    <el-option
+                    v-for="item in categoryOptions_"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value">
+                    </el-option>
+                </el-select>
+            </div>
+            
+            <el-button class="pull-left" type="primary" size="mini" v-waves @click="handleCategoryChange">搜索</el-button>
+
+        </div>
         <div v-loading="listLoading">
             <el-table :data="list" border fit highlight-current-row style="width: 100%;margin-bottom:20px;margin-top:10px">
                 <el-table-column align="center" label="显示名称">
@@ -111,6 +126,7 @@
                 status:true,
             },
             flag:'add',
+            categoryId:'',
             listQuery:{
                 page_index: 1,
                 page_size: 10
@@ -118,6 +134,7 @@
             total:null,
             list:null,
             categoryOptions:[],
+            categoryOptions_:[],
             categoryHash:{0:'无'}
         }
     },
@@ -147,7 +164,17 @@
                 }
                 this.categoryHash = newMap
                 this.categoryOptions = toTree(list)
+                this.categoryOptions_ = toTree(list)
+                this.categoryOptions_.unshift({value:0,label:'全部分类'})
             })
+        },
+        handleCategoryChange(){
+            this.listQuery.categoryId = this.categoryId
+            if(this.categoryId == 0){
+                delete this.listQuery.categoryId
+            }
+            this.listQuery.page_index = 1;
+            this.getList()
         },
         handleSizeChange(val) {
             this.listQuery.page_size = val;

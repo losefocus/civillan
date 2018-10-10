@@ -225,8 +225,9 @@
                 }
                 this.categoryHash = newMap
                 this.categoryOptions = toTree(this.list)
+                let baseOptions = toTree(this.list)
+                this.$emit('showCategoryOptions',baseOptions);
                 this.categoryOptions.unshift({value:0,label:'无'})
-                this.$emit('showCategoryOptions',this.categoryOptions);
                 this.$emit('showCategoryHash',this.categoryHash);
             })
         },

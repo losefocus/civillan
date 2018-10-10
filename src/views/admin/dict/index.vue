@@ -35,12 +35,12 @@
           <span>{{ scope.row.label }}</span>
         </template>
       </el-table-column>
-      <el-table-column align="center" label="排序">
+      <el-table-column align="center" label="排序" width="80">
         <template slot-scope="scope">
           <span>{{ scope.row.sort }}</span>
         </template>
       </el-table-column>
-      <el-table-column align="center" label="创建时间">
+      <el-table-column align="center" label="创建时间" width="150">
         <template slot-scope="scope">
           <span>{{ scope.row.createTime | parseTime('{y}-{m}-{d}') }}</span>
         </template>

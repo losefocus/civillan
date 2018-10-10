@@ -42,7 +42,6 @@
             <el-form-item label="备注" prop="comment">
               <el-input v-model="form.comment" :disabled="formEdit" placeholder="请输入备注"></el-input>
             </el-form-item>
-
             <el-form-item v-if="formStatus == 'update'">
               <el-button type="primary" @click="update" size="small">更新</el-button>
               <el-button @click="onCancel" size="small">取消</el-button>

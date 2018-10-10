@@ -5,9 +5,9 @@
             <el-button class="filter-item" style="" @click="handleGroup" size="small" type="primary" icon="edit" >分组管理</el-button>
             <el-button class="pull-right" type="primary" size="small" v-waves  @click="handleFilter">搜索</el-button>
             <el-input @keyup.enter.native="handleFilter" style="width: 150px;" size="small" suffix-icon="el-icon-search" class="pull-right" placeholder="设备名称" v-model="listQuery.name"></el-input>
-            <el-select v-model="listQuery.deviceGroup" clearable class="pull-right" placeholder="按所在分组筛选" style="width:150px!important;margin-right:10px" size="small"  @change="handleFilter">
+            <el-select v-model="filterDeviceGroup" clearable class="pull-right" placeholder="按所在分组筛选" style="width:150px!important;margin-right:10px" size="small"  @change="handleFilter">
                 <el-option
-                v-for="item in groupOptions"
+                v-for="item in groupOptions_"
                 :key="item.value"
                 :label="item.label"
                 :value="item.value">
@@ -143,6 +143,7 @@
                 page_index: 1,
                 page_size: 20
             },
+            filterDeviceGroup:'',
             total:null,
             flag:'add',
             createdLoading:false,
@@ -166,7 +167,7 @@
             device_btn_notice :false,
             device_btn_personnel :false,
             device_btn_config :false,
-
+            groupOptions_:[],
         }
     },
     created() {
@@ -195,6 +196,8 @@
             this.groupVisible = true
         },
         getList(){
+            this.groupOptions_ = this.groupOptions.concat()
+            this.groupOptions_.unshift({value:0,label:'全部分组'})
             this.listLoading = true
             this.listQuery.projectId = this.projectInfo.id
             fetchList(this.listQuery).then(res => {
@@ -210,7 +213,8 @@
         },
         handleFilter(){
             if(this.listQuery.name == '') delete this.listQuery.name
-            if(this.listQuery.adminer == '') delete this.listQuery.adminer
+            this.listQuery.deviceGroup = this.filterDeviceGroup
+            if(this.filterDeviceGroup == '') delete this.listQuery.deviceGroup
             this.listQuery.page_index = 1;
             this.getList()
         },
@@ -284,6 +288,10 @@
         },
     },
     watch:{
+        groupOptions(val,oldVal){
+            this.groupOptions_ = this.groupOptions.concat()
+            this.groupOptions_.unshift({value:0,label:'全部'})
+        }
     }
 }
 </script>
