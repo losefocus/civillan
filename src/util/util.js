@@ -318,7 +318,7 @@ export const treeAddValue = (data) => {
 export const treeToArr = (tree)=>{
 	let res = []
 	for(let i = 0 ; i<tree.length;i++){
-		res.push({id:tree[i].id,parentId:tree[i].parentId,name:tree[i].name})
+		res.push(tree[i])
 		if(tree[i].children && tree[i].children.length !=0){
 			res = res.concat(treeToArr(tree[i].children));
 		}
@@ -327,7 +327,7 @@ export const treeToArr = (tree)=>{
 }
 
 /**
- * 数组转对象
+ * 数组转特定格式对象
  */
 export const reduce_ = (zNodes)=>{
 	return zNodes.reduce((o, x) => {

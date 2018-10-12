@@ -28,11 +28,18 @@
         <el-card class="box-card">
           <el-form :label-position="labelPosition" label-width="80px" :model="form" ref="form">
             <el-form-item label="父级节点" prop="parentId">
-              <el-input v-model="form.parentId" :disabled="formEdit" placeholder="请输入父级节点"></el-input>
+              <!-- <el-input v-model="form.parentId" :disabled="formEdit" placeholder="请输入父级节点"></el-input> -->
+              <el-cascader :options="pOptions" v-model="parentIds" :props="pProps" :disabled="formEdit"
+                placeholder="请输入父级节点"
+                :show-all-levels="false"
+                change-on-select
+                @change="changeP"
+                style="width:100%">
+              </el-cascader>
             </el-form-item>
-            <el-form-item label="节点ID" prop="id">
+            <!-- <el-form-item label="节点ID" prop="id">
               <el-input v-model="form.id" disabled placeholder="请输入节点ID"></el-input>
-            </el-form-item>
+            </el-form-item> -->
             <el-form-item label="分组名称" prop="name">
               <el-input v-model="form.name" :disabled="formEdit"  placeholder="请输入标题"></el-input>
             </el-form-item>
@@ -60,6 +67,7 @@
 <script>
   import {addObj, delObj, fetchTree, getObj, putObj} from '@/api/group'
   import {mapGetters} from 'vuex'
+  import {treeToArr,reduce_,listParents} from "@/util/util";
 
   export default {
     name: 'menu',
@@ -99,6 +107,13 @@
           comment: undefined,
           tenant : '21fe87251b01541399c7c1a8cec741c5'
         },
+        parentIds:[],
+        pOptions:[],
+        pProps: {
+          label:'name',
+          value:'id',
+          children: 'children'
+        },
         currentId: 0,
         group_btn_add: false,
         group_btn_edit: false,
@@ -120,9 +135,13 @@
       ])
     },
     methods: {
+      changeP(){
+        this.form.parentId = this.parentIds[this.parentIds.length-1]
+      },
       getList() {
         fetchTree(this.listQuery).then(response => {
           this.treeData = response.data.result
+          this.pOptions = [{id:0,name:'无'}].concat(this.treeData)
         })
       },
       filterNode(value, data) {
@@ -171,6 +190,10 @@
         }
         getObj(data.id).then(response => {
           this.form = response.data.result;
+          let tree_ = reduce_(treeToArr(this.pOptions))
+          this.parentIds = (this.form.parentId == 0)?[0]:listParents(tree_, this.form).map(x => x.id)
+          // if(this.form.parentId == 0)
+          // console.log(listParents(tree_, this.form).map(x => x.id))
         })
         this.currentId = data.id
         this.showElement = true
@@ -206,6 +229,15 @@
         })
       },
       update() {
+        if(this.form.id == this.form.parentId){
+          this.$notify({
+            title: '失败',
+            message: '父级节点不能选择本身',
+            type: 'error',
+            duration: 2000
+          })
+          return
+        }
         putObj(this.form).then(() => {
           this.getList()
           this.$notify({

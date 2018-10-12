@@ -100,7 +100,7 @@
         <el-form-item label="所属分组">
           <!-- <el-input v-model="form.groupName" placeholder="选择分组" @focus="handleDept()" readonly></el-input> -->
           <!-- <input type="hidden" v-model="form.group" /> -->
-          <el-cascader :options="groupOptions" v-model="groupIds" :show-all-levels="false" change-on-select @change="changeGroup" style="width:100%"></el-cascader>
+          <el-cascader :options="groupOptions" :props="defaultProps" v-model="groupIds" :show-all-levels="false" change-on-select @change="changeGroup" style="width:100%"></el-cascader>
         </el-form-item>
 
         <el-form-item label="角色" prop="role">
@@ -135,7 +135,7 @@
   import {addObj, delObj, fetchList, get_parent, getObj, putObj} from "@/api/user";
   import {fetchDeptTree, roleList} from "@/api/role";
   import {fetchTree} from "@/api/group";
-  import {treeAddValue} from "@/util/util";
+  import {treeAddValue,treeToArr,reduce_,listParents} from "@/util/util";
   import waves from "@/directive/waves/index.js"; // 水波纹指令
   // import { parseTime } from '@/utils'
   import {mapGetters} from "vuex";
@@ -164,7 +164,8 @@
       checkedKeys: [],
       defaultProps: {
         children: "children",
-        label: "name"
+        label: "name",
+        value:'id'
       },
       list: null,
       total: null,
@@ -342,13 +343,17 @@
           this.roleName[i] = row.roleList[i].roleName;
         }
         
-        get_parent(this.form.group).then(res => {
-          let groups = new Array
-          res.data.result.forEach(ele => {
-            groups.push(ele.id)
-          });
-          this.groupIds = groups
-        })
+        let op = reduce_(treeToArr(this.groupOptions))
+        console.log(op)
+        this.groupIds = listParents(op, {id:parseInt(this.form.group)}).concat([{id:parseInt(this.form.group)}]).map(x => parseInt(x.id))
+        console.log(this.groupIds)
+        // get_parent(this.form.group).then(res => {
+        //   let groups = new Array
+        //   res.data.result.forEach(ele => {
+        //     groups.push(ele.id)
+        //   });
+        //   this.groupIds = groups
+        // })
       });
     },
     create(formName) {

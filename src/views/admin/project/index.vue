@@ -69,9 +69,9 @@
                             <template slot-scope="scope">
                                 <div style="white-space:nowrap;width:100%;height:45px">
                                     <img v-if="scope.row.thumbnailUrl&&scope.row.thumbnailUrl!=''" style="height:45px;width:60px;" class="pull-left" :src="scope.row.thumbnailUrl+scope.row.thumbnailPath">
-                                    <img v-else style="width:60px;height:45px" src="../../../assets/img/no_pic.png">
+                                    <img v-else style="width:60px;height:45px" class="pull-left" src="../../../assets/img/no_pic.png">
                                     <el-tooltip class="item" effect="dark" :content="scope.row.name" placement="top-start" :open-delay="300">
-                                        <span style="white-space:nowrap;">
+                                        <span style="white-space:nowrap;" class="pull-left">
                                             <a v-if="scope.row.children==0" style="cursor: pointer;overflow: hidden;text-overflow:ellipsis;line-height:45px;padding:0 10px;width:calc(100% - 80px)" @click="toInfo(scope.row)">{{scope.row.name}}</a>
                                             <span v-else style="cursor: pointer;overflow: hidden;text-overflow:ellipsis;line-height:45px;padding:0 10px;width:calc(100% - 80px)" @click="expendTableRow(scope.row)">{{scope.row.name}}</span>
                                         </span>
