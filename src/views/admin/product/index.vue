@@ -91,7 +91,7 @@
             <div class="tit"><h3>{{(flag == 'add')?'添加':'修改'}}产品</h3><span>{{(flag == 'add')?'Add':'Edit'}} Product</span><i class="closeBtn el-icon-close" @click="cardVisibel = false"></i></div>
             <el-form label-width="40px" :model="form" :rules="rules" ref="form" label-position="left">
                 <el-form-item label="分类" prop="productCategory.id">
-                    <el-select v-model="form.productCategory.id" size="small" placeholder="请选择产品分类">
+                    <el-select v-model="form.productCategory.id" size="small" placeholder="请选择产品分类" no-data-text="请先添加产品分类">
                         <el-option
                         v-for="item in categoryOptions"
                         :key="item.value"

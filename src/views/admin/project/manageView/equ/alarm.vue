@@ -12,7 +12,7 @@
                         <el-input v-model="form.title" size="mini" auto-complete="off"></el-input>
                     </el-form-item>
                     <el-form-item label="报警周期" prop="cycle" style="width: 310px;;margin-left:30px">
-                        <el-select v-model="form.cycle" placeholder="请选择" size="mini" style="width:100%">
+                        <el-select v-model="form.cycle" placeholder="请选择" size="mini" style="width:100%" no-data-text="请先添加报警周期">
                             <el-option
                             v-for="item in dicts"
                             :key="item.value"
@@ -31,7 +31,7 @@
                         <el-input v-model="form.condition" type="textarea" :rows="2" size="mini" auto-complete="off"></el-input>
                     </el-form-item>
                     <el-form-item label="报警级别" prop="level" style="width: 310px;margin-left:30px;margin-bottom:38px">
-                        <el-select v-model="form.level" placeholder="请选择" size="mini" style="width:100%">
+                        <el-select v-model="form.level" placeholder="请选择" size="mini" style="width:100%" no-data-text="请先添加报警级别">
                             <el-option
                             v-for="item in alarmDicts"
                             :key="item.value"

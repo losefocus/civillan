@@ -7,7 +7,7 @@
                     <el-input v-model="form.title" placeholder="标题"></el-input>
                 </el-form-item>
                 <el-form-item label="分类" prop="categoryId" class="pull-left" style="width:45%">
-                    <el-select v-model="form.categoryId" placeholder="请选择分类" >
+                    <el-select v-model="form.categoryId" placeholder="请选择分类" no-data-text="请先添加分类">
                         <el-option
                         v-for="item in categoryOptions"
                         :key="item.value"
@@ -41,7 +41,7 @@
                     </el-upload>
                 </el-form-item>
                 <el-form-item label="标签" prop="tagIds" class="pull-left" style="width:45%">
-                    <el-select v-model="tagIds" multiple placeholder="请选择" @change="changeTag">
+                    <el-select v-model="tagIds" multiple placeholder="请选择标签" @change="changeTag" no-data-text="请先添加标签">
                         <el-option
                         v-for="item in tagOptions"
                         :key="item.id"

@@ -4,7 +4,7 @@
         <div class="tit"><h3>{{(flag == 'add')?'添加':'修改'}}人员</h3><span>{{(flag == 'add')?'Add':'Edit'}} Personnel</span></div>
         <el-form label-width="55px" :model="form" :rules="rules"  ref="forms" label-position="left">
             <el-form-item label="机构" prop="projectOrgan.id">
-                <el-select v-model="form.projectOrgan.id" size="small" placeholder="请选择机构">
+                <el-select v-model="form.projectOrgan.id" size="small" placeholder="请选择机构" no-data-text="请先添加机构">
                     <el-option
                     v-for="item in organOptions"
                     :key="item.value"
@@ -14,7 +14,7 @@
                 </el-select>
             </el-form-item>
             <el-form-item label="角色" prop="userRole">
-                <el-select v-model="role" size="small" placeholder="请选择角色" @change="selectRole()">
+                <el-select v-model="role" size="small" placeholder="请选择角色" @change="selectRole()" no-data-text="请先添加角色">
                     <el-option
                     v-for="item in roleOptions"
                     :key="item.value"

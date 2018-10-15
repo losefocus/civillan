@@ -141,7 +141,7 @@
       getList() {
         fetchTree(this.listQuery).then(response => {
           this.treeData = response.data.result
-          this.pOptions = [{id:0,name:'无'}].concat(this.treeData)
+          this.pOptions = [{id:0,name:'顶级分组'}].concat(this.treeData)
         })
       },
       filterNode(value, data) {

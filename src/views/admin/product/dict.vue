@@ -2,7 +2,7 @@
     <div>
         <el-form :model="form" class="clearfix" ref="form" :rules="rules" size="small" label-width="45px">
             <el-form-item label="分类" prop="categoryId" style="width: 180px;">
-                <el-select v-model="form.categoryId" size="mini" placeholder="请选择类型">
+                <el-select v-model="form.categoryId" size="mini" placeholder="请选择分类" no-data-text="请先添加产品分类" >
                     <el-option
                     v-for="item in categoryOptions"
                     :key="item.value"
@@ -30,19 +30,11 @@
             </el-form-item>
         </el-form>
         <div class="filterCategory clearfix">
-            <div class="pull-left" style="width:150px;margin-right:10px;">
-                <el-select v-model="categoryId"  size="mini" clearable placeholder="按分类筛选" @change="handleCategoryChange">
-                    <el-option
-                    v-for="item in categoryOptions_"
-                    :key="item.value"
-                    :label="item.label"
-                    :value="item.value">
-                    </el-option>
-                </el-select>
+            <div>
+                <el-radio-group v-model="categoryId" size="mini" @change="handleCategoryChange">
+                    <el-radio-button v-for="item in categoryOptions_" :label="item.value" :key="item.value">{{item.label}}</el-radio-button>
+                </el-radio-group>
             </div>
-            
-            <el-button class="pull-left" type="primary" size="mini" v-waves @click="handleCategoryChange">搜索</el-button>
-
         </div>
         <div v-loading="listLoading">
             <el-table :data="list" border fit highlight-current-row style="width: 100%;margin-bottom:20px;margin-top:10px">
@@ -126,7 +118,7 @@
                 status:true,
             },
             flag:'add',
-            categoryId:'',
+            categoryId:'0',
             listQuery:{
                 page_index: 1,
                 page_size: 10
@@ -169,6 +161,7 @@
             })
         },
         handleCategoryChange(){
+            console.log( this.categoryId)
             this.listQuery.categoryId = this.categoryId
             if(this.categoryId == 0){
                 delete this.listQuery.categoryId

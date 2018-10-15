@@ -88,8 +88,8 @@
         <el-form-item label="真实姓名" prop="name">
           <el-input v-model="form.name" placeholder="请输真实姓名"></el-input>
         </el-form-item>
-        <el-form-item v-if="dialogStatus == 'create'" label="密码" placeholder="请输入密码" prop="password">
-          <el-input type="password" v-model="form.password"></el-input>
+        <el-form-item v-if="dialogStatus == 'create'" label="密码"  prop="password">
+          <el-input type="password" v-model="form.password" placeholder="请输入密码"></el-input>
         </el-form-item>
 
         <!-- <el-form-item label="所属部门" prop="deptName">
@@ -97,14 +97,14 @@
           <input type="hidden" v-model="form.deptId" />
         </el-form-item> -->
 
-        <el-form-item label="所属分组">
+        <el-form-item label="所属分组" prop="groupIds">
           <!-- <el-input v-model="form.groupName" placeholder="选择分组" @focus="handleDept()" readonly></el-input> -->
           <!-- <input type="hidden" v-model="form.group" /> -->
-          <el-cascader :options="groupOptions" :props="defaultProps" v-model="groupIds" :show-all-levels="false" change-on-select @change="changeGroup" style="width:100%"></el-cascader>
+          <el-cascader :options="groupOptions" placeholder="请选择所属分组" :props="defaultProps" v-model="groupIds" :show-all-levels="false" change-on-select @change="changeGroup" style="width:100%"></el-cascader>
         </el-form-item>
 
         <el-form-item label="角色" prop="role">
-          <el-select class="filter-item" v-model="role" placeholder="请选择" multiple style="width:100%">
+          <el-select class="filter-item" v-model="role" placeholder="请选择角色" multiple style="width:100%" no-data-text="请先添加角色">
             <el-option v-for="item in rolesOptions" :key="item.roleId" :label="item.roleName" :value="item.roleId" :disabled="isDisabled[item.status]">
               <span style="float: left">{{ item.roleName }}</span>
               <span style="float: right; color: #8492a6; font-size: 13px">{{ item.roleCode }}</span>
@@ -214,13 +214,13 @@
           }
         ],
         groupIds: [
-           { validator: validateGroup, message: '请选择分组', trigger: 'change' ,required: false,}
+           {validator: validateGroup,message: '请选择分组', trigger: 'blur' ,required: true,}
         ],
         role: [
           {
             required: true,
             message: "请选择角色",
-            trigger: "blur"
+            trigger: "change"
           }
         ],
         mobile: [
@@ -330,6 +330,7 @@
         });
     },
     handleUpdate(row) {
+      if(this.$refs.form) this.$refs.form.resetFields()
       getObj(row.id).then(response => {
         this.form = response.data.result;
         this.form.status = this.form.status == 1?true:false
@@ -342,11 +343,8 @@
           this.role[i] = row.roleList[i].roleId ;
           this.roleName[i] = row.roleList[i].roleName;
         }
-        
         let op = reduce_(treeToArr(this.groupOptions))
-        console.log(op)
-        this.groupIds = listParents(op, {id:parseInt(this.form.group)}).concat([{id:parseInt(this.form.group)}]).map(x => parseInt(x.id))
-        console.log(this.groupIds)
+        this.groupIds = listParents(op, {id:parseInt(this.form.group),parentId:parseInt(this.form.groupParentId)}).concat([{id:parseInt(this.form.group)}]).map(x => parseInt(x.id))
         // get_parent(this.form.group).then(res => {
         //   let groups = new Array
         //   res.data.result.forEach(ele => {

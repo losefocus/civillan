@@ -2,9 +2,9 @@
     <div>
         <div class="tit"><h3>{{(flag == 'add')?'添加':'修改'}}配置</h3><span>{{(flag == 'add')?'Add':'Edit'}} Config</span></div>
         <el-form label-width="55px" :model="form" ref="form" label-position="left" :rules="rules">
-            <el-form-item label="类型" prop="typeId">
+            <el-form-item label="分类" prop="typeId">
                 <!-- <el-input v-model="form.typeId" size="small" placeholder="请输入类型"></el-input> -->
-                <el-select v-model="form.typeId" size="small" placeholder="请选择类型" @change="changeType">
+                <el-select v-model="form.typeId" size="small" placeholder="请选择产品分类" @change="changeType" no-data-text="请先添加产品分类">
                     <el-option
                     v-for="item in typeOptions"
                     :key="item.value"

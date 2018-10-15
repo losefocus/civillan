@@ -3,7 +3,7 @@
         <div style="padding-bottom:10px;">设 备 : {{dataInfo.name}}</div>
         <el-form :model="form" class="clearfix" ref="form" :rules="rules" label-width="0" size="small" style="margin-bottom:10px;">
             <el-form-item label="" prop="type" style="width: 100px;margin-right:5px">
-                <el-select v-model="form.type" placeholder="选择类型" size="mini">
+                <el-select v-model="form.type" placeholder="选择类型" size="mini" no-data-text="请先添加变量类型">
                     <el-option
                     v-for="item in dicts"
                     :key="item.value"
