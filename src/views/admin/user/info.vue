@@ -128,7 +128,6 @@
   created(){
     if(this.userInfo)this.ruleForm2 = this.userInfo
     this.ruleForm2.password = ""
-    console.log(this.themeVal)
   },
   methods: {
     submitForm(formName) {

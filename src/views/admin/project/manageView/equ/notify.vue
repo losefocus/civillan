@@ -9,7 +9,7 @@
             <div v-show="isshow">
                 <el-form :model="form" class="clearfix" :rules="rules" ref="form" label-width="70px" size="mini">
                     <el-form-item label="报警条目" prop="alarmId" style="width: 310px">
-                        <el-select v-model="form.alarmId" placeholder="请选择报警条目" style="width:100%" size="mini" :loading="alarmLoading">
+                        <el-select v-model="form.alarmId" placeholder="请选择报警条目" style="width:100%" size="mini" :loading="alarmLoading" no-data-text="请先添加报警条目">
                             <el-option
                             v-for="item in alarmOptions"
                             :key="item.value"
@@ -19,7 +19,7 @@
                         </el-select>
                     </el-form-item>
                     <el-form-item label="通知频率" prop="cycle" style="width: 310px;margin-left:30px">
-                        <el-select v-model="form.cycle" placeholder="请选择通知频率" style="width:100%" size="mini">
+                        <el-select v-model="form.cycle" placeholder="请选择通知频率" style="width:100%" size="mini" no-data-text="请先添加通知频率">
                             <el-option
                             v-for="item in options"
                             :key="item.value"
@@ -29,7 +29,7 @@
                         </el-select>
                     </el-form-item>
                     <el-form-item label="通知对象" prop="puserIds" style="width: 310px">
-                        <el-select v-model="form.puserIds" multiple placeholder="请选择通知对象" style="width:100%" size="mini" :loading="userLoading">
+                        <el-select v-model="form.puserIds" multiple placeholder="请选择通知对象" style="width:100%" size="mini" :loading="userLoading" no-data-text="请先添加通知对象">
                             <el-option
                             v-for="item in userOptions"
                             :key="item.value"
@@ -40,7 +40,7 @@
                     </el-form-item>
                     
                     <el-form-item label="通知方式" prop="notifyTypes" style="width: 310px;margin-left:30px">
-                        <el-select v-model="notifyTypes" multiple="" placeholder="请选择通知方式" style="width:100%" size="mini" @change="changeNotifyTypes">
+                        <el-select v-model="notifyTypes" multiple="" placeholder="请选择通知方式" style="width:100%" size="mini" @change="changeNotifyTypes" no-data-text="请先添加通知方式">
                             <el-option
                             v-for="item in typeOptions"
                             :key="item.value"

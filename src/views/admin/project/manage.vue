@@ -14,7 +14,7 @@
                     <el-radio-button label="doc">文档资料</el-radio-button>
                     <el-radio-button label="media">现场影像</el-radio-button>
                     <!-- <el-radio-button label="moni">视频监控</el-radio-button> -->
-                    <el-radio-button label="config">作业配置</el-radio-button>
+                    <el-radio-button label="config" :disabled="viewData.children.length != 0">作业配置</el-radio-button>
                 </el-radio-group>
             </div>
             <div style="padding-top:20px;position:relative">

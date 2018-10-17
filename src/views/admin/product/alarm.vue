@@ -12,10 +12,10 @@
             <div v-show="isshow">
             <el-form :model="form" class="clearfix" ref="form" :rules="rules" label-width="70px" size="mini" style="padding-top:10px;">
                 <el-form-item label="报警标题" prop="title" style="width: 310px">
-                    <el-input v-model="form.title" size="mini" auto-complete="off"></el-input>
+                    <el-input v-model="form.title" size="mini" auto-complete="off" placeholder="请输入报警标题"></el-input>
                 </el-form-item>
                 <el-form-item label="报警周期" prop="cycle" style="width: 310px;;margin-left:30px">
-                    <el-select v-model="form.cycle" placeholder="请选择" size="mini">
+                    <el-select v-model="form.cycle" placeholder="请选择报警周期" size="mini" >
                         <el-option
                         v-for="item in dicts"
                         :key="item.value"
@@ -25,16 +25,16 @@
                     </el-select>
                 </el-form-item>
                 <el-form-item label="报警内容" prop="triggerMessage" style="width: 310px">
-                    <el-input v-model="form.triggerMessage" size="mini" auto-complete="off"></el-input>
+                    <el-input v-model="form.triggerMessage" size="mini" auto-complete="off" placeholder="请输入报警内容"></el-input>
                 </el-form-item>
                 <el-form-item label="恢复内容" prop="recoverMessage" style="width: 310px;margin-left:30px">
-                    <el-input v-model="form.recoverMessage" size="mini" auto-complete="off"></el-input>
+                    <el-input v-model="form.recoverMessage" size="mini" auto-complete="off" placeholder="请输入恢复内容"></el-input>
                 </el-form-item>
                 <el-form-item label="触发条件" prop="condition" style="width: 310px;">
-                    <el-input v-model="form.condition" type="textarea" :rows="2" resize="none" size="mini" auto-complete="off"></el-input>
+                    <el-input v-model="form.condition" type="textarea" :rows="2" resize="none" size="mini" auto-complete="off" placeholder="请输入触发条件"></el-input>
                 </el-form-item>
                 <el-form-item label="报警级别" prop="level" style="width: 310px;;margin-left:30px;margin-bottom:38px">
-                    <el-select v-model="form.level" placeholder="请选择" size="mini">
+                    <el-select v-model="form.level" placeholder="请选择报警级别" size="mini">
                         <el-option
                         v-for="item in alarmDicts"
                         :key="item.value"
@@ -44,7 +44,7 @@
                     </el-select>
                 </el-form-item>
                 <el-form-item label="备注" style="width: 310px;">
-                    <el-input v-model="form.comment" type="textarea" :rows="2" resize="none" size="mini" auto-complete="off"></el-input>
+                    <el-input v-model="form.comment" type="textarea" :rows="2" resize="none" size="mini" auto-complete="off" placeholder="备注"></el-input>
                 </el-form-item>
                 <el-form-item  :style="flag == 'add'?'width: 140px':'width: 220px'" class="pull-right" style="padding-top:5px">
                     <div v-if="flag == 'add'">

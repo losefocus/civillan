@@ -5,7 +5,7 @@
             <el-button class="filter-item" style="" size="small" type="primary" @click="configTemplateVisible=true">导入</el-button>
             <el-button class="pull-right" type="primary" size="small" v-waves  @click="handleFilter">搜索</el-button>
             <el-input @keyup.enter.native="handleFilter" style="width: 150px;" size="small" suffix-icon="el-icon-search" class="pull-right" placeholder="按名称搜索" v-model="listQuery.name"></el-input>
-            <el-select v-model="listQuery.typeId" size="small" clearable class="pull-right" placeholder="按类型筛选" style="width: 150px !important;margin-right:20px;" @change="changeTypeFilter">
+            <el-select v-model="filterType" size="small" clearable class="pull-right" placeholder="按类型筛选" style="width: 150px !important;margin-right:20px;" @change="changeTypeFilter">
                 <el-option
                 v-for="item in typeOptions"
                 :key="item.value"
@@ -106,6 +106,7 @@
                 page_index: 1,
                 page_size: 20
             },
+            filterType:'',
             total:null,
             multipleSelection:[],
             typeMap:null,
@@ -223,6 +224,7 @@
                 this.typeOptions = list.map(item => {
                     return { value: item.id, label: item.name };
                 });
+                this.typeOptions.unshift({value:0,label:'全部类型'})
             })
         },
         handleAdd(){
@@ -247,6 +249,8 @@
         },
         handleFilter(){
             if(this.listQuery.name == '') delete this.listQuery.name
+            this.listQuery.typeId = this.filterType
+            if(this.filterType == 0) delete this.listQuery.typeId
             this.listQuery.page_index = 1;
             this.getList()
         },

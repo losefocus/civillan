@@ -3,7 +3,7 @@
         <div style="padding-bottom:10px;">设 备 : {{dataInfo.name}}</div>
         <el-form :model="form" class="clearfix" ref="form" :rules="rules" label-width="0" size="small" style="margin-bottom:10px;">
             <el-form-item label="" prop="type" style="width: 100px;margin-right:5px">
-                <el-select v-model="form.type" placeholder="选择类型" size="mini">
+                <el-select v-model="form.type" placeholder="选择类型" size="mini" no-data-text="请先添加变量类型">
                     <el-option
                     v-for="item in dicts"
                     :key="item.value"
@@ -17,6 +17,12 @@
             </el-form-item>
             <el-form-item label="" prop="label" style="width: 100px;margin-right:5px">
                 <el-input v-model="form.label" size="mini" auto-complete="off" placeholder="标识"></el-input>
+            </el-form-item>
+            <el-form-item label="" prop="max_value" style="width: 100px;margin-right:5px" v-show="form.type == 'float' || form.type == '1' || form.type == 'integer' || form.type == '2' || form.type == 'double' || form.type == '4'">
+                <el-input v-model="form.maxValue" size="mini" auto-complete="off" placeholder="最大值"></el-input>
+            </el-form-item>
+            <el-form-item label="" prop="min_value" style="width: 100px;margin-right:5px" v-show="form.type == 'float' || form.type == '1' || form.type == 'integer' || form.type == '2' || form.type == 'double' || form.type == '4'">
+                <el-input v-model="form.minValue" size="mini" auto-complete="off" placeholder="最小值"></el-input>
             </el-form-item>
             <el-form-item label="" style="width: 60px;margin-right:5px">
                 <el-input v-model="form.sort" size="mini" auto-complete="off" placeholder="排序"></el-input>
@@ -219,7 +225,7 @@
             ).then(() => {
                 delObj(row.id).then(res => {
                     this.getList(this.listQuery)
-                    this.$parent.$parent.$parent.$parent.alertNotify('删除')
+                    this.$parent.alertNotify('删除')
                 })
             })
             
@@ -234,7 +240,7 @@
                     this.createdLoading = true
                     addObj(data).then(res => {
                         this.getList(this.listQuery)
-                        this.$parent.$parent.$parent.$parent.alertNotify('添加')
+                        this.$parent.alertNotify('添加')
                         this.resetTem()
                     })
                 }
@@ -249,7 +255,7 @@
                     data.status = data.status?1:0
                     editObj(data).then(res => {
                         this.getList(this.listQuery)
-                        this.$parent.$parent.$parent.$parent.alertNotify('修改')
+                        this.$parent.alertNotify('修改')
                         this.cancelEdit()
                     })
                 }
@@ -292,7 +298,7 @@
             return jsonData.map(v => filterVal.map(j => v[j]));
         },
         uploadSuccess(response, file, fileList){
-            this.$parent.$parent.$parent.$parent.alertNotify('上传')
+            this.$parent.alertNotify('上传')
             this.getList()
         },
         uploadError(){
@@ -308,7 +314,7 @@
             this.$message.error('只允许上传 CSV 格式文件!');
             }
             return isJPG;
-        }
+        },
     },
     watch:{
     }

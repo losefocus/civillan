@@ -3,7 +3,7 @@
         <div class="tit"><h3>{{(flag == 'add')?'添加':'修改'}}设备</h3><span>{{(flag == 'add')?'Add':'Edit'}} Equipment</span></div>
         <el-form label-width="55px" :model="form"  ref="form" :rules="rules" label-position="left">
             <el-form-item label="产品" prop="product.id">
-                <el-select v-model="form.product.id" filterable :filter-method="productSearch" size="small" placeholder="请选择产品" :disabled="disabled">
+                <el-select v-model="form.product.id" filterable :filter-method="productSearch" size="small" placeholder="请选择产品" :disabled="disabled" no-data-text="请先添加产品">
                     <el-option
                     v-for="item in productOptions"
                     :key="item.value"
@@ -19,7 +19,7 @@
                 </el-select>
             </el-form-item>
             <el-form-item label="项目" prop="projectId">
-                <el-select v-model="form.projectId" filterable :filter-method="projectSearch" size="small" placeholder="请选择项目" @change="changeProject">
+                <el-select v-model="form.projectId" filterable :filter-method="projectSearch" size="small" placeholder="请选择项目" @change="changeProject" no-data-text="请先添加项目">
                     <el-option
                     v-for="item in projectOptions"
                     :key="item.value"
@@ -35,7 +35,7 @@
                 </el-select>
             </el-form-item>
             <el-form-item label="分组" prop="deviceGroup.id">
-                <el-select v-model="form.deviceGroup.id" size="small" placeholder="请选择分组">
+                <el-select v-model="form.deviceGroup.id" size="small" placeholder="请选择分组" no-data-text="请先添加项目分组">
                     <el-option
                     v-for="item in groupOptions"
                     :key="item.value"

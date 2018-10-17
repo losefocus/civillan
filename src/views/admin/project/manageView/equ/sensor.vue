@@ -3,7 +3,7 @@
         <div style="padding-bottom:10px;">设 备 : {{dataInfo.name}}</div>
         <el-form :model="form" class="clearfix" ref="form" :rules="rules" label-width="0" size="small" style="margin-bottom:10px;">
             <el-form-item label="" prop="type" style="width: 100px;margin-right:5px">
-                <el-select v-model="form.type" placeholder="选择类型" size="mini">
+                <el-select v-model="form.type" placeholder="选择类型" size="mini" no-data-text="请先添加变量类型">
                     <el-option
                     v-for="item in dicts"
                     :key="item.value"
@@ -18,11 +18,11 @@
             <el-form-item label="" prop="label" style="width: 100px;margin-right:5px">
                 <el-input v-model="form.label" size="mini" auto-complete="off" placeholder="标识"></el-input>
             </el-form-item>
-            <el-form-item label="" prop="max_value" style="width: 100px;margin-right:5px" v-show="form.type == 'float' || form.type == 'integer' || form.type == 'double'">
-                <el-input v-model="form.max_value" size="mini" auto-complete="off" placeholder="最大值"></el-input>
+            <el-form-item label="" prop="max_value" style="width: 100px;margin-right:5px" v-show="form.type == 'float' || form.type == '1' || form.type == 'integer' || form.type == '2' || form.type == 'double' || form.type == '4'">
+                <el-input v-model="form.maxValue" size="mini" auto-complete="off" placeholder="最大值"></el-input>
             </el-form-item>
-            <el-form-item label="" prop="min_value" style="width: 100px;margin-right:5px" v-show="form.type == 'float' || form.type == 'integer' || form.type == 'double'">
-                <el-input v-model="form.min_value" size="mini" auto-complete="off" placeholder="最小值"></el-input>
+            <el-form-item label="" prop="min_value" style="width: 100px;margin-right:5px" v-show="form.type == 'float' || form.type == '1' || form.type == 'integer' || form.type == '2' || form.type == 'double' || form.type == '4'">
+                <el-input v-model="form.minValue" size="mini" auto-complete="off" placeholder="最小值"></el-input>
             </el-form-item>
             <el-form-item label="" style="width: 60px;margin-right:5px">
                 <el-input v-model="form.sort" size="mini" auto-complete="off" placeholder="排序"></el-input>
@@ -153,8 +153,8 @@
                 label:'',
                 sort:0,
                 type:'',
-                max_value:0,
-                min_value:0,
+                maxValue:0,
+                minValue:0,
                 status:true
             },
             flag:'add',
@@ -278,8 +278,8 @@
                 label:'',
                 sort:0,
                 type:'',
-                max_value:0,
-                min_value:0,
+                maxValue:0,
+                minValue:0,
                 status:true
             }
             this.createdLoading = false

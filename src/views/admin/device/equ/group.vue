@@ -255,7 +255,7 @@
             ).then(() => {
                 delObj(row.id).then(res => {
                     this.getList()
-                    this.$parent.$parent.$parent.$parent.alertNotify('删除')
+                    this.$parent.alertNotify('删除')
                 })
             }).catch(() => {})
         },
@@ -269,7 +269,7 @@
                     this.createdLoading = true
                     addObj(data).then(res => {
                         this.getList()
-                        this.$parent.$parent.$parent.$parent.alertNotify('添加')
+                        this.$parent.alertNotify('添加')
                         this.resetTem()
                     })
                 }
@@ -285,7 +285,7 @@
                     delete data.projectDevices
                     editObj(data).then(res => {
                         this.getList()
-                        this.$parent.$parent.$parent.$parent.alertNotify('修改')
+                        this.$parent.alertNotify('修改')
                         this.cancelEdit()
                     })
                 }

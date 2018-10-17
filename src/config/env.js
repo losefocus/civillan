@@ -19,9 +19,11 @@ let iconfontUrl = `//at.alicdn.com/t/font_$key.css`;
 let codeUrl = `/admin/code`
 if (process.env.NODE_ENV == 'development') {
    baseUrl = `http://192.168.0.232/`
+  //  baseUrl = `http://api.gcycloud.com/`
   // baseUrl = `http://192.168.0.33:9999/`
 } else if (process.env.NODE_ENV == 'production') {
   baseUrl = `http://192.168.0.232/`
+  // baseUrl = `http://api.gcycloud.com/`
   // baseUrl = `http://192.168.0.33:9999/`
 }
 

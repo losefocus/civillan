@@ -311,6 +311,56 @@ export const treeAddValue = (data) => {
   return data
 }
 
+/**
+ * 根据parentId
+ * 将树形结构 转为 普通的数组
+ */
+export const treeToArr = (tree)=>{
+	let res = []
+	for(let i = 0 ; i<tree.length;i++){
+		res.push(tree[i])
+		if(tree[i].children && tree[i].children.length !=0){
+			res = res.concat(treeToArr(tree[i].children));
+		}
+	}
+	return res
+}
+
+/**
+ * 数组转特定格式对象
+ */
+export const reduce_ = (zNodes)=>{
+	return zNodes.reduce((o, x) => {
+	    let id = x.id
+	    let parentId = x.parentId
+	    o[id] = o[id] || {children: []}
+	    o[id].node = x
+	    if (parentId) {
+	        o[parentId] = o[parentId] || {children: []}
+	      o[parentId].children.push(x)
+	    }
+	    return o
+	}, {})
+}
+
+/**
+ * 向上查找所有父级对象，返回一个对象数组
+ */
+export const listParents = (tree, node)=>{
+  if (!node.parentId) {
+      return []
+  }
+  return _list(tree, tree[node.parentId].node)
+  function _list (tree, node) {
+      if (node.parentId == 0) {
+        return [node]
+      } else {
+        return _list(tree, tree[node.parentId].node).concat([node])
+    }
+  }
+}
+
+
 // /**
 //  * 递归寻找子类及父类id
 //  */

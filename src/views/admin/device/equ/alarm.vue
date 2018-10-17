@@ -12,7 +12,7 @@
                         <el-input v-model="form.title" size="mini" auto-complete="off"></el-input>
                     </el-form-item>
                     <el-form-item label="报警周期" prop="cycle" style="width: 310px;margin-left:30px;padding-bottom:1px;">
-                        <el-select v-model="form.cycle" placeholder="请选择" size="mini">
+                        <el-select v-model="form.cycle" placeholder="请选择" size="mini" no-data-text="请先添加报警周期">
                             <el-option
                             v-for="item in dicts"
                             :key="item.value"
@@ -31,7 +31,7 @@
                         <el-input v-model="form.condition" type="textarea" :rows="2" size="mini" auto-complete="off"></el-input>
                     </el-form-item>
                     <el-form-item label="报警级别" prop="level" style="width: 310px;margin-left:30px;margin-bottom:38px">
-                        <el-select v-model="form.level" placeholder="请选择" size="mini">
+                        <el-select v-model="form.level" placeholder="请选择" size="mini" no-data-text="请先添加报警级别">
                             <el-option
                             v-for="item in alarmDicts"
                             :key="item.value"
@@ -236,7 +236,7 @@
             ).then(() => {
                 delObj(row.id).then(res => {
                     this.getList(this.listQuery)
-                    this.$parent.$parent.$parent.$parent.alertNotify('删除')
+                    this.$parent.alertNotify('删除')
                 })
             })
         },
@@ -250,7 +250,7 @@
                     this.createdLoading = true
                     addObj(data).then(res => {
                         this.getList(this.listQuery)
-                        this.$parent.$parent.$parent.$parent.alertNotify('添加')
+                        this.$parent.alertNotify('添加')
                         this.resetTem()
                     })
                 }
@@ -264,7 +264,7 @@
                     data.status = data.status?1:0
                     editObj(data).then(res => {
                         this.getList(this.listQuery)
-                        this.$parent.$parent.$parent.$parent.alertNotify('修改')
+                        this.$parent.alertNotify('修改')
                         this.cancelEdit()
                     })
                 }

@@ -2,7 +2,7 @@
   <div class="app-container calendar-list-container">
     <div class="filter-container clearfix">
       <div class="pull-right">
-        <el-select style="width: 200px!important;margin-right:10px;" class="filter-item" v-model="listQuery.type" clearable filterable placeholder="请选择" size="small" @change="handleFilter">
+        <el-select style="width: 200px!important;margin-right:10px;" class="filter-item" v-model="listQuery.type" clearable filterable placeholder="按操作类型筛选" size="small" @change="handleFilter">
           <el-option v-for="item in dicts" :key="item.value" :label="item.label" :value="item.value">
           </el-option>
         </el-select>
@@ -68,6 +68,8 @@
       sys_dict_add: false,
       listLoading: true,
       dicts: [
+
+        {label:'全部类型',value:''},
         {label:'添加',value:'add'},
         {label:'删除',value:'delete'},
         {label:'修改',value:'update'},

@@ -6,7 +6,7 @@
                 <el-input v-model="addNewForm.name" size="small" placeholder="请输入名称"></el-input>
             </el-form-item>
             <el-form-item label="类型" prop="typeId">
-                <el-select v-model="addNewForm.typeId" placeholder="请选择类型" size="small" >
+                <el-select v-model="addNewForm.typeId" placeholder="请选择类型" size="small" no-data-text="请先添加机构类型">
                     <el-option
                     v-for="item in typeOptions"
                     :key="item.value"

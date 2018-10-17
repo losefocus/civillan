@@ -13,7 +13,6 @@
       </div>
       <div></div>
     </div>
-    
     <div class="login-border  animated fadeInRight">
       <div class="login-main">
         <h4 class="login-title">智慧云平台管理系统
@@ -33,14 +32,7 @@
         <p class="pull-right" style="font-size:12px;cursor: pointer;">忘记密码？</p>
       </div>
     </div>
-
-    <el-dialog title="" :visible.sync="dialogCheckVisible" :showClose="false" :closeOnClickModal="false">
-      <p style="text-align: center;font-size:16px">为了获得更好体验，平台不支持ie8及以下版本浏览器，推荐使用下列浏览器</p>
-      <ul class="browserList clearfix">
-        <li><img src="../../assets/img/chrome.png"></li>
-        <li><img src="../../assets/img/firefox.png"></li>
-      </ul>
-    </el-dialog>
+    <div class="copyright">copyright ©2018 浙江智握领程科技股份有限公司 版权所有</div>
   </div>
 </template>
 <script>
@@ -64,7 +56,6 @@
   data() {
     return {
       activeName: "user",
-      dialogCheckVisible:false,
       bgStyle:{'background-image':'url("'+bgImg+'")'}
     };
   },
@@ -91,8 +82,6 @@
         var reIE = new RegExp("MSIE (\\d+\\.\\d+);");
         reIE.test(userAgent);
         var fIEVersion = parseFloat(RegExp["$1"]);	//IE版本号
-
-        this.dialogCheckVisible = true
       }else{
         
       }
@@ -102,6 +91,18 @@
 </script>
 
 <style lang="scss">
+.copyright{
+  width: 100%;
+  position: absolute;
+  z-index: 3;
+  bottom: 20px;
+  left: 0;
+  overflow: hidden;
+  color: #fff;
+  zoom: 1;
+  margin: 0;
+  text-align: center
+}
 .logoImg{
   width: 195px;
   height: 60px;

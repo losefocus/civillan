@@ -7,9 +7,9 @@
                     <el-button style="" @click="toProjectMap"  size="small" type="primary">项目地图</el-button>
                     <el-button class="pull-right" type="primary" size="small" v-waves  @click="handleFilter">搜索</el-button>
                     <el-input @keyup.enter.native="handleFilter" style="width: 150px;" size="small" suffix-icon="el-icon-search" class="pull-right" placeholder="项目名称" v-model="listQuery.name"></el-input>
-                    <el-select v-model="listQuery.adminer" clearable class="pull-right" placeholder="按项目管理员筛选" style="width:150px!important;margin-right:10px" size="small"  @change="handleFilter">
+                    <el-select v-model="adminer_" clearable class="pull-right" placeholder="按项目管理员筛选" style="width:150px!important;margin-right:10px" size="small"  @change="handleFilter">
                         <el-option
-                        v-for="item in adminerOptions"
+                        v-for="item in adminerOptions_"
                         :key="item.value"
                         :label="item.label"
                         :value="item.value">
@@ -72,7 +72,7 @@
                                     <img v-else style="width:60px;height:45px" src="../../../assets/img/no_pic.png">
                                     <el-tooltip class="item" effect="dark" :content="scope.row.name" placement="top-start" :open-delay="300">
                                         <span style="white-space:nowrap;">
-                                            <a v-if="scope.row.children==0" style="cursor: pointer;overflow: hidden;text-overflow:ellipsis;line-height:45px;padding:0 10px;width:calc(100% - 80px)" @click="toInfo(scope.row)">{{scope.row.name}}</a>
+                                            <span v-if="scope.row.children==0" style="cursor: pointer;overflow: hidden;text-overflow:ellipsis;line-height:45px;padding:0 10px;width:calc(100% - 80px)" @click="toInfo(scope.row)">{{scope.row.name}}</span>
                                             <span v-else style="cursor: pointer;overflow: hidden;text-overflow:ellipsis;line-height:45px;padding:0 10px;width:calc(100% - 80px)" @click="expendTableRow(scope.row)">{{scope.row.name}}</span>
                                         </span>
                                     </el-tooltip>
@@ -102,7 +102,7 @@
                                         <el-dropdown-item v-if="project_btn_device" :disabled="pro.row.children.length!=0" :command="composeValue('equ',pro.row)">设备管理</el-dropdown-item>
                                         <el-dropdown-item v-if="project_btn_doc" :command="composeValue('doc',pro.row)">文档资料</el-dropdown-item>
                                         <el-dropdown-item v-if="project_btn_doc" :command="composeValue('media',pro.row)">现场影像</el-dropdown-item>
-                                        <el-dropdown-item v-if="project_btn_doc" :command="composeValue('config',pro.row)">作业配置</el-dropdown-item>
+                                        <el-dropdown-item v-if="project_btn_doc" :disabled="pro.row.children.length!=0" :command="composeValue('config',pro.row)">作业配置</el-dropdown-item>
                                         <el-dropdown-item divided v-if="project_btn_add" :command="composeValue('add',pro.row)">添加子项</el-dropdown-item>
                                         <el-dropdown-item v-if="project_btn_edit" :command="composeValue('edit',pro.row)">修改项目</el-dropdown-item>
                                         <el-dropdown-item v-if="project_btn_del" :command="composeValue('del',pro.row)">删除项目</el-dropdown-item>
@@ -147,7 +147,7 @@
                         </el-date-picker>
                     </el-form-item>
                     <el-form-item label="管理员" prop="adminer">
-                        <el-select v-model="form.adminer" size="small" placeholder="请选择" :loading="adminerOptionsloading">
+                        <el-select v-model="form.adminer" size="small" placeholder="请选择项目管理员" :loading="adminerOptionsloading" no-data-text="请先添加项目管理员">
                             <el-option
                             v-for="item in adminerOptions"
                             :key="item.value"
@@ -264,6 +264,7 @@
             },
             sys_user_upd:true,
             sys_user_del:true,
+            adminer_:'',
             listQuery: {
                 page_index: 1,
                 page_size: 20
@@ -276,6 +277,7 @@
             viewData:null,
             parentIdOptions:[],
             adminerOptions:[],
+            adminerOptions_:[],
             adminerOptionsloading:false,
             form:{
                 parentId:0,
@@ -362,7 +364,10 @@
                     }
                     hash[datas[i].id] =datas[i].name!=''?datas[i].name+'('+datas[i].username+')':datas[i].username
                 } 
+                
                 this.adminerOptions = options
+                this.adminerOptions_ = options.concat()
+                this.adminerOptions_.unshift({value:0,label:'全部项目管理员'})
                 this.$store.commit("SET_ADMINERHASH",hash);
                 this.adminerOptionsloading = false
             })
@@ -533,7 +538,12 @@
         },
         handleFilter(){
             if(this.listQuery.name == '') delete this.listQuery.name
-            if(this.listQuery.adminer == '') delete this.listQuery.adminer
+            if(this.adminer_ == 0){
+                delete this.listQuery.adminer
+            }else{
+                this.listQuery.adminer = this.adminer_
+            }
+            // if(this.listQuery.adminer === '') delete this.listQuery.adminer
             this.listQuery.page_index = 1;
             this.getList()
         },

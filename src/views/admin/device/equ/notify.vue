@@ -8,8 +8,8 @@
         <el-collapse-transition>
             <div v-show="isshow">
                 <el-form :model="form" class="clearfix" :rules="rules" ref="form" label-width="70px" size="mini">
-                    <el-form-item label="报警条目" prop="alarmId" style="width: 650px">
-                        <el-select v-model="form.alarmId" placeholder="请选择报警条目" size="mini" :loading="alarmLoading">
+                    <el-form-item label="报警条目" prop="alarmId" style="width: 310px">
+                        <el-select v-model="form.alarmId" placeholder="请选择报警条目" size="mini" :loading="alarmLoading" no-data-text="请先添加报警条目">
                             <el-option
                             v-for="item in alarmOptions"
                             :key="item.value"
@@ -18,18 +18,8 @@
                             </el-option>
                         </el-select>
                     </el-form-item>
-                    <el-form-item label="通知对象" prop="puserIds" style="width: 650px">
-                        <el-select v-model="form.puserIds" multiple placeholder="请选择通知对象" size="mini" :loading="userLoading">
-                            <el-option
-                            v-for="item in userOptions"
-                            :key="item.value"
-                            :label="item.label"
-                            :value="item.value">
-                            </el-option>
-                        </el-select>
-                    </el-form-item>
-                    <el-form-item label="通知频率" prop="cycle" style="width: 310px;">
-                        <el-select v-model="form.cycle" placeholder="请选择通知频率" size="mini">
+                    <el-form-item label="通知频率" prop="cycle" style="width: 310px;margin-left:30px">
+                        <el-select v-model="form.cycle" placeholder="请选择通知频率" size="mini" no-data-text="请先添加通知频率">
                             <el-option
                             v-for="item in options"
                             :key="item.value"
@@ -38,8 +28,18 @@
                             </el-option>
                         </el-select>
                     </el-form-item>
+                    <el-form-item label="通知对象" prop="puserIds" style="width: 310px">
+                        <el-select v-model="form.puserIds" multiple placeholder="请选择通知对象" size="mini" :loading="userLoading" no-data-text="请先添加通知对象">
+                            <el-option
+                            v-for="item in userOptions"
+                            :key="item.value"
+                            :label="item.label"
+                            :value="item.value">
+                            </el-option>
+                        </el-select>
+                    </el-form-item>
                     <el-form-item label="通知方式" prop="notifyTypes" style="width: 310px;margin-left:30px">
-                        <el-select v-model="form.notifyTypes" placeholder="请选择通知方式" size="mini" >
+                        <el-select v-model="form.notifyTypes" placeholder="请选择通知方式" size="mini" no-data-text="请先添加通知方式">
                             <el-option
                             v-for="item in typeOptions"
                             :key="item.value"
@@ -237,7 +237,7 @@
             ).then(() => {
                 delObj(row.id).then(res => {
                     this.getList(this.listQuery)
-                    this.$parent.$parent.$parent.$parent.alertNotify('删除')
+                    this.$parent.alertNotify('删除')
                 })
             })
         },
@@ -251,7 +251,7 @@
                     this.createdLoading = true
                     addObj(data).then(res => {
                         this.getList(this.listQuery)
-                        this.$parent.$parent.$parent.$parent.alertNotify('添加')
+                        this.$parent.alertNotify('添加')
                         this.cancelEdit()
                     })
                 }
