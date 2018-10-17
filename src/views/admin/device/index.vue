@@ -337,6 +337,14 @@
                 clipboard.destroy()  
             })  
         },
+        alertNotify(str){
+            this.$notify({
+                title: str,
+                message: str+"成功",
+                type: "success",
+                duration: 2000
+            });
+        }
     },
     watch:{
     }

@@ -161,7 +161,6 @@
             })
         },
         handleCategoryChange(){
-            console.log( this.categoryId)
             this.listQuery.categoryId = this.categoryId
             if(this.categoryId == 0){
                 delete this.listQuery.categoryId

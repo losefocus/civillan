@@ -147,7 +147,7 @@
                         </el-date-picker>
                     </el-form-item>
                     <el-form-item label="管理员" prop="adminer">
-                        <el-select v-model="form.adminer" size="small" placeholder="请选择" :loading="adminerOptionsloading" no-data-text="请先添加项目管理员">
+                        <el-select v-model="form.adminer" size="small" placeholder="请选择项目管理员" :loading="adminerOptionsloading" no-data-text="请先添加项目管理员">
                             <el-option
                             v-for="item in adminerOptions"
                             :key="item.value"

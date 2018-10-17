@@ -237,7 +237,7 @@
             ).then(() => {
                 delObj(row.id).then(res => {
                     this.getList(this.listQuery)
-                    this.$parent.$parent.$parent.$parent.alertNotify('删除')
+                    this.$parent.alertNotify('删除')
                 })
             })
         },
@@ -251,7 +251,7 @@
                     this.createdLoading = true
                     addObj(data).then(res => {
                         this.getList(this.listQuery)
-                        this.$parent.$parent.$parent.$parent.alertNotify('添加')
+                        this.$parent.alertNotify('添加')
                         this.cancelEdit()
                     })
                 }
