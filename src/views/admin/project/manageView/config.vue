@@ -5,14 +5,17 @@
             <el-button class="filter-item" style="" size="small" type="primary" @click="configTemplateVisible=true">导入</el-button>
             <el-button class="pull-right" type="primary" size="small" v-waves  @click="handleFilter">搜索</el-button>
             <el-input @keyup.enter.native="handleFilter" style="width: 150px;" size="small" suffix-icon="el-icon-search" class="pull-right" placeholder="按名称搜索" v-model="listQuery.name"></el-input>
-            <el-select v-model="filterType" size="small" clearable class="pull-right" placeholder="按类型筛选" style="width: 150px !important;margin-right:20px;" @change="changeTypeFilter">
+            <!-- <el-select v-model="filterType" size="small" clearable class="pull-right" placeholder="按类型筛选" style="width: 150px !important;margin-right:20px;" @change="changeTypeFilter">
                 <el-option
                 v-for="item in typeOptions"
                 :key="item.value"
                 :label="item.label"
                 :value="item.value">
                 </el-option>
-            </el-select>
+            </el-select> -->
+            <el-radio-group class="pull-right" v-model="filterType" size="small" @change="changeTypeFilter"  style="margin-right:20px;">
+                <el-radio-button v-for="item in typeOptions" :label="item.value" :key="item.value">{{item.label}}</el-radio-button>
+            </el-radio-group>
         </div>
         <el-table :data="list" v-loading="listLoading" ref="multipleTable" fit highlight-current-row style="width: 99%;margin-bottom:20px;" @selection-change="handleSelectionChange">
             <el-table-column type="selection" min-width="55"></el-table-column>
@@ -244,6 +247,8 @@
             })
         },
         changeTypeFilter(){
+            this.listQuery.typeId = this.filterType
+            if (this.filterType == 0) delete this.listQuery.typeId
             this.listQuery.page_index = 1;
             this.getList()
         },
