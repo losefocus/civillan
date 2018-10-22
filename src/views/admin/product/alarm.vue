@@ -62,9 +62,9 @@
             </div>
         
         </el-collapse-transition>
-        <div style="padding-bottom:10px;">
+        <div style="padding-bottom:10px;" class="clearfix">
             <el-upload
-                class="upload-demo"
+                class="upload-demo pull-left"
                 ref="upload"
                 :headers="headers"
                 action="/product/product/import"
@@ -78,6 +78,7 @@
                 :auto-upload="true">
                     <el-button slot="trigger" size="mini" type="">导入</el-button>
             </el-upload>
+            <download-btn :header="header" :data="modleData" :btnName='btnName' class="pull-left" style="margin-left:10px;cursor:pointer"></download-btn> 
         </div>
         <div v-loading="listLoading">
             <el-table :data="list" border fit highlight-current-row style="width: 100%;margin-bottom:20px">
@@ -126,8 +127,9 @@
   import {getToken} from "@/util/auth";
   import {findByvalue} from "@/util/util";
   import {get_templateObj, set_templateObj} from "@/api/product";
-
+  import downloadBtn from "../project/manageView/equ/downloadBtn"
   export default {
+    components:{downloadBtn},
     props:['productInfo'],
     data(){
         var validateTitle = (rule, value, callback) => {
@@ -173,6 +175,14 @@
             }
         };
         return {
+            header:[
+                {label:'报警标题',prop:'title'},
+                {label:'报警内容',prop:'triggerMessage'},
+                {label:'恢复内容',prop:'recoverMessage'},
+                {label:'报警级别',prop:'level'},
+            ],
+            btnName:'警报模板文件.csv',
+            modleData:[],
             rules: {
                 title: [{ validator: validateTitle,trigger: 'blur' }],
                 cycle: [{ validator: validateCycle,trigger: 'change' }],
