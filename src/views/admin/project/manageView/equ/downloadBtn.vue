@@ -1,7 +1,7 @@
 <template>
-  <el-button size="mini">
-    <a ref="link" class="download-btn" v-on:click="handleClick">导出</a>
-  </el-button>
+  <!-- <el-button size="mini"> -->
+    <a ref="link" class="download-btn" v-on:click="handleClick">{{btnName}}</a>
+  <!-- </el-button> -->
 </template>
 <script type="text/javascript">
 export default {
@@ -21,17 +21,21 @@ export default {
     fileName: {
       type: String,
       default: 'data.csv'
+    },
+    btnName:{
+      type: String,
+      default: '导出'
     }
   },
   methods: {
     handleClick: function() {
-        if (!this.data || this.data.length <= 0) {
-            this.$message({
-                message: '请先选择导出数据',
-                type: 'warning'
-            });
-            return;
-        }
+        // if (!this.data || this.data.length <= 0) {
+        //     this.$message({
+        //         message: '请先选择导出数据',
+        //         type: 'warning'
+        //     });
+        //     return;
+        // }
         //   var csvContent = 'data:text/csv;charset=utf-8,\ufeff';
         var csvContent = '';
         csvContent += this.headerLabel + '\r\n';
@@ -78,7 +82,7 @@ export default {
   font-size: 12px;
   outline: 0;
   text-align: center;
-  text-decoration:none
+  // text-decoration:none
 }
 
 </style>

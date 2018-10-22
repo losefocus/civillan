@@ -225,7 +225,7 @@
         ],
         mobile: [
           {
-            required: false,
+            required: true,
             message: "手机号",
             trigger: "blur"
           },

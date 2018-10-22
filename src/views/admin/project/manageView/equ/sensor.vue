@@ -18,10 +18,10 @@
             <el-form-item label="" prop="label" style="width: 100px;margin-right:5px">
                 <el-input v-model="form.label" size="mini" auto-complete="off" placeholder="标识"></el-input>
             </el-form-item>
-            <el-form-item label="" prop="max_value" style="width: 100px;margin-right:5px" v-show="form.type == 'float' || form.type == '1' || form.type == 'integer' || form.type == '2' || form.type == 'double' || form.type == '4'">
+            <el-form-item label="" prop="maxValue" style="width: 100px;margin-right:5px" v-show="form.type == 'float' || form.type == '1' || form.type == 'integer' || form.type == '2' || form.type == 'double' || form.type == '4'">
                 <el-input v-model="form.maxValue" size="mini" auto-complete="off" placeholder="最大值"></el-input>
             </el-form-item>
-            <el-form-item label="" prop="min_value" style="width: 100px;margin-right:5px" v-show="form.type == 'float' || form.type == '1' || form.type == 'integer' || form.type == '2' || form.type == 'double' || form.type == '4'">
+            <el-form-item label="" prop="minValue" style="width: 100px;margin-right:5px" v-show="form.type == 'float' || form.type == '1' || form.type == 'integer' || form.type == '2' || form.type == 'double' || form.type == '4'">
                 <el-input v-model="form.minValue" size="mini" auto-complete="off" placeholder="最小值"></el-input>
             </el-form-item>
             <el-form-item label="" style="width: 60px;margin-right:5px">
@@ -41,7 +41,9 @@
             </el-form-item>
         </el-form>
         <div style="margin-bottom:10px;" class="clearfix">
-            <download-btn :header="header" :data="data" class="pull-left" style="margin-right:10px">导出</download-btn> 
+            <el-button  class="pull-left" size="mini" style="margin-right:10px">
+                <download-btn :header="header" :data="list" >导出</download-btn> 
+            </el-button>
             <!-- <el-button @click="importexcel" size="mini">导出excel</el-button> -->
             <el-upload
                 class="upload-demo pull-left"
@@ -58,6 +60,9 @@
                 :auto-upload="true">
                     <el-button slot="trigger" size="mini" type="">导入</el-button>
             </el-upload>
+            <download-btn :header="header" :data="modleData" :btnName='btnName' style="margin-left:10px;cursor:pointer"></download-btn> 
+
+            <el-button class="pull-right" size="mini"  @click="batchDelete">批量删除</el-button>
         </div>
         <div v-loading="listLoading">
             <el-table :data="list" @selection-change="handleSelectionChange" border fit highlight-current-row style="width: 100%;margin-bottom:20px;margin-top:10px">
@@ -143,7 +148,15 @@
                 name: [{ validator: validateName,trigger: 'blur' }],
                 label: [{ validator: validateLabel,trigger: 'blur' }],
             },
-            header:[],
+            header:[
+                {label:'标识',prop:'label'},
+                {label:'变量名称',prop:'name'},
+                {label:'类型',prop:'type'},
+                {label:'最大值',prop:'maxValue'},
+                {label:'最小值',prop:'minValue'}
+            ],
+            btnName:'变量模板文件.csv',
+            modleData:[],
             data:[],
             listLoading:false,
             createdLoading:false,
@@ -185,8 +198,16 @@
     methods:{
         handleSelectionChange(val) {
             this.listSelection = val;
-            this.header = [{label:'标识',prop:'label'},{label:'变量名称',prop:'name'},{label:'类型',prop:'type'}]
-            this.data = val
+            // this.header = [{label:'标识',prop:'label'},{label:'变量名称',prop:'name'},{label:'类型',prop:'type'},{label:'最大值',prop:'maxValue'},{label:'最小值',prop:'minValue'}]
+            // this.data = val
+            
+        },
+        batchDelete(){
+            let ids = this.listSelection.map(v => {return v.id}).join()
+            delObj(ids).then(res => {
+                this.getList(this.listQuery)
+                this.$parent.$parent.$parent.$parent.alertNotify('删除')
+            })
         },
         handleSizeChange(val) {
             this.listQuery.page_size = val;
@@ -288,9 +309,8 @@
         importexcel() {　
         　　require.ensure([], () => {　　　　　　　　
                 const { export_json_to_excel } = require('@/vendor/Export2Excel');　　//引入文件　　　　　　
-                const tHeader = ['变量名称', '标识', '类型']; //将对应的属性名转换成中文
-                //const tHeader = [];　
-                const filterVal = ['name', 'label', 'type'];//table表格中对应的属性名　　　　　 　　　
+                const tHeader = ['变量名称', '标识', '类型', '最大值', '最小值']; //将对应的属性名转换成中文
+                const filterVal = ['name', 'label', 'type','maxValue','minValue'];//table表格中对应的属性名　　　　　 　　　
                 const list = this.listSelection;　　　　
                 if(list.length == 0){
                     this.$message({
