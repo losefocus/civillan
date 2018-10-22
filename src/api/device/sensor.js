@@ -29,7 +29,7 @@ export function getObj(query) {
    /* 删除 */
    export function delObj(id) {
     return request({
-      url: '/device/device_sensor/delete?project_device_variable_id=' +id,
+      url: '/device/device_sensor/delete?project_device_variable_ids=' +id,
       method: 'post',
     })
   }

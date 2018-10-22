@@ -1,6 +1,5 @@
 <template>
     <div>
-        <!-- <h3>{{flag == 'add'?'添加':'修改'}}人员</h3> -->
         <div class="tit"><h3>{{(flag == 'add')?'添加':'修改'}}人员</h3><span>{{(flag == 'add')?'Add':'Edit'}} Personnel</span></div>
         <el-form label-width="55px" :model="form" :rules="rules"  ref="forms" label-position="left">
             <el-form-item label="机构" prop="projectOrgan.id">

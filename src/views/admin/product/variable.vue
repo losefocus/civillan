@@ -3,6 +3,7 @@
         <div>产 品 : {{productInfo.name}} </div>
         <el-form :model="form" class="clearfix" ref="form" :rules="rules" label-width="0" size="mini" style="padding-top:10px;">
             <el-form-item label="" prop="type" style="width: 100px;margin-right:5px">
+                类型
                 <el-select v-model="form.type" placeholder="类型" size="mini">
                     <el-option
                     v-for="item in options"
@@ -13,36 +14,44 @@
                 </el-select>
             </el-form-item>
             <el-form-item label="" prop="name" style="width: 140px;margin-right:5px">
+                变量名称
                 <el-input v-model="form.name" size="mini" auto-complete="off" placeholder="变量名称"></el-input>
             </el-form-item>
             <el-form-item label="" prop="label" style="width: 100px;margin-right:5px">
+                标识
                 <el-input v-model="form.label" size="mini" auto-complete="off" placeholder="标识"></el-input>
             </el-form-item>
-            <el-form-item label="" prop="max_value" style="width: 100px;margin-right:5px" v-show="form.type == '1' || form.type == '2' || form.type == '4'">
-                <el-input v-model="form.max_value" size="mini" auto-complete="off" placeholder="最大值"></el-input>
+            <el-form-item label="" prop="maxValue" style="width: 100px;margin-right:5px" v-show="form.type == '1' || form.type == '2' || form.type == '4'">
+                最大值
+                <el-input v-model="form.maxValue" size="mini" auto-complete="off" placeholder="最大值"></el-input>
             </el-form-item>
-            <el-form-item label="" prop="min_value" style="width: 100px;margin-right:5px" v-show="form.type == '1' || form.type == '2' || form.type == '4'">
-                <el-input v-model="form.min_value" size="mini" auto-complete="off" placeholder="最小值"></el-input>
+            <el-form-item label="" prop="minValue" style="width: 100px;margin-right:5px" v-show="form.type == '1' || form.type == '2' || form.type == '4'">
+                最小值  
+                <el-input v-model="form.minValue" size="mini" auto-complete="off" placeholder="最小值"></el-input>
             </el-form-item>
-            <el-form-item label="" prop="sort" style="width: 60px;margin-right:5px">
+            <el-form-item label="" prop="sort" style="width: 60px;margin-right:5px" :style="form.type == '1' || form.type == '2' || form.type == '4'?'width: 80px':'width: 60px'">
+                排序
                 <el-input v-model="form.sort" size="mini" auto-complete="off" placeholder="排序"></el-input>
             </el-form-item>
-            <el-form-item  :style="flag == 'add'?'width: 80px':'width: 150px'" class="pull-right">
-                <div v-if="flag == 'add'">
+            <el-form-item  :style="flag == 'add'?'width: 80px':'width: 150px'" class="pull-right" >
+                <div v-if="flag == 'add'" :style="form.type == '1' || form.type == '2' || form.type == '4'?'margin-top:0':'margin-top:30px'">
                     <el-button size="mini" type="primary" class="pull-right" @click="handleAdd('form')" :loading="createdLoading">添加</el-button>
                 </div>
-                <div v-else >
+                <div v-else :style="form.type == '1' || form.type == '2' || form.type == '4'?'margin-top:0':'margin-top:30px'">
                     <el-button size="mini" type="info" class="pull-right" style="margin-left:10px" @click="cancelEdit('form')">取消</el-button>
                     <el-button size="mini" type="primary" class="pull-right" @click="handleEdit" :loading="createdLoading">保存</el-button>
                 </div>
             </el-form-item>
-            <el-form-item style="width: 70px;margin-left:5px" class="pull-right">
+            <el-form-item style="width: 70px;margin-left:5px;" class="pull-right" :style="form.type == '1' || form.type == '2' || form.type == '4'?'margin-top:0':'margin-top:30px'">
                 <el-checkbox v-model="form.status" >已启用</el-checkbox>
             </el-form-item>
         </el-form>
-        <div style="padding-bottom:10px;">
+        <div style="padding-bottom:10px;" class="clearfix">
+            <el-button  class="pull-left" size="mini" style="margin-right:10px">
+                <download-btn :header="header" :data="list" >导出</download-btn> 
+            </el-button>
             <el-upload
-                class="upload-demo"
+                class="upload-demo pull-left"
                 ref="upload"
                 :headers="headers"
                 action="/product/product/import"
@@ -56,6 +65,7 @@
                 :auto-upload="true">
                     <el-button slot="trigger" size="mini" type="">导入</el-button>
             </el-upload>
+            <download-btn :header="header" :data="modleData" :btnName='btnName' style="margin-left:10px;cursor:pointer"></download-btn> 
         </div>
         <div v-loading="listLoading">
             <el-table :data="list" border fit highlight-current-row style="width: 100%;margin-bottom:20px">
@@ -104,8 +114,9 @@
   import {remote} from "@/api/dict";
   import {findByvalue} from "@/util/util";
   import {get_templateObj, set_templateObj} from "@/api/product";
-
+  import downloadBtn from "../project/manageView/equ/downloadBtn"
   export default {
+    components:{downloadBtn},
     props:['productInfo'],
     data(){
         var validateType = (rule, value, callback) => {
@@ -155,13 +166,22 @@
                 label:'',
                 sort:0,
                 type:'',
-                max_value:0,
-                min_value:0,
+                maxValue:0,
+                minValue:0,
                 status:true
             },
             createdLoading:false,
             editIndex:null,
             type_map:null,
+            header:[
+                {label:'标识',prop:'label'},
+                {label:'变量名称',prop:'name'},
+                {label:'类型',prop:'type'},
+                {label:'最大值',prop:'maxValue'},
+                {label:'最小值',prop:'minValue'}
+            ],
+            btnName:'变量模板文件.csv',
+            modleData:[]
         }
     },
     created() {
@@ -220,8 +240,8 @@
                     this.originalList = JSON.parse(data_.content.replace(new RegExp("'",'gi'),'"'))
                     let list_ = JSON.parse(data_.content.replace(new RegExp("'",'gi'),'"'))
                     let length = list_.length
-                    list_.sort(this.compare('label'))
-                    this.originalList.sort(this.compare('label'))
+                    list_.sort(this.compare('sort'))
+                    this.originalList.sort(this.compare('sort'))
                     this.total = length
                     this.list = list_.splice(index*10-10,index*10)
                     
@@ -315,8 +335,8 @@
                 label:'',
                 sort:0,
                 type:'',
-                max_value:0,
-                min_value:0,
+                maxValue:0,
+                minValue:0,
                 status:true
             }
             this.createdLoading = false

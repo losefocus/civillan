@@ -1,6 +1,6 @@
 <template>
     <div class="map_c">
-        <div id="container" style="height:320px;width:100%"></div>
+        <div id="projectContainer" style="height:320px;width:100%"></div>
         <div class="zoomControl">
             <i class="zoomIn el-icon-plus" @click="zoomIn"></i>
             <i class="zoomOut el-icon-minus" @click="zoomOut"></i>
@@ -8,12 +8,15 @@
     </div>
 </template>
 <script>
+  import { fetchList} from "@/api/project";
+
 export default {
     props:['dataInfo'],
     data(){
         return {
             mapHeight:{height:'500px'},
-            map:null
+            map:null,
+            markersArry:[]
         }
     },
     created() {},
@@ -27,50 +30,61 @@ export default {
             this.mapHeight.height = document.body.clientHeight - 107 - 100 - 45 + 'px'
         },
         initMap(){
-            this.map = new AMap.Map('container', {
+            this.map = new AMap.Map('projectContainer', {
                 resizeEnable: false,
                 zoom:9,
                 center: [120.007321,30.263739]
             });
             this.map.clearMap();  // 清除地图覆盖物
-            this.map.getUiSettings().setZoomControlsEnabled(true);
-            var markers = []
-            this.stationData.forEach(function(data) {
-                let item = {
-                    position:[data.position.split(',')[0],data.position.split(',')[1]],
-                    title:data.name,
-                    beginAt:data.beginAt,
-                    endAt:data.endAt,
-                    adminer:data.adminer,
-                }
-                let position = [data.position.split(',')[0],data.position.split(',')[1]]
-                markers.push(item)
-            })
+            // this.map.getUiSettings().setZoomControlsEnabled(true);
+            let markers = []
+            let map_ = this.map
+            let this_ = this
+            fetchList(this.listQuery).then(response => {
+                let datas = response.data.result.items;
+                datas.forEach(data => {
+                    let item = {
+                        position:[data.position.split(',')[0],data.position.split(',')[1]],
+                        title:data.name,
+                        beginAt:data.beginAt,
+                        endAt:data.endAt,
+                        adminer:data.adminer,
+                        id:data.id
+                    }
+                    let position = [data.position.split(',')[0],data.position.split(',')[1]]
+                    markers.push(item)
+                })
+                markers.forEach((item,index) => {
+                    let marker = new AMap.Marker({
+                        map: this.map,
+                        // icon: item.icon,
+                        position: [item.position[0], item.position[1]],
+                        offset: new AMap.Pixel(-12, -36),
+                        title:item.title,
+                        label:{
+                            content: `<div style="width:300px;text-align: center"><span style="background:#fff;padding:5px 8px;box-shadow: 2px 2px 5px #888888;border-radius:2px">${item.title}</span></div>`,
+                            offset:new AMap.Pixel(-140, -25)
+                        },
+                        dataId:item.id
+                    });
+                    this.markersArry.push(marker)
+                    // marker.setLabel({
+                    //     //修改label相对于maker的位置
+                    //     offset: new AMap.Pixel(-140, -20),
+                    //     content: `<div style="width:300px;text-align: center"><span style="background:#fff;padding:3px;">${item.title}</span></div>`
+                    // });
 
-            var infoWindow = new AMap.InfoWindow({offset: new AMap.Pixel(0, -30)});
-            markers.forEach(function(item,index) {
-                let marker = new AMap.Marker({
-                    map: this.map,
-                    // icon: item.icon,
-                    position: [item.position[0], item.position[1]],
-                    offset: new AMap.Pixel(-12, -36),
-                    title:item.title
+                    marker.on('click', markerClick);
+                    // marker.emit('click', {target: marker});
                 });
-                marker.content = `<div class="info-title">项目名称：${item.title}</div>
-                <div class="info-title">开始时间：${item.beginAt}</div>
-                <div class="info-title">结束时间：${item.endAt}</div>
-                <div class="info-title">管理员：${item.adminer}</div>
-                <div class="info-content">当前坐标：${item.position[0]}, ${item.position[1]}</div>`;
-                marker.on('click', markerClick);
-                // marker.emit('click', {target: marker});
+                
+                function markerClick(e) {
+                    this_.toProject(e.target.F.dataId)
+                }
+                this.map.setFitView();
+
             });
             
-            function markerClick(e) {
-                infoWindow.setContent(e.target.content);
-                infoWindow.open(this.map, e.target.getPosition());
-                this.map.setZoomAndCenter(14, e.target.getPosition());
-            }
-            this.map.setFitView();
         },
         zoomIn(){
             this.map.zoomIn()
@@ -78,12 +92,15 @@ export default {
         zoomOut(){
             this.map.zoomOut()
         },
+        toProject(id){
+            this.$router.push({ path:'/admin/project',query:{id:id}});
+        }
     }
 }
 </script>
 <style scoped="scoped" lang="scss">
 .map_c{
-    position: relative;
+    position: relative; 
     .zoomControl{
         position: absolute;
         right:20px;

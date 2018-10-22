@@ -43,7 +43,7 @@ export function delObj(id) {
   })
 }
 
-/* 删除 */
+/* 编辑 */
 export function editObj(obj) {
   return request({
     url: '/project/project/edit',

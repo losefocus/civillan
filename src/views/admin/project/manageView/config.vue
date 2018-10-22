@@ -3,6 +3,9 @@
         <div class="filter-container">
             <el-button class="filter-item" style="" @click="handleAdd" size="small" type="primary">添加配置</el-button>
             <el-button class="filter-item" style="" size="small" type="primary" @click="configTemplateVisible=true">导入</el-button>
+            <download-btn :header="header" :data="modleData" :btnName='btnName' style="margin-left:10px;cursor:pointer"></download-btn> 
+
+
             <el-button class="pull-right" type="primary" size="small" v-waves  @click="handleFilter">搜索</el-button>
             <el-input @keyup.enter.native="handleFilter" style="width: 150px;" size="small" suffix-icon="el-icon-search" class="pull-right" placeholder="按名称搜索" v-model="listQuery.name"></el-input>
             <!-- <el-select v-model="filterType" size="small" clearable class="pull-right" placeholder="按类型筛选" style="width: 150px !important;margin-right:20px;" @change="changeTypeFilter">
@@ -98,11 +101,21 @@
   import {mapGetters} from "vuex";
   import {getToken} from "@/util/auth";
   import {batchDelObj, categoryList, delObj, fetchList} from "@/api/project_config";
+  import downloadBtn from "./equ/downloadBtn"
 
   export default {
+    components:{downloadBtn},
     props:['projectInfo'],
     data(){
         return {
+            header:[
+                {label:'名称',prop:'name'},
+                {label:'标识',prop:'key'},
+                {label:'类型',prop:'type'},
+                {label:'配置项',prop:'content'},
+            ],
+            btnName:'作业配置模板文件.csv',
+            modleData:[],
             listLoading:false,
             list:[],
             listQuery: {
