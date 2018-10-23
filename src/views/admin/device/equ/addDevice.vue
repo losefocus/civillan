@@ -355,6 +355,7 @@
                 status:true,
                 deviceGroup:{id:''}
             }
+            this.groupOptions = []
             this.disabled = false
             this.$refs.form.resetFields()
         }
