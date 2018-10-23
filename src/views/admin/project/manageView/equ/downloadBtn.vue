@@ -25,17 +25,21 @@ export default {
     btnName:{
       type: String,
       default: '导出'
-    }
+    },
+    ifNull:{
+      type: Boolean,
+      default: false
+    },
   },
   methods: {
     handleClick: function() {
-        // if (!this.data || this.data.length <= 0) {
-        //     this.$message({
-        //         message: '请先选择导出数据',
-        //         type: 'warning'
-        //     });
-        //     return;
-        // }
+        if (!this.ifNull && (!this.data || this.data.length <= 0)) {
+            this.$message({
+                message: '请先选择导出数据',
+                type: 'warning'
+            });
+            return;
+        }
         //   var csvContent = 'data:text/csv;charset=utf-8,\ufeff';
         var csvContent = '';
         csvContent += this.headerLabel + '\r\n';

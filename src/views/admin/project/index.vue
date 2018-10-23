@@ -313,7 +313,6 @@
     created() {
         this.getList();
         this.getRoleList();
-        this.getParams()  
     },
     mounted() {
         this.project_btn_add = this.permissions["project_btn_add"];
@@ -331,11 +330,7 @@
         ...mapGetters(["permissions","adminerHash","projectState"])
     },
     methods:{
-        getParams(){
-            let routerParams = this.$route.query
-        },
         toInfo(info){
-            console.log(info)
             this.showView = 'manage'
             this.$refs.proManage.tabView = 'info'
             this.viewData = info
@@ -591,10 +586,7 @@
             });
         }
     },
-    watch: {
-    // 监测路由变化,只要变化了就调用获取路由参数方法将数据存储本组件即可
-      '$route': 'getParams'
-    }
+
 }
 </script>
 

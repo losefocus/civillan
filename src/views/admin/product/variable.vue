@@ -65,7 +65,7 @@
                 :auto-upload="true">
                     <el-button slot="trigger" size="mini" type="">导入</el-button>
             </el-upload>
-            <download-btn :header="header" :data="modleData" :btnName='btnName' style="margin-left:10px;cursor:pointer"></download-btn> 
+            <download-btn :header="header" :data="modleData" :btnName='btnName' :ifNull='true' style="margin-left:10px;cursor:pointer"></download-btn> 
         </div>
         <div v-loading="listLoading">
             <el-table :data="list" border fit highlight-current-row style="width: 100%;margin-bottom:20px">

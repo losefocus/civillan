@@ -3,9 +3,7 @@
         <div class="filter-container">
             <el-button class="filter-item" style="" @click="handleAdd" size="small" type="primary">添加配置</el-button>
             <el-button class="filter-item" style="" size="small" type="primary" @click="configTemplateVisible=true">导入</el-button>
-            <download-btn :header="header" :data="modleData" :btnName='btnName' style="margin-left:10px;cursor:pointer"></download-btn> 
-
-
+            <download-btn :header="header" :data="modleData" :btnName='btnName' :ifNull='true' style="margin-left:10px;cursor:pointer"></download-btn> 
             <el-button class="pull-right" type="primary" size="small" v-waves  @click="handleFilter">搜索</el-button>
             <el-input @keyup.enter.native="handleFilter" style="width: 150px;" size="small" suffix-icon="el-icon-search" class="pull-right" placeholder="按名称搜索" v-model="listQuery.name"></el-input>
             <!-- <el-select v-model="filterType" size="small" clearable class="pull-right" placeholder="按类型筛选" style="width: 150px !important;margin-right:20px;" @change="changeTypeFilter">
@@ -66,7 +64,10 @@
                 <el-option label="批量删除" value="batchDelete"></el-option>
                 <el-option label="导出" value="export"></el-option>
             </el-select>
-            <el-button type="primary" size="mini" @click="confirm">确认</el-button>
+            <el-button size="mini" v-if="valueType == 'export'" style="margin-right:10px" type="primary">
+                <download-btn :header="header" :data="multipleSelection" :btnName="btnName2" style="text-decoration:none"></download-btn> 
+            </el-button>
+            <el-button type="primary" v-else size="mini" @click="confirm">确认</el-button>
         </div>
         <el-dialog title="导入" :visible.sync="configTemplateVisible" width='300px' >
             <div class="clearfix" v-loading="uploading">
@@ -115,6 +116,7 @@
                 {label:'配置项',prop:'content'},
             ],
             btnName:'作业配置模板文件.csv',
+            btnName2:'确认',
             modleData:[],
             listLoading:false,
             list:[],
@@ -165,8 +167,6 @@
                     this.uploading = true
                     return true
                 }
-                
-                
             }
             
         },

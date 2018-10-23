@@ -42,7 +42,7 @@
         </el-form>
         <div style="margin-bottom:10px;" class="clearfix">
             <el-button  class="pull-left" size="mini" style="margin-right:10px">
-                <download-btn :header="header" :data="list" >导出</download-btn> 
+                <download-btn :header="header" :data="list" style="text-decoration:none">导出</download-btn> 
             </el-button>
             <!-- <el-button @click="importexcel" size="mini">导出excel</el-button> -->
             <el-upload
@@ -60,7 +60,7 @@
                 :auto-upload="true">
                     <el-button slot="trigger" size="mini" type="">导入</el-button>
             </el-upload>
-            <download-btn :header="header" :data="modleData" :btnName='btnName' style="margin-left:10px;cursor:pointer"></download-btn> 
+            <download-btn :header="header" :data="modleData" :btnName='btnName' :ifNull='true' style="margin-left:10px;cursor:pointer"></download-btn> 
 
             <el-button class="pull-right" size="mini"  @click="batchDelete">批量删除</el-button>
         </div>
