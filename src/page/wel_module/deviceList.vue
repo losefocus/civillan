@@ -94,6 +94,9 @@ export default {
     li{
         height: 32px;
         line-height: 32px;
+        p{
+            height: 32px;
+        }
     }
 }
 p{

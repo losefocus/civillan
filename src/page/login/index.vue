@@ -32,7 +32,7 @@
         <p class="pull-right" style="font-size:12px;cursor: pointer;">忘记密码？</p>
       </div>
     </div>
-    <div class="copyright">copyright ©2018 浙江智握领程科技股份有限公司 版权所有</div>
+    <div class="copyright">Copyright 2018 <a href="http://www.civillan.com/" >浙江智握领程科技股份有限公司</a> 版权所有</div>
   </div>
 </template>
 <script>
