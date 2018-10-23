@@ -31,6 +31,9 @@ const common = {
     adminerHash: getStore({
       name: 'adminerHash'
     }) || [],
+    projectState: getStore({
+      name: 'projectState'
+    }) || {},
   },
   actions: {
     // 获取字典公用类
@@ -53,6 +56,10 @@ const common = {
     }
   },
   mutations: {
+    // 用于判断是否为从控制台跳转到项目管理页面
+    SET_PROJECTSTATE:(state, action)=>{
+      state.projectState = action
+    },
     // 管理员选项
     SET_ADMINERHASH:(state, action)=>{
       state.adminerHash = action

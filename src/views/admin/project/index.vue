@@ -197,10 +197,10 @@
                 </el-form>
             </el-card>
         </div>
-        <div v-if="showView === 'mapView'" >
+        <div v-if="showView == 'mapView'" >
             <map-view :station-data="mapList"></map-view>
         </div>
-        <div v-show="showView === 'manage'">
+        <div v-show="showView == 'manage'">
             <project-manage ref="proManage" :view-data='viewData'></project-manage>
         </div>
         <el-dialog :visible.sync="positionVisible" id="mapPosition">
@@ -313,7 +313,7 @@
     created() {
         this.getList();
         this.getRoleList();
-        this.getParams()
+        this.getParams()  
     },
     mounted() {
         this.project_btn_add = this.permissions["project_btn_add"];
@@ -323,16 +323,19 @@
         this.project_btn_personnel = this.permissions["project_btn_personnel"];
         this.project_btn_device = this.permissions["project_btn_device"];
         this.project_btn_doc = this.permissions["project_btn_doc"];
+        if(this.projectState.data != undefined){
+            this.toInfo(this.projectState.data)
+        }
     },
     computed: {
-        ...mapGetters(["permissions","adminerHash"])
+        ...mapGetters(["permissions","adminerHash","projectState"])
     },
     methods:{
         getParams(){
             let routerParams = this.$route.query
-            console.log(routerParams)
         },
         toInfo(info){
+            console.log(info)
             this.showView = 'manage'
             this.$refs.proManage.tabView = 'info'
             this.viewData = info

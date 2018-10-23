@@ -32,7 +32,7 @@ export default {
         initMap(){
             this.map = new AMap.Map('projectContainer', {
                 resizeEnable: false,
-                zoom:9,
+                zoom:1,
                 center: [120.007321,30.263739]
             });
             this.map.clearMap();  // 清除地图覆盖物
@@ -49,7 +49,7 @@ export default {
                         beginAt:data.beginAt,
                         endAt:data.endAt,
                         adminer:data.adminer,
-                        id:data.id
+                        data:data
                     }
                     let position = [data.position.split(',')[0],data.position.split(',')[1]]
                     markers.push(item)
@@ -65,7 +65,7 @@ export default {
                             content: `<div style="width:300px;text-align: center"><span style="background:#fff;padding:5px 8px;box-shadow: 2px 2px 5px #888888;border-radius:2px">${item.title}</span></div>`,
                             offset:new AMap.Pixel(-140, -25)
                         },
-                        dataId:item.id
+                        data:item.data
                     });
                     this.markersArry.push(marker)
                     // marker.setLabel({
@@ -79,7 +79,7 @@ export default {
                 });
                 
                 function markerClick(e) {
-                    this_.toProject(e.target.F.dataId)
+                    this_.toProject(e.target.F.data)
                 }
                 this.map.setFitView();
 
@@ -92,8 +92,9 @@ export default {
         zoomOut(){
             this.map.zoomOut()
         },
-        toProject(id){
-            this.$router.push({ path:'/admin/project',query:{id:id}});
+        toProject(data){
+            this.$store.commit("SET_PROJECTSTATE",{data:data});
+            this.$router.push({ path:'/admin/project'});
         }
     }
 }

@@ -148,7 +148,9 @@
         ...mapGetters(["adminerHash"])
     },
     methods:{
-        beforeUpload(){
+        beforeUpload(file){
+            const isCSV = file.type === 'application/vnd.ms-excel';
+            // const isLt2M = file.size / 1024 / 1024 < 2; 文件大小2M
             if(this.params.typeId == null){
                 this.$message({
                     message: '请选择类型',
@@ -156,9 +158,17 @@
                 });
                 return false
             }else{
-                this.uploading = true
-                return true
+                if (!isCSV) {
+                    this.$message.error('只允许上传 CSV 格式文件!');
+                    return isCSV;
+                }else{
+                    this.uploading = true
+                    return true
+                }
+                
+                
             }
+            
         },
         uploadSuccess(response, file, fileList){
             this.uploading = false
@@ -169,6 +179,12 @@
                     message: '上传成功',
                     type: 'success'
                 });
+            }else{
+                this.$message({
+                    message: '上传失敗',
+                    type: 'error'
+                });
+                this.uploading = true
             }
         },
         handleSelectionChange(val){

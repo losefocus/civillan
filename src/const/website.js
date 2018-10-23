@@ -6,13 +6,13 @@ export default {
   info: {
     title: "工程信息化智慧云平台管理系统",
     list: [
-      'civillan.com 掌握智能科技·创领品质工程'
+      'gcycloud.com 掌握智能科技·创领品质工程'
     ]
   },
   wel: {
     title: '工程信息化智慧云平台管理系统',
     list: [
-      'civillan.com 掌握智能科技·创领品质工程'
+      'gcycloud.com 掌握智能科技·创领品质工程'
     ]
   }
 }
