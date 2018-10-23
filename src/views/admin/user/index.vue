@@ -159,6 +159,13 @@
             callback();
         }
     };
+    var validateRole = (rule, value, callback) => {
+        if (value.length == 0) {
+            callback(new Error('请选择角色'));
+        } else {
+            callback();
+        }
+    };
     return {
       treeDeptData: [],
       checkedKeys: [],
@@ -181,7 +188,6 @@
         name:undefined,
         username: undefined,
         password: undefined,
-        c: true,
         mobile: undefined,
         group:undefined,
         groupName:undefined,
@@ -214,14 +220,10 @@
           }
         ],
         groupIds: [
-           {validator: validateGroup,message: '请选择分组', trigger: 'blur' ,required: true,}
+           {validator: validateGroup,trigger: 'blur' ,required: true,}
         ],
         role: [
-          {
-            required: true,
-            message: "请选择角色",
-            trigger: "change"
-          }
+           {validator: validateRole,trigger: 'blur' ,required: true,}
         ],
         mobile: [
           {
@@ -281,8 +283,8 @@
   methods: {
     getList() {
       this.listLoading = true;
-      this.listQuery.sort_by = "`user`.created_at";
-      this.listQuery.direction = false;
+      // this.listQuery.sort_by = "`user`.created_at";
+      // this.listQuery.direction = "desc";
       fetchList(this.listQuery).then(response => {
         this.list = response.data.result.items;
         this.total = response.data.result.total;
@@ -445,17 +447,16 @@
     },
     resetTemp() {
       this.form = {
-        id: undefined,
-        username: "",
-        name:"",
-        password: "",
-        role: [],
-        roleName:[],
-        status: true,
-        mobile: "",
-        group:'',
-        groupName:'',
-      };
+        name:undefined,
+        username: undefined,
+        password: undefined,
+        mobile: undefined,
+        group:undefined,
+        groupName:undefined,
+      }
+      this.role = []
+      this.groupIds = []
+      this.$refs.form.resetFields();
     }
   }
 };
