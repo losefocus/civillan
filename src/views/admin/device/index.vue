@@ -301,7 +301,7 @@
             this.$refs.addEqu.form.status = row.status === 1?true:false
             this.$refs.addEqu.form.deviceGroup = {id:row.deviceGroup.id}
             this.$refs.addEqu.disabled = true
-            this.$refs.addEqu.getGroupList()
+            this.$refs.addEqu.getGroupList(row.projectId)
         },
         handleCommand(command){
             if(command.value == 'edit') this.updataEqu(command.row)
