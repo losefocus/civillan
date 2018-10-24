@@ -29,12 +29,12 @@
         listQuery: {
             projectId:this.$parent.$parent.projectInfo.id,
             page_index: 1,
-            page_size: 999999999
+            page_size: 99999
         },
         userListQuery:{
             deviceId:this.dataInfo.id,
             page_index: 1,
-            page_size: 999999999
+            page_size: 99999
         }
       };
     },
