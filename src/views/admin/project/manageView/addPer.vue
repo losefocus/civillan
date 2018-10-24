@@ -77,7 +77,7 @@
 <script>
   import {mapGetters,mapState} from "vuex";
   import {getToken} from "@/util/auth";
-  import {addObj, fetchOrganList, fetchUserList, updateObj} from "@/api/project_per";
+  import {addObj, fetchOrganList, findUser, updateObj} from "@/api/project_per";
 
   export default {
     props:['projectInfo'],
@@ -173,6 +173,7 @@
             organOptions:[],
             createLoading:false,
             userPhone:null,
+            userName:null,
         }
     },
     created() {
@@ -207,9 +208,9 @@
             let data = {}
             data[type]=this.form[type]
             data.tenant = this.userInfo.tenant
-            if(this.form.phone!=this.userPhone){
-                fetchUserList(data).then(res => {
-                    if(res.data.result.total != 0) this['duplication_'+type] = true 
+            if(this.form.phone==undefined || this.form.phone!=this.userPhone){   //修改是，判断是否为原手机号
+                findUser(data).then(res => {
+                    if(res.data.result != 0) this['duplication_'+type] = true 
                     else this['duplication_'+type] = false
                     this.$refs.forms.validateField(type);
                 })

@@ -3,9 +3,9 @@
         <div style="padding-bottom:10px;">设 备 : {{dataInfo.name}}</div>
         <div style="border:1px solid #ebeef5;padding:10px" v-loading="listLoading">
             <el-checkbox :indeterminate="isIndeterminate" v-model="checkAll" @change="handleCheckAllChange">全选</el-checkbox>
-            <div style="margin: 15px 0;"></div>
+            <!-- <div style="margin: 15px 0;"></div> -->
             <el-checkbox-group v-model="checkedList" @change="handleCheckedCitiesChange">
-                <el-checkbox v-for="(city,index) in list" :label="city.id" :key="index">{{city.name}}</el-checkbox>
+                <el-checkbox v-for="(city,index) in list" :label="city.id" :key="index" style="width:104px;margin-left:0px;">{{city.name}}</el-checkbox>
             </el-checkbox-group>
         </div>
         <el-button class="pull-right" type="primary" size="mini" style="margin-top:20px" @click="save" :loading="saveLoading">保存</el-button>
@@ -46,7 +46,8 @@
         getList(){
             this.listLoading = true
             fetchUserList(this.listQuery).then(res => {
-                this.list = res.data.result.items
+                let lists = res.data.result.items
+                this.list = lists.filter( li => li.userRole[0].projectRole.alias == 'worker')
                 this.list.forEach(ele => {
                     this.checkAllList.push(ele.id)
                 });
@@ -57,7 +58,7 @@
             getDeviceUser(this.userListQuery).then(res =>{
                 let list_ = res.data.result.items
                 list_.forEach(ele => {
-                    this.checkedList.push(ele.userId)
+                    this.checkedList.push(ele.projectUser.id)
                 });
             })
         },
@@ -93,6 +94,7 @@
                         duration: 2000
                     });
                 }
+                this.$parent.$parent.personnelVisible = false
                 this.saveLoading = false
             }).catch(err => {
                 this.saveLoading = false

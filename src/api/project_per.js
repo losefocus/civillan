@@ -17,6 +17,16 @@ export function fetchOrganList(id) {
     })
   }
 
+  
+  /* 检查人员是否重复 */
+  export function findUser(query) {
+    return request({
+      url: '/project/project_user/find_user',
+      method: 'get',
+      params: query
+    })
+  }
+
   /* 新增 */
   export function addObj(obj) {
     return request({

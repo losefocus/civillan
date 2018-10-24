@@ -3,7 +3,7 @@
         <div class="filter-container">
             <el-button class="filter-item" style="" @click="handleAdd" size="small" type="primary">添加配置</el-button>
             <el-button class="filter-item" style="" size="small" type="primary" @click="configTemplateVisible=true">导入</el-button>
-            <download-btn :header="header" :data="modleData" :btnName='btnName' :ifNull='true' style="margin-left:10px;cursor:pointer"></download-btn> 
+            <download-btn :header="header" :data="modleData" :btnName='btnName' :ifNull='true' :fileName="fileName" style="margin-left:10px;cursor:pointer"></download-btn> 
             <el-button class="pull-right" type="primary" size="small" v-waves  @click="handleFilter">搜索</el-button>
             <el-input @keyup.enter.native="handleFilter" style="width: 150px;" size="small" suffix-icon="el-icon-search" class="pull-right" placeholder="按名称搜索" v-model="listQuery.name"></el-input>
             <!-- <el-select v-model="filterType" size="small" clearable class="pull-right" placeholder="按类型筛选" style="width: 150px !important;margin-right:20px;" @change="changeTypeFilter">
@@ -48,7 +48,7 @@
             </el-table-column>
             <el-table-column align="center" label="操作" width="220">
                 <template slot-scope="scope" >
-                    <el-button size="mini" type="" plain @click="copyObj(scope.row)">复制</el-button>
+                    <el-button size="mini" type="" class="copyBtn" plain :data-clipboard-text="JSON.stringify(scope.row)" @click="copyObj()">复制</el-button>
                     <el-button size="mini" type="" plain @click="updataObj(scope.row)" style="margin-left:0px">修改</el-button>
                     <el-button size="mini" type="" plain @click="deleteObj(scope.row)" style="margin-left:0px">删除</el-button>
                 </template>
@@ -65,7 +65,7 @@
                 <el-option label="导出" value="export"></el-option>
             </el-select>
             <el-button size="mini" v-if="valueType == 'export'" style="margin-right:10px" type="primary">
-                <download-btn :header="header" :data="multipleSelection" :btnName="btnName2" style="text-decoration:none"></download-btn> 
+                <download-btn :header="header" :data="multipleSelection" :btnName="btnName2" :fileName="fileName2" style="text-decoration:none"></download-btn> 
             </el-button>
             <el-button type="primary" v-else size="mini" @click="confirm">确认</el-button>
         </div>
@@ -112,11 +112,13 @@
             header:[
                 {label:'名称',prop:'name'},
                 {label:'标识',prop:'key'},
-                {label:'类型',prop:'type'},
+                {label:'类型',prop:'typeName'},
                 {label:'配置项',prop:'content'},
             ],
             btnName:'作业配置模板文件.csv',
+            fileName:'作业配置模板文件.csv',
             btnName2:'确认',
+            fileName2:this.projectInfo.name+'——作业配置.csv',
             modleData:[],
             listLoading:false,
             list:[],
@@ -218,6 +220,7 @@
                 });
                 return
             }
+            
             if(this.valueType == 'batchDelete'){
                 batchDelObj(ids).then(res => {
                     this.getList()
@@ -227,25 +230,23 @@
                         type: 'success'
                     });
                 })
-            }else if(this.valueType == 'export'){
-                this.importexcel()
             }
         },
-        importexcel() {　
-        　　require.ensure([], () => {　　　　　　　　
-                const { export_json_to_excel } = require('@/vendor/Export2Excel');　　//引入文件　　　　　　
-                const tHeader = ['名称', '标识', '类型','配置项']; //将对应的属性名转换成中文
-                const filterVal = ['name', 'key', 'type','content'];//table表格中对应的属性名　　　　　 　　　
-                let list = this.multipleSelection.map(item => {
-                    return { name: item.name, key: item.key , type: this.typeMap.get(item.typeId) , content: item.content };
-                });　
-                const data = this.formatJson(filterVal, list);　　　　　　　　
-                export_json_to_excel(tHeader, data, 'excel文件');
-            })
-        },
-        formatJson(filterVal, jsonData) {
-            return jsonData.map(v => filterVal.map(j => v[j]));
-        },
+        // importexcel() {　
+        // 　　require.ensure([], () => {　　　　　　　　
+        //         const { export_json_to_excel } = require('@/vendor/Export2Excel');　　//引入文件　　　　　　
+        //         const tHeader = ['名称', '标识', '类型', '配置项']; //将对应的属性名转换成中文
+        //         const filterVal = ['name', 'key', 'type', 'content'];//table表格中对应的属性名　　　　　 　　　
+        //         let list = this.multipleSelection.map(item => {
+        //             return { name: item.name, key: item.key , type: this.typeMap.get(item.typeId) , content: item.content };
+        //         });　
+        //         const data = this.formatJson(filterVal, list);　　　　　　　　
+        //         export_json_to_excel(tHeader, data, 'excel文件');
+        //     })
+        // },
+        // formatJson(filterVal, jsonData) {
+        //     return jsonData.map(v => filterVal.map(j => v[j]));
+        // },
         getCategoryList(){
             categoryList(this.allListQuery).then(res => {
                 let list = res.data.result.items
@@ -271,6 +272,9 @@
             this.listQuery.projectId = this.projectInfo.id
             fetchList(this.listQuery).then(res => {
                 this.list = res.data.result.items
+                this.list.forEach(res => {
+                    // res.typeName = this.typeMap.get(res.typeId)
+                })
                 this.total = res.data.result.total
                 this.listLoading = false
             })
@@ -318,24 +322,32 @@
             this.$parent.$refs.addConfig.form = Object.assign({},row)
             this.$parent.$refs.addConfig.form.status = (row.status === 1)?true:false
             let contents = JSON.parse(row.content)
+            
             contents.forEach(ele => {
                 ele.flag = false
             });
             this.$parent.$refs.addConfig.config_content = contents
             this.$parent.$refs.addConfig.changeType(row.typeId)
         },
-        copyObj(row){
-            this.$parent.cardVisibel = true
-            this.$parent.$refs.addConfig.flag = 'add'
-            this.$parent.$refs.addConfig.form = Object.assign({},row)
-            delete this.$parent.$refs.addConfig.form.id
-            this.$parent.$refs.addConfig.form.status = (row.status === 1)?true:false
-            let contents = JSON.parse(row.content)
-            contents.forEach(ele => {
-                ele.flag = false
-            });
-            this.$parent.$refs.addConfig.config_content = contents
-            this.$parent.$refs.addConfig.changeType(row.typeId)
+        copyObj(){
+            var clipboard = new this.Clipboard('.copyBtn');  
+            clipboard.on('success', e => {  
+                this.$message({
+                    message: '复制成功',
+                    type: 'success'
+                });
+                    // 释放内存  
+                clipboard.destroy()  
+            })  
+            clipboard.on('error', e => {  
+                // 不支持复制  
+                this.$message({
+                    message: '该浏览器不支持自动复制',
+                    type: 'warning'
+                });
+                // 释放内存  
+                clipboard.destroy()  
+            }) 
         }
     }
 }
