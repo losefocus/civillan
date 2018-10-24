@@ -325,6 +325,7 @@
       this.resetTemp();
       this.dialogStatus = "create";
       this.dialogFormVisible = true;
+      this.$refs.form.resetFields();
     },
     getRoleList(){
       roleList().then(response => {
@@ -456,7 +457,6 @@
       }
       this.role = []
       this.groupIds = []
-      this.$refs.form.resetFields();
     }
   }
 };

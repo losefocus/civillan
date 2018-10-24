@@ -3,7 +3,7 @@
         <div class="pull-left containers">
             <div class="filter-container clearfix">
                 <el-button @click="toProjectIndex" size="small" class="pull-left">返回项目列表</el-button>
-                <span style="margin-left:20px;" class="pull-left" :class="{projectName:true}">项目名称: {{viewData.name}}</span>
+                <span style="margin-left:20px;" class="pull-left projectName">项目名称: {{viewData.name}}</span>
                 <el-radio-group v-model="tabView" size="small" class="pull-right" @change="cardVisibel=false">
                     <el-radio-button label="info" :disabled="'children' in viewData && viewData.children.length != 0">项目详情</el-radio-button>
                     <el-radio-button label="org">机构设置</el-radio-button>
@@ -99,7 +99,7 @@
 </script>
 <style scoped>
 .projectName{
-    max-width:290px;
+    width:calc(100% - 700px);
     height: 32px;
     line-height: 32px;
     overflow: hidden;
