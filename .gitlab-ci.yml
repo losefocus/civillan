@@ -19,7 +19,7 @@ maven-build:
 #    - cnpm run build
 #    - npm run dev
     # 启动
-    - npm install -g cnpm --registry=https://registry.npm.taobao.org && cnpm install
+    - npm install
     - npm run build
     - docker build -t="civillan-background-web" .
     - ssh test@192.168.0.232 -tt docker stop civillan-background-web
