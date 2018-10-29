@@ -70,6 +70,7 @@
                             操作<i class="el-icon-arrow-down el-icon--right"></i>
                         </span >
                         <el-dropdown-menu slot="dropdown">
+                            <el-dropdown-item  v-if="device_btn_config" :command="composeValue('trafficVisible',scope.row)">流量卡</el-dropdown-item>
                             <el-dropdown-item  v-if="device_btn_config" :command="composeValue('configVisible',scope.row)">设备配置</el-dropdown-item>
                             <el-dropdown-item  v-if="device_btn_variable" :command="composeValue('sensorVisible',scope.row)">变量管理</el-dropdown-item>
                             <el-dropdown-item  v-if="device_btn_alert" :command="composeValue('alarmVisible',scope.row)">警报管理</el-dropdown-item>
@@ -89,6 +90,9 @@
             <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="listQuery.page_index" :page-sizes="[10,20,30, 50]" :page-size="listQuery.page_size" layout="total,  prev, pager, next, jumper" :total="total">
             </el-pagination>
         </div>
+        <el-dialog title="流量卡"  :visible.sync="trafficVisible" width='690px'>
+            <traffic-card v-if="trafficVisible" :data-info="dataInfo" ref="config"></traffic-card>
+        </el-dialog>
         <el-dialog title="设备配置"  :visible.sync="configVisible" width='690px'>
             <config v-if="configVisible" :data-info="dataInfo" ref="config"></config>
         </el-dialog>
@@ -113,6 +117,7 @@
     </div>
 </template>
 <script>
+  import trafficCard from "./equ/trafficCard";
   import config from "./equ/config";
   import certi from "./equ/certificate";
   import sensor from "./equ/sensor";
@@ -125,6 +130,7 @@
 
   export default {
     components:{
+        trafficCard,
         config,
         certi,
         sensor,
@@ -146,6 +152,7 @@
             total:null,
             flag:'add',
             createdLoading:false,
+            trafficVisible:false,//流量卡
             configVisible:false,//配置
             certiVisible:false,//证书
             sensorVisible:false,//变量

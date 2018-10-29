@@ -56,6 +56,7 @@
                                                     <el-dropdown-item v-if="project_btn_doc" :command="composeValue('doc',pro.row)">文档资料</el-dropdown-item>
                                                     <el-dropdown-item v-if="project_btn_doc" :command="composeValue('media',pro.row)">现场影像</el-dropdown-item>
                                                     <el-dropdown-item v-if="project_btn_doc" :command="composeValue('config',pro.row)">作业配置</el-dropdown-item>
+                                                    <!-- <el-dropdown-item divided v-if="project_btn_add" :command="composeValue('add',pro.row)">添加子项</el-dropdown-item> -->
                                                     <el-dropdown-item divided v-if="project_btn_edit" :command="composeValue('edit',pro.row)">修改项目</el-dropdown-item>
                                                     <el-dropdown-item  v-if="project_btn_del" :command="composeValue('del',pro.row)">删除项目</el-dropdown-item>
                                                 </el-dropdown-menu>
@@ -288,7 +289,7 @@
                 thumbnailUrl:'',
                 position:'',
                 comment:'',
-                status:true,
+                status:false,
             },
             tm:[],
             imageName:'',
@@ -529,7 +530,7 @@
                 thumbnailUrl:'',
                 position:'',
                 comment:'',
-                status:true,
+                status:false,
             }
             this.tm=[]
             this.imageName=''

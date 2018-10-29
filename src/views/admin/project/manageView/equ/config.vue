@@ -2,10 +2,20 @@
     <div>
         <div style="padding-bottom:10px;">设 备 : {{dataInfo.name}}</div>
         <el-form :model="form" class="clearfix" ref="form" size="mini">
-            <el-form-item label="配置名称" style="width: 240px" label-width="70px" >
+            <el-form-item label="配置项" style="width: 180px" label-width="60px" >
+                <el-select v-model="form.config" placeholder="请选择配置项" size="mini" style="width:100%" no-data-text="请先添加配置项">
+                    <el-option
+                    v-for="item in dicts"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value">
+                    </el-option>
+                </el-select>
+            </el-form-item>
+            <el-form-item label="配置名称" style="width: 155px;margin-left:5px;" label-width="70px" >
                 <el-input v-model="form.name" size="mini" auto-complete="off" ></el-input>
             </el-form-item>
-            <el-form-item label="配置内容" style="width: 240px;margin-left:10px;" label-width="70px" >
+            <el-form-item label="配置内容" style="width: 155px;margin-left:5px;" label-width="70px" >
                 <el-input v-model="form.value" size="mini" auto-complete="off"></el-input>
             </el-form-item>
             <el-form-item  style="width: 150px" class="pull-right" label-width="0" >
@@ -46,6 +56,7 @@
 </template>
 <script>
   import {mapGetters} from "vuex";
+  import {remote} from "@/api/dict";
   import {getObj, setObj} from "@/api/device/config";
 
   export default {
@@ -57,6 +68,7 @@
             form:{
                 name:'',
                 value:'',
+                config:''
             },
             flag:'add',
             listQuery:{
@@ -66,10 +78,14 @@
             },
             total:null,
             list:null,
-            templateData:{}
+            templateData:{},
+            dicts:null
         }
     },
     created() {
+        remote("device_config").then(response => {
+            this.dicts = response.data.result;
+        });
         this.getList()
     },
     mounted() {
@@ -89,10 +105,6 @@
         },
         getList(){
             this.listLoading = true
-            // let id
-            // this.productInfo.productTemplate.forEach(element => {
-            //     if(element.type === 1)id = element.id
-            // });
             let data_ = {
                 device_id:this.dataInfo.id,
                 key:'device_config'
@@ -169,10 +181,8 @@
         resetTem(){
             this.form={
                 name:'',
-                label:'',
-                sort:'',
-                type:'',
-                status:true
+                value:'',
+                config:''
             }
             this.createdLoading = false
             this.$refs.form.resetFields()
