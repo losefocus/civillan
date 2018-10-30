@@ -27,7 +27,7 @@
         checkAllList:[],
         isIndeterminate: true,
         listQuery: {
-            projectId:this.$parent.$parent.projectInfo.id,
+            projectId:this.dataInfo.projectId,
             page_index: 1,
             page_size: 99999
         },
@@ -74,7 +74,7 @@
         save(){
             this.saveLoading = true
             let data = {
-                project_id:this.$parent.$parent.projectInfo.id,
+                project_id:this.dataInfo.projectId,
                 device_id:this.dataInfo.id,
                 user_ids:this.checkedList.join(','),
             }
