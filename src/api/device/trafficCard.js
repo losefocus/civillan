@@ -18,3 +18,12 @@ export function setObj(query) {
   })
 }
 
+/* 解绑 */
+export function deleteObj(query) {
+  return request({
+    url: '/device/device_sim/delete',
+    method: 'post',
+    params: query
+  })
+}
+

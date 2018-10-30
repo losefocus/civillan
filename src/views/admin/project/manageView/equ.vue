@@ -91,7 +91,7 @@
             </el-pagination>
         </div>
         <el-dialog title="流量卡"  :visible.sync="trafficVisible" width='690px'>
-            <traffic-card v-if="trafficVisible" :data-info="dataInfo" ref="config"></traffic-card>
+            <traffic-card v-if="trafficVisible" :data-info="dataInfo" ref="traffic"></traffic-card>
         </el-dialog>
         <el-dialog title="设备配置"  :visible.sync="configVisible" width='690px'>
             <config v-if="configVisible" :data-info="dataInfo" ref="config"></config>

@@ -1,25 +1,28 @@
 <template>
     <div>
         <div>设 备 : {{dataInfo.name}}</div>
-        <ul class="clearfix iccInfo" v-if="JSON.stringify(iccInfo) != '{}'">
-            <li>Iccid:{{iccInfo.iccid}}<a class="unbind" @click="unbind">解绑</a></li>
-            <li>卡状态:{{iccInfo.account_status | statusFilter}}</li>
-            <li>运营商:{{iccInfo.carrier}}</li>
-            <li>激活状态:{{iccInfo.active | activeFilter}}</li>
-            <li>套餐大小:{{iccInfo.data_plan}}</li>
-            <li>激活日期:{{iccInfo.active_date}}</li>
-            <li>剩余流量:{{iccInfo.data_balance}}</li>
-            <li>出库日期:{{iccInfo.outbound_date}}</li>
-        </ul>
-        <div v-else>
-            Iccid:
-            <el-input v-model="iccId" style="width:200px;" size="small"></el-input>
-            <el-button size="small" @click="setTraffic">绑定</el-button>
+        <div v-loading="loading">
+            <ul class="clearfix iccInfo" v-if="JSON.stringify(iccInfo) != '{}'">
+                <li>Iccid:{{iccInfo.iccid}}<a class="unbind" @click="unbind(iccInfo.deviceSim.id)">解绑</a></li>
+                <li>卡状态:{{iccInfo.account_status | statusFilter}}</li>
+                <li>运营商:{{iccInfo.carrier}}</li>
+                <li>激活状态:{{iccInfo.active | activeFilter}}</li>
+                <li>套餐大小:{{iccInfo.data_plan}}</li>
+                <li>激活日期:{{iccInfo.active_date}}</li>
+                <li>剩余流量:{{iccInfo.data_balance}}</li>
+                <li>出库日期:{{iccInfo.outbound_date}}</li>
+            </ul>
+            <div v-else>
+                Iccid:
+                <el-input v-model="iccId" style="width:200px;" size="small"></el-input>
+                <el-button size="small" @click="setTraffic">绑定</el-button>
+            </div>
         </div>
+        
     </div>
 </template>
 <script>
-  import {getObj,setObj} from "@/api/device/trafficCard";
+  import {getObj,setObj,deleteObj} from "@/api/device/trafficCard";
 
   export default {
     props:['dataInfo'],
@@ -63,8 +66,10 @@
     methods:{
         getTraffic(){
             let id = this.dataInfo.id
+            this.loading = true
             getObj(id).then(res => {
-                this.iccInfo = res.data.result
+                this.loading = false
+                this.iccInfo = (res.data.success)?res.data.result:{}
             })
         },
         setTraffic(){
@@ -80,8 +85,29 @@
                 }
             })
         },
-        unbind(){
-
+        unbind(id){
+            this.loading = true
+            let data = {project_device_sim_id:id}
+            deleteObj(data).then(res => {
+                if(res.data.success){
+                    this.iccInfo = {}
+                    this.iccId = ''
+                    this.$notify({
+                        title: '成功',
+                        message: "解绑成功",
+                        type: "success",
+                        duration: 2000
+                    });
+                }else{
+                    this.$notify({
+                        title: '失败',
+                        message: "解绑失败",
+                        type: "error",
+                        duration: 2000
+                    });
+                }
+                this.loading = false
+            })
         },
         copy() {  
             var clipboard = new this.Clipboard('.copy_key');  
@@ -90,7 +116,6 @@
                     message: '复制成功',
                     type: 'success'
                 });
-                     
                 clipboard.destroy()   // 释放内存 
             })  
             clipboard.on('error', e => {  
