@@ -239,7 +239,12 @@
             ).then(() => {
                 delObj(row.id).then(res => {
                     this.getList(this.listQuery)
-                    this.$parent.$parent.$parent.$parent.alertNotify('删除')
+                    this.$notify({
+                        title: '成功',
+                        message: "删除成功",
+                        type: "success",
+                        duration: 2000
+                    });
                 })
             })
         },
@@ -253,7 +258,12 @@
                     this.createdLoading = true
                     addObj(data).then(res => {
                         this.getList(this.listQuery)
-                        this.$parent.$parent.$parent.$parent.alertNotify('添加')
+                        this.$notify({
+                            title: '成功',
+                            message: "添加成功",
+                            type: "success",
+                            duration: 2000
+                        });
                         this.resetTem()
                     }).catch(err => {
                         this.createdLoading = false
@@ -269,7 +279,12 @@
                     data.status = data.status?1:0
                     editObj(data).then(res => {
                         this.getList(this.listQuery)
-                        this.$parent.$parent.$parent.$parent.alertNotify('修改')
+                        this.$notify({
+                            title: '成功',
+                            message: "修改成功",
+                            type: "success",
+                            duration: 2000
+                        });
                         this.cancelEdit()
                     }).catch(err => {
                         this.createdLoading = false

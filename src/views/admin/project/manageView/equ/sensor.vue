@@ -3,6 +3,7 @@
         <div style="padding-bottom:10px;">设 备 : {{dataInfo.name}}</div>
         <el-form :model="form" class="clearfix" ref="form" :rules="rules" label-width="0" size="small" style="margin-bottom:10px;">
             <el-form-item label="" prop="type" style="width: 100px;margin-right:5px">
+                类型
                 <el-select v-model="form.type" placeholder="选择类型" size="mini" no-data-text="请先添加变量类型">
                     <el-option
                     v-for="item in dicts"
@@ -13,30 +14,35 @@
                 </el-select>
             </el-form-item>
             <el-form-item label="" prop="name" style="width: 140px;margin-right:5px">
+                名称
                 <el-input v-model="form.name" size="mini" auto-complete="off" placeholder="名称"></el-input>
             </el-form-item>
             <el-form-item label="" prop="label" style="width: 100px;margin-right:5px">
+                标识
                 <el-input v-model="form.label" size="mini" auto-complete="off" placeholder="标识"></el-input>
             </el-form-item>
             <el-form-item label="" prop="maxValue" style="width: 100px;margin-right:5px" v-show="form.type == 'float' || form.type == '1' || form.type == 'integer' || form.type == '2' || form.type == 'double' || form.type == '4'">
+                最大值
                 <el-input v-model="form.maxValue" size="mini" auto-complete="off" placeholder="最大值"></el-input>
             </el-form-item>
             <el-form-item label="" prop="minValue" style="width: 100px;margin-right:5px" v-show="form.type == 'float' || form.type == '1' || form.type == 'integer' || form.type == '2' || form.type == 'double' || form.type == '4'">
+                最小值
                 <el-input v-model="form.minValue" size="mini" auto-complete="off" placeholder="最小值"></el-input>
             </el-form-item>
-            <el-form-item label="" style="width: 60px;margin-right:5px">
+            <el-form-item label="" style="width: 60px;margin-right:5px" :style="form.type == '1' || form.type == '2' || form.type == '4'?'width: 80px':'width: 60px'">
+                排序
                 <el-input v-model="form.sort" size="mini" auto-complete="off" placeholder="排序"></el-input>
             </el-form-item>
             <el-form-item  :style="flag == 'add'?'width: 80px':'width: 150px'" class="pull-right">
-                <div v-if="flag == 'add'">
+                <div v-if="flag == 'add'" :style="form.type == '1' || form.type == '2' || form.type == '4'?'margin-top:0':'margin-top:30px'">
                     <el-button size="mini" type="primary" class="pull-right" @click="handleAdd('form')" :loading="createdLoading">添加</el-button>
                 </div>
-                <div v-else >
+                <div v-else :style="form.type == '1' || form.type == '2' || form.type == '4'?'margin-top:0':'margin-top:30px'">
                     <el-button size="mini" type="info" class="pull-right" style="margin-left:10px" @click="cancelEdit('form')">取消</el-button>
                     <el-button size="mini" type="primary" class="pull-right" @click="handleEdit('form')" :loading="createdLoading">保存</el-button>
                 </div>
             </el-form-item>
-            <el-form-item style="width: 70px;margin-left:5px" class="pull-right">
+            <el-form-item style="width: 70px;margin-left:5px" class="pull-right" :style="form.type == '1' || form.type == '2' || form.type == '4'?'margin-top:0':'margin-top:30px'">
                 <el-checkbox v-model="form.status" >已启用</el-checkbox>
             </el-form-item>
         </el-form>
@@ -115,7 +121,7 @@
   import {getToken} from "@/util/auth";
   import {findByvalue} from "@/util/util";
   import {addObj, delObj, download, editObj, getObj} from "@/api/device/sensor";
-  import downloadBtn from "./downloadBtn"
+  import downloadBtn from "@/views/admin/project/manageView/equ/downloadBtn"
 
   export default {
     components:{downloadBtn},
@@ -206,7 +212,12 @@
             let ids = this.listSelection.map(v => {return v.id}).join()
             delObj(ids).then(res => {
                 this.getList(this.listQuery)
-                this.$parent.$parent.$parent.$parent.alertNotify('删除')
+                this.$notify({
+                    title: '成功',
+                    message: "删除成功",
+                    type: "success",
+                    duration: 2000
+                });
             })
         },
         handleSizeChange(val) {
@@ -249,7 +260,12 @@
             ).then(() => {
                 delObj(row.id).then(res => {
                     this.getList(this.listQuery)
-                    this.$parent.$parent.$parent.$parent.alertNotify('删除')
+                    this.$notify({
+                        title: '成功',
+                        message: "删除成功",
+                        type: "success",
+                        duration: 2000
+                    });
                 })
             })
             
@@ -264,7 +280,12 @@
                     this.createdLoading = true
                     addObj(data).then(res => {
                         this.getList(this.listQuery)
-                        this.$parent.$parent.$parent.$parent.alertNotify('添加')
+                        this.$notify({
+                            title: '成功',
+                            message: "添加成功",
+                            type: "success",
+                            duration: 2000
+                        });
                         this.resetTem()
                     }).catch(err => {
                         this.createdLoading = false
@@ -281,7 +302,12 @@
                     data.status = data.status?1:0
                     editObj(data).then(res => {
                         this.getList(this.listQuery)
-                        this.$parent.$parent.$parent.$parent.alertNotify('修改')
+                        this.$notify({
+                            title: '成功',
+                            message: "修改成功",
+                            type: "success",
+                            duration: 2000
+                        });
                         this.cancelEdit()
                     }).catch(err => {
                         this.createdLoading = false
@@ -327,7 +353,12 @@
             return jsonData.map(v => filterVal.map(j => v[j]));
         },
         uploadSuccess(response, file, fileList){
-            this.$parent.$parent.$parent.$parent.alertNotify('上传')
+            this.$notify({
+                title: '成功',
+                message: "上传成功",
+                type: "success",
+                duration: 2000
+            });
             this.getList()
         },
         uploadError(){

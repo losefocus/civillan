@@ -218,7 +218,7 @@
             this.userLoading = true
             let data={
                 device_id:this.dataInfo.id,
-                project_id:this.$parent.$parent.projectInfo.id
+                project_id:this.dataInfo.projectId
             }
             getUserObj(data).then(res => {
                 this.userOptions = []
@@ -252,7 +252,12 @@
                 delObj(row.id).then(res => {
                     this.getList(this.listQuery)
                     this.getUserList()
-                    this.$parent.$parent.$parent.$parent.alertNotify('删除')
+                    this.$notify({
+                        title: '成功',
+                        message: "删除成功",
+                        type: "success",
+                        duration: 2000
+                    });
                 })
             })
         },
@@ -266,7 +271,12 @@
                     this.createdLoading = true
                     addObj(data).then(res => {
                         this.getList(this.listQuery)
-                        this.$parent.$parent.$parent.$parent.alertNotify('添加')
+                        this.$notify({
+                            title: '成功',
+                            message: "添加成功",
+                            type: "success",
+                            duration: 2000
+                        });
                         this.cancelEdit()
                     }).catch(err => {
                         this.createdLoading = false

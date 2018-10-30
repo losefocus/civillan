@@ -131,13 +131,13 @@
 <script>
   import waves from "@/directive/waves/index.js";
   import trafficCard from "../project/manageView/equ/trafficCard";
-  import config from "./equ/config";
-  import certi from "./equ/certificate";
-  import sensor from "./equ/sensor";
-  import alarm from "./equ/alarm";
-  import notify from "./equ/notify";
-  import group from "./equ/group";
-  import personnel from "./equ/personnel";
+  import config from "../project/manageView/equ/config";
+  import certi from "../project/manageView/equ/certificate";
+  import sensor from "../project/manageView/equ/sensor";
+  import alarm from "../project/manageView/equ/alarm";
+  import notify from "../project/manageView/equ/notify";
+  import personnel from "../project/manageView/equ/personnel";
+  import group from "../project/manageView/equ/group";
   import addDevice from "./equ/addDevice";
   import {mapGetters} from "vuex";
   import {delObj, fetchList, updataObj,projectList} from "@/api/project_equ";
