@@ -58,7 +58,9 @@ export default {
         },
         getList(){
             fetchList(this.listQuery).then(res => {
-                if(res.data.success && res.data.result != undefined) this.list = res.data.result.items
+                if(res.data.success && res.data.result != undefined){
+                    this.list = res.data.result.items
+                }
             })
         },
         toAllDevice(){
