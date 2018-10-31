@@ -355,7 +355,11 @@
                 return value.roleCode == "ROLE_PROJECT_ADMIN";
             }
             this.adminerOptionsloading = true
-            fetchAdminList().then(response => {
+            let data_ = {
+                page_index: 1,
+                page_size: 9999,
+            }
+            fetchAdminList(data_).then(response => {
                 let datas = response.data.result.items;
                 let options = []
                 let hash ={}

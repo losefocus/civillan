@@ -43,17 +43,22 @@ export default {
     },
     methods: {
         getUserMap(){
-            fetchAdminList(this.listQuery).then(res => {
+            let data_ = {
+                page_index: 1,
+                page_size: 9999,
+            }
+            fetchAdminList(data_).then(res => {
                 let list = res.data.result.items
                 this.userMap = new Map()
                 list.forEach(ele => {
                     this.userMap.set(ele.id,ele.username)
                 })
+                
             })
         },
         getList(){
             fetchList(this.listQuery).then(res => {
-                this.list = res.data.result.items
+                if(res.data.success && res.data.result != undefined) this.list = res.data.result.items
             })
         },
         toAllDevice(){

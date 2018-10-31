@@ -82,9 +82,9 @@
                 v-model="form.comment">
                 </el-input>
             </el-form-item>
-            <el-form-item>
+            <!-- <el-form-item>
                 <el-checkbox label="已启用" v-model="form.status" size="small"></el-checkbox>
-            </el-form-item>
+            </el-form-item> -->
             <el-form-item>
                 <el-button v-if="flag == 'add'" type="primary" :loading="createLoading" @click="submitForm('form')" size="small" style="width:85px;" :disabled="!device_btn_add">添加</el-button>
                 <el-button v-else type="primary" :loading="createLoading" @click="updataForm('form')" size="small" style="width:85px;">保存</el-button>
@@ -169,7 +169,7 @@
                 thumbnailPath:'',
                 thumbnailBaseUrl:'',
                 comment:'',
-                status:true,
+                status:0,
                 deviceGroup:{
                     id:''
                 }
@@ -282,7 +282,6 @@
         },
         submitForm(formName){
             let data = Object.assign({},this.form)
-            data.status = data.status?1:0
             data.protocol = "string"
             data.passage = "string"
             this.createLoading = true
@@ -314,7 +313,6 @@
             this.$refs[formName].validate((valid) => {
                 if (valid) {
                     let data = Object.assign({},this.form)
-                    data.status = data.status?1:0                   
                     this.createLoading = true
                     updataObj(data).then(res => {
                             this.cancel()
@@ -352,7 +350,7 @@
                 thumbnailPath:'',
                 thumbnailBaseUrl:'',
                 comment:'',
-                status:true,
+                status:0,
                 deviceGroup:{id:''}
             }
             this.groupOptions = []
