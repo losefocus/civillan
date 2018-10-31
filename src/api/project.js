@@ -10,11 +10,11 @@ export function fetchList(query) {
   }
 
   /* 管理员列表 */
-  export function fetchAdminList() {
+  export function fetchAdminList(query) {
     return request({
       url: '/admin/user/list',
       method: 'get',
-      
+      params: query
     })
   }
  /* 图片上传 */

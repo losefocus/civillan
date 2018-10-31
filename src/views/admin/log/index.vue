@@ -114,8 +114,10 @@
       this.listQuery.sort_by = "createNow";
       this.listQuery.direction = false;
       fetchList(this.listQuery).then(response => {
-        this.list = response.data.result.items;
-        this.total = response.data.result.total;
+        if(response.data.success && response.data.result != undefined){
+          this.list = response.data.result.items;
+          this.total = response.data.result.total;
+        }
         this.listLoading = false;
       });
     },

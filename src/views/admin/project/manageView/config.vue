@@ -253,6 +253,7 @@
         //     return jsonData.map(v => filterVal.map(j => v[j]));
         // },
         getCategoryList(){
+            this.listLoading = true
             categoryList(this.allListQuery).then(res => {
                 let list = res.data.result.items
                 this.typeMap = new Map()
@@ -263,6 +264,7 @@
                     return { value: item.id, label: item.name };
                 });
                 this.typeOptions.unshift({value:0,label:'全部类型'})
+                this.listLoading = false
             })
         },
         handleAdd(){

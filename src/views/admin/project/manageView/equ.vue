@@ -59,8 +59,12 @@
             </el-table-column>
             <el-table-column align="center" label="状态">
                 <template slot-scope="scope">
-                    <i v-if="scope.row.status == 1" class="el-icon-circle-check" style="font-size:18px;color:#67c23a"></i>
-                    <i v-else class="el-icon-circle-close" style="font-size:18px;color:#909399"></i>
+                    <!-- <i v-if="scope.row.status == 1" class="el-icon-circle-check" style="font-size:18px;color:#67c23a"></i>
+                    <i v-else class="el-icon-circle-close" style="font-size:18px;color:#909399"></i> -->
+                    <el-tag v-if="scope.row.status == 0" type="info" size="mini">未激活</el-tag>
+                    <el-tag v-if="scope.row.status == 1" size="mini" >已激活</el-tag>
+                    <el-tag v-if="scope.row.status == 11" type="success" size="mini">已连接</el-tag>
+                    <el-tag v-if="scope.row.status == 21" type="danger" size="mini">故障中</el-tag>
                 </template>
             </el-table-column>
             <el-table-column align="center" label="操作">
@@ -254,7 +258,6 @@
             this.$parent.$refs.addEqu.flag = 'update'
             if(!row.product) row.product = {id:'暂无产品'}
             this.$parent.$refs.addEqu.form = Object.assign({},row)
-            this.$parent.$refs.addEqu.form.status = row.status === 1?true:false
             this.$parent.$refs.addEqu.form.deviceGroup = {id:row.deviceGroup.id}
             this.$parent.$refs.addEqu.disabled = true
         },
