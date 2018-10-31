@@ -1,7 +1,7 @@
 // see http://vuejs-templates.github.io/webpack for documentation.
 var path = require('path')
 var baseUrl = 'http://192.168.0.232/';
-// var baseUrl = `http://api.gcycloud.com/`
+// var baseUrl = `http://admin.gcycloud.com/`
 // var baseUrl = `http://192.168.0.33:9999/`
 module.exports = {
   build: {
