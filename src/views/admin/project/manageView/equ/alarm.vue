@@ -27,10 +27,33 @@
                     <el-form-item label="恢复内容" prop="recoverMessage" style="width: 310px;margin-left:30px">
                         <el-input v-model="form.recoverMessage" size="mini" auto-complete="off"></el-input>
                     </el-form-item>
-                    <el-form-item label="触发条件" prop="condition" style="width: 310px;">
-                        <el-input v-model="form.condition" type="textarea" :rows="2" size="mini" auto-complete="off"></el-input>
+                    <el-form-item label="触发条件" prop="condition" style="width: 650px;">
+                        <!-- <el-input v-model="form.condition" type="textarea" :rows="2" size="mini" auto-complete="off"></el-input> -->
+                        <div style="width:150px;margin-right:20px;" class="pull-left">
+                            <el-select v-model="triggerForm.label" placeholder="选择变量" size="mini" no-data-text="请添加变量" @change="changeTrigger">
+                                <el-option
+                                v-for="item in sensorOption"
+                                :key="item.id"
+                                :label="item.name"
+                                :value="item.label">
+                                </el-option>
+                            </el-select>
+                        </div>
+                        <div style="width:150px;margin-right:20px;" class="pull-left">
+                            <el-select v-model="triggerForm.trigger" placeholder="触发条件" size="mini" style="width:100%" no-data-text="触发条件" @change="changeTrigger">
+                                <el-option
+                                v-for="item in triggerOption"
+                                :key="item.value"
+                                :label="item.label"
+                                :value="item.value">
+                                </el-option>
+                            </el-select>
+                        </div>
+                        <el-input v-model="triggerForm.value1" class="pull-left" style="width:110px;margin-right:20px;" size="mini" auto-complete="off" @change="changeTrigger"></el-input>
+                        <el-input v-model="triggerForm.value2" v-if="triggerForm.trigger == 'between'" class="pull-left" style="width:110px" size="mini" auto-complete="off" @change="changeTrigger"></el-input>
+                        <el-input v-model="form.condition" type="textarea" style="margin-top:10px;" :rows="2" size="mini" auto-complete="off"></el-input>
                     </el-form-item>
-                    <el-form-item label="报警级别" prop="level" style="width: 310px;margin-left:30px;margin-bottom:38px">
+                    <el-form-item label="报警级别" prop="level" style="width: 310px;margin-bottom:38px">
                         <el-select v-model="form.level" placeholder="请选择" size="mini" style="width:100%" no-data-text="请先添加报警级别">
                             <el-option
                             v-for="item in alarmDicts"
@@ -40,7 +63,7 @@
                             </el-option>
                         </el-select>
                     </el-form-item>
-                    <el-form-item label="备注" style="width: 310px;">
+                    <el-form-item label="备注" style="width: 310px;margin-left:30px;">
                         <el-input v-model="form.comment" type="textarea" :rows="2" size="mini" auto-complete="off"></el-input>
                     </el-form-item>
                     <el-form-item  :style="flag == 'add'?'width: 140px':'width: 220px'" class="pull-right" style="padding-top:5px">
@@ -104,7 +127,7 @@
   import {mapGetters} from "vuex";
   import {remote} from "@/api/dict";
   import {findByvalue} from "@/util/util";
-  import {addObj, delObj, editObj, getObj} from "@/api/device/alarm";
+  import {addObj, delObj, editObj, getObj,getSensor} from "@/api/device/alarm";
 
   export default {
     props:['dataInfo'],
@@ -152,6 +175,21 @@
             }
         };
         return {
+            sensorOption:[],
+            triggerOption:[
+                {label:'=',value:'='},
+                {label:'>',value:'>'},
+                {label:'>=',value:'>='},
+                {label:'<',value:'<'},
+                {label:'<=',value:'<='},
+                {label:'between',value:'between'},
+            ],
+            triggerForm:{
+                label:'',
+                trigger:'',
+                value1:'',
+                value2:'',
+            },
             rules: {
                 title: [{ validator: validateTitle,trigger: 'blur' }],
                 cycle: [{ validator: validateCycle,trigger: 'change' }],
@@ -198,11 +236,29 @@
     },
     mounted() {
         this.getList()
+        this.getSensorList()
     },
     computed: {
         ...mapGetters(["alarmList"]),
     },
     methods:{
+        changeTrigger(){
+            if(this.triggerForm.trigger != 'between'){
+                this.form.condition =  '{' + this.triggerForm.label + '}' + this.triggerForm.trigger + this.triggerForm.value1
+            }else{
+                this.form.condition =   '{' +this.triggerForm.label + '}' + '<' +this.triggerForm.value1 + ',' + '{' + this.triggerForm.label + '}' +  '>' + this.triggerForm.value2
+            }
+        },
+        getSensorList(){
+            let query = {
+                deviceId:this.dataInfo.id,
+                page_index: 1,
+                page_size: 999
+            }
+            getSensor(query).then(res=>{
+                this.sensorOption = res.data.result.items
+            })
+        },
         handleSizeChange(val) {
             this.listQuery.page_size = val;
             this.getList();
@@ -304,6 +360,12 @@
                 recoverMessage:'',
                 comment:'',
                 status:true
+            }
+            this.triggerForm = {
+                label:'',
+                trigger:'',
+                value1:'',
+                value2:'',
             }
             this.createdLoading = false
             this.isshow = false
