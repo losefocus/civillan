@@ -34,3 +34,12 @@ export function getObj(query) {
       method: 'post',
     })
   }
+
+  /* 变量信息 */
+export function getSensor(query) {
+  return request({
+    url: '/device/device_sensor/list',
+    method: 'get',
+    params: query
+  })
+}

@@ -126,11 +126,18 @@
             return isLt3M;
         },
         uploadSuccess(response, file, fileList){
-            this.form.fileBaseUrl = response.result.baseUrl
-            this.form.filePath = response.result.path
-            // this.fileName = response.result.name
-            this.fileName = file.name
-            this.fileList = []
+            if(response.success == false){
+                this.$notify.error({
+                    title: '错误',
+                    message: '文件获取失败'
+                });
+            }else{
+                this.form.fileBaseUrl = response.result.baseUrl
+                this.form.filePath = response.result.path
+                // this.fileName = response.result.name
+                this.fileName = file.name
+                this.fileList = []
+            }
         }, 
         updataForm(formName){
             this.$refs[formName].validate((valid) => {

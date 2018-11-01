@@ -133,11 +133,18 @@
             
         },
         uploadSuccess(response, file, fileList){
-            if(this.form.type == 3){
-                this.url = response.result.baseUrl + response.result.path
+            if(response.success == false){
+                this.$notify.error({
+                    title: '错误',
+                    message: '获取失败'
+                });
             }else{
-                this.form.thumbnailFilePath = response.result.path
-                this.form.thumbnailFileBaseUrl = response.result.baseUrl
+                if(this.form.type == 3){
+                    this.url = response.result.baseUrl + response.result.path
+                }else{
+                    this.form.thumbnailFilePath = response.result.path
+                    this.form.thumbnailFileBaseUrl = response.result.baseUrl
+                }
             }
             this.uploadLoaing = false
         },

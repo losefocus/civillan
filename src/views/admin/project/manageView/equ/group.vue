@@ -208,9 +208,16 @@
             return isLt3M;
         },
         uploadSuccess(response, file, fileList){
-            this.form.thumbnailPath = response.result.path
-            this.form.thumbnailBaseUrl = response.result.baseUrl
-            this.fileList = []
+            if(response.success == false){
+                this.$notify.error({
+                    title: '错误',
+                    message: '图片获取失败'
+                });
+            }else{
+                this.form.thumbnailPath = response.result.path
+                this.form.thumbnailBaseUrl = response.result.baseUrl
+                this.fileList = []
+            }
             this.uploadLoaing = false
         },
         handleSizeChange(val) {

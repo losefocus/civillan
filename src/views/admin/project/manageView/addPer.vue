@@ -199,8 +199,15 @@
             return isLt3M;
         },
         uploadSuccess(response, file, fileList){
-            this.form.avatarPath = response.result.path
-            this.form.avatarBaseUrl = response.result.baseUrl
+            if(response.success == false){
+                this.$notify.error({
+                    title: '错误',
+                    message: '头像获取失败'
+                });
+            }else{
+                this.form.avatarPath = response.result.path
+                this.form.avatarBaseUrl = response.result.baseUrl
+            }
             this.uploadLoaing = false
         },
         //检查用户名/电话是否存在
