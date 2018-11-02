@@ -298,8 +298,15 @@
             return jsonData.map(v => filterVal.map(j => v[j]));
         },
         uploadSuccess(response, file, fileList){
+            if(response.success == false){
+                this.$notify.error({
+                    title: '错误',
+                    message: '上传失败'
+                });
+            }else{
             this.$parent.alertNotify('上传')
             this.getList()
+            }
         },
         uploadError(){
             this.$notify.error({

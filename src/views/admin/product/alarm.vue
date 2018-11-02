@@ -354,13 +354,20 @@
             this.$refs.form.resetFields();
         },
         uploadSuccess(response, file, fileList){
-            this.$notify({
-                title: '成功',
-                message: "导入成功",
-                type: "success",
-                duration: 2000
-            });
-            this.getList()
+            if(response.success == false){
+                this.$notify.error({
+                    title: '错误',
+                    message: '导入失败'
+                });
+            }else{
+                this.$notify({
+                    title: '成功',
+                    message: "导入成功",
+                    type: "success",
+                    duration: 2000
+                });
+                this.getList()
+            }
         },
         uploadError(){
             this.$notify.error({
