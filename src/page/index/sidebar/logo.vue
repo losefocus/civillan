@@ -11,7 +11,7 @@
           <img style="width:40px;height:40px;margin:12px 0 0 2px;" src="../../../assets/img/logo_2.png">
       </span> -->
       <div v-if="isCollapse">
-        <span class="logoImg_s"></span>
+        <span class="logoImg_s" @click="toHomePage"></span>
       </div>
     </transition>
     <transition name="fade">
@@ -21,7 +21,7 @@
         <span class="logo_title" key="1"><span class="logoImg"></span></span>
       </template> -->
       <div v-if="!isCollapse">
-        <span class="logoImg_l"></span>
+        <span class="logoImg_l" @click="toHomePage"></span>
       </div>
     </transition>
   </div>
@@ -38,12 +38,16 @@
   props: ["isCollapse"],
   created() {},
   computed: {
-    ...mapGetters(["website"]),
+    ...mapGetters(["website","tagWel"]),
     type: function(val) {
       return this.website.logo.indexOf("static") != -1;
     }
   },
-  methods: {}
+  methods: {
+    toHomePage(){
+      this.$router.push({ path: this.tagWel.value });
+    }
+  }
 };
 </script>
 <style scoped="scoped" lang="scss">
@@ -101,13 +105,15 @@
   width:38px;
   height:38px;
   background: url('../../../assets/img/logo_2.png')no-repeat center;
-  background-size: contain
+  background-size: contain;
+  cursor: pointer;
 }
 .logoImg_l{
   display: block;
   width:184px;
   height:40px;
   background: url('../../../assets/img/logo_1.png')no-repeat center;
-  background-size: contain
+  background-size: contain;
+  cursor: pointer;
 }
 </style>
