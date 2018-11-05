@@ -48,7 +48,7 @@
                 </el-form-item>
             </el-form>
         </div>
-        <el-table class="config_content" :data="config_content" border max-height="250" :show-header="false" style="width:100%;border-radius: 4px;margin:10px 0 20px 0;">
+        <el-table class="config_content" :data="config_content" border max-height="200" :show-header="false" style="width:100%;border-radius: 4px;margin:10px 0 20px 0;">
             <el-table-column prop="name" align="center" label="配置项">
                 <template slot-scope="scope">
                     <span>{{scope.row.name}}</span>    
