@@ -41,6 +41,9 @@
           <el-dropdown-item>
             <router-link to="/info/index">个人设置</router-link>
           </el-dropdown-item>
+          <el-dropdown-item>
+            <router-link to="/account/index">我的账户</router-link>
+          </el-dropdown-item>
           <el-dropdown-item @click.native="logout" divided>退出系统</el-dropdown-item>
         </el-dropdown-menu>
       </el-dropdown>

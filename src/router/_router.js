@@ -46,7 +46,49 @@ export default [{
     name: '修改信息',
     component: _import('admin/user/info', 'views')
   }]
-}, {
+},
+{
+  path: '/account',
+  component: Layout,
+  redirect: '/account/index',
+  children: [{
+    path: 'index',
+    name: '我的账户',
+    component: _import('admin/account/index', 'views'),
+    children:[
+      {
+        path: '/',
+        name: '我的账户',
+        component: _import('admin/account/synopsis/index', 'views')
+      },{
+        path: '/account/synopsis',
+        name: '账户总览',
+        component: _import('admin/account/synopsis/index', 'views')
+      },{
+        path: '/account/detail',
+        name: '账单明细',
+        component: _import('admin/account/detail/index', 'views')
+      },{
+        path: '/account/manage',
+        name: '订单管理',
+        component: _import('admin/account/manage/index', 'views'),
+      },{
+        path: '/account/record',
+        name: '开票记录',
+        component: _import('admin/account/record/index', 'views'),
+      },{
+        path: '/account/setting',
+        name: '开票设置',
+        component: _import('admin/account/setting/index', 'views'),
+      },{
+        path: '/account/renew',
+        name: '产品续费',
+        component: _import('admin/account/renew/index', 'views'),
+      }
+    ]
+  }]
+},
+{
   path: '/404',
   component: _import('error-page/404', 'components'),
   name: '404'
