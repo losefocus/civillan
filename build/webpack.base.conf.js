@@ -18,9 +18,8 @@ const createLintingRule = () => ({
 		emitWarning: !config.dev.showEslintErrorsInOverlay
 	}
 })
-var webpack = require('webpack')
+
 module.exports = {
-	// mode:'production',
 	context: path.resolve(__dirname, '../'),
 	entry: {
 		// app: './src/entry-client.js'
@@ -106,12 +105,6 @@ module.exports = {
 		tls: 'empty',
 		child_process: 'empty'
 	},
-	plugins: [
-		// ...
-		new webpack.DefinePlugin({
-		  'process.env.NODE_ENV': JSON.stringify('production')
-		})
-	  ],
   devServer: {
 	  disableHostCheck:true,
   }
