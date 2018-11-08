@@ -86,7 +86,7 @@
                 </el-table-column>
                 <el-table-column align="center" label="类型" >
                     <template slot-scope="scope">
-                        <span>{{scope.row.type}}</span>
+                        <span>{{scope.row.type | typeFilter}}</span>
                     </template>
                 </el-table-column>
 
@@ -167,6 +167,7 @@
             listLoading:false,
             createdLoading:false,
             dicts:[],
+            dictsMap:{},
             form:{
                 name:'',
                 label:'',
@@ -190,9 +191,24 @@
             params:{device_id:this.dataInfo.id},
         }
     },
+    filters: {
+        typeFilter(type) {
+            const typeMap = {
+                0: "bool",
+                1: "float",
+                2: "integer",
+                3: "char",
+                4: "double",
+            };
+            return typeMap[type];
+        }
+    },
     created() {
         remote("data_type").then(response => {
             this.dicts = response.data.result;
+            this.dicts.forEach(res => {
+                this.dictsMap[res.value] = res.label
+            })
         });
     },
     mounted() {
@@ -230,14 +246,13 @@
         },
         getList(){
             this.listLoading = true
+            this.listQuery.sort_by = 'sort'
+            this.listQuery.direction = 'asc'
             getObj(this.listQuery).then(res => {
                 this.list = res.data.result.items
-                this.list.forEach(ele => {
-                    ele.type = findByvalue(this.dicts,ele.type)
-                });
-                this.list.sort((a,b)=>{
-                    return parseInt(a.sort) - parseInt(b.sort)
-                })
+                // this.list.sort((a,b)=>{
+                //     return parseInt(a.sort) - parseInt(b.sort)
+                // })
                 this.total = res.data.result.total
                 this.listLoading = false
                 this.resetTem()

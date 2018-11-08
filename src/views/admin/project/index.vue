@@ -25,7 +25,7 @@
                                         <template slot-scope="pro">
                                             <div style="white-space:nowrap;width:100%;height:45px;padding-left:20px;">
                                                 <img v-if="pro.row.thumbnailUrl&&pro.row.thumbnailUrl!=''" style="height:45px;width:60px;" class="pull-left" :src="pro.row.thumbnailUrl+pro.row.thumbnailPath">
-                                                <img v-else style="width:60px;height:45px" src="../../../assets/img/no_pic.png">
+                                                <img v-else style="width:60px;height:45px" class="pull-left" src="../../../assets/img/no_pic.png">
                                                 <el-tooltip class="item" effect="dark" :content="pro.row.name" placement="top-start" :open-delay="300">
                                                     <span style="white-space:nowrap;cursor: pointer;"><a style="overflow: hidden;text-overflow:ellipsis;line-height:45px;padding:0 10px;width:calc(100% - 80px)" @click="toInfo(pro.row)">{{pro.row.name}}</a></span>
                                                 </el-tooltip>
@@ -70,7 +70,7 @@
                             <template slot-scope="scope">
                                 <div style="white-space:nowrap;width:100%;height:45px">
                                     <img v-if="scope.row.thumbnailUrl&&scope.row.thumbnailUrl!=''" style="height:45px;width:60px;" class="pull-left" :src="scope.row.thumbnailUrl+scope.row.thumbnailPath">
-                                    <img v-else style="width:60px;height:45px" src="../../../assets/img/no_pic.png">
+                                    <img v-else style="width:60px;height:45px" class="pull-left" src="../../../assets/img/no_pic.png">
                                     <el-tooltip class="item" effect="dark" :content="scope.row.name" placement="top-start" :open-delay="300">
                                         <span style="white-space:nowrap;">
                                             <span v-if="scope.row.children==0" style="cursor: pointer;overflow: hidden;text-overflow:ellipsis;line-height:45px;padding:0 10px;width:calc(100% - 80px)" @click="toInfo(scope.row)">{{scope.row.name}}</span>
@@ -251,8 +251,18 @@
                 callback();
             }
         };
+        var validateParentId = (rule, value, callback) => {
+            if (value === '' || value== undefined) {
+                callback(new Error('请选择管理员'));
+            } else {
+                callback();
+            }
+        };
         return {
             rules: {
+                parentId: [
+                    {validator: validateParentId, message: '请选择上级', trigger: 'change' }
+                ],
                 name: [
                     {validator: validateName, message: '请输入项目名称', trigger: 'blur' }
                 ],
@@ -342,7 +352,7 @@
         handleAdd(row){
             this.cardVisibel = true
             this.flag = 'add'
-            if(row)this.form.parentId = row.id
+            this.form.parentId = row.parentId?row.id:0
             this.expandRow = row
             //this.$refs.projectTable.toggleRowExpansion(this.expandRow,true);
         },
