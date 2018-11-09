@@ -36,7 +36,7 @@
             </el-menu>
         </div>
         
-        <div class="pull-right" style="width:calc(100% - 195px);background:#fff;min-height:560px;padding:20px;box-sizing: border-box">
+        <div class="pull-right" style="width:calc(100% - 195px);min-height:560px;box-sizing: border-box">
             <router-view></router-view>
         </div>
         

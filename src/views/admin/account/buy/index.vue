@@ -1,6 +1,6 @@
 <template>
     <div>
-       总览
+       购买记录
     </div>
 </template>
 
