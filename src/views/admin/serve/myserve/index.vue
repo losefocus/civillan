@@ -35,7 +35,7 @@ export default {
     },
     data(){
         return {
-            views:2
+            views:1
         }
     },
     computed: {

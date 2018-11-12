@@ -16,7 +16,23 @@
             </div>
         </div>
         <div class="pull-right c_r">
-            当前配置
+            <div class="tit">当前配置</div>
+            <ul>
+                <li class="clearfix"><span>服务类型：</span><p>短信通知</p></li>
+                <li class="clearfix"><span>购买数量：</span><p>100</p></li>
+                <li class="clearfix"><span>购买有效期：</span><p>永久</p></li>
+            </ul>
+            <div class="clearfix">
+                <div class="pull-right originalCost" style="color:#999999;padding-top:10px;line-height:28px;">
+                    <span style="font-size:12px;">原价：</span><span style="font-size:18px;text-decoration:line-through;">￥600</span>
+                </div>
+            </div>
+            <div class="clearfix">
+                <div class="pull-right" style="color:#999999;height:40px;line-height:40px;">
+                    <span style="font-size:12px">折后价：</span><span style="font-size:32px;color:#F15F5F">￥400</span>
+                </div>
+            </div>
+            <el-button style="width:100%;margin-top:30px;" type="primary">立即购买</el-button>
         </div>
     </div>
 </template>
@@ -66,7 +82,33 @@
 .c_r{
     width:300px;
     height:350px;
-    background: #FAFAFA
+    background: #FAFAFA;
+    padding: 0 30px;
+    box-sizing: border-box;
+    .tit{
+        height:60px;
+        font-size:18px;
+        font-weight:600;
+        color:#333333;
+        line-height:60px;
+        border-bottom:1px solid rgba(151,151,151,0.2);
+        margin-bottom: 15px;
+    }
+    li{
+        width: 100%;
+        line-height: 28px;
+        font-size: 12px;
+        span{
+            color:rgba(153,153,153,1);
+            width: 72px;
+            float: left;
+        }
+        p{
+            color: #666666;
+            float: left;
+        }
+    }
+
 }
 </style>
 
