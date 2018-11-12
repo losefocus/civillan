@@ -268,7 +268,7 @@
             })
         },
         handleAdd(){
-            this.$parent.cardVisibel = !this.$parent.cardVisibel
+            this.$parent.cardVisibel = true
             this.$parent.$refs.addConfig.flag = 'add'
             this.$parent.$refs.addConfig.resetTemp()
         },
@@ -318,6 +318,7 @@
                 }
             ).then(() => {
                 delObj(row.id).then(res => {
+                    this.listQuery.page_index = 1,
                     this.getList()
                     this.$parent.$parent.alertNotify('删除')
                 })

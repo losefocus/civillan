@@ -205,9 +205,11 @@
             alarmDicts:[],
             form:{
                 title:'',
+                cycle:'1',
                 condition:'',
                 triggerMessage:'',
-                recoverMessage:'',
+                recoverMessage:'已恢复',
+                level:'1',
                 comment:'',
                 status:true
             },
@@ -355,9 +357,11 @@
         resetTem(){
             this.form={
                 title:'',
+                cycle:'1',
                 condition:'',
                 triggerMessage:'',
-                recoverMessage:'',
+                recoverMessage:'已恢复',
+                level:'1',
                 comment:'',
                 status:true
             }

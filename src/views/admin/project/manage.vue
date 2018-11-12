@@ -24,7 +24,7 @@
                 <config v-if="tabView === 'config'" :project-info="viewData" ref="config"></config>
             </div>
         </div>
-        <el-card class="pull-right addNewContainer" style="height:741px" :class="{'show':cardVisibel}" >
+        <el-card class="pull-right addNewContainer" style="height:797px" :class="{'show':cardVisibel}" >
             <i class="closeBtn el-icon-close" @click="cardVisibel = false"></i>
             <add-org v-if="tabView === 'org'" :project-info="viewData" ref="addOrg"></add-org>
             <add-per v-if="tabView === 'per'" :project-info="viewData" ref="addPer"></add-per>
@@ -42,14 +42,12 @@
   import equ from "./manageView/equ";
   import doc from "./manageView/doc";
   import media from "./manageView/media";
-  import moni from "./manageView/monitoring";
   import config from "./manageView/config";
   import addOrg from "./manageView/addOrg";
   import addPer from "./manageView/addPer";
   import addEqu from "./manageView/addEqu";
   import addDoc from "./manageView/addDoc";
   import addMedia from "./manageView/addMedia";
-  import addMoni from "./manageView/addMoni";
   import addConfig from "./manageView/addConfig";
 
   export default {
@@ -60,14 +58,12 @@
         equ,
         doc,
         media,
-        moni,
         config,
         addOrg,
         addPer,
         addEqu,
         addDoc,
         addMedia,
-        addMoni,
         addConfig
     },
     props:['viewData'],

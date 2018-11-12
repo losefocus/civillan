@@ -11,7 +11,7 @@
                     v-for="item in typeOptions"
                     :key="item.value"
                     :label="item.label"
-                    :value="item.value">
+                    :value="parseInt(item.value)">
                     </el-option>
                 </el-select>
             </el-form-item>
@@ -115,7 +115,6 @@
     computed: {},
     methods:{
         changeType(){
-            console.log(this.form.type)
             this.form.thumbnailFileBaseUrl = ''
         },
         beforeUpload(file){

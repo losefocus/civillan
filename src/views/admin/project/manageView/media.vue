@@ -9,7 +9,7 @@
              <el-table-column align="left" label="缩略图" width="80">
                 <template slot-scope="scope">
                     <div style="height:45px">
-                        <img v-if="scope.row.thumbnailBaseUrl&&scope.row.thumbnailBaseUrl!=''" style="width:60px;height:45px" :src="scope.row.thumbnailFileBaseUrl+scope.row.thumbnailFilePath">
+                        <img v-if="scope.row.thumbnailFileBaseUrl&&scope.row.thumbnailFilePath!=''" style="width:60px;height:45px" :src="scope.row.thumbnailFileBaseUrl+scope.row.thumbnailFilePath">
                         <img v-else style="width:60px;height:45px" src="../../../../assets/img/no_pic.png">
                     </div>
                 </template>
@@ -100,8 +100,8 @@
     methods:{
         handleAdd(){
             this.$parent.cardVisibel = true
-            this.$parent.$refs.addDoc.flag = 'add'
-            this.$parent.$refs.addDoc.resetTemp()
+            this.$parent.$refs.addMedia.flag = 'add'
+            this.$parent.$refs.addMedia.resetTemp()
         },
         getList(){
             this.listLoading = true

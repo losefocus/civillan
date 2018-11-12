@@ -28,6 +28,9 @@
             <el-form-item label="电话" prop="phone">
                 <el-input v-model="form.phone" size="small" placeholder="请输入电话" @blur="checkDuplication('phone')"></el-input>
             </el-form-item>
+            <el-form-item label="邮箱" prop="email">
+                <el-input v-model="form.email" size="small" placeholder="请输入邮箱" ></el-input>
+            </el-form-item>
             <el-form-item label="账号" prop="username" >
                 <el-input v-model="form.username" size="small" placeholder="请输入账号" :disabled="usernameDisabled" @blur="checkDuplication('username')"></el-input>
             </el-form-item>
@@ -148,14 +151,14 @@
                 phone: [
                     { validator: validataPhone, trigger: 'blur' },
                 ],
-                username: [
-                    { validator: validateUserName, trigger: 'blur' },
-                    { min: 6, max: 20, message: "长度在 6 到 20 个字符", trigger: "blur"}
-                ],
-                password: [
-                    { validator: validatePass, trigger: 'blur' },
-                    { min: 6, max: 50, message: "长度在 6 到 50 个字符", trigger: "blur"}
-                ],
+                // username: [
+                //     { validator: validateUserName, trigger: 'blur'},
+                //     { min: 6, max: 20, message: "长度在 6 到 20 个字符", trigger: "blur"}
+                // ],
+                // password: [
+                //     { validator: validatePass, trigger: 'blur'},
+                //     { min: 6, max: 50, message: "长度在 6 到 50 个字符", trigger: "blur"}
+                // ],
             },
             form:{
                 projectOrgan : {id:null} ,
