@@ -32,10 +32,29 @@
                     <span style="font-size:12px">折后价：</span><span style="font-size:32px;color:#F15F5F">￥400</span>
                 </div>
             </div>
-            <el-button style="width:100%;margin-top:30px;" type="primary">立即购买</el-button>
+            <el-button style="width:100%;margin-top:30px;" type="primary" @click="toPay">立即购买</el-button>
         </div>
     </div>
 </template>
+<script>
+export default {
+    data(){
+        return {
+
+        }
+    },
+    created(){
+
+    },
+    methods:{
+        toPay(){
+            this.$router.push({path:'/serve/myserve/pay',query:{aa:'1231'}})
+        }
+    }
+}
+</script>
+
+
 
 <style lang="scss" scoped>
 .c_l{

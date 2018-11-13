@@ -5,7 +5,7 @@
                 <div class="l_1">短信通知</div>
                 <div class="l_2">短信通知 (Alibaba Cloud Mobile Push) 是基于大数据技术的移动云服务。</div>
                 <div class="l_3">
-                    <el-button type="primary" size="small" @click="views=2">立即购买</el-button>
+                    <el-button type="primary" size="small" @click="tobuy('sms')">立即购买</el-button>
                     <span class="l_3_d">剩余：0条</span>
                 </div>
             </li>
@@ -13,25 +13,21 @@
                 <div class="l_1">存储空间</div>
                 <div class="l_2">存储空间 (Alibaba Cloud Mobile Push) 是基于大数据技术的移动云服务。</div>
                 <div class="l_3">
-                    <el-button type="primary" size="small" @click="views=3">续费/扩容</el-button>
+                    <el-button type="primary" size="small" @click="tobuy('sms')">续费/扩容</el-button>
                     <span class="l_3_d">剩余：10GB</span>
                     <span class="l_3_t">到期时间:2018-10-21</span>
                 </div>
             </li> 
         </ul>
-        <sms v-if="views == 2"></sms>
-        <memory v-if="views == 3"></memory>
+        <router-view v-if="views == 2"></router-view>
     </div>
 </template>
 
 <script>
-  import sms from "./sms";
-  import memory from "./memory";
 
 export default {
     components:{
-        sms,
-        memory
+
     },
     data(){
         return {
@@ -42,12 +38,34 @@ export default {
         
     },
     created() {
-
+        console.log(this.$route)
+    },
+    mounted(){
+        if (window.history && window.history.pushState) {
+            history.pushState(null, null, document.URL);
+            window.addEventListener('popstate', this.goBack, false);
+        }
+    },
+    destroyed(){
+        window.removeEventListener('popstate', this.goBack, false);
     },
     methods:{
-       buy(){
-           
-       }
+       tobuy(path){
+            this.views = 2
+            this.$router.push({path:'/serve/myserve/'+path})
+       },
+       goBack(){
+            // this.views = 1
+            //replace替换原路由，作用是避免回退死循环
+            // this.$router.replace({path: '/serve/myserve'});
+        }
+    },
+    watch:{
+        $route(val,oldval){
+            if(val.path == '/serve/myserve'){
+                this.views = 1
+            }
+        }
     }
 }
 </script>

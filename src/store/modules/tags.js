@@ -39,15 +39,24 @@ const navs = {
     mutations: {
         ADD_TAG: (state, action) => {
             state.tag = action;
-            setStore({ name: 'tag', content: state.tag,type:'session' })
-            if (state.tagList.some(a => a.value === action.value)) return
-            state.tagList.push({
-                label: action.label,
-                value: action.value,
-                query: action.query,
+            let arr = action.value.split('')
+            let arry = []
+            arr.forEach(e => {
+                if(e == '/') arry.push(e)
             })
-            state.tagList = setFistTag(state.tagList);
-            setStore({ name: 'tagList', content: state.tagList,type:'session' })
+            if(arry.length <3){
+                setStore({ name: 'tag', content: state.tag,type:'session' })
+                if (state.tagList.some(a => a.value === action.value)) return
+                state.tagList.push({
+                    label: action.label,
+                    value: action.value,
+                    query: action.query,
+                })
+                state.tagList = setFistTag(state.tagList);
+                setStore({ name: 'tagList', content: state.tagList,type:'session' })
+            }
+
+            
         },
         SET_TAG_CURRENT: (state, tagCurrent) => {
             state.tagCurrent = tagCurrent;

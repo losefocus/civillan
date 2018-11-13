@@ -49,6 +49,18 @@ export default [{
     path: '/serve/myserve',
     name: '我的服务',
     component: _import('admin/serve/myserve/index', 'views'),
+    children:[
+      {
+        path: '/serve/myserve/sms',
+        name: '短信通知',
+        component: _import('admin/serve/myserve/sms', 'views')
+      },
+      {
+        path: '/serve/myserve/pay',
+        name: '支付',
+        component: _import('admin/serve/myserve/pay', 'views')
+      }
+    ]
   },{
     path: '/serve/buy',
     name: '购买记录',
