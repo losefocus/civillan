@@ -50,16 +50,6 @@ export default [{
     name: '我的服务',
     component: _import('admin/serve/myserve/index', 'views'),
     children:[
-      {
-        path: '/serve/myserve/sms',
-        name: '短信通知',
-        component: _import('admin/serve/myserve/sms', 'views')
-      },
-      {
-        path: '/serve/myserve/pay',
-        name: '支付',
-        component: _import('admin/serve/myserve/pay', 'views')
-      }
     ]
   },{
     path: '/serve/buy',
@@ -74,6 +64,18 @@ export default [{
     name: '开票设置',
     component: _import('admin/serve/setting/index', 'views'),
   },
+
+  
+  {
+    path: '/serve/myserve/sms',
+    name: '短信通知',
+    component: _import('admin/serve/myserve/sms', 'views')
+  },
+  {
+    path: '/serve/myserve/pay',
+    name: '支付',
+    component: _import('admin/serve/myserve/pay', 'views')
+  }
   ]
 },
 {

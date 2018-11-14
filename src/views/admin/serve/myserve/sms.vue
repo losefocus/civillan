@@ -1,38 +1,40 @@
 <template>
-    <div style="height:500px;padding:10px">
-        <div class="pull-left c_l">
-            <div class="tit">短信通知</div>
-            <div class="text">短信通知（Alibaba Cloud Mobile Push) 是基于大数据技术的移动云服务。移动推送（Alibaba Cloud Mobile Push) 是基于大数据技术的移动云服务。移动推送（Alibaba Cloud Mobile Push) 是基于大数据技术的移动云服务。移动推送（Alibaba Cloud Mobile Push) 是基于大数据技术的移动云服务。移动推送（Alibaba Cloud Mobile Push) 是基于大数据技术的移动云服务。移动推送（Alibaba Cloud Mobile Push) 是基于大数据技术的移动云服务。移动推送（Alibaba Cloud Mobile Push) 是基于大数据技术的移动云服务。</div>
-            <div class="cont clearfix">
-                <div class="pull-left cont_l">
-                    <p>短信</p>
-                    <p>购买</p>
-                </div>
-                <div class="pull-left cont_r">
-                    <span style="color:#666666">购买数量</span>
-                    <el-input style="width:120px;margin:0 20px;" size="small" type="number" min="0"></el-input>
-                    <span style="color:#F15F5F">剩余短信量：100条</span>
-                </div>
-            </div>
-        </div>
-        <div class="pull-right c_r">
-            <div class="tit">当前配置</div>
-            <ul>
-                <li class="clearfix"><span>服务类型：</span><p>短信通知</p></li>
-                <li class="clearfix"><span>购买数量：</span><p>100</p></li>
-                <li class="clearfix"><span>购买有效期：</span><p>永久</p></li>
-            </ul>
-            <div class="clearfix">
-                <div class="pull-right originalCost" style="color:#999999;padding-top:10px;line-height:28px;">
-                    <span style="font-size:12px;">原价：</span><span style="font-size:18px;text-decoration:line-through;">￥600</span>
+    <div class="app-container">
+        <div style="height:500px;padding:10px">
+            <div class="pull-left c_l">
+                <div class="tit">短信通知</div>
+                <div class="text">短信通知（Alibaba Cloud Mobile Push) 是基于大数据技术的移动云服务。移动推送（Alibaba Cloud Mobile Push) 是基于大数据技术的移动云服务。移动推送（Alibaba Cloud Mobile Push) 是基于大数据技术的移动云服务。移动推送（Alibaba Cloud Mobile Push) 是基于大数据技术的移动云服务。移动推送（Alibaba Cloud Mobile Push) 是基于大数据技术的移动云服务。移动推送（Alibaba Cloud Mobile Push) 是基于大数据技术的移动云服务。移动推送（Alibaba Cloud Mobile Push) 是基于大数据技术的移动云服务。</div>
+                <div class="cont clearfix">
+                    <div class="pull-left cont_l">
+                        <p>短信</p>
+                        <p>购买</p>
+                    </div>
+                    <div class="pull-left cont_r">
+                        <span style="color:#666666">购买数量</span>
+                        <el-input style="width:120px;margin:0 20px;" size="small" type="number" min="0"></el-input>
+                        <span style="color:#F15F5F">剩余短信量：100条</span>
+                    </div>
                 </div>
             </div>
-            <div class="clearfix">
-                <div class="pull-right" style="color:#999999;height:40px;line-height:40px;">
-                    <span style="font-size:12px">折后价：</span><span style="font-size:32px;color:#F15F5F">￥400</span>
+            <div class="pull-right c_r">
+                <div class="tit">当前配置</div>
+                <ul>
+                    <li class="clearfix"><span>服务类型：</span><p>短信通知</p></li>
+                    <li class="clearfix"><span>购买数量：</span><p>100</p></li>
+                    <li class="clearfix"><span>购买有效期：</span><p>永久</p></li>
+                </ul>
+                <div class="clearfix">
+                    <div class="pull-right originalCost" style="color:#999999;padding-top:10px;line-height:28px;">
+                        <span style="font-size:12px;">原价：</span><span style="font-size:18px;text-decoration:line-through;">￥600</span>
+                    </div>
                 </div>
+                <div class="clearfix">
+                    <div class="pull-right" style="color:#999999;height:40px;line-height:40px;">
+                        <span style="font-size:12px">折后价：</span><span style="font-size:32px;color:#F15F5F">￥400</span>
+                    </div>
+                </div>
+                <el-button style="width:100%;margin-top:30px;" type="primary" @click="toPay">立即购买</el-button>
             </div>
-            <el-button style="width:100%;margin-top:30px;" type="primary" @click="toPay">立即购买</el-button>
         </div>
     </div>
 </template>
