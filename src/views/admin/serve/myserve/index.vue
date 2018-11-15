@@ -57,7 +57,7 @@ export default {
        goBack(){
             // this.views = 1
             //replace替换原路由，作用是避免回退死循环
-            // this.$router.replace({path: '/serve/myserve'});
+            this.$router.replace({path: '/serve/myserve'});
         }
     },
     watch:{

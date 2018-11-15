@@ -97,7 +97,7 @@
                 </el-table>
                 <div style="margin-top:20px;" class="clearfix">
                     <div class="pull-left">
-                        <el-button type="primary" size="small">索取发票</el-button>
+                        <el-button type="primary" size="small" @click="getInvoice">索取发票</el-button>
                         <span style="margin-left:30px;font-size:12px;color:#535353">您尚未设置有效开票信息，无法开具发票，<a style="color:#F69E5D;cursor: pointer;" @click="toSetting">立即设置发票抬头</a></span>
                     </div>
                     <div class="pull-right">
@@ -135,11 +135,20 @@ export default {
 
     },
     methods:{
-       handleSizeChange(){},
-       handleCurrentChange(){},
+       handleSizeChange(val) {
+            this.listQuery.page_size = val;
+            //this.getList();
+        },
+        handleCurrentChange(val) {
+            this.listQuery.page_index = val;
+            //this.getList();
+        },
        toSetting(){
            this.$router.push({ path:'/serve/setting'});
        },
+       getInvoice(){
+           this.$router.push({path:'/serve/buy/invoice'})
+       }
     }
 }
 </script>

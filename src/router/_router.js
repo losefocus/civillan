@@ -75,6 +75,11 @@ export default [{
     path: '/serve/myserve/pay',
     name: '支付',
     component: _import('admin/serve/myserve/pay', 'views')
+  },
+  {
+    path: '/serve/buy/invoice',
+    name: '索取发票',
+    component: _import('admin/serve/buy/invoice', 'views')
   }
   ]
 },

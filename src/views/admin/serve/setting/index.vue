@@ -26,7 +26,7 @@
                     <el-form-item label="开户银行名称：" prop="name" style="float:left;margin-right:20px;">
                         <el-input v-model="form.name" size="small" style="width:285px;" placeholder="请填写开户许可证上的开户银行" :disabled="form.resource==2"></el-input>
                     </el-form-item>
-                    <el-form-item label="开户银行账号：" prop="name" style="float:left;margin-bottom:0;">
+                    <el-form-item label="开户银行账号：" prop="name" style="float:left;">
                         <el-input v-model="form.name" size="small" style="width:285px;" placeholder="请填写开户许可证上的银行账号" :disabled="form.resource==2"></el-input>
                     </el-form-item>
                     <el-form-item label="注册场所地址：" prop="name" style="float:left;margin-right:20px;">
@@ -44,7 +44,7 @@
                     <el-form-item label="收件人姓名：" prop="name" style="float:left;margin-right:20px;">
                         <el-input v-model="sendform.name" size="small" style="width:285px;" placeholder=""></el-input>
                     </el-form-item>
-                    <el-form-item label="手机号码：" prop="name" style="float:left;margin-bottom:0;">
+                    <el-form-item label="手机号码：" prop="name" style="float:left;">
                         <el-input v-model="sendform.name" size="small" style="width:285px;" placeholder=""></el-input>
                     </el-form-item>
                     <el-form-item label="所在地区：" prop="address" style="float:left;margin-right:20px;">

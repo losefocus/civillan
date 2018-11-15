@@ -109,8 +109,14 @@ export default {
 
     },
     methods:{
-       handleSizeChange(){},
-       handleCurrentChange(){},
+        handleSizeChange(val) {
+            this.listQuery.page_size = val;
+            //this.getList();
+        },
+        handleCurrentChange(val) {
+            this.listQuery.page_index = val;
+            //this.getList();
+        },
     }
 }
 </script>
