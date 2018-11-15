@@ -8,7 +8,7 @@
       <el-submenu v-else :index="filterPath(item.name,index)" :key="item.name">
         <template slot="title">
           <i :class="item.icon"></i>
-          <span slot="title" :class="{'el-menu--display':isCollapse}">{{item.name}}</span>
+          <span slot="title" :class="{'el-menu--display':isCollapse}">{{item.name}}</span> 
         </template>
         <template v-for="(child,cindex) in item.children">
           <el-menu-item :index="filterPath(child.path,cindex)" @click="open(child)" v-if="child.children.length==0" :key="cindex">
@@ -19,6 +19,28 @@
         </template>
       </el-submenu>
     </template>
+    <!-- <el-submenu index="1">
+      <template slot="title">
+        <i class="el-icon-goods"></i>
+        <span slot="title" :class="{'el-menu--display':isCollapse}">增值服务</span> 
+      </template>
+      <el-menu-item index="/serve/myserve" @click="open_('/serve/myserve')">
+        <i class="el-icon-goods"></i>
+        <span slot="title">我的服务</span>
+      </el-menu-item>
+      <el-menu-item index="/serve/buy" @click="open_('/serve/buy')">
+        <i class="el-icon-goods"></i>
+        <span slot="title">购买记录</span>
+      </el-menu-item>
+      <el-menu-item index="/serve/record" @click="open_('/serve/record')">
+        <i class="el-icon-goods"></i>
+        <span slot="title">开票记录</span>
+      </el-menu-item>
+      <el-menu-item index="/serve/setting" @click="open_('/serve/setting')">
+        <i class="el-icon-goods"></i>
+        <span slot="title">开票设置</span>
+      </el-menu-item>
+    </el-submenu> -->
   </div>
 </template>
 <script>
@@ -49,6 +71,9 @@
         path: resolveUrlPath(item.path, item.name),
         query: item.query
       });
+    },
+    open_(path){
+      this.$router.push({path: path});
     }
   }
 };

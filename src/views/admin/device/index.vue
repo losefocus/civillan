@@ -39,11 +39,12 @@
                     <span>{{scope.row.deviceGroup.name}}</span>
                 </template>
             </el-table-column>
-            <el-table-column align="center" label="key" >
+            <el-table-column align="center" label="key" show-overflow-tooltip>
                 <template slot-scope="scope">
-                    <el-tooltip class="item" effect="dark" :content="scope.row.key" placement="top" :open-delay="300">
+                    <!-- <el-tooltip class="item" effect="dark" :content="scope.row.key" placement="top" :open-delay="300">
                         <i style="cursor:pointer;color:#95989e" class="iconfont icon-fuzhi copy_key" :data-clipboard-text="scope.row.key" @click="copy()" ></i>
-                    </el-tooltip>
+                    </el-tooltip> -->
+                    <span style="cursor:pointer;" class="copy_key" :data-clipboard-text="scope.row.key" @click="copy()">{{scope.row.key}}</span>
                 </template>
             </el-table-column>
             <el-table-column align="center" label="secret">

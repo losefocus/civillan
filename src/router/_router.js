@@ -45,8 +45,45 @@ export default [{
     path: 'index',
     name: '修改信息',
     component: _import('admin/user/info', 'views')
-  }]
-}, {
+  },{
+    path: '/serve/myserve',
+    name: '我的服务',
+    component: _import('admin/serve/myserve/index', 'views'),
+    children:[
+    ]
+  },{
+    path: '/serve/buy',
+    name: '购买记录',
+    component: _import('admin/serve/buy/index', 'views')
+  },{
+    path: '/serve/record',
+    name: '开票记录',
+    component: _import('admin/serve/record/index', 'views'),
+  },{
+    path: '/serve/setting',
+    name: '开票设置',
+    component: _import('admin/serve/setting/index', 'views'),
+  },
+
+  
+  {
+    path: '/serve/myserve/sms',
+    name: '短信通知',
+    component: _import('admin/serve/myserve/sms', 'views')
+  },
+  {
+    path: '/serve/myserve/pay',
+    name: '支付',
+    component: _import('admin/serve/myserve/pay', 'views')
+  },
+  {
+    path: '/serve/buy/invoice',
+    name: '索取发票',
+    component: _import('admin/serve/buy/invoice', 'views')
+  }
+  ]
+},
+{
   path: '/404',
   component: _import('error-page/404', 'components'),
   name: '404'

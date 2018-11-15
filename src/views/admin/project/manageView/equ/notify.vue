@@ -60,6 +60,11 @@
         </el-collapse-transition>
         <div v-loading="listLoading">
             <el-table :data="list" border fit highlight-current-row style="width: 100%;margin-bottom:20px;margin-top:10px">
+                <el-table-column align="center" label="报警条目">
+                    <template slot-scope="scope">
+                        <span>{{alarmMap.get(scope.row.alarmId)}}</span>
+                    </template>
+                </el-table-column>
                 <el-table-column align="center" label="通知对象">
                     <template slot-scope="scope">
                         <span>{{scope.row.projectUser.name}}</span>
@@ -147,7 +152,7 @@
             form:{
                 alarmId:'',
                 puserIds:[],
-                cycle:'',
+                cycle:'1',
                 notifyTypes:'',
                 status:true
             },
@@ -164,6 +169,7 @@
             alarmLoading:false,
             userOptions:[],
             userLoading:false,
+            alarmMap:null
         }
     },
     created() {
@@ -204,12 +210,14 @@
         },
         getAlarmList(){
             this.alarmLoading = true
+            this.alarmMap = new Map()
             getAlarmObj(this.dataInfo.id).then(res => {
                 this.alarmOptions = []
                 let data = res.data.result.items
                 data.forEach(element => {
                     let ele = {value:element.id,label:element.title}
                     this.alarmOptions.push(ele)
+                    this.alarmMap.set(element.id,element.title)
                 });
                 this.alarmLoading = false
             })
@@ -292,7 +300,7 @@
             this.form={
                 alarmId:'',
                 puserIds:[],
-                cycle:'',
+                cycle:'1',
                 notifyTypes:'',
                 status:true
             }

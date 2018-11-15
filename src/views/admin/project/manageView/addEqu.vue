@@ -156,7 +156,7 @@
                 product:{id:''},
                 name:'',
                 position:'',
-                firmware:'',
+                firmware:'V1.0',
                 thumbnailPath:'',
                 thumbnailBaseUrl:'',
                 comment:'',

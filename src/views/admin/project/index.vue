@@ -1,5 +1,5 @@
 <template>
-    <div class="app-container calendar-list-container" style="min-height: 741px;overflow:hidden">
+    <div class="app-container calendar-list-container" style="min-height: 797px;overflow:hidden">
         <div v-show="showView === 'index'"  class="clearfix">
             <div class="pull-left"  style="width:100%">
                 <div class="filter-container">
@@ -21,28 +21,28 @@
                         <el-table-column type="expand">
                             <template slot-scope="scope">
                                 <el-table :data="scope.row.children" ref="subTable" id="subTable" size="mini">
-                                    <el-table-column align="left" label="项目名称" min-width="250">
+                                    <el-table-column align="left" label="项目名称">
                                         <template slot-scope="pro">
                                             <div style="white-space:nowrap;width:100%;height:45px;padding-left:20px;">
                                                 <img v-if="pro.row.thumbnailUrl&&pro.row.thumbnailUrl!=''" style="height:45px;width:60px;" class="pull-left" :src="pro.row.thumbnailUrl+pro.row.thumbnailPath">
-                                                <img v-else style="width:60px;height:45px" src="../../../assets/img/no_pic.png">
+                                                <img v-else style="width:60px;height:45px" class="pull-left" src="../../../assets/img/no_pic.png">
                                                 <el-tooltip class="item" effect="dark" :content="pro.row.name" placement="top-start" :open-delay="300">
                                                     <span style="white-space:nowrap;cursor: pointer;"><a style="overflow: hidden;text-overflow:ellipsis;line-height:45px;padding:0 10px;width:calc(100% - 80px)" @click="toInfo(pro.row)">{{pro.row.name}}</a></span>
                                                 </el-tooltip>
                                             </div>
                                         </template>
                                     </el-table-column>      
-                                    <el-table-column align="left" label="工期" min-width="170">
+                                    <el-table-column align="left" label="工期" width="200">
                                         <template slot-scope="scope">
                                             <span style="padding-left:20px;">{{scope.row.beginAt | parseTime('{y}-{m}-{d}')}} 至 {{scope.row.endAt | parseTime('{y}-{m}-{d}')}}</span>
                                         </template>
                                     </el-table-column>        
-                                    <el-table-column align="left" label="管理员">
+                                    <el-table-column align="left" label="管理员" width="150">
                                         <template slot-scope="pro">
                                             <span style="padding-left:20px;">{{adminerHash[pro.row.adminer]}}</span>
                                         </template>
                                     </el-table-column>      
-                                    <el-table-column align="center" label="操作" class-name="lastTd" min-width="80">
+                                    <el-table-column align="center" label="操作" class-name="lastTd" width="100">
                                         <template slot-scope="pro">
                                             <el-dropdown trigger="click" @command="handleCommand" placement="bottom" style="padding-left:20px;">
                                                 <span style="cursor:pointer">
@@ -66,11 +66,11 @@
                                 </el-table>
                             </template>
                         </el-table-column>
-                        <el-table-column align="left" label="项目名称" min-width="250">
+                        <el-table-column align="left" label="项目名称">
                             <template slot-scope="scope">
                                 <div style="white-space:nowrap;width:100%;height:45px">
                                     <img v-if="scope.row.thumbnailUrl&&scope.row.thumbnailUrl!=''" style="height:45px;width:60px;" class="pull-left" :src="scope.row.thumbnailUrl+scope.row.thumbnailPath">
-                                    <img v-else style="width:60px;height:45px" src="../../../assets/img/no_pic.png">
+                                    <img v-else style="width:60px;height:45px" class="pull-left" src="../../../assets/img/no_pic.png">
                                     <el-tooltip class="item" effect="dark" :content="scope.row.name" placement="top-start" :open-delay="300">
                                         <span style="white-space:nowrap;">
                                             <span v-if="scope.row.children==0" style="cursor: pointer;overflow: hidden;text-overflow:ellipsis;line-height:45px;padding:0 10px;width:calc(100% - 80px)" @click="toInfo(scope.row)">{{scope.row.name}}</span>
@@ -80,17 +80,17 @@
                                 </div>
                             </template>
                         </el-table-column>
-                        <el-table-column align="left" label="工期" min-width="170">
+                        <el-table-column align="left" label="工期" width="200">
                             <template slot-scope="scope">
                                 <span>{{scope.row.beginAt | parseTime('{y}-{m}-{d}')}} 至 {{scope.row.endAt | parseTime('{y}-{m}-{d}')}}</span>
                             </template>
                         </el-table-column>
-                        <el-table-column align="left" label="管理员" min-width="130">
+                        <el-table-column align="left" label="管理员" width="150">
                             <template slot-scope="scope">
                                 <span>{{adminerHash[scope.row.adminer]}}</span>
                             </template>
                         </el-table-column>
-                        <el-table-column align="center" label="操作" min-width="80">
+                        <el-table-column align="center" label="操作" width="100">
                             <template slot-scope="pro" >
                                 <el-dropdown trigger="click" @command="handleCommand" placement="bottom">
                                     <span style="cursor:pointer;">
@@ -173,7 +173,6 @@
                         :show-file-list ="false"
                         :before-upload='beforeUpload'
                         :on-success="uploadSuccess"
-                        :file-list="fileList"
                         :auto-upload="true">
                             <img v-if="form.thumbnailUrl!='' && form.thumbnailUrl!=undefined" :src="form.thumbnailUrl+form.thumbnailPath" class="avatar">
                             <i v-else class="el-icon-plus avatar-uploader-icon"></i>
@@ -251,8 +250,18 @@
                 callback();
             }
         };
+        var validateParentId = (rule, value, callback) => {
+            if (value === '' || value== undefined) {
+                callback(new Error('请选择管理员'));
+            } else {
+                callback();
+            }
+        };
         return {
             rules: {
+                parentId: [
+                    {validator: validateParentId, message: '请选择上级', trigger: 'change' }
+                ],
                 name: [
                     {validator: validateName, message: '请输入项目名称', trigger: 'blur' }
                 ],
@@ -289,11 +298,10 @@
                 thumbnailUrl:'',
                 position:'',
                 comment:'',
-                status:false,
+                status:true,
             },
             tm:[],
             imageName:'',
-            fileList: [],
             flag:'add',
             headers:{Authorization: "Bearer " + getToken()},
             params:{component :'project'},
@@ -342,8 +350,21 @@
         handleAdd(row){
             this.cardVisibel = true
             this.flag = 'add'
-            if(row)this.form.parentId = row.id
-            this.expandRow = row
+            this.form={
+                parentId:(row.parentId!=undefined)?row.id:0,
+                name:'',
+                adminer:'',
+                thumbnailPath:'',
+                thumbnailUrl:'',
+                position:'',
+                comment:'',
+                status:true,
+            }
+            this.tm=[]
+            this.imageName=''
+            this.createLoading = false
+            this.uploadLoaing = false
+            // this.expandRow = row
             //this.$refs.projectTable.toggleRowExpansion(this.expandRow,true);
         },
         setClassName({row, index}){
@@ -365,13 +386,12 @@
                 let hash ={}
                 for (let i=0; i<datas.length; i++) {
                     let rolelist = datas[i].roleList
-                    if(rolelist.some(isProjectAdmin)){  //若rolelist数组中存在project_admin，则返回true
+                    if(rolelist.some(isProjectAdmin)){  //若rolelist数组中存在‘ROLE_PROJECT_ADMIN’，则返回true
                         let label = datas[i].name?datas[i].name+'('+datas[i].username+')':datas[i].username
                         options.push({value:datas[i].id,label:label}) 
                     }
                     hash[datas[i].id] =datas[i].name!=''?datas[i].name+'('+datas[i].username+')':datas[i].username
                 } 
-                
                 this.adminerOptions = options
                 this.adminerOptions_ = options.concat()
                 this.adminerOptions_.unshift({value:0,label:'全部项目管理员'})
@@ -381,11 +401,34 @@
         },
         //项目列表
         getList(){
+            var compare = function (prop) {
+                return function (obj1, obj2) {
+                    var val1 = obj1[prop];
+                    var val2 = obj2[prop];
+                    if (!isNaN(Number(val1)) && !isNaN(Number(val2))) {
+                        val1 = Number(val1);
+                        val2 = Number(val2);
+                    }
+                    if (val1 < val2) {
+                        return -1;
+                    } else if (val1 > val2) {
+                        return 1;
+                    } else {
+                        return 0;
+                    }            
+                } 
+            }
+
             this.listLoading = true
             fetchList(this.listQuery).then(response => {
                 let datas = response.data.result.items;
                 this.mapList = datas
                 this.list = this.arrayToJson(datas);
+
+                //对子项目重新排序
+                this.list.forEach(res => {
+                    res.children = res.children.sort(compare('createdAt'))
+                })
                 this.list.expand = true
                 this.total = response.data.result.total;
                 this.listLoading = false;
@@ -436,7 +479,6 @@
                 this.form.thumbnailPath = response.result.path
                 this.form.thumbnailUrl = response.result.baseUrl
                 this.imageName = response.result.name
-                this.fileList = []
             }
             this.uploadLoaing = false
             
@@ -534,11 +576,10 @@
                 thumbnailUrl:'',
                 position:'',
                 comment:'',
-                status:false,
+                status:true,
             }
             this.tm=[]
             this.imageName=''
-            this.fileList=[]
             this.createLoading = false
             this.uploadLoaing = false
             this.$refs[formName].resetFields();
