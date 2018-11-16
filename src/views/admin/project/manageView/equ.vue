@@ -78,6 +78,7 @@
                             <el-dropdown-item  v-if="device_btn_alert" :command="composeValue('alarmVisible',scope.row)">警报管理</el-dropdown-item>
                             <el-dropdown-item  v-if="device_btn_notice" :command="composeValue('notifyVisible',scope.row)">报警通知</el-dropdown-item>
                             <el-dropdown-item  v-if="device_btn_personnel" :command="composeValue('personnelVisible',scope.row)">操作人员</el-dropdown-item>
+                            <el-dropdown-item  v-if="device_btn_personnel" :command="composeValue('deviceVisible',scope.row)">设备关联</el-dropdown-item>
                             <el-dropdown-item  v-if="device_btn_certificate" :command="composeValue('certiVisible',scope.row)">证书下载</el-dropdown-item>
                             <el-dropdown-item divided v-if="device_btn_edit" :command="composeValue('edit',scope.row)">修改设备</el-dropdown-item>
                             <el-dropdown-item v-if="device_btn_del" :command="composeValue('del',scope.row)">删除设备</el-dropdown-item>
@@ -113,6 +114,9 @@
         <el-dialog title="操作人员—绑定用户"  :visible.sync="personnelVisible" width='690px'>
             <personnel v-if="personnelVisible" :data-info="dataInfo" ref="personnel"></personnel>
         </el-dialog>
+        <el-dialog title="设备关联—绑定关系"  :visible.sync="deviceVisible" width='690px'>
+            <device v-if="deviceVisible" :data-info="dataInfo" ref="device"></device>
+        </el-dialog>
         <el-dialog title="分组管理"  :visible.sync="groupVisible" width='690px'>
             <group v-if="groupVisible" ref="group"></group>
         </el-dialog>
@@ -127,6 +131,7 @@
   import notify from "./equ/notify";
   import group from "./equ/group";
   import personnel from "./equ/personnel";
+  import device from "./equ/device";
   import {mapGetters} from "vuex";
   import {delObj, fetchList, getAlarmObj, getConfigObj, getNotifyObj, getSensorObj, updataObj} from "@/api/project_equ";
 
@@ -139,7 +144,8 @@
         alarm,
         notify,
         group,
-        personnel
+        personnel,
+        device
     },
     props:['projectInfo'],
     data(){
@@ -161,6 +167,7 @@
             alarmVisible:false,//报警
             notifyVisible:false,//通知
             personnelVisible:false,//人员
+            deviceVisible:false,//人员
             groupVisible:false,
             dataInfo:null,
             listInfoQuery:{
