@@ -33,10 +33,4 @@ export function getObj(query) {
       method: 'post',
     })
   }
-   /* 下载 */
-   export function download(ids) {
-    return request({
-      url: '/device/device_sensor/export?ids='+ids,
-      method: 'get',
-    })
-  }
+

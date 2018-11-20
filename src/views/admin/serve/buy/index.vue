@@ -112,6 +112,7 @@
 </template>
 
 <script>
+import { fetchList} from "@/api/serve/bill";
 export default {
     data(){
         return {

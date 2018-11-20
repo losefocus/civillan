@@ -119,6 +119,8 @@
 </template>
 
 <script>
+import { addObj,payment} from "@/api/serve/order";
+
 export default {
     data(){
         return {
@@ -130,18 +132,33 @@ export default {
                 price_:'400'
             }],
             activeTab: 'first',
-            radio:1
+            radio:1,
+            orderId:null
         }
     },
     created(){
-        console.log(this.$route)
     },
     methods:{
         toPay(){
-            this.active = 2
+            let data = this.$route.query
+            addObj(data).then(res => {
+                if(res.data.success){
+                    this.orderId = res.data.result.id
+                    this.active = 2
+                }
+            })
+            
         },
         confirmPay(){
-            this.active = 3
+            payment(this.orderId).then(res => {
+                if(res.data.success){
+                    const div = document.createElement('div');
+                    div.innerHTML = res.data.result;
+                    document.body.appendChild(div);
+                    document.forms[0].submit()
+                    //this.active = 3
+                }
+            })
         },
         toPayRecord(){
             this.$router.push({path:'/serve/buy'})

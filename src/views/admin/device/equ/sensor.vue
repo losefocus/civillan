@@ -108,7 +108,7 @@
   import {remote} from "@/api/dict";
   import {getToken} from "@/util/auth";
   import {findByvalue} from "@/util/util";
-  import {addObj, delObj, download, editObj, getObj} from "@/api/device/sensor";
+  import {addObj, delObj, editObj, getObj} from "@/api/device/sensor";
   import downloadBtn from "./downloadBtn"
 
   export default {

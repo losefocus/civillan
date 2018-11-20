@@ -67,9 +67,9 @@ export default [{
 
   
   {
-    path: '/serve/myserve/sms',
+    path: '/serve/myserve/message_notice',
     name: '短信通知',
-    component: _import('admin/serve/myserve/sms', 'views')
+    component: _import('admin/serve/myserve/message_notice', 'views')
   },
   {
     path: '/serve/myserve/pay',

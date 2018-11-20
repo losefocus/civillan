@@ -2,8 +2,8 @@
     <div class="app-container">
         <div style="height:500px;padding:10px">
             <div class="pull-left c_l">
-                <div class="tit">短信通知</div>
-                <div class="text">短信通知（Alibaba Cloud Mobile Push) 是基于大数据技术的移动云服务。移动推送（Alibaba Cloud Mobile Push) 是基于大数据技术的移动云服务。移动推送（Alibaba Cloud Mobile Push) 是基于大数据技术的移动云服务。移动推送（Alibaba Cloud Mobile Push) 是基于大数据技术的移动云服务。移动推送（Alibaba Cloud Mobile Push) 是基于大数据技术的移动云服务。移动推送（Alibaba Cloud Mobile Push) 是基于大数据技术的移动云服务。移动推送（Alibaba Cloud Mobile Push) 是基于大数据技术的移动云服务。</div>
+                <div class="tit">{{item.name}}</div>
+                <div class="text">{{item.intro}}</div>
                 <div class="cont clearfix">
                     <div class="pull-left cont_l">
                         <p>短信</p>
@@ -11,46 +11,57 @@
                     </div>
                     <div class="pull-left cont_r">
                         <span style="color:#666666">购买数量</span>
-                        <el-input style="width:120px;margin:0 20px;" v-model="sum" size="small" type="number" min="0"></el-input>
-                        <span style="color:#F15F5F">剩余短信量：100条</span>
+                        <el-input style="width:120px;margin:0 20px;" v-model="amount" size="small" type="number" min="0"></el-input>
+                        <span style="color:#F15F5F">剩余短信量：100{{item.unit}}</span>
                     </div>
                 </div>
             </div>
             <div class="pull-right c_r">
                 <div class="tit">当前配置</div>
                 <ul>
-                    <li class="clearfix"><span>服务类型：</span><p>短信通知</p></li>
-                    <li class="clearfix"><span>购买数量：</span><p>{{sum}}</p></li>
+                    <li class="clearfix"><span>服务类型：</span><p>{{item.name}}</p></li>
+                    <li class="clearfix"><span>购买数量：</span><p>{{amount}}</p></li>
                     <li class="clearfix"><span>购买有效期：</span><p>永久</p></li>
                 </ul>
                 <div class="clearfix">
                     <div class="pull-right originalCost" style="color:#999999;padding-top:10px;line-height:28px;">
-                        <span style="font-size:12px;">原价：</span><span style="font-size:18px;text-decoration:line-through;">￥600</span>
+                        <span style="font-size:12px;">原价：</span><span style="font-size:18px;text-decoration:line-through;">￥{{item.price*amount}}</span>
                     </div>
                 </div>
                 <div class="clearfix">
                     <div class="pull-right" style="color:#999999;height:40px;line-height:40px;">
-                        <span style="font-size:12px">折后价：</span><span style="font-size:32px;color:#F15F5F">￥400</span>
+                        <span style="font-size:12px">折后价：</span><span style="font-size:32px;color:#F15F5F">￥{{parseInt(item.price*amount*item.discount)}}</span>
                     </div>
                 </div>
-                <el-button style="width:100%;margin-top:30px;" type="primary" @click="toPay">立即购买</el-button>
+                <el-button style="width:100%;margin-top:30px;" type="primary" @click="toPay" :disabled="parseInt(item.price*amount*item.discount)==0 || parseInt(item.price*amount*item.discount)==NaN">立即购买</el-button>
             </div>
         </div>
     </div>
 </template>
 <script>
+import { getObj} from "@/api/serve/myserve";
+
 export default {
     data(){
         return {
-            sum:0
+            amount:0,
+            item:{
+
+            }
         }
     },
     created(){
-
+        this.getInfo()
     },
     methods:{
+        getInfo(){
+            let id = this.$route.query.id
+            getObj(id).then(res => {
+                this.item = res.data.result
+            })
+        },
         toPay(){
-            this.$router.push({path:'/serve/myserve/pay',query:{aa:'1231'}})
+            this.$router.push({path:'/serve/myserve/pay',query:{serviceId:this.$route.query.id,amount:this.amount}})
         }
     }
 }
