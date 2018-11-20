@@ -95,7 +95,7 @@
        <div class="b_f" v-else>
             <div class="b_finish">
                 <i class="el-icon-check icon_" style=""></i>
-                <div style="line-height:24px;font-size:20px;color:#333333;margin:20px 0 7px;">支付成功</div>
+                <div style="line-height:24px;font-size:20px;color:#333333;margin:20px 0 7px;">索取发票成功！</div>
                 <div style="line-height:24px;font-size:12px;color:#878787" v-if="form.type==1">请至邮箱查询</div>
                 <div style="line-height:24px;font-size:12px;color:#878787" v-else>预计5天内送达</div>
             </div>

@@ -11,7 +11,7 @@
                     </div>
                     <div class="pull-left cont_r">
                         <span style="color:#666666">购买数量</span>
-                        <el-input style="width:120px;margin:0 20px;" size="small" type="number" min="0"></el-input>
+                        <el-input style="width:120px;margin:0 20px;" v-model="sum" size="small" type="number" min="0"></el-input>
                         <span style="color:#F15F5F">剩余短信量：100条</span>
                     </div>
                 </div>
@@ -20,7 +20,7 @@
                 <div class="tit">当前配置</div>
                 <ul>
                     <li class="clearfix"><span>服务类型：</span><p>短信通知</p></li>
-                    <li class="clearfix"><span>购买数量：</span><p>100</p></li>
+                    <li class="clearfix"><span>购买数量：</span><p>{{sum}}</p></li>
                     <li class="clearfix"><span>购买有效期：</span><p>永久</p></li>
                 </ul>
                 <div class="clearfix">
@@ -42,7 +42,7 @@
 export default {
     data(){
         return {
-
+            sum:0
         }
     },
     created(){
