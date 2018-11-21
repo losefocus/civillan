@@ -30,10 +30,10 @@
                 </div>
                 <div class="clearfix">
                     <div class="pull-right" style="color:#999999;height:40px;line-height:40px;">
-                        <span style="font-size:12px">折后价：</span><span style="font-size:32px;color:#F15F5F">￥{{parseInt(item.price*amount*item.discount)}}</span>
+                        <span style="font-size:12px">折后价：</span><span style="font-size:32px;color:#F15F5F">￥{{item.discount==0?item.price*amount:item.price*amount*item.discount}}</span>
                     </div>
                 </div>
-                <el-button style="width:100%;margin-top:30px;" type="primary" @click="toPay" :disabled="parseInt(item.price*amount*item.discount)==0 || parseInt(item.price*amount*item.discount)==NaN">立即购买</el-button>
+                <el-button style="width:100%;margin-top:30px;" type="primary" @click="toPay" :disabled="amount<1">立即购买</el-button>
             </div>
         </div>
     </div>

@@ -44,3 +44,10 @@ export function remote(type) {
     method: 'get'
   })
 }
+
+export function remote_p(type) {
+  return request({
+    url: '/admin/dict/platform/dict?type=' + type,
+    method: 'get'
+  })
+}

@@ -2,41 +2,41 @@
     <div style="background: #fff;">
        <div class="b_c" v-if="flag==1">
             <el-table
-                :data="tableData"
+                :data="list"
                 style="width: 100%">
                 <el-table-column
-                    prop="id"
+                    prop="orderNo"
                     label="订单号"
                     width="120">
                 </el-table-column>
                 <el-table-column
-                    prop="name"
+                    prop="serviceName"
                     align="center"
                     label="产品名称">
                 </el-table-column>
-                <el-table-column
+                <!-- <el-table-column
                     prop="type"
                     align="center"
                     label="类型">
-                </el-table-column>
+                </el-table-column> -->
                 <el-table-column
-                    prop="paytime"
+                    prop="payAt"
                     align="center"
                     label="订单支付时间">
                 </el-table-column>
-                <el-table-column
-                    prop="money"
+                <!-- <el-table-column
+                    prop="payMoney"
                     align="center"
                     label="订单实付金额"
                     width="150">
-                </el-table-column>
+                </el-table-column> -->
                 <el-table-column
-                    prop="status"
+                    prop="payMoney"
                     align="center"
                     label="可开票金额">
                 </el-table-column>
             </el-table>
-            <div style="line-height:24px;font-size:12px;padding-top:10px;">已选取{{total}}个订单，可开票总额<span style="color:#EB474D">￥600</span></div>
+            <div style="line-height:24px;font-size:12px;padding-top:10px;">已选取{{total}}个订单，可开票总额<span style="color:#EB474D">￥{{totalMoney}}</span></div>
             <div class="clearfix" style="margin-top:20px;width:850px">
                 <el-form class="clearfix" :model="form" :rules="rules" ref="form" label-width="120px" size="small" label-position="left">
                     <el-form-item label="发票类型：" prop="type">
@@ -105,6 +105,7 @@
 
 <script>
 import { provinceAndCityData, regionData, provinceAndCityDataPlus, regionDataPlus, CodeToText, TextToCode } from 'element-china-area-data'
+import { orderList } from "@/api/serve/order";
 
 export default {
     data(){
@@ -125,22 +126,35 @@ export default {
             },
             options:regionData,
             selectedOptions:[],
-            tableData:[{name:'12s',money:'123'}],
+            list:[{name:'12s',money:'123'}],
             listQuery:{
                 page_index:1,
                 page_size:10
             },
-            total:1
+            total:1,
+            totalMoney:0
         }
     },
     computed: {
         
     },
     created() {
-
+        console.log()
+        this.getList()
     },
     methods:{
         handleChange(){},
+        getList(){
+            orderList(this.$route.query.id).then(res => {
+                this.list = res.data.result
+                this.totalMoney=this.list.map(v => {return v.payMoney}).reduce(function(num,item,index){
+                    //num   1 3 6 10 num相当每次两数相加的中间结果,第一次会把数组第一个数给它
+                    //item  2 3 4 5  item就是数组中的每个数,由于第一个给num了,所以第二个给它
+                    //index 1 2 3 4  项的索引,由于第一次没有前一次的计算,用arr[0]来抵         
+                    return num+item;
+                });
+            })
+        },
         getInvoiceSuccess(){
             this.flag = 2
         }

@@ -103,7 +103,7 @@
                     </el-tab-pane>
                 </el-tabs>
                 <el-button v-if="activeTab=='first'" type="primary" class="pull-right" size="small" style="margin:55px 0 30px;" @click="confirmPay">确认支付</el-button>
-                <el-button v-if="activeTab=='second'" type="primary" class="pull-right" size="small" style="margin:20px 0 30px;" @click="confirmPay">去汇款</el-button>
+                <el-button v-if="activeTab=='second'" type="primary" class="pull-right" size="small" style="margin:20px 0 30px;" >去汇款</el-button>
             </div>
         </div>
         <div v-if="active==3" class="step_main_3">

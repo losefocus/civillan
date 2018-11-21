@@ -18,3 +18,19 @@ export function payment(id) {
   })
 }
 
+/* 列表 */
+export function fetchList(query) {
+  return request({
+    url: '/order/list',
+    method: 'get',
+    params: query
+  })
+}
+
+/* 开票的列表 */
+export function orderList(ids) {
+  return request({
+    url: '/order/get_order_list?ids='+ids,
+    method: 'get',
+  })
+}
