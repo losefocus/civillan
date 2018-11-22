@@ -16,7 +16,7 @@
                </div>
                <div class="t_l clearfix">
                     <span class="pull-left">发票状态</span>
-                    <el-select style="width:120px;margin-left:10px;" size="small" v-model="status" placeholder="请选择状态">
+                    <el-select style="width:150px;margin-left:10px;" size="small" v-model="listQuery.status" placeholder="请选择状态" @change="changeStatus">
                         <el-option
                         v-for="item in statusOptions"
                         :key="item.value"
@@ -27,41 +27,48 @@
                </div>
                <el-input style="width:180px;margin-left:-10px" size="small" v-model="keyword" placeholder="订单/月结算单"></el-input>
                <el-button size="small" style="margin-left:20px;">查询</el-button>
-               <el-button class="pull-right" size="small" style="margin-top:20px"><i class="el-icon-download el-icon--left"></i>下载</el-button>
+               <el-button class="pull-right" size="small" style="margin-top:20px"><i class="el-icon-download el-icon--left"></i>导出</el-button>
            </div>
-           <div class="c_b">
+           <div class="c_b" v-loading="loading">
                 <el-table
-                    :data="tableData"
+                    :data="list"
                     style="width: 100%">
                     <el-table-column
-                        prop="id"
+                        prop="createdAt"
                         label="申请日期"
                         width="120">
                     </el-table-column>
                     <el-table-column
-                        prop="name"
+                        prop="title"
                         align="center"
                         label="发票抬头">
                     </el-table-column>
                     <el-table-column
-                        prop="type"
+                        prop="total"
                         align="center"
                         label="发票总额">
+                        <template slot-scope="scope">
+                            <span>￥{{scope.row.total}}</span>
+                        </template>
                     </el-table-column>
                     <el-table-column
-                        prop="money"
+                        prop="billType"
                         align="center"
                         label="发票类别"
                         width="150">
                         <template slot-scope="scope">
+                            <span>{{typeMap.get(scope.row.billType.toString())}}</span>
                         </template>
                     </el-table-column>
                     <el-table-column
-                        prop="createtime"
+                        prop="status"
                         align="center"
                         label="发票状态">
+                        <template slot-scope="scope">
+                            <span>{{scope.row.status | statusFilter}}</span>
+                        </template>
                     </el-table-column>
-                    <el-table-column
+                    <!-- <el-table-column
                         prop="paytime"
                         align="center"
                         label="备注">
@@ -70,9 +77,8 @@
                         align="center"
                         label="操作">
                         <template>
-
                         </template>
-                    </el-table-column>
+                    </el-table-column> -->
                 </el-table>
                 <div style="margin-top:20px;" class="clearfix">
                     <div class="pull-right">
@@ -87,36 +93,76 @@
 </template>
 
 <script>
+
+import { fetchHistoryList} from "@/api/serve/bill";
+import {remote_p} from "@/api/dict";
+
 export default {
     data(){
         return {
             status:'',
-            statusOptions:[{value:'1',label:'所有状态'}],
+            statusOptions:[{value:'',label:'所有状态'},{value:0,label:'未开票'},{value:1,label:'已开票'},{value:2,label:'已邮寄'},],
+            typeMap:null,
             time:[],
             keyword:'',
-            tableData:[],
+            list:[],
             listQuery:{
                 page_index:1,
                 page_size:10
             },
-            total:0
+            total:0,
+            loading:false
+        }
+    },
+    filters: {
+        statusFilter(status) {
+            const statusMap = {
+                0: '未开票',
+                1: '已开票',
+                2: '已邮寄',
+            }
+            return statusMap[status]
         }
     },
     computed: {
         
     },
     created() {
-
+        remote_p("bill_type").then(res => {
+            // [...this.typeOptions] = res.data.result
+            // this.typeOptions.unshift({value:'',label:'所有类别'})
+            this.typeMap = new Map()
+            res.data.result.forEach(ele => {
+                this.typeMap.set(ele.value,ele.label)
+            });
+        });
+    },
+    mounted() {
+        this.getList()
     },
     methods:{
+        changeStatus(){
+            this.listQuery.page_index = 1;
+            this.getList();
+        },
         handleSizeChange(val) {
             this.listQuery.page_size = val;
-            //this.getList();
+            this.getList();
         },
         handleCurrentChange(val) {
             this.listQuery.page_index = val;
-            //this.getList();
+            this.getList();
         },
+        getList(){
+            this.loading = true
+            this.listQuery.sort_by = 'createdAt'
+            this.listQuery.direction = 'desc'
+            fetchHistoryList(this.listQuery).then(res => {
+                this.list = res.data.result.items
+                this.total = res.data.result.total
+                this.loading = false
+            })
+        }
     }
 }
 </script>

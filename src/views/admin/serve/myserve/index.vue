@@ -6,7 +6,7 @@
                 <div class="l_2" >{{item.intro}}</div>
                 <div class="l_3">
                     <el-button type="primary" size="small" @click="tobuy(item)">立即购买</el-button>
-                    <span class="l_3_d">剩余：0{{item.unit}}</span>
+                    <span class="l_3_d">剩余：{{item.surplus}}{{item.unit}}</span>
                 </div>
             </li>
             <!-- <li>
@@ -43,7 +43,6 @@ export default {
         
     },
     created() {
-        console.log(this.$route)
         this.getList()
     },
     mounted(){
@@ -58,12 +57,10 @@ export default {
     methods:{
         getList(){
             fetchList(this.listQuery).then(res => {
-                this.list = res.data.result.items
-                console.log(res)
+                this.list = res.data.result
             })
         },
         tobuy(obj){
-            console.log(obj)
             this.views = 2
             this.$router.push({path:'/serve/myserve/'+obj.type,query:{id:obj.id}})
         },

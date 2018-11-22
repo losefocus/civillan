@@ -1,6 +1,6 @@
 <template>
     <div class="app-container">
-        <div style="height:500px;padding:10px">
+        <div style="height:500px;padding:10px" v-loading="loading">
             <div class="pull-left c_l">
                 <div class="tit">{{item.name}}</div>
                 <div class="text">{{item.intro}}</div>
@@ -11,8 +11,8 @@
                     </div>
                     <div class="pull-left cont_r">
                         <span style="color:#666666">购买数量</span>
-                        <el-input style="width:120px;margin:0 20px;" v-model="amount" size="small" type="number" min="0"></el-input>
-                        <span style="color:#F15F5F">剩余短信量：100{{item.unit}}</span>
+                        <el-input style="width:120px;margin:0 20px;" v-model="amount" size="small" type="number" min="0" @change="changeNum"></el-input>
+                        <span style="color:#F15F5F">剩余短信量：{{surplus}}{{item.unit}}</span>
                     </div>
                 </div>
             </div>
@@ -25,12 +25,12 @@
                 </ul>
                 <div class="clearfix">
                     <div class="pull-right originalCost" style="color:#999999;padding-top:10px;line-height:28px;">
-                        <span style="font-size:12px;">原价：</span><span style="font-size:18px;text-decoration:line-through;">￥{{item.price*amount}}</span>
+                        <span style="font-size:12px;">原价：</span><span style="font-size:18px;text-decoration:line-through;">￥{{(item.price*amount).toFixed(2)}}</span>
                     </div>
                 </div>
                 <div class="clearfix">
                     <div class="pull-right" style="color:#999999;height:40px;line-height:40px;">
-                        <span style="font-size:12px">折后价：</span><span style="font-size:32px;color:#F15F5F">￥{{item.discount==0?item.price*amount:item.price*amount*item.discount}}</span>
+                        <span style="font-size:12px">折后价：</span><span style="font-size:32px;color:#F15F5F">￥{{item.discount==0?(item.price*amount).toFixed(2):(item.price*amount*item.discount).toFixed(2)}}</span>
                     </div>
                 </div>
                 <el-button style="width:100%;margin-top:30px;" type="primary" @click="toPay" :disabled="amount<1">立即购买</el-button>
@@ -44,10 +44,17 @@ import { getObj} from "@/api/serve/myserve";
 export default {
     data(){
         return {
+            loading:false,
             amount:0,
             item:{
+                name:'',
+                intro:'',
+                price:0,
+                discount:0
+            },
+            surplus_:0,
+            surplus:0,
 
-            }
         }
     },
     created(){
@@ -55,13 +62,22 @@ export default {
     },
     methods:{
         getInfo(){
+            this.loading = true
             let id = this.$route.query.id
             getObj(id).then(res => {
-                this.item = res.data.result
+                this.item = res.data.result.orderServe
+                this.surplus = res.data.result.surplus
+                this.surplus_ = res.data.result.surplus
+                this.loading = false
             })
         },
+        changeNum(){
+            this.surplus = parseInt(this.surplus_)+parseInt(this.amount)
+        },
         toPay(){
-            this.$router.push({path:'/serve/myserve/pay',query:{serviceId:this.$route.query.id,amount:this.amount}})
+            console.log(this.item)
+            let data = Object.assign({amount:this.amount},this.item)
+            this.$router.push({path:'/serve/myserve/pay',query:data})
         }
     }
 }

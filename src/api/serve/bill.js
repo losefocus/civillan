@@ -34,3 +34,21 @@ export function fetchList(query) {
     params: query
   })
 }
+
+/* 开票历史列表 */
+export function fetchHistoryList(query) {
+  return request({
+    url: '/order/bill_history/list',
+    method: 'get',
+    params: query
+  })
+}
+
+/* 索取发票 */
+export function addBill(query) {
+  return request({
+    url: '/order/bill_history/add',
+    method: 'post',
+    data: query
+  })
+}

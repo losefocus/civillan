@@ -15,25 +15,26 @@
                     </el-form-item>
                     <el-form-item label="发票类型：" prop="billType">
                         <el-radio-group v-model="form.billType" >
-                            <el-radio label='1'>增值税普通发票</el-radio>
-                            <el-radio v-if="form.type==1" label='2'>增值税专用发票</el-radio>
+                            <!-- <el-radio label='1'>增值税普通发票</el-radio>
+                            <el-radio v-if="form.type==1" label='2'>增值税专用发票</el-radio> -->
+                            <el-radio v-for="(item,index) in billTypeOptions" :key="index" :label="item.value">{{item.label}}</el-radio>
                         </el-radio-group>
                         <!-- <span v-else style="color: #606266;">增值税普通发票</span> -->
                     </el-form-item>
-                    <el-form-item label="税务登记号：" prop="taxNum">
-                        <el-input v-model="form.taxNum" size="small" style="width:285px;" placeholder="请填写15到20位有效纳税人识别号" :disabled="form.type==1"></el-input>
+                    <el-form-item label="税务登记号：" prop="taxNum" v-if="form.type==2">
+                        <el-input v-model="form.taxNum" size="small" style="width:285px;" placeholder="请填写15到20位有效纳税人识别号"></el-input>
                     </el-form-item>
-                    <el-form-item label="开户银行名称：" prop="bankName" style="float:left;margin-right:20px;">
-                        <el-input v-model="form.bankName" size="small" style="width:285px;" placeholder="请填写开户许可证上的开户银行" :disabled="form.type==1"></el-input>
+                    <el-form-item label="开户银行名称：" prop="bankName" style="float:left;margin-right:20px;" v-if="form.type==2">
+                        <el-input v-model="form.bankName" size="small" style="width:285px;" placeholder="请填写开户许可证上的开户银行"></el-input>
                     </el-form-item>
-                    <el-form-item label="开户银行账号：" prop="bankNum" style="float:left;">
-                        <el-input v-model="form.bankNum" size="small" style="width:285px;" placeholder="请填写开户许可证上的银行账号" :disabled="form.type==1"></el-input>
+                    <el-form-item label="开户银行账号：" prop="bankNum" style="float:left;" v-if="form.type==2">
+                        <el-input v-model="form.bankNum" size="small" style="width:285px;" placeholder="请填写开户许可证上的银行账号"></el-input>
                     </el-form-item>
-                    <el-form-item label="注册场所地址：" prop="registerAddr" style="float:left;margin-right:20px;">
-                        <el-input v-model="form.registerAddr" size="small" style="width:285px;" placeholder="请填写营业执照上的注册地址" :disabled="form.type==1"></el-input>
+                    <el-form-item label="注册场所地址：" prop="registerAddr" style="float:left;margin-right:20px;" v-if="form.type==2">
+                        <el-input v-model="form.registerAddr" size="small" style="width:285px;" placeholder="请填写营业执照上的注册地址"></el-input>
                     </el-form-item>
-                    <el-form-item label="注册固定电话：" prop="registerTel" style="float:left;">
-                        <el-input v-model="form.registerTel" size="small" style="width:285px;" placeholder="请填写您公司的有效联系电话" :disabled="form.type==1"></el-input>
+                    <el-form-item label="注册固定电话：" prop="registerTel" style="float:left;" v-if="form.type==2">
+                        <el-input v-model="form.registerTel" size="small" style="width:285px;" placeholder="请填写您公司的有效联系电话"></el-input>
                     </el-form-item>
                 </el-form>
             </div>
@@ -131,18 +132,19 @@ export default {
                 address:'',
             },
             form_:{},
+            billTypeOptions:[],
+            billTypeOptions_:[],
             options:regionData,
-            bills:[]
         }
     },
     computed: {
         
     },
     created() {
-        remote_p("order_status").then(res => {
+        remote_p("bill_type").then(res => {
             console.log(res.data)
-            this.statusOptions = res.data.result
-            this.statusOptions.unshift({value:'',label:'所有状态'})
+            this.billTypeOptions = res.data.result
+            this.billTypeOptions_ = res.data.result
         });
     },
     mounted() {
@@ -151,8 +153,10 @@ export default {
     methods:{
         changeType(val){ 
             if(val == 2){
+                this.billTypeOptions = this.billTypeOptions_
                 this.form.billType = '1' 
                 if(this.form_.type == 2) this.form = Object.assign({},this.form_)
+                
             }
             if(val == 1){
                 this.form.taxNum=' '
@@ -160,6 +164,7 @@ export default {
                 this.form.bankNum=' '
                 this.form.registerAddr=' '
                 this.form.registerTel=' '
+                this.billTypeOptions = [this.billTypeOptions[0],this.billTypeOptions[1]]
             }
         },
         getBills(){
@@ -182,6 +187,7 @@ export default {
                         type: "success",
                         duration: 2000
                     });
+                    this.getBills()
                 }else{
                     this.$notify({
                         title: '错误',
@@ -204,6 +210,7 @@ export default {
                         type: "success",
                         duration: 2000
                     });
+                    this.getBills()
                 }else{
                     this.$notify({
                         title: '错误',

@@ -4,9 +4,9 @@
            <div class="c_t clearfix">
                <div class="t_l clearfix">
                     <span class="pull-left">产品</span>
-                    <el-select style="width:120px;margin-left:10px;" size="small" v-model="product" placeholder="请选择">
+                    <el-select style="width:120px;margin-left:10px;" size="small" v-model="service" placeholder="请选择">
                         <el-option
-                        v-for="item in productOptions"
+                        v-for="item in serviceOptions"
                         :key="item.value"
                         :label="item.label"
                         :value="item.value">
@@ -39,7 +39,7 @@
                <el-button size="small">查询</el-button>
                <el-button class="pull-right" size="small" style="margin-top:20px"><i class="el-icon-download el-icon--left"></i>导出</el-button>
            </div>
-           <div class="c_b">
+           <div class="c_b" v-loading="loading">
                 <el-table
                     :data="list"
                     style="width: 100%"
@@ -58,11 +58,16 @@
                         prop="serviceName"
                         align="center"
                         label="产品/服务">
+                        
                     </el-table-column>
                     <el-table-column
                         prop="payMethod"
                         align="center"
                         label="支付方式">
+                        <template slot-scope="scope">
+                            <span v-if="'payMethod' in scope.row">{{payMethodMap.get(scope.row.payMethod.toString())}}</span>
+                            <span v-else>{{scope.row.payMethod}}</span>
+                        </template>
                     </el-table-column>
                     <el-table-column
                         prop="payMoney"
@@ -70,8 +75,8 @@
                         label="支付金额"
                         min-width="150">
                         <template slot-scope="scope">
-                            <span style="color:#EB474D;font-size:16px;">￥{{scope.row.payMoney}}</span>
-                            <span style="color:#979797;font-size:12px;">(已折扣￥{{scope.row.discountPrice}})</span>
+                            <span style="color:#EB474D;font-size:16px;">￥{{scope.row.payMoney.toFixed(2)}}</span>
+                            <span style="color:#979797;font-size:12px;">(已折扣￥{{(scope.row.discountPrice).toFixed(2)}})</span>
                         </template>
                     </el-table-column>
                     <el-table-column
@@ -97,8 +102,8 @@
                         align="center"
                         label="状态">
                         <template slot-scope="scope">
-                            <span v-if="scope.row.status == 1" style="color:#F15F5F">{{scope.row.status | statusFilter}}</span>
-                            <span v-else>{{scope.row.status | statusFilter}}</span>
+                            <span v-if="scope.row.status == 1" style="color:#F15F5F">{{statusMap.get(scope.row.status.toString())}}</span>
+                            <span v-else>{{statusMap.get(scope.row.status.toString())}}</span>
                         </template>
                     </el-table-column>
                     <el-table-column
@@ -128,14 +133,14 @@
 </template>
 
 <script>
-import { fetchList,payment,orderList} from "@/api/serve/order";
+import { fetchList,payment,orderList,serviceList} from "@/api/serve/order";
 import {remote_p} from "@/api/dict";
 
 export default {
     data(){
         return {
-            product:'',
-            productOptions:[{value:'1',label:'所有产品'}],
+            service:'',
+            serviceOptions:[{value:'1',label:'所有产品'}],
             statusOptions:[{value:'',label:'所有状态'},{value:0,label:'已取消'},{value:1,label:'未付款'},{value:2,label:'已付款'},
                 {value:3,label:'已开票'},{value:4,label:'已过期'}],
             time:[],
@@ -146,35 +151,54 @@ export default {
             },
             total:0,
             isdisable:true,
-            orderIds:''
+            orderIds:'',
+            statusMap:null,
+            payMethodMap:null,
+            loading:false
         }
     },
     filters: {
-        statusFilter(status) {
-            const statusMap = {
-                0: '已取消',
-                1: '未付款',
-                2: '已付款',
-                3: '已开票',
-                4: '已过期',
-            }
-            return statusMap[status]
-        }
+        // statusFilter(status) {
+        //     const statusMap = {
+        //         0: '已取消',
+        //         1: '未付款',
+        //         2: '已付款',
+        //         3: '已开票',
+        //         4: '已过期',
+        //     }
+        //     return statusMap[status]
+        // }
     },
     computed: {
         
     },
     created() {
         remote_p("order_status").then(res => {
-            console.log(res.data)
-            this.statusOptions = res.data.result
+            [...this.statusOptions] = res.data.result
             this.statusOptions.unshift({value:'',label:'所有状态'})
+            this.statusMap = new Map()
+            res.data.result.forEach(ele => {
+                this.statusMap.set(ele.value,ele.label)
+            });
+        });
+        remote_p("pay_method").then(res => {
+            this.payMethodMap = new Map()
+            res.data.result.forEach(ele => {
+                this.payMethodMap.set(ele.value,ele.label)
+            });
         });
     },
     mounted() {
+        this.getServiceList()
         this.getList()
     },
     methods:{
+        getServiceList(){
+            serviceList({page_index:1,page_size:99}).then(res => {
+                this.serviceOptions = res.data.result.map(v => {return {value:v.id,label:v.name}})
+                this.serviceOptions.unshift({value:'',label:'所有产品'})
+            })
+        },
         handleChange(){
             this.listQuery.page_index = 1;
             this.getList();
@@ -188,11 +212,13 @@ export default {
             this.getList();
         },
         getList(){
+            this.loading=true
             this.listQuery.sort_by = 'createdAt'
             this.listQuery.direction = 'desc'
             fetchList(this.listQuery).then(res => {
                 this.list = res.data.result.items
                 this.total = res.data.result.total
+                this.loading=false
             })
         },
         selectable(row, index){
@@ -206,14 +232,19 @@ export default {
             this.orderIds = val.map(v => {return v.id}).join()
         },
         toPay(row){
-            payment(row.id).then(res => {
-                if(res.data.success){
-                    const div = document.createElement('div');
-                    div.innerHTML = res.data.result;
-                    document.body.appendChild(div);
-                    document.forms[0].submit()
-                }
-            })
+            console.log(row)
+            let query = {
+                oldOrder:true,
+                name:row.serviceName,
+                amount:row.amount,
+                price:row.servicePrice,
+                payMoney:row.payMoney,
+                discount:row.serviceDiscount,
+                id:row.id,
+                serviceId:row.serviceId,
+                orderNo:row.orderNo
+            }
+             this.$router.push({ path:'/serve/myserve/pay',query:query});
         },
         toSetting(){
             this.$router.push({ path:'/serve/setting'});

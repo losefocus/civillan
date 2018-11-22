@@ -34,3 +34,12 @@ export function orderList(ids) {
     method: 'get',
   })
 }
+
+/* 列表 */
+export function serviceList(query) {
+  return request({
+    url: '/order/service/list',
+    method: 'get',
+    params: query
+  })
+}
