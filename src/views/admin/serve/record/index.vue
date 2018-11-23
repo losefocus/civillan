@@ -3,7 +3,7 @@
        <div class="b_c">
            <div class="c_t clearfix">
                <div class="t_l clearfix">
-                    <span class="pull-left">搜索开票时间</span>
+                    <span class="pull-left">申请日期</span>
                     <el-date-picker
                     style="width:250px;margin-left:10px;"
                     v-model="time"
@@ -11,12 +11,13 @@
                     type="daterange"
                     range-separator="至"
                     start-placeholder="开始日期"
-                    end-placeholder="结束日期">
+                    end-placeholder="结束日期"
+                    @change="changeTime">
                     </el-date-picker>
                </div>
                <div class="t_l clearfix">
                     <span class="pull-left">发票状态</span>
-                    <el-select style="width:150px;margin-left:10px;" size="small" v-model="listQuery.status" placeholder="请选择状态" @change="changeStatus">
+                    <el-select style="width:150px;margin-left:10px;" size="small" v-model="listQuery.status" placeholder="请选择状态" @change="handleChange">
                         <el-option
                         v-for="item in statusOptions"
                         :key="item.value"
@@ -25,9 +26,9 @@
                         </el-option>
                     </el-select>
                </div>
-               <el-input style="width:180px;margin-left:-10px" size="small" v-model="keyword" placeholder="订单/月结算单"></el-input>
-               <el-button size="small" style="margin-left:20px;">查询</el-button>
-               <el-button class="pull-right" size="small" style="margin-top:20px"><i class="el-icon-download el-icon--left"></i>导出</el-button>
+               <el-input style="width:200px;margin-left:-10px" size="small" v-model="listQuery.order_no" placeholder="订单号" @change="handleChange"></el-input>
+               <el-button size="small" style="margin-left:20px;" @click="handleChange">查询</el-button>
+               <el-button class="pull-right" size="small" style="margin-top:20px" @click="export2Excel"><i class="el-icon-download el-icon--left" ></i>导出</el-button>
            </div>
            <div class="c_b" v-loading="loading">
                 <el-table
@@ -36,49 +37,38 @@
                     <el-table-column
                         prop="createdAt"
                         label="申请日期"
-                        width="120">
+                        width="150">
+                        <template slot-scope="scope">
+                            <span>{{scope.row.createdAt | parseTime('{y}-{m}-{d} {h}:{i}')}}</span>
+                        </template>
                     </el-table-column>
                     <el-table-column
                         prop="title"
-                        align="center"
                         label="发票抬头">
                     </el-table-column>
                     <el-table-column
                         prop="total"
-                        align="center"
-                        label="发票总额">
+                        label="发票总额"
+                        width="120">
                         <template slot-scope="scope">
                             <span>￥{{scope.row.total}}</span>
                         </template>
                     </el-table-column>
                     <el-table-column
                         prop="billType"
-                        align="center"
-                        label="发票类别"
-                        width="150">
+                        label="发票类别">
                         <template slot-scope="scope">
                             <span>{{typeMap.get(scope.row.billType.toString())}}</span>
                         </template>
                     </el-table-column>
                     <el-table-column
                         prop="status"
-                        align="center"
-                        label="发票状态">
+                        label="发票状态"
+                        width="120">
                         <template slot-scope="scope">
                             <span>{{scope.row.status | statusFilter}}</span>
                         </template>
                     </el-table-column>
-                    <!-- <el-table-column
-                        prop="paytime"
-                        align="center"
-                        label="备注">
-                    </el-table-column>
-                    <el-table-column
-                        align="center"
-                        label="操作">
-                        <template>
-                        </template>
-                    </el-table-column> -->
                 </el-table>
                 <div style="margin-top:20px;" class="clearfix">
                     <div class="pull-right">
@@ -96,19 +86,26 @@
 
 import { fetchHistoryList} from "@/api/serve/bill";
 import {remote_p} from "@/api/dict";
-
+import {parseTime} from "@/filters/index";
 export default {
     data(){
         return {
             status:'',
             statusOptions:[{value:'',label:'所有状态'},{value:0,label:'未开票'},{value:1,label:'已开票'},{value:2,label:'已邮寄'},],
+            statusMap:{
+                '0':'未开票',
+                '1':'已开票',
+                '2':'已邮寄',
+            },
             typeMap:null,
             time:[],
             keyword:'',
             list:[],
             listQuery:{
                 page_index:1,
-                page_size:10
+                page_size:10,
+                sort_by:'createdAt',
+                direction:'desc',
             },
             total:0,
             loading:false
@@ -136,12 +133,22 @@ export default {
                 this.typeMap.set(ele.value,ele.label)
             });
         });
+        this.statusMap.set('0','未开票')
+        this.statusMap.set('1','已开票')
+        this.statusMap.set('2','已邮寄')
     },
     mounted() {
         this.getList()
     },
     methods:{
-        changeStatus(){
+        changeTime(val){
+            this.listQuery.page_index = 1;
+            this.listQuery.date_start = new Date(val[0]).getTime()/1000
+            this.listQuery.date_end = new Date(val[1]).getTime()/1000
+            this.getList()
+        },
+        handleChange(){
+            console.log(123123)
             this.listQuery.page_index = 1;
             this.getList();
         },
@@ -162,6 +169,29 @@ export default {
                 this.total = res.data.result.total
                 this.loading = false
             })
+        },
+        export2Excel() {
+            let data = Object.assign({},this.listQuery)
+            data.page_size=999
+            fetchHistoryList(data).then(res => {
+                this.list_export = res.data.result.items
+                this.list_export.forEach(list => {
+                    list.createdAt = parseTime(list.createdAt,'{y}-{m}-{d} {h}:{i}:{s}')
+                    list.billType = this.typeMap.get(list.billType+'')
+                    list.status = this.statusMap[list.status]
+                })
+                require.ensure([], () => {
+                    const { export_json_to_excel } = require('../../../../vendor/Export2Excel');
+                    const tHeader = ['申请日期', '发票抬头', '发票总额', '发票类别', '发票状态'];
+                    const filterVal = ['createdAt', 'title', 'total', 'billType', 'status'];
+                    const list = this.list_export;
+                    const data = this.formatJson(filterVal, list);
+                    export_json_to_excel(tHeader, data, '列表excel');
+                })
+            })   
+        },
+        formatJson(filterVal, jsonData) {
+            return jsonData.map(v => filterVal.map(j => v[j]))
         }
     }
 }

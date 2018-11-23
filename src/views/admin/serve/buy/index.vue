@@ -4,7 +4,7 @@
            <div class="c_t clearfix">
                <div class="t_l clearfix">
                     <span class="pull-left">产品</span>
-                    <el-select style="width:120px;margin-left:10px;" size="small" v-model="service" placeholder="请选择">
+                    <el-select style="width:120px;margin-left:10px;" size="small" v-model="listQuery.service_id" placeholder="请选择" @change="handleChange">
                         <el-option
                         v-for="item in serviceOptions"
                         :key="item.value"
@@ -33,11 +33,12 @@
                     type="daterange"
                     range-separator="至"
                     start-placeholder="开始日期"
-                    end-placeholder="结束日期">
+                    end-placeholder="结束日期"
+                    @change="changeTime">
                     </el-date-picker>
                </div>
-               <el-button size="small">查询</el-button>
-               <el-button class="pull-right" size="small" style="margin-top:20px"><i class="el-icon-download el-icon--left"></i>导出</el-button>
+               <el-button size="small" @click="handleChange">查询</el-button>
+               <el-button class="pull-right" size="small" style="margin-top:20px" @click="export2Excel"><i class="el-icon-download el-icon--left"></i>导出</el-button>
            </div>
            <div class="c_b" v-loading="loading">
                 <el-table
@@ -58,7 +59,6 @@
                         prop="serviceName"
                         align="center"
                         label="产品/服务">
-                        
                     </el-table-column>
                     <el-table-column
                         prop="payMethod"
@@ -73,7 +73,7 @@
                         prop="payMoney"
                         align="center"
                         label="支付金额"
-                        min-width="150">
+                        min-width="200">
                         <template slot-scope="scope">
                             <span style="color:#EB474D;font-size:16px;">￥{{scope.row.payMoney.toFixed(2)}}</span>
                             <span style="color:#979797;font-size:12px;">(已折扣￥{{(scope.row.discountPrice).toFixed(2)}})</span>
@@ -135,6 +135,7 @@
 <script>
 import { fetchList,payment,orderList,serviceList} from "@/api/serve/order";
 import {remote_p} from "@/api/dict";
+import {parseTime} from "@/filters/index";
 
 export default {
     data(){
@@ -145,9 +146,12 @@ export default {
                 {value:3,label:'已开票'},{value:4,label:'已过期'}],
             time:[],
             list:[],
+            list_export:[],
             listQuery:{
                 page_index:1,
-                page_size:20
+                page_size:5,
+                sort_by:'createdAt',
+                direction:'desc',
             },
             total:0,
             isdisable:true,
@@ -199,6 +203,12 @@ export default {
                 this.serviceOptions.unshift({value:'',label:'所有产品'})
             })
         },
+        changeTime(val){
+            this.listQuery.page_index = 1;
+            this.listQuery.date_start = new Date(val[0]).getTime()/1000
+            this.listQuery.date_end = new Date(val[1]).getTime()/1000
+            this.getList()
+        },
         handleChange(){
             this.listQuery.page_index = 1;
             this.getList();
@@ -213,8 +223,6 @@ export default {
         },
         getList(){
             this.loading=true
-            this.listQuery.sort_by = 'createdAt'
-            this.listQuery.direction = 'desc'
             fetchList(this.listQuery).then(res => {
                 this.list = res.data.result.items
                 this.total = res.data.result.total
@@ -232,7 +240,6 @@ export default {
             this.orderIds = val.map(v => {return v.id}).join()
         },
         toPay(row){
-            console.log(row)
             let query = {
                 oldOrder:true,
                 name:row.serviceName,
@@ -242,7 +249,7 @@ export default {
                 discount:row.serviceDiscount,
                 id:row.id,
                 serviceId:row.serviceId,
-                orderNo:row.orderNo
+                orderNo:row.orderNo,
             }
              this.$router.push({ path:'/serve/myserve/pay',query:query});
         },
@@ -251,10 +258,34 @@ export default {
         },
         getInvoice(){
             if(this.orderIds == '') {
-                this.$message.error('请选择订单');
+                this.$message.warning('请选择订单');
             }else{
                 this.$router.push({path:'/serve/buy/invoice',query:{id:this.orderIds}})
             }
+        },
+        export2Excel() {
+            let data = Object.assign({},this.listQuery)
+            data.page_size=999
+            fetchList(data).then(res => {
+                this.list_export = res.data.result.items
+                this.list_export.forEach(list => {
+                    list.payMethod = this.payMethodMap.get(list.payMethod+'')
+                    list.createdAt = parseTime(list.createdAt,'{y}-{m}-{d} {h}:{i}:{s}')
+                    list.payAt = parseTime(list.payAt,'{y}-{m}-{d} {h}:{i}:{s}')
+                    list.status = this.statusMap.get(list.status+'')
+                })
+                require.ensure([], () => {
+                    const { export_json_to_excel } = require('../../../../vendor/Export2Excel');
+                    const tHeader = ['订单号', '产品/服务', '支付方式', '支付金额', '创建时间', '支付时间', '状态'];
+                    const filterVal = ['orderNo', 'serviceName', 'payMethod', 'payMoney', 'createdAt', 'payAt', 'status'];
+                    const list = this.list_export;
+                    const data = this.formatJson(filterVal, list);
+                    export_json_to_excel(tHeader, data, '列表excel');
+                })
+            })   
+        },
+        formatJson(filterVal, jsonData) {
+            return jsonData.map(v => filterVal.map(j => v[j]))
         }
     }
 }

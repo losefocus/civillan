@@ -74,7 +74,7 @@
                 <div class="o_number">订单号：{{tableData[0].orderNo}}</div>
                 <div style="color:#666666;font-size:14px;">
                     {{tableData[0].serviceName}}
-                    <span style="padding-left:20px;">数量：{{tableData[0].amount}}</span>
+                    <span style="padding-left:20px;">数量：{{tableData[0].amount}}{{tableData[0].unit}}</span>
                     <!-- <span style="padding-left:20px;">有效期：{{tableData[0].date}}</span> -->
                 </div>
             </div>
@@ -87,13 +87,13 @@
                                 <el-radio :label="1" style="height:42px">
                                     <div class="pay_">支付宝支付</div>
                                 </el-radio>
-                                <el-radio :label="2">
+                                <el-radio :label="2" disabled>
                                     <div class="pay_ pay_wechart">微信支付</div>
                                 </el-radio>
                             </el-radio-group>
                         </div>
                     </el-tab-pane>
-                    <el-tab-pane label="线下电汇" name="second">
+                    <el-tab-pane label="线下电汇" name="second" disabled>
                         <div style="font-size:16px;color:#333;line-height:24px;margin-top:20px;font-weight:500;">
                             <div style="line-height:24px;">开户名称：浙江智握领程科技股份有限公司</div>
                             <div style="height:46px;line-height:46px;margin:25px 0;vertical-align: middle;">
@@ -167,9 +167,7 @@ export default {
                         this.tableData = [res.data.result]
                     }
                 })
-            }
-            console.log(this.tableData)
-            
+            }           
         },
         confirmPay(){
             payment(this.orderId).then(res => {

@@ -1,6 +1,6 @@
 <template>
-    <div class="app-container">
-        <ul class="serverList" v-if="views == 1">
+    <div class="app-container" v-loading="loading" style="min-height:500px">
+        <ul class="serverList" v-if="views == 1" >
             <li v-for="(item,index) in list" :key="index">
                 <div class="l_1">{{item.name}}</div>
                 <div class="l_2" >{{item.intro}}</div>
@@ -37,6 +37,7 @@ export default {
                 page_index: 1,
                 page_size: 20
             },
+            loading:false
         }
     },
     computed: {
@@ -56,8 +57,10 @@ export default {
     },
     methods:{
         getList(){
+            this.loading = true
             fetchList(this.listQuery).then(res => {
                 this.list = res.data.result
+                this.loading = false
             })
         },
         tobuy(obj){
