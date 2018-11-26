@@ -14,7 +14,7 @@
                 :value="item.value">
                 </el-option>
             </el-select> -->
-            <el-radio-group class="pull-right" v-model="filterType" size="small" @change="changeTypeFilter"  style="margin-right:20px;">
+            <el-radio-group v-model="filterType" size="small" @change="changeTypeFilter"  style="margin-right:20px;">
                 <el-radio-button v-for="item in typeOptions" :label="item.value" :key="item.value">{{item.label}}</el-radio-button>
             </el-radio-group>
         </div>
@@ -129,7 +129,13 @@
             list:[],
             listQuery: {
                 page_index: 1,
-                page_size: 20
+                page_size: 20,
+                sort_by:'createdAt',
+                direction:'desc',
+            },
+            allListQuery: {
+                page_index: 1,
+                page_size: 999
             },
             filterType:'',
             total:null,

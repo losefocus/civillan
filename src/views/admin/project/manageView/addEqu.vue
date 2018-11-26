@@ -38,9 +38,9 @@
             <el-form-item label="名称" prop="name">
                 <el-input v-model="form.name" size="small" placeholder="请输入设备显示名称"></el-input>
             </el-form-item>
-            <el-form-item label="固件" prop="firmware">
+            <!-- <el-form-item label="固件" prop="firmware">
                 <el-input v-model="form.firmware" size="small" placeholder="请输入固件版本号"></el-input>
-            </el-form-item>
+            </el-form-item> -->
             <el-form-item label="key" prop="key">
                 <el-input v-model="form.key" size="small" placeholder="请输入设备唯一标识"></el-input>
             </el-form-item>
@@ -260,9 +260,10 @@
             data.projectId = this.projectInfo.id
             data.protocol = "string"
             data.passage = "string"
-            this.createLoading = true
+            
             this.$refs[formName].validate((valid) => {
                 if (valid) {
+                    this.createLoading = true
                     addObj(data).then( res => {
                         this.cancel()
                         if(res.data.success == true){

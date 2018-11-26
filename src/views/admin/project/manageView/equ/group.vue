@@ -122,14 +122,14 @@
     data(){
         var validataParentId = (rule, value, callback) => {
             if (value === '' || value== undefined) {
-                callback(new Error('请选择机构'));
+                callback(new Error('请选择上级'));
             }else {
                 callback();
             }
         };
         var validataName = (rule, value, callback) => {
             if (value === '' || value== undefined) {
-                callback(new Error('请选择机构'));
+                callback(new Error('请输入名称'));
             }else {
                 callback();
             }
