@@ -1,10 +1,11 @@
 import request from '@/router/axios'
 
 /* 分类列表 */
-export function fetchCategoryList() {
+export function fetchCategoryList(query) {
   return request({
     url: '/product/product/list_category',
     method: 'get',
+    params: query
   })
 }
 

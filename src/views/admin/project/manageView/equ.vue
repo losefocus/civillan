@@ -5,7 +5,7 @@
             <el-button class="filter-item" style="" @click="handleGroup" size="small" type="primary" icon="edit" >分组管理</el-button>
             <el-button class="pull-right" type="primary" size="small" v-waves  @click="handleFilter">搜索</el-button>
             <el-input @keyup.enter.native="handleFilter" style="width: 150px;" size="small" suffix-icon="el-icon-search" class="pull-right" placeholder="设备名称" v-model="listQuery.name"></el-input>
-            <el-select v-model="filterDeviceGroup" clearable class="pull-right" placeholder="按所在分组筛选" style="width:150px!important;margin-right:10px" size="small"  @change="handleFilter">
+            <el-select v-model="listQuery.groupId" clearable class="pull-right" placeholder="按所在分组筛选" style="width:150px!important;margin-right:10px" size="small"  @change="handleFilter">
                 <el-option
                 v-for="item in groupOptions_"
                 :key="item.value"
@@ -228,8 +228,7 @@
         },
         handleFilter(){
             if(this.listQuery.name == '') delete this.listQuery.name
-            this.listQuery.deviceGroup = this.filterDeviceGroup
-            if(this.filterDeviceGroup == '') delete this.listQuery.deviceGroup
+            if(this.listQuery.groupId == '') delete this.listQuery.groupId
             this.listQuery.page_index = 1;
             this.getList()
         },

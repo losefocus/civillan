@@ -83,7 +83,8 @@
                 </el-table-column>
                 <el-table-column align="center" label="上级">
                     <template slot-scope="scope">
-                        <span>{{parentHash.get(scope.row.parentId)}}</span>
+                        <span v-if="scope.row.parentGroup!=null">{{scope.row.parentGroup.name}}</span>
+                        <span v-else>无</span>
                     </template>
                 </el-table-column>
                 <el-table-column align="center" label="排序" width="60">

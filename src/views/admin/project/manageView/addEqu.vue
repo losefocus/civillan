@@ -249,6 +249,7 @@
             this.groupListQuery.direction = 'asc'
             getGroupObj(this.groupListQuery).then(res => {
                 let groupOptions = toTree(res.data.result.items)
+                console.log(groupOptions)
                 this.$store.commit("SET_GROUPOPTIONS", groupOptions);
             })
         },
