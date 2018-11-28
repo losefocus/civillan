@@ -19,7 +19,7 @@
         </template>
       </el-submenu>
     </template>
-    <el-submenu index="1">
+    <!-- <el-submenu index="1">
       <template slot="title">
         <i class="icon-zengzhifuwu"></i>
         <span slot="title" :class="{'el-menu--display':isCollapse}">增值服务</span> 
@@ -40,7 +40,7 @@
         <i class="icon-fapiaoguanli"></i>
         <span slot="title">开票设置</span>
       </el-menu-item>
-    </el-submenu>
+    </el-submenu> -->
   </div>
 </template>
 <script>
