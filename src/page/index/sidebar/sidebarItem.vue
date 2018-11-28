@@ -21,23 +21,23 @@
     </template>
     <!-- <el-submenu index="1">
       <template slot="title">
-        <i class="el-icon-goods"></i>
+        <i class="icon-zengzhifuwu"></i>
         <span slot="title" :class="{'el-menu--display':isCollapse}">增值服务</span> 
       </template>
       <el-menu-item index="/serve/myserve" @click="open_('/serve/myserve')">
-        <i class="el-icon-goods"></i>
+        <i class="icon-shouhoufuwu"></i>
         <span slot="title">我的服务</span>
       </el-menu-item>
       <el-menu-item index="/serve/buy" @click="open_('/serve/buy')">
-        <i class="el-icon-goods"></i>
+        <i class="icon-icon_goumaijilunor"></i>
         <span slot="title">购买记录</span>
       </el-menu-item>
       <el-menu-item index="/serve/record" @click="open_('/serve/record')">
-        <i class="el-icon-goods"></i>
+        <i class="icon-ycbh_fapiao"></i>
         <span slot="title">开票记录</span>
       </el-menu-item>
       <el-menu-item index="/serve/setting" @click="open_('/serve/setting')">
-        <i class="el-icon-goods"></i>
+        <i class="icon-fapiaoguanli"></i>
         <span slot="title">开票设置</span>
       </el-menu-item>
     </el-submenu> -->

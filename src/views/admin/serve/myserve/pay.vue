@@ -30,48 +30,53 @@
                 :data="tableData"
                 style="width: 100%">
                     <el-table-column
-                        prop="date"
+                        prop="name"
                         label="商品信息"
                         class-name="info">
                         <template slot-scope="scope">
                             <div style="padding:10px 0;">
-                                <div style="font-size:18px;color:#333;line-height:40px;font-weight:600;">短信通知</div>
-                                <div style="font-size:12px;color:#999">购买有效期：<span style="color:#666">{{scope.row.date}}</span></div>
+                                <div style="font-size:18px;color:#333;line-height:40px;font-weight:600;">{{scope.row.name}}</div>
+                                <!-- <div style="font-size:12px;color:#999">购买有效期：<span style="color:#666">{{scope.row.date}}</span></div> -->
                             </div>
                         </template>
                     </el-table-column>
                     <el-table-column
-                        prop="num"
+                        prop="amount"
                         label="数量">
                     </el-table-column>
                     <el-table-column
                         prop="price"
                         label="原价">
                         <template slot-scope="scope">
-                            ￥{{scope.row.price}}
+                            ￥{{(scope.row.price*scope.row.amount).toFixed(2)}}
                         </template>
                     </el-table-column>
                     <el-table-column
-                        prop="price_"
+                        prop="discount"
                         label="折后价格">
                         <template slot-scope="scope">
-                            ￥{{scope.row.price_}}
+                            ￥{{scope.row.discount!=0?(scope.row.price*scope.row.amount*scope.row.discount).toFixed(2):(scope.row.price).toFixed(2)}}
                         </template>
                     </el-table-column>
                 </el-table>
             </div>
             <div class="p_b pull-right" style="text-align: right;padding-top:30px;">
-                <div style="font-size:20px;color:#333333;height:30px;line-height:30px;">应付款：<span style="display:inline-block;font-size:36px;color:#F15F5F;">￥260</span></div>
-                <div style="color:#20A445;font-size:12px;padding:5px 0 8px;">省￥20</div>
+                <div style="font-size:20px;color:#333333;height:30px;line-height:30px;">应付款：<span style="display:inline-block;font-size:36px;color:#F15F5F;">￥{{total}}</span></div>
+                <div style="color:#20A445;font-size:12px;padding:5px 0 8px;">省￥{{total_}}</div>
                 <div style="font-size:12px;color:rgba(153,153,153,1);line-height:20px;padding-bottom:25px;">发票：订单对应可开发票的类型和抬头为您在用户中心-发票信息管理中</div>
                 <el-button type="primary" size="small" style="margin-bottom:30px" @click="toPay">去支付</el-button>
             </div>
         </div>
         <div v-if="active==2" class="step_main_2">
             <div class="orderInfo">
-                <div class="o_tit">支付订单<span class="pull-right" style="font-size:14px;font-weight:400;color:#333">应付款：<span style="color:#F15F5F;font-size:24px;">￥260</span></span></div>
-                <div class="o_number">订单号：1233123123122312</div>
-                <div style="color:#666666;font-size:14px;">短信通知<span style="padding-left:20px;">数量：{{tableData[0].num}}</span><span style="padding-left:20px;">有效期：{{tableData[0].date}}</span></div>
+                <div class="o_tit">支付订单<span class="pull-right" style="font-size:14px;font-weight:400;color:#333">应付款：
+                    <span style="color:#F15F5F;font-size:24px;">￥{{tableData[0].payMoney.toFixed(2)}}</span></span></div>
+                <div class="o_number">订单号：{{tableData[0].orderNo}}</div>
+                <div style="color:#666666;font-size:14px;">
+                    {{tableData[0].serviceName}}
+                    <span style="padding-left:20px;">数量：{{tableData[0].amount}}{{tableData[0].unit}}</span>
+                    <!-- <span style="padding-left:20px;">有效期：{{tableData[0].date}}</span> -->
+                </div>
             </div>
             <div class="orderType clearfix">
                 <div class="o_tit">支付方式</div>
@@ -82,13 +87,13 @@
                                 <el-radio :label="1" style="height:42px">
                                     <div class="pay_">支付宝支付</div>
                                 </el-radio>
-                                <el-radio :label="2">
+                                <el-radio :label="2" disabled>
                                     <div class="pay_ pay_wechart">微信支付</div>
                                 </el-radio>
                             </el-radio-group>
                         </div>
                     </el-tab-pane>
-                    <el-tab-pane label="线下电汇" name="second">
+                    <el-tab-pane label="线下电汇" name="second" disabled>
                         <div style="font-size:16px;color:#333;line-height:24px;margin-top:20px;font-weight:500;">
                             <div style="line-height:24px;">开户名称：浙江智握领程科技股份有限公司</div>
                             <div style="height:46px;line-height:46px;margin:25px 0;vertical-align: middle;">
@@ -103,7 +108,7 @@
                     </el-tab-pane>
                 </el-tabs>
                 <el-button v-if="activeTab=='first'" type="primary" class="pull-right" size="small" style="margin:55px 0 30px;" @click="confirmPay">确认支付</el-button>
-                <el-button v-if="activeTab=='second'" type="primary" class="pull-right" size="small" style="margin:20px 0 30px;" @click="confirmPay">去汇款</el-button>
+                <el-button v-if="activeTab=='second'" type="primary" class="pull-right" size="small" style="margin:20px 0 30px;" >去汇款</el-button>
             </div>
         </div>
         <div v-if="active==3" class="step_main_3">
@@ -119,29 +124,61 @@
 </template>
 
 <script>
+import { addObj,payment} from "@/api/serve/order";
+
 export default {
     data(){
         return {
             active:'1',
             tableData: [{
-                date: '永久',
-                num: '100',
-                price: '600',
-                price_:'400'
             }],
+            total:0,
+            total_:0,
             activeTab: 'first',
-            radio:1
+            radio:1,
+            orderId:null
         }
     },
     created(){
-        console.log(this.$route)
+        this.tableData = [this.$route.query]
+        this.total =this.$route.query.discount!=0?(this.$route.query.price*this.$route.query.discount*this.$route.query.amount).toFixed(2):(this.$route.query.price*this.$route.query.amount).toFixed(2)
+        this.total_ =this.$route.query.discount!=0?((this.$route.query.price-this.$route.query.price*this.$route.query.discount)*this.$route.query.amount).toFixed(2):0
     },
     methods:{
         toPay(){
             this.active = 2
+            let query = this.$route.query
+            let serviceId = query.id
+            if(query.oldOrder){
+                this.active = 2
+                this.orderId = query.id
+                let data = {
+                    payMoney:query.payMoney,
+                    orderNo:query.orderNo,
+                    serviceName:query.name,
+                    amount:query.amount,
+                }
+                this.tableData = [data]
+            }else{
+                addObj({serviceId:serviceId,amount:query.amount}).then(res => {
+                    if(res.data.success){
+                        this.orderId = res.data.result.id
+                        this.active = 2
+                        this.tableData = [res.data.result]
+                    }
+                })
+            }           
         },
         confirmPay(){
-            this.active = 3
+            payment(this.orderId).then(res => {
+                if(res.data.success){
+                    const div = document.createElement('div');
+                    div.innerHTML = res.data.result;
+                    document.body.appendChild(div);
+                    document.forms[0].submit()
+                    //this.active = 3
+                }
+            })
         },
         toPayRecord(){
             this.$router.push({path:'/serve/buy'})

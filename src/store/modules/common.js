@@ -34,6 +34,9 @@ const common = {
     projectState: getStore({
       name: 'projectState'
     }) || {},
+    moniCategoryOptions: getStore({
+      name: 'moniCategoryOptions'
+    }) || [],
   },
   actions: {
     // 获取字典公用类
@@ -56,6 +59,10 @@ const common = {
     }
   },
   mutations: {
+    // 视频监控的分类
+    SET_MONICATEGORYOPTIONS:(state, action)=>{
+      state.moniCategoryOptions = action
+    },
     // 用于判断是否为从控制台跳转到项目管理页面
     SET_PROJECTSTATE:(state, action)=>{
       state.projectState = action

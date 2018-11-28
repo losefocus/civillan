@@ -4,9 +4,9 @@
            <div class="c_t clearfix">
                <div class="t_l clearfix">
                     <span class="pull-left">产品</span>
-                    <el-select style="width:120px;margin-left:10px;" size="small" v-model="product" placeholder="请选择">
+                    <el-select style="width:120px;margin-left:10px;" size="small" v-model="listQuery.service_id" placeholder="请选择" @change="handleChange">
                         <el-option
-                        v-for="item in productOptions"
+                        v-for="item in serviceOptions"
                         :key="item.value"
                         :label="item.label"
                         :value="item.value">
@@ -15,9 +15,9 @@
                </div>
                <div class="t_l clearfix">
                     <span class="pull-left">支付状态</span>
-                    <el-select style="width:120px;margin-left:10px;" size="small" v-model="type" placeholder="请选择">
+                    <el-select style="width:120px;margin-left:10px;" size="small" v-model="listQuery.status" placeholder="请选择" @change="handleChange">
                         <el-option
-                        v-for="item in typeOptions"
+                        v-for="item in statusOptions"
                         :key="item.value"
                         :label="item.label"
                         :value="item.value">
@@ -33,65 +33,86 @@
                     type="daterange"
                     range-separator="至"
                     start-placeholder="开始日期"
-                    end-placeholder="结束日期">
+                    end-placeholder="结束日期"
+                    @change="changeTime">
                     </el-date-picker>
                </div>
-               <el-button size="small">查询</el-button>
-               <el-button class="pull-right" size="small" style="margin-top:20px"><i class="el-icon-download el-icon--left"></i>下载</el-button>
+               <el-button size="small" @click="handleChange">查询</el-button>
+               <el-button class="pull-right" size="small" style="margin-top:20px" @click="export2Excel"><i class="el-icon-download el-icon--left"></i>导出</el-button>
            </div>
-           <div class="c_b">
+           <div class="c_b" v-loading="loading">
                 <el-table
-                    :data="tableData"
-                    style="width: 100%">
+                    :data="list"
+                    style="width: 100%"
+                     @selection-change="handleSelectionChange">
                     <el-table-column
                     type="selection"
+                    :selectable="selectable"
                     width="55">
                     </el-table-column>
                     <el-table-column
-                        prop="id"
+                        prop="orderNo"
                         label="订单号"
                         width="120">
                     </el-table-column>
                     <el-table-column
-                        prop="name"
+                        prop="serviceName"
                         align="center"
                         label="产品/服务">
                     </el-table-column>
                     <el-table-column
-                        prop="type"
+                        prop="payMethod"
                         align="center"
                         label="支付方式">
-                    </el-table-column>
-                    <el-table-column
-                        prop="money"
-                        align="center"
-                        label="支付金额"
-                        width="150">
                         <template slot-scope="scope">
-                            <span style="color:#EB474D;font-size:16px;">￥{{scope.row.money}}</span>
-                            <span style="color:#979797;font-size:12px;">(已折扣￥{{scope.row.money}})</span>
+                            <span v-if="'payMethod' in scope.row">{{payMethodMap.get(scope.row.payMethod.toString())}}</span>
+                            <span v-else>{{scope.row.payMethod}}</span>
                         </template>
                     </el-table-column>
                     <el-table-column
-                        prop="createtime"
+                        prop="payMoney"
                         align="center"
-                        label="创建时间">
+                        label="支付金额"
+                        min-width="200">
+                        <template slot-scope="scope">
+                            <span style="color:#EB474D;font-size:16px;">￥{{scope.row.payMoney.toFixed(2)}}</span>
+                            <span style="color:#979797;font-size:12px;">(已折扣￥{{(scope.row.discountPrice).toFixed(2)}})</span>
+                        </template>
                     </el-table-column>
                     <el-table-column
-                        prop="paytime"
+                        prop="createdAt"
                         align="center"
-                        label="支付时间">
+                        label="创建时间"
+                        min-width="130">
+                        <template slot-scope="scope">
+                            <span>{{scope.row.createdAt | parseTime('{y}-{m}-{d} {h}:{i}')}}</span>
+                        </template>
+                    </el-table-column>
+                    <el-table-column
+                        prop="payAt"
+                        align="center"
+                        label="支付时间"
+                        min-width="130">
+                        <template slot-scope="scope">
+                            <span>{{scope.row.payAt | parseTime('{y}-{m}-{d} {h}:{i}')}}</span>
+                        </template>
                     </el-table-column>
                     <el-table-column
                         prop="status"
                         align="center"
                         label="状态">
+                        <template slot-scope="scope">
+                            <span v-if="scope.row.status == 1" style="color:#F15F5F">{{statusMap.get(scope.row.status.toString())}}</span>
+                            <span v-else>{{statusMap.get(scope.row.status.toString())}}</span>
+                        </template>
                     </el-table-column>
                     <el-table-column
                         align="center"
-                        label="操作">
-                        <template>
-
+                        label="操作"
+                        width="150">
+                        <template slot-scope="scope" >  
+                            <el-button size="mini" v-if="scope.row.status == 1" type="primary" plain @click="toPay(scope.row)" style="margin-left:0px">支付</el-button>
+                            <el-button size="mini" v-if="scope.row.status == 1" type="" plain style="margin-left:0px">取消</el-button>
                         </template>
                     </el-table-column>
                 </el-table>
@@ -112,43 +133,160 @@
 </template>
 
 <script>
+import { fetchList,payment,orderList,serviceList} from "@/api/serve/order";
+import {remote_p} from "@/api/dict";
+import {parseTime} from "@/filters/index";
+
 export default {
     data(){
         return {
-            product:'',
-            productOptions:[{value:'1',label:'所有产品'}],
-            type:'',
-            typeOptions:[{value:'1',label:'所有状态'}],
+            service:'',
+            serviceOptions:[{value:'1',label:'所有产品'}],
+            statusOptions:[{value:'',label:'所有状态'},{value:0,label:'已取消'},{value:1,label:'未付款'},{value:2,label:'已付款'},
+                {value:3,label:'已开票'},{value:4,label:'已过期'}],
             time:[],
-            tableData:[{name:'12s',money:'123'}],
+            list:[],
+            list_export:[],
             listQuery:{
                 page_index:1,
-                page_size:10
+                page_size:5,
+                sort_by:'createdAt',
+                direction:'desc',
             },
-            total:1
+            total:0,
+            isdisable:true,
+            orderIds:'',
+            statusMap:null,
+            payMethodMap:null,
+            loading:false
         }
+    },
+    filters: {
+        // statusFilter(status) {
+        //     const statusMap = {
+        //         0: '已取消',
+        //         1: '未付款',
+        //         2: '已付款',
+        //         3: '已开票',
+        //         4: '已过期',
+        //     }
+        //     return statusMap[status]
+        // }
     },
     computed: {
         
     },
     created() {
-
+        remote_p("order_status").then(res => {
+            [...this.statusOptions] = res.data.result
+            this.statusOptions.unshift({value:'',label:'所有状态'})
+            this.statusMap = new Map()
+            res.data.result.forEach(ele => {
+                this.statusMap.set(ele.value,ele.label)
+            });
+        });
+        remote_p("pay_method").then(res => {
+            this.payMethodMap = new Map()
+            res.data.result.forEach(ele => {
+                this.payMethodMap.set(ele.value,ele.label)
+            });
+        });
+    },
+    mounted() {
+        this.getServiceList()
+        this.getList()
     },
     methods:{
-       handleSizeChange(val) {
+        getServiceList(){
+            serviceList({page_index:1,page_size:99}).then(res => {
+                this.serviceOptions = res.data.result.map(v => {return {value:v.id,label:v.name}})
+                this.serviceOptions.unshift({value:'',label:'所有产品'})
+            })
+        },
+        changeTime(val){
+            this.listQuery.page_index = 1;
+            this.listQuery.date_start = new Date(val[0]).getTime()/1000
+            this.listQuery.date_end = new Date(val[1]).getTime()/1000
+            this.getList()
+        },
+        handleChange(){
+            this.listQuery.page_index = 1;
+            this.getList();
+        },
+        handleSizeChange(val) {
             this.listQuery.page_size = val;
-            //this.getList();
+            this.getList();
         },
         handleCurrentChange(val) {
             this.listQuery.page_index = val;
-            //this.getList();
+            this.getList();
         },
-       toSetting(){
-           this.$router.push({ path:'/serve/setting'});
-       },
-       getInvoice(){
-           this.$router.push({path:'/serve/buy/invoice'})
-       }
+        getList(){
+            this.loading=true
+            fetchList(this.listQuery).then(res => {
+                this.list = res.data.result.items
+                this.total = res.data.result.total
+                this.loading=false
+            })
+        },
+        selectable(row, index){
+        	if(row.status == 2){
+        		return true;
+        	}else{
+        		return false;
+        	}
+        },
+        handleSelectionChange(val){
+            this.orderIds = val.map(v => {return v.id}).join()
+        },
+        toPay(row){
+            let query = {
+                oldOrder:true,
+                name:row.serviceName,
+                amount:row.amount,
+                price:row.servicePrice,
+                payMoney:row.payMoney,
+                discount:row.serviceDiscount,
+                id:row.id,
+                serviceId:row.serviceId,
+                orderNo:row.orderNo,
+            }
+             this.$router.push({ path:'/serve/myserve/pay',query:query});
+        },
+        toSetting(){
+            this.$router.push({ path:'/serve/setting'});
+        },
+        getInvoice(){
+            if(this.orderIds == '') {
+                this.$message.warning('请选择订单');
+            }else{
+                this.$router.push({path:'/serve/buy/invoice',query:{id:this.orderIds}})
+            }
+        },
+        export2Excel() {
+            let data = Object.assign({},this.listQuery)
+            data.page_size=999
+            fetchList(data).then(res => {
+                this.list_export = res.data.result.items
+                this.list_export.forEach(list => {
+                    list.payMethod = this.payMethodMap.get(list.payMethod+'')
+                    list.createdAt = parseTime(list.createdAt,'{y}-{m}-{d} {h}:{i}:{s}')
+                    list.payAt = parseTime(list.payAt,'{y}-{m}-{d} {h}:{i}:{s}')
+                    list.status = this.statusMap.get(list.status+'')
+                })
+                require.ensure([], () => {
+                    const { export_json_to_excel } = require('../../../../vendor/Export2Excel');
+                    const tHeader = ['订单号', '产品/服务', '支付方式', '支付金额', '创建时间', '支付时间', '状态'];
+                    const filterVal = ['orderNo', 'serviceName', 'payMethod', 'payMoney', 'createdAt', 'payAt', 'status'];
+                    const list = this.list_export;
+                    const data = this.formatJson(filterVal, list);
+                    export_json_to_excel(tHeader, data, '列表excel');
+                })
+            })   
+        },
+        formatJson(filterVal, jsonData) {
+            return jsonData.map(v => filterVal.map(j => v[j]))
+        }
     }
 }
 </script>

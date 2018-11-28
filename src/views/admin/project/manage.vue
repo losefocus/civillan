@@ -12,6 +12,7 @@
                     <el-radio-button label="doc">文档资料</el-radio-button>
                     <el-radio-button label="media">现场影像</el-radio-button>
                     <el-radio-button label="config" :disabled="'children' in viewData && viewData.children.length != 0">作业配置</el-radio-button>
+                    <el-radio-button label="monitoring">视频监控</el-radio-button>
                 </el-radio-group>
             </div>
             <div style="padding-top:20px;position:relative">
@@ -22,6 +23,7 @@
                 <doc v-if="tabView === 'doc'" :project-info="viewData" ref="doc"></doc>
                 <media v-if="tabView === 'media'" :project-info="viewData" ref="media"></media>
                 <config v-if="tabView === 'config'" :project-info="viewData" ref="config"></config>
+                <monitoring v-if="tabView === 'monitoring'" :project-info="viewData" ref="monitoring"></monitoring>
             </div>
         </div>
         <el-card class="pull-right addNewContainer" style="height:797px" :class="{'show':cardVisibel}" >
@@ -32,6 +34,7 @@
             <add-doc v-if="tabView === 'doc'" :project-info="viewData" ref="addDoc"></add-doc>
             <add-media v-if="tabView === 'media'" :project-info="viewData" ref="addMedia"></add-media>
             <add-config v-if="tabView === 'config'" :project-info="viewData" ref="addConfig"></add-config>
+            <add-monitoring v-if="tabView === 'monitoring'" :project-info="viewData" ref="addMonitoring"></add-monitoring>
         </el-card>
     </div>
 </template>
@@ -43,12 +46,14 @@
   import doc from "./manageView/doc";
   import media from "./manageView/media";
   import config from "./manageView/config";
+  import monitoring from "./manageView/monitoring";
   import addOrg from "./manageView/addOrg";
   import addPer from "./manageView/addPer";
   import addEqu from "./manageView/addEqu";
   import addDoc from "./manageView/addDoc";
   import addMedia from "./manageView/addMedia";
   import addConfig from "./manageView/addConfig";
+  import addMonitoring from "./manageView/addMonitoring";
 
   export default {
     components:{
@@ -59,12 +64,14 @@
         doc,
         media,
         config,
+        monitoring,
         addOrg,
         addPer,
         addEqu,
         addDoc,
         addMedia,
-        addConfig
+        addConfig,
+        addMonitoring,
     },
     props:['viewData'],
     data(){
@@ -95,7 +102,7 @@
 </script>
 <style scoped>
 .projectName{
-    width:calc(100% - 700px);
+    width:calc(100% - 770px);
     height: 32px;
     line-height: 32px;
     overflow: hidden;

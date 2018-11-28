@@ -18,7 +18,8 @@
             </el-table-column>
             <el-table-column align="center" label="上传用户" min-width="80">
                 <template slot-scope="scope">
-                    <span style="white-space:nowrap;">{{adminerHash[scope.row.createdBy]}}</span>
+                    <span v-if="'frontUser' in scope.row">{{scope.row.frontUser.name}}</span>
+                    <span v-else style="white-space:nowrap;">{{adminerHash[scope.row.createdBy]}}</span>
                 </template>
             </el-table-column>
             <el-table-column align="center" label="上传时间" min-width="80">

@@ -1,15 +1,15 @@
 <template>
-    <div class="app-container">
-        <ul class="serverList" v-if="views == 1">
-            <li>
-                <div class="l_1">短信通知</div>
-                <div class="l_2">短信通知 (Alibaba Cloud Mobile Push) 是基于大数据技术的移动云服务。</div>
+    <div class="app-container" v-loading="loading" style="min-height:500px">
+        <ul class="serverList" v-if="views == 1" >
+            <li v-for="(item,index) in list" :key="index">
+                <div class="l_1">{{item.name}}</div>
+                <div class="l_2" >{{item.intro}}</div>
                 <div class="l_3">
-                    <el-button type="primary" size="small" @click="tobuy('sms')">立即购买</el-button>
-                    <span class="l_3_d">剩余：0条</span>
+                    <el-button type="primary" size="small" @click="tobuy(item)">立即购买</el-button>
+                    <span class="l_3_d">剩余：{{item.surplus}}{{item.unit}}</span>
                 </div>
             </li>
-            <li>
+            <!-- <li>
                 <div class="l_1">存储空间</div>
                 <div class="l_2">存储空间 (Alibaba Cloud Mobile Push) 是基于大数据技术的移动云服务。</div>
                 <div class="l_3">
@@ -17,28 +17,34 @@
                     <span class="l_3_d">剩余：10GB</span>
                     <span class="l_3_t">到期时间:2018-10-21</span>
                 </div>
-            </li> 
+            </li>  -->
         </ul>
         <router-view v-if="views == 2"></router-view>
     </div>
 </template>
 
 <script>
-
+import { fetchList} from "@/api/serve/myserve";
 export default {
     components:{
 
     },
     data(){
         return {
-            views:1
+            views:1,
+            list:[],
+            listQuery: {
+                page_index: 1,
+                page_size: 20
+            },
+            loading:false
         }
     },
     computed: {
         
     },
     created() {
-        console.log(this.$route)
+        this.getList()
     },
     mounted(){
         if (window.history && window.history.pushState) {
@@ -50,12 +56,19 @@ export default {
         window.removeEventListener('popstate', this.goBack, false);
     },
     methods:{
-       tobuy(path){
+        getList(){
+            this.loading = true
+            fetchList(this.listQuery).then(res => {
+                this.list = res.data.result
+                this.loading = false
+            })
+        },
+        tobuy(obj){
             this.views = 2
-            this.$router.push({path:'/serve/myserve/'+path})
-       },
-       goBack(){
-            // this.views = 1
+            this.$router.push({path:'/serve/myserve/'+obj.type,query:{id:obj.id}})
+        },
+        goBack(){
+                // this.views = 1
             //replace替换原路由，作用是避免回退死循环
             this.$router.replace({path: '/serve/myserve'});
         }
@@ -94,6 +107,11 @@ export default {
                 color:#666;
                 line-height:21px;
                 padding-top: 10px;
+                overflow:hidden; 
+                text-overflow:ellipsis;
+                display:-webkit-box; 
+                -webkit-box-orient:vertical;
+                -webkit-line-clamp:2;
             }
             .l_3{
                 padding-top: 15px;
