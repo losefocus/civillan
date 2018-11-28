@@ -1,46 +1,24 @@
 <template>
     <div>
-        <div class="tit"><h3>{{(flag == 'add')?'添加':'修改'}}人员</h3><span>{{(flag == 'add')?'Add':'Edit'}} Personnel</span></div>
+        <div class="tit"><h3>{{(flag == 'add')?'添加':'修改'}}监控</h3><span>{{(flag == 'add')?'Add':'Edit'}} Monitoring</span></div>
         <el-form label-width="55px" :model="form" :rules="rules"  ref="forms" label-position="left">
-            <el-form-item label="机构" prop="projectOrgan.id">
-                <el-select v-model="form.projectOrgan.id" size="small" placeholder="请选择机构" no-data-text="请先添加机构">
+            <el-form-item label="分类" prop="categoryId">
+                <el-select v-model="form.categoryId" size="small" placeholder="请选择分类" no-data-text="请先添加分类">
                     <el-option
-                    v-for="item in organOptions"
+                    v-for="item in moniCategoryOptions"
                     :key="item.value"
-                    :label="item.label"
-                    :value="item.value">
+                    :label="item.name"
+                    :value="item.id">
                     </el-option>
                 </el-select>
             </el-form-item>
-            <el-form-item label="角色" prop="userRole">
-                <el-select v-model="role" size="small" placeholder="请选择角色" @change="selectRole()" no-data-text="请先添加角色">
-                    <el-option
-                    v-for="item in roleOptions"
-                    :key="item.value"
-                    :label="item.label"
-                    :value="item.value">
-                    </el-option>
-                </el-select>
+            <el-form-item label="名称" prop="name">
+                <el-input v-model="form.name" size="small" placeholder="请输入名称"></el-input>
             </el-form-item>
-            <el-form-item label="姓名" prop="name">
-                <el-input v-model="form.name" size="small" placeholder="请输入姓名"></el-input>
+            <el-form-item label="地址" prop="url">
+                <el-input v-model="form.url" size="small" placeholder="请输入url地址"></el-input>
             </el-form-item>
-            <el-form-item label="电话" prop="phone">
-                <el-input v-model="form.phone" size="small" placeholder="请输入电话" @blur="checkDuplication('phone')"></el-input>
-            </el-form-item>
-            <el-form-item label="邮箱" prop="email">
-                <el-input v-model="form.email" size="small" placeholder="请输入邮箱" ></el-input>
-            </el-form-item>
-            <el-form-item label="账号" prop="username" >
-                <el-input v-model="form.username" size="small" placeholder="请输入账号" :disabled="usernameDisabled" @blur="checkDuplication('username')"></el-input>
-            </el-form-item>
-            <el-form-item label="密码" prop="password">
-                <el-input v-model="form.password" type="password" size="small" placeholder="请输入密码"></el-input>
-            </el-form-item>
-            <!-- <el-form-item label="确认密码" prop="password2">
-                <el-input v-model="form.password2" type="password" size="small" placeholder="请输入内容"></el-input>
-            </el-form-item> -->
-            <el-form-item label="头像" prop="avatarBaseUrl">
+            <el-form-item label="缩略图" prop="thumbnailBaseUrl">
                 <el-upload
                     v-loading='uploadLoaing'
                     class="avatar-uploader"
@@ -54,7 +32,7 @@
                     :before-upload='beforeUpload'
                     :on-success="uploadSuccess"
                     :auto-upload="true">
-                    <img v-if="form.avatarBaseUrl!='' && form.avatarBaseUrl!=undefined" :src="form.avatarBaseUrl+form.avatarPath" class="avatar">
+                    <img v-if="form.thumbnailBaseUrl!='' && form.thumbnailBaseUrl!=undefined" :src="form.thumbnailBaseUrl+form.thumbnailPath" class="avatar">
                     <i v-else class="el-icon-plus avatar-uploader-icon"></i>
                 </el-upload>
             </el-form-item>
@@ -80,89 +58,36 @@
 <script>
   import {mapGetters,mapState} from "vuex";
   import {getToken} from "@/util/auth";
-  import {addObj, fetchOrganList, findUser, updateObj} from "@/api/project_per";
+  import {addObj, updateObj} from "@/api/project_monitoring";
 
   export default {
     props:['projectInfo'],
     data(){
-        var reg = 11 && /^((13|14|15|17|18)[0-9]{1}\d{8})$/;
-        var validataOrganId = (rule, value, callback) => {
-            if (value === '' || value== undefined) {
-                callback(new Error('请选择机构'));
-            }else {
-                callback();
-            }
-        };
-        var validataPhone = (rule, value, callback) => {
-            if (value === '' || value== undefined) {
-                callback(new Error('请输入手机号码'));
-            } else {
-                if (!reg.test(value)) {
-                    callback(new Error('请输入正确的手机号码'));
-                }else if (this.duplication_phone == true) {
-                    callback(new Error('该手机号码已存在!'));
-                } else {
-                    callback();
-                }
-            }
-        };
-        var validateUserName = (rule, value, callback) => {
-            if (value === '' || value== undefined) {
-                callback(new Error('请输入用户名'));
-            } else if (this.duplication_username == true) {
-                callback(new Error('该用户名已存在!'));
-            } else {
-                callback();
-            }
-        };
-        var validatePass = (rule, value, callback) => {
-            if (value === '' || value== undefined) {
-                callback(new Error('请输入密码'));
-            } else {
-                callback();
-            }
-        };
         var validataName = (rule, value, callback) => {
             if(value === '' || value== undefined){
-                callback(new Error('请输入姓名'));
+                callback(new Error('请输入名称'));
             }else{
                 callback()
             }
         }
-        var validataroleId = (rule, value, callback) => {
+        var validatacategoryId = (rule, value, callback) => {
             if(value== undefined || value.length == 0){
-                callback(new Error('请选择角色'));
+                callback(new Error('请选择分类'));
             }else{
                 callback()
             }
         }
         return {
             rules: {
-                "projectOrgan.id": [
-                    { validator: validataOrganId, trigger: 'change' },
-                ],
-                userRole: [
-                    { validator: validataroleId, trigger: 'change' },
+                categoryId: [
+                    { validator: validatacategoryId, trigger: 'change' },
                 ],
                 name: [
                     {  validator: validataName, trigger: 'blur' },
                     { min: 2, max: 20, message: "长度在 2 到 20 个字符", trigger: "blur"}
                 ],
-                phone: [
-                    { validator: validataPhone, trigger: 'blur' },
-                ],
-                // username: [
-                //     { validator: validateUserName, trigger: 'blur'},
-                //     { min: 6, max: 20, message: "长度在 6 到 20 个字符", trigger: "blur"}
-                // ],
-                // password: [
-                //     { validator: validatePass, trigger: 'blur'},
-                //     { min: 6, max: 50, message: "长度在 6 到 50 个字符", trigger: "blur"}
-                // ],
             },
             form:{
-                projectOrgan : {id:null} ,
-                userRole:[],
                 status:true
             },
             duplication_username:false,
@@ -180,7 +105,7 @@
         }
     },
     created() {
-        this.getOrganOptions()
+        
     },
     mounted() {
 
@@ -189,7 +114,7 @@
         ...mapState({
             userInfo: state => state.user.userInfo,
         }),
-        ...mapGetters(["roleOptions"]),
+        ...mapGetters(["moniCategoryOptions"]),
     },
     methods:{
         beforeUpload(file){
@@ -205,42 +130,13 @@
             if(response.success == false){
                 this.$notify.error({
                     title: '错误',
-                    message: '头像获取失败'
+                    message: '图片获取失败'
                 });
             }else{
-                this.form.avatarPath = response.result.path
-                this.form.avatarBaseUrl = response.result.baseUrl
+                this.form.thumbnailPath = response.result.path
+                this.form.thumbnailBaseUrl = response.result.baseUrl
             }
             this.uploadLoaing = false
-        },
-        //检查用户名/电话是否存在
-        checkDuplication(type){
-            let data = {}
-            data[type]=this.form[type]
-            data.tenant = this.userInfo.tenant
-            if(this.form.phone==undefined || this.form.phone!=this.userPhone){   //修改是，判断是否为原手机号
-                findUser(data).then(res => {
-                    if(res.data.result != 0) this['duplication_'+type] = true 
-                    else this['duplication_'+type] = false
-                    this.$refs.forms.validateField(type);
-                })
-            }
-            
-        },
-        selectRole(){
-            this.form.userRole = [{projectRole:{id:parseInt(this.role)}}]
-        },
-        getOrganOptions(){
-            fetchOrganList(this.projectInfo.id).then(res => {
-                let data = res.data.result.items
-                let array = []
-                data.forEach(element => {
-                    element.value = element.id
-                    element.label = element.name
-                    array.push(element)
-                });
-                this.organOptions = array
-            })
         },
         submitForm(formName){
             this.$refs[formName].validate(valid => {
@@ -251,7 +147,7 @@
                     this.createLoading = true
                     addObj(data).then((res) => {
                         if(res.data.success == true){
-                            this.$parent.$parent.$refs.per.getList()
+                            this.$parent.$parent.$refs.monitoring.getList()
                             this.cancel()
                             this.$parent.$parent.$parent.alertNotify('添加')
                         }else{
@@ -274,11 +170,9 @@
                 if (valid) {
                     let data = Object.assign({},this.form)
                     data.status = this.form.status?1:0
-                    data.userRole = [{projectRole:{id:parseInt(this.role)}}]
-                    delete data.contactList
                     this.createLoading = true
                     updateObj(data).then(response => {
-                        this.$parent.$parent.$refs.per.getList()
+                        this.$parent.$parent.$refs.monitoring.getList()
                         this.cancel()
                         this.$parent.$parent.$parent.alertNotify('修改')
                     })
@@ -293,12 +187,8 @@
         resetTemp() {
             this.createLoading = false
             this.form={
-                projectOrgan: {id:null} ,
                 status:true
             }
-            this.usernameDisabled = false
-            this.role = ''
-            this.userPhone = null
             this.$refs.forms.resetFields()
         },
 

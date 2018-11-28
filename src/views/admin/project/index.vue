@@ -160,6 +160,9 @@
                     <el-form-item label="位置" prop="position">
                         <el-input v-model="form.position" size="small" readonly placeholder="点击打开地图选点" @focus="positionPicker"></el-input>
                     </el-form-item>
+                    <el-form-item label="分类" prop="productCategoryIds">
+                        <el-input v-model="productCategoryIds" size="small" readonly placeholder="点击选择产品分类" @focus="proCategoryPicker"></el-input>
+                    </el-form-item>
                     <el-form-item label="图片" prop="thumbnailPath">
                         <el-upload
                         v-loading='uploadLoaing'
@@ -205,6 +208,18 @@
         </div>
         <el-dialog :visible.sync="positionVisible" id="mapPosition">
             <map-position v-if="positionVisible == true"></map-position>
+        </el-dialog>
+        <el-dialog :visible.sync="proCategoryVisible" title="选择分类">
+            <el-tree
+            style="margin-top:-30px"
+            ref="tree_c"
+            :data="data"
+            default-expand-all
+            show-checkbox
+            node-key="id"
+            :props="defaultProps"
+            @check-change="handleCheckChange">
+            </el-tree>
         </el-dialog>
     </div>
 </template>
@@ -258,6 +273,39 @@
             }
         };
         return {
+            data: [{
+                id: 1,
+                label: '一级 1',
+                children: [{
+                    id: 4,
+                    label: '二级 1-1',
+                    children: [{
+                    id: 9,
+                    label: '三级 1-1-1'
+                    }, {
+                    id: 10,
+                    label: '三级 1-1-2'
+                    }]
+                    }]
+                },{
+                id: 2,
+                label: '一级 2',
+                    children: [{
+                        id: 5,
+                        label: '二级 2-1'
+                    }, {
+                        id: 6,
+                        label: '二级 2-2'
+                    }]
+                }
+            ],
+            defaultProps: {
+                children: 'children',
+                label: 'label',
+                value:'value'
+            },
+            proCategoryVisible:false,
+            productCategoryIds:'',
             rules: {
                 parentId: [
                     {validator: validateParentId, message: '请选择上级', trigger: 'change' }
@@ -339,6 +387,14 @@
         ...mapGetters(["permissions","adminerHash","projectState"])
     },
     methods:{
+        proCategoryPicker(){
+            this.proCategoryVisible = true
+        },
+        handleCheckChange(data){
+            console.log(this.$refs.tree_c.getCheckedKeys().concat(this.$refs.tree_c.getHalfCheckedKeys()))
+            this.form.productCategoryIds = this.$refs.tree_c.getCheckedKeys().concat(this.$refs.tree_c.getHalfCheckedKeys()).join()
+            console.log(this.form.productCategoryIds)
+        },
         toInfo(info){
             this.showView = 'manage'
             this.$refs.proManage.tabView = 'info'

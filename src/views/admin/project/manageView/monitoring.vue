@@ -15,38 +15,37 @@
             </el-select> -->
         </div>
         <el-table :data="list" v-loading="listLoading" fit highlight-current-row style="width: 99%;margin-bottom:20px">
-            <el-table-column align="center" label="缩略图" min-width="110">
+            <el-table-column align="center" label="缩略图" width="80px">
                 <template slot-scope="scope">
-                    <span style="white-space:nowrap;">{{scope.row.name}}
-                        <span v-if="scope.row.userRole.length!=0">({{scope.row.userRole[0].projectRole.name}})</span>
-                    </span>
+                    <div style="height:45px">
+                        <img v-if="scope.row.thumbnailBaseUrl&&scope.row.thumbnailBaseUrl!=''" style="width:60px;height:45px" :src="scope.row.thumbnailBaseUrl+scope.row.thumbnailPath">
+                        <img v-else style="width:60px;height:45px" src="../../../../assets/img/no_pic.png">
+                    </div>
                 </template>
             </el-table-column>
             <el-table-column align="center" label="名称" min-width="110">
                 <template slot-scope="scope">
-                    <span>{{scope.row.phone}}</span>
+                    <span>{{scope.row.name}}</span>
                 </template>
             </el-table-column>
             <el-table-column align="center" label="分类">
                 <template slot-scope="scope">
-                    <span>{{scope.row.username}}</span>
+                    <span>{{scope.row.category.name}}</span>
                 </template>
             </el-table-column>
-            <el-table-column align="left" label="地址" min-width="170">
+            <el-table-column align="center" label="地址" min-width="170">
                 <template slot-scope="scope">
-                    <el-tooltip class="item" effect="dark" :content="scope.row.projectOrgan.name" placement="top-start" :open-delay="300">
-                        <span style="white-space:nowrap;cursor:pointer;"><a>{{scope.row.projectOrgan.name}}</a></span>
-                    </el-tooltip>
+                    <span><a>{{scope.row.url}}</a></span>
                 </template>
             </el-table-column>
-            <el-table-column align="center" label="添加时间">
+            <el-table-column align="center" label="添加时间" min-width="170">
                 <template slot-scope="scope">
-                    <span>{{scope.row.username}}</span>
+                    <span>{{scope.row.createdAt | parseTime('{y}-{m}-{d} {h}:{i}')}}</span>
                 </template>
             </el-table-column>
-            <el-table-column align="center" label="添加人">
+            <el-table-column align="center" label="添加人" min-width="170">
                 <template slot-scope="scope">
-                    <span>{{scope.row.username}}</span>
+                    <span>{{adminerHash[scope.row.createdBy]}}</span>
                 </template>
             </el-table-column>
             <el-table-column align="center" label="状态">
@@ -67,60 +66,98 @@
             </el-pagination>
         </div>
 
-        <el-dialog id="orgType" title="角色管理"  :visible.sync="objectTypeVisible" width='690px'>
-            <el-form :model="roleForm" class="clearfix" :rules="rules" ref="roleForm" size="mini" label-width="50px">
-                <el-form-item label="角色" prop="name" style="width: 140px">
-                    <el-input v-model="roleForm.name" style="width:90px;" size="mini" auto-complete="off"></el-input>
-                </el-form-item>
-                <el-form-item label="别名" prop="alias" style="width: 140px">
-                    <el-input v-model="roleForm.alias" style="width:90px;" size="mini" auto-complete="off"></el-input>
-                </el-form-item>
-                <el-form-item label="描述" style="width: 140px">
-                    <el-input v-model="roleForm.description" style="width:90px;" size="mini" auto-complete="off"></el-input>
-                </el-form-item>
-                <el-form-item  style="width: 230px;" class="pull-right" label-width="0">
-                    <div v-show="flag == 'add'" class="pull-right">
-                        <el-button size="mini" type="primary" @click="addRole('roleForm')" :loading="createdRoleLoading">添加</el-button>
-                    </div>
-                   <div v-show="flag == 'edit'" class="pull-right">
-                        <el-button size="mini" type="primary" @click="handleEditRole('roleForm')" :loading="createdRoleLoading">保存</el-button>
-                        <el-button size="mini" type="info" @click="cancelEdit('roleForm')" style="margin-left:5px;">取消</el-button>
-                   </div>
-                   <el-checkbox v-model="roleForm.status"  class="pull-right" style="margin-right:20px;">已启用</el-checkbox>
-                </el-form-item>
+        <el-dialog id="orgType" title="分类管理"  :visible.sync="objectTypeVisible" width='690px'>
+            <el-form :model="categoryForm" class="clearfix" :rules="rules" ref="categoryForm" size="mini" label-width="50px">
+                <el-form-item label="上级" prop="parentId" style="width: 210px">
+                        <el-select v-model="categoryForm.parentId" size="mini" placeholder="请选择上级分组">
+                            <el-option
+                            v-for="item in roleOptions"
+                            :key="item.value"
+                            :label="item.name"
+                            :value="item.id">
+                            </el-option>
+                        </el-select>
+                    </el-form-item>
+                    <el-form-item label="名称" prop="name" style="width: 210px;margin-left:10px">
+                        <el-input v-model="categoryForm.name" size="mini" auto-complete="off"></el-input>
+                    </el-form-item>
+                    <el-form-item label="排序" style="width: 210px;margin-left:10px">
+                        <el-input v-model="categoryForm.sort" size="mini" auto-complete="off"></el-input>
+                    </el-form-item>
+                    <el-form-item label="图片" style="width: 210px;">
+                        <el-upload
+                            v-loading='uploadLoaing'
+                            class="avatar-uploader"
+                            ref="upload"
+                            :headers="headers"
+                            action="/file/attachment/upload"
+                            :limit="999"
+                            :data="params"
+                            name="uploadFile"
+                            :show-file-list="false"
+                            :before-upload='beforeUpload'
+                            :on-success="uploadSuccess"
+                            :auto-upload="true">
+                            <img v-if="categoryForm.thumbnailBaseUrl!='' && categoryForm.thumbnailBaseUrl!=undefined" :src="categoryForm.thumbnailBaseUrl+categoryForm.thumbnailPath" class="avatar">
+                            <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+                        </el-upload>
+                    </el-form-item>
+                    <el-form-item label="备注" style="width: 430px;margin-left:10px">
+                        <el-input v-model="categoryForm.comment" type="textarea" :rows="3" size="mini" auto-complete="off"></el-input>
+                    </el-form-item>
+                    <el-form-item  :style="flag == 'add'?'width: 140px':'width: 220px'" class="pull-right" style="padding-top:5px">
+                        <div v-if="flag == 'add'">
+                            <el-button size="mini" type="primary" class="pull-right" @click="addCategory('categoryForm')" :loading="createdCategoryLoading">保存</el-button>
+                        </div>
+                        <div v-else>
+                            <el-button size="mini" type="info" class="pull-right" style="margin-left:10px" @click="cancelEdit('categoryForm')">取消</el-button>
+                            <el-button size="mini" type="primary" class="pull-right" @click="handleEditCategory('categoryForm')" :loading="createdCategoryLoading">保存</el-button>
+                        </div>
+                    </el-form-item>
+                    <el-form-item class="pull-right">
+                        <el-checkbox v-model="categoryForm.status" >已启用</el-checkbox>
+                    </el-form-item>
             </el-form>
             <div v-loading="roleListLoading">
-                <el-table :data="roleList" border fit highlight-current-row style="width: 100%;margin-bottom:20px;margin-top:10px">
-                    <el-table-column align="center" label="角色">
+                <el-table :data="categoryList" border fit highlight-current-row style="width: 100%;margin-bottom:20px;margin-top:10px">
+                    <el-table-column align="center" label="缩略图" width="80">
+                        <template slot-scope="scope">
+                            <div style="height:40px">
+                                <img v-if="'thumbnailBaseUrl' in scope.row && scope.row.thumbnailBaseUrl!=''" style="width:60px;height:40px" :src="scope.row.thumbnailBaseUrl+scope.row.thumbnailPath">
+                                <img v-else style="width:60px;height:40px" src="../../../../assets/img/no_pic.png">
+                            </div>
+                        </template>
+                    </el-table-column>
+                    <el-table-column align="center" label="名称">
                         <template slot-scope="scope">
                             <span>{{scope.row.name}}</span>
                         </template>
                     </el-table-column>
-                    <el-table-column align="center" label="别名">
+                    <el-table-column align="center" label="上级">
                         <template slot-scope="scope">
-                            <span>{{scope.row.alias}}</span>
+                            <span>{{scope.row.parentId}}</span>
                         </template>
                     </el-table-column>
-                    <el-table-column align="center" label="描述">
+                    <el-table-column align="center" label="排序" width="60">
                         <template slot-scope="scope">
-                            <span>{{scope.row.description}}</span>
+                            <span>{{scope.row.sort}}</span>
                         </template>
                     </el-table-column>
-                    <el-table-column align="center" label="状态">
+                    <el-table-column align="center" label="状态" width="60">
                         <template slot-scope="scope">
                             <i v-if="scope.row.status == 1" class="el-icon-circle-check" style="font-size:18px;color:#67c23a"></i>
                             <i v-else class="el-icon-circle-close" style="font-size:18px;color:#909399"></i>
                         </template>
                     </el-table-column>
-                    <el-table-column align="center" label="操作" width="160">
+                    <el-table-column align="center" label="操作" width="160" style="float:right">
                         <template slot-scope="scope">
-                            <el-button size="mini" type="" plain @click="updateRole(scope.row)" :disabled="scope.row.createdBy === 0">修改</el-button>
-                            <el-button size="mini" type="" plain @click="deleteRole(scope.row)" :disabled="scope.row.createdBy === 0" style="margin-left:0px">删除</el-button>
+                            <el-button size="mini" type="" plain @click="updateCategory(scope.row)" :disabled="scope.row.createdBy === 0">修改</el-button>
+                            <el-button size="mini" type="" plain @click="deleteCategory(scope.row)" :disabled="scope.row.createdBy === 0">删除</el-button>
                         </template>
                     </el-table-column>
                 </el-table>
                 <div v-show="!roleListLoading" class="pagination-container">
-                    <el-pagination @size-change="handleSizeChange_role" @current-change="handleCurrentChange_role" :current-page.sync="roleListQuery.page_index" :page-sizes="[10,20,30, 50]" :page-size="roleListQuery.page_size" layout="total, prev, pager, next, jumper" :total="roleTotal">
+                    <el-pagination @size-change="handleSizeChange_role" @current-change="handleCurrentChange_role" :current-page.sync="roleListQuery.page_index" :page-sizes="[10,20,30, 50]" :page-size="roleListQuery.page_size" layout="total, prev, pager, next, jumper" :total="categoryTotal">
                     </el-pagination>
                 </div>
             </div>
@@ -129,21 +166,15 @@
     </div>
 </template>
 <script>
-  import {addRoleObj, delObj, delRoleObj, fetchRoleList, fetchUserList, updateRoleObj} from "@/api/project_per";
-
+  import {mapGetters} from "vuex";
+  import {fetchList,delObj,fetchCategoryList,addCategoryObj,updataCategoryObj,delCategoryObj} from "@/api/project_monitoring";
+  import {getToken} from "@/util/auth";
   export default {
     props:['projectInfo'],
     data(){
         var validataRole = (rule, value, callback) => {
             if (value === '' || value== undefined) {
-                callback(new Error('请输入角色'));
-            }else {
-                callback();
-            }
-        };
-        var validataAlias = (rule, value, callback) => {
-            if (value === '' || value== undefined) {
-                callback(new Error('请输入别名'));
+                callback(new Error('请输入名称'));
             }else {
                 callback();
             }
@@ -151,48 +182,80 @@
         return {
             rules: {
                 name: [{ validator: validataRole, trigger: 'blur' }],
-                alias: [{ validator: validataAlias, trigger: 'blur' }],
             },
             listLoading:false,
             roleListLoading:false,
             list:[],
             listQuery: {
                 page_index: 1,
-                page_size: 20
+                page_size: 20,
+                sort_by:'createdAt',
+                direction:'desc',
             },
             total:null,
             objectTypeVisible:false,
-            roleForm:{
-                status:true
+            categoryForm:{
+                parentId:0,
+                status:true,
+                sort:0
             },
-            roleList:[],
+            categoryList:[],
             roleOptions:[],
             roleListQuery: {
                 page_index: 1,
-                page_size: 10
+                page_size: 10,
+                sort_by:'sort',
+                direction:'asc',
             },
-            roleTotal:null,
+            headers:{Authorization: "Bearer " + getToken()},
+            params:{component :'project'},
+            uploadLoaing:false,
+            categoryTotal:null,
             flag:'add',
-            createdRoleLoading:false
+            createdCategoryLoading:false
         }
     },
     created() {
         this.getList()
-        this.getRoleList()
+        this.getCategoryList()
     },
     mounted() {
     },
-    computed: {},
+    computed: {
+        ...mapGetters(["adminerHash"])
+    },
     methods:{ 
+        beforeUpload(file){
+            const isLt3M = file.size / 1024 / 1024 < 3; //文件大小3M
+            if(!isLt3M){
+                this.$message.error('上传图片大小不能超过 3MB!');
+            }else{
+                this.uploadLoaing = true
+            }
+            return isLt3M;
+        },
+        uploadSuccess(response, file, fileList){
+            if(response.success == false){
+                this.$notify.error({
+                    title: '错误',
+                    message: '图片获取失败'
+                });
+            }else{
+                this.categoryForm.thumbnailPath = response.result.path
+                this.categoryForm.thumbnailBaseUrl = response.result.baseUrl
+                this.fileList = []
+            }
+            this.uploadLoaing = false
+        },
         handleAdd(){
             this.$parent.cardVisibel = true
-            this.$parent.$refs.addPer.flag = 'add'
-            this.$parent.$refs.addPer.resetTemp()
+            this.$parent.$refs.addMonitoring.flag = 'add'
+            this.$parent.$refs.addMonitoring.resetTemp()
         },
         getList(){
             this.listLoading = true
             this.listQuery.projectId = this.projectInfo.id
-            fetchUserList(this.listQuery).then(res => {
+            fetchList(this.listQuery).then(res => {
                 this.list = res.data.result.items
                 this.total = res.data.result.total
                 this.listLoading = false
@@ -214,13 +277,9 @@
         },
         updatePer(row){
             this.$parent.cardVisibel = true
-            this.$parent.$refs.addPer.flag = 'edit'
-            this.$parent.$refs.addPer.usernameDisabled = true
-            this.$parent.$refs.addPer.form = Object.assign({},row)
-            this.$parent.$refs.addPer.form.status = (row.status == 1)?true:false
-            this.$parent.$refs.addPer.form.projectOrgan = {id :row.projectOrgan.id}
-            this.$parent.$refs.addPer.role = row.userRole[0].projectRole.id
-            this.$parent.$refs.addPer.userPhone = row.phone
+            this.$parent.$refs.addMonitoring.flag = 'edit'
+            this.$parent.$refs.addMonitoring.form = Object.assign({},row)
+            this.$parent.$refs.addMonitoring.form.status = (row.status == 1)?true:false
         },
         deletePer(row){
             this.$confirm(
@@ -239,76 +298,73 @@
             })
             
         },
-        getRoleList(){
+        getCategoryList(){
             this.roleListQuery.projectId = this.projectInfo.id
             this.roleListLoading = true
-            fetchRoleList(this.roleListQuery).then(res => {
-                this.roleList = res.data.result.items
-                this.roleTotal = res.data.result.total
-                this.roleOptions = []
-                this.roleList.forEach(element => {
-                    element.value = element.id
-                    element.label = element.name
-                    this.roleOptions.push(element)
-                });
-                this.$store.commit("SET_ROLEOPTIONS",this.roleOptions);
+            fetchCategoryList(this.roleListQuery).then(res => {
+                this.categoryList = res.data.result.items
+                this.categoryTotal = res.data.result.total
+                let [...roleOptions] = res.data.result.items
+                this.roleOptions = roleOptions
+                this.roleOptions.unshift({id:0,name:'无'})
+                this.$store.commit("SET_MONICATEGORYOPTIONS",this.categoryList);
                 this.roleListLoading = false
             })
         },
         
         handleSizeChange_role(val) {
             this.roleListQuery.page_size = val;
-            this.getRoleList();
+            this.getCategoryList();
         },
         handleCurrentChange_role(val) {
             this.roleListQuery.page_index = val;
-            this.getRoleList();
+            this.getCategoryList();
         },
-        addRole(formName){
-            let data = Object.assign({}, this.roleForm);
+        addCategory(formName){
+            let data = Object.assign({}, this.categoryForm);
+            data.parentId = parseInt(data.parentId)
             data.projectId = this.projectInfo.id
             data.status = data.status?1:0
             this.$refs[formName].validate((valid) => {
                 if (valid) {
-                    this.createdRoleLoading = true
-                    addRoleObj(data).then( res => {
+                    this.createdCategoryLoading = true
+                    addCategoryObj(data).then( res => {
                         if(res.data.success == true){
-                            this.getRoleList()
-                            this.roleForm = {status:true};
+                            this.getCategoryList()
+                            this.categoryForm = {status:true};
                             this.$parent.$parent.alertNotify('添加')
-                            this.createdRoleLoading = false
+                            this.createdCategoryLoading = false
                         }
                     })
                 }
             })
         },
-        updateRole(row){
+        updateCategory(row){
             this.flag = 'edit'
-            this.roleForm= Object.assign({}, row);
-            this.roleForm.status = (this.roleForm.status == 1)?true:false
+            this.categoryForm= Object.assign({}, row);
+            this.categoryForm.status = (this.categoryForm.status == 1)?true:false
         },
-        handleEditRole(formName){
-            let data = Object.assign({}, this.roleForm);
+        handleEditCategory(formName){
+            let data = Object.assign({}, this.categoryForm);
             data.status = data.status?1:0
-            delete data.label
-            delete data.value
+            data.sort = parseInt(data.sort)
             this.$refs[formName].validate((valid) => {
                 if (valid) {
-                    this.createdRoleLoading = true
-                    updateRoleObj(data).then( res => {
+                    this.createdCategoryLoading = true
+                    updataCategoryObj(data).then( res => {
                         if(res.data.success == true){
-                            this.getRoleList()
+                            this.getCategoryList()
                             this.cancelEdit();
                             this.$parent.$parent.alertNotify('修改')
-                            this.createdRoleLoading = false
+                            this.createdCategoryLoading = false
                         }
                     })
                 }
             })
         },
-        deleteRole(row){
+        deleteCategory(row){
             this.$confirm(
-                "此操作将永久删除该角色(角色名:" + row.role + "), 是否继续?",
+                "此操作将永久删除该角色(角色名:" + row.name + "), 是否继续?",
                 "提示",
                 {
                 confirmButtonText: "确定",
@@ -316,8 +372,8 @@
                 type: "warning"
                 }
             ).then(() => {
-                delRoleObj(row.id).then(res => {
-                    this.getRoleList()
+                delCategoryObj(row.id).then(res => {
+                    this.getCategoryList()
                     this.$parent.$parent.alertNotify('删除')
                 })
             })
@@ -325,13 +381,42 @@
         },
         cancelEdit(){
             this.flag = 'add'
-            this.roleForm = {status:true}
-            this.createdRoleLoading = false
+            this.categoryForm = {status:true,parentId:0,sort:0}
+            this.createdCategoryLoading = false
         }
     }
 }
 </script>
 <style scoped>
+.avatar-uploader{
+     height: 64px;
+}
+.avatar-uploader .el-upload {
+    border: 1px dashed #d9d9d9;
+    border-radius: 6px;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+  }
+  .avatar-uploader .el-upload:hover {
+    border-color: #409EFF;
+  }
+  .avatar-uploader-icon {
+    font-size: 28px;
+    color: #8c939d;
+    width: 158px;
+    height: 64px;
+    line-height: 64px;
+    text-align: center;
+    border: 1px solid #dcdfe6;
+    border-radius: 4px;
+  }
+  .avatar {
+    width: 158px;
+    height: 64px;
+    display: block;
+    border-radius: 4px;
+  }
 .el-form-item{
     float: left;
     width:80px

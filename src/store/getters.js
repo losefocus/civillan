@@ -28,5 +28,6 @@ const getters = {
   adminerHash: state => state.common.adminerHash,
   groupOptions: state => state.device.groupOptions,
   projectState: state => state.common.projectState,
+  moniCategoryOptions: state => state.common.moniCategoryOptions,
 }
 export default getters

@@ -14,10 +14,9 @@
 let baseUrl = '';
 // let iconfontVersion = ['567566_r22zi6t8noas8aor', '599693_0b5sleso3f1j1yvi'];
 // let iconfontUrl = `//at.acodelicdn.com/t/font_$key.css`;
-let iconfontVersion = ['567566_r22zi6t8noas8aor','599693_0b5sleso3f1j1yvi', '667895_xte3dcfrvbo6r'];//最后一个为新增图标 701851_00bgpb9q55gdo
+let iconfontVersion = ['567566_r22zi6t8noas8aor','599693_0b5sleso3f1j1yvi', '667895_xte3dcfrvbo6r','701851_lxmdl6j215e'];
 let iconfontUrl = `//at.alicdn.com/t/font_$key.css`;
 let codeUrl = `/admin/code`
-console.log(process.env.NODE_ENV)
 if (process.env.NODE_ENV == 'development') {
    baseUrl = `http://192.168.0.232/`
   //  baseUrl = `http://admin.gcycloud.com/`
