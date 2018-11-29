@@ -118,9 +118,9 @@ export default {
 
             },
             form:{
-                type:1,
+                type:'1',
                 title:'',
-                billType:1,
+                billType:'1',
                 taxNum:'',
                 bankName:'',
                 bankNum:'',
@@ -142,7 +142,6 @@ export default {
     },
     created() {
         remote_p("bill_type").then(res => {
-            console.log(res.data)
             this.billTypeOptions = res.data.result
             this.billTypeOptions_ = res.data.result
         });
@@ -154,7 +153,7 @@ export default {
         changeType(val){ 
             if(val == 2){
                 this.billTypeOptions = this.billTypeOptions_
-                this.form.billType = '1' 
+                this.form.billType = '1'
                 if(this.form_.type == 2) this.form = Object.assign({},this.form_)
                 
             }
@@ -169,11 +168,14 @@ export default {
         },
         getBills(){
             getObj().then(res => {
-                this.form = res.data.result
-                this.form.area = JSON.parse(this.form.area)
-                this.form.type = this.form.type.toString()
-                this.form.billType = this.form.billType.toString()
-                this.form_ = Object.assign({},this.form)
+                if('result' in res.data){
+                    this.form = res.data.result
+                    if('area' in this.form && this.form.area!='') this.form.area = JSON.parse(this.form.area)
+                    this.form.type = this.form.type.toString()
+                    this.form.billType = this.form.billType.toString()
+                    this.form_ = Object.assign({},this.form)
+                }
+                
             })
         },
         addBill(){

@@ -263,6 +263,10 @@
             if(!row.product) row.product = {id:'暂无产品'}
             this.$parent.$refs.addEqu.form = Object.assign({},row)
             this.$parent.$refs.addEqu.form.deviceGroup = {id:row.deviceGroup.id}
+            let arr = [row.deviceGroup.id]
+            if('parentGroup' in row.deviceGroup)arr.unshift(row.deviceGroup.parentGroup.id)
+            this.$parent.$refs.addEqu.deviceGroups = arr
+            
             this.$parent.$refs.addEqu.disabled = true
         },
         handleCommand(command){

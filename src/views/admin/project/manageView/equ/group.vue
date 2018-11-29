@@ -12,8 +12,8 @@
                             <el-option
                             v-for="item in parentOptions"
                             :key="item.value"
-                            :label="item.label"
-                            :value="item.value">
+                            :label="item.name"
+                            :value="item.id">
                             </el-option>
                         </el-select>
                         <!-- <el-cascader
@@ -244,11 +244,33 @@
                     newMap.set(this.list[i].id,this.list[i].name)
                 }
                 this.parentHash = newMap
-                this.parentOptions = toTree(this.list)
+                this.parentOptions = this.arrayToJson(this.list)
                 let [...groupOptions] = this.parentOptions
                 this.$store.commit("SET_GROUPOPTIONS", groupOptions);
-                this.parentOptions.unshift({value:0,label:'无'})
+                this.parentOptions.unshift({id:0,name:'无'})
             })
+        },
+        //数组转为树结构
+        arrayToJson(treeArray){
+            var r = [];
+            var tmpMap ={};
+            for (let i=0; i<treeArray.length; i++) {
+                treeArray[i].children = [];
+                if("parentId" in treeArray[i] && treeArray[i].parentId == 0){
+                    tmpMap[treeArray[i].id]= treeArray[i]; 
+                }
+            } 
+            for (let i=0; i<treeArray.length; i++) {
+                if("parentId" in treeArray[i]) {
+                    var key=tmpMap[treeArray[i].parentId];
+                    if (key) {
+                        key["children"].push(treeArray[i]);
+                    } else {
+                        r.push(treeArray[i]);
+                    }
+                }
+            }
+            return r      
         },
         updateList(row){
             this.flag = 'edit'

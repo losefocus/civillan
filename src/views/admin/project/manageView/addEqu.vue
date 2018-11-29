@@ -19,21 +19,23 @@
                 </el-select>
             </el-form-item>
             <el-form-item label="分组" prop="deviceGroup.id">
-                <el-select v-model="form.deviceGroup.id" size="small" placeholder="请选择分组" no-data-text="请先添加设备分组">
+                <!-- <el-select v-model="form.deviceGroup.id" size="small" placeholder="请选择分组" no-data-text="请先添加设备分组">
                     <el-option
                     v-for="item in groupOptions"
                     :key="item.value"
                     :label="item.label"
                     :value="item.value">
                     </el-option>
-                </el-select>
-                <!-- <el-cascader
+                </el-select> -->
+                <el-cascader
                     size="small" placeholder="请选择分组"
                     :options="groupOptions"
-                    v-model="form.deviceGroup.id"
+                    :props="props"
+                    v-model="deviceGroups"
                     :show-all-levels="false"
-                    change-on-select>
-                </el-cascader> -->
+                    change-on-select
+                    @change="changeGroup">
+                </el-cascader>
             </el-form-item>
             <el-form-item label="名称" prop="name">
                 <el-input v-model="form.name" size="small" placeholder="请输入设备显示名称"></el-input>
@@ -108,7 +110,7 @@
             }
         }
         var validataGroupId = (rule, value, callback) => {
-            if(value === '' || value== undefined){
+            if(value.length === '' || value== undefined){
                 callback(new Error('请选择分组'));
             }else{
                 callback()
@@ -184,6 +186,12 @@
             groupListQuery:{
                 page_index: 1,
                 page_size: 999
+            },
+            groupOptions:[],
+            deviceGroups:[],
+            props:{
+                label:'name',
+                value:'id'
             }
         }
     },
@@ -196,7 +204,7 @@
 
     },
     computed: {
-        ...mapGetters(["permissions","groupOptions"])
+        ...mapGetters(["permissions"])
     },
     methods:{
         beforeUpload(file){
@@ -248,10 +256,33 @@
             this.groupListQuery.sort_by = 'sort'
             this.groupListQuery.direction = 'asc'
             getGroupObj(this.groupListQuery).then(res => {
-                let groupOptions = toTree(res.data.result.items)
-                console.log(groupOptions)
-                this.$store.commit("SET_GROUPOPTIONS", groupOptions);
+                this.groupOptions = this.arrayToJson(res.data.result.items)
             })
+        },
+        changeGroup(val){
+            this.form.deviceGroup={id:val[val.length-1]}
+        },
+        //数组转为树结构
+        arrayToJson(treeArray){
+            var r = [];
+            var tmpMap ={};
+            for (let i=0; i<treeArray.length; i++) {
+                treeArray[i].children = [];
+                if("parentId" in treeArray[i] && treeArray[i].parentId == 0){
+                    tmpMap[treeArray[i].id]= treeArray[i]; 
+                }
+            } 
+            for (let i=0; i<treeArray.length; i++) {
+                if("parentId" in treeArray[i]) {
+                    var key=tmpMap[treeArray[i].parentId];
+                    if (key) {
+                        key["children"].push(treeArray[i]);
+                    } else {
+                        r.push(treeArray[i]);
+                    }
+                }
+            }
+            return r      
         },
         positionPicker(){
             this.positionVisible = true
