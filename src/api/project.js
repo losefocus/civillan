@@ -9,6 +9,15 @@ export function fetchList(query) {
     })
   }
 
+  /* 项目列表 */
+export function getObj(id) {
+  return request({
+    url: '/project/project/get?project_id='+id,
+    method: 'get',
+  })
+}
+
+
   /* 管理员列表 */
   export function fetchAdminList(query) {
     return request({

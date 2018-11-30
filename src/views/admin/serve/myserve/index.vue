@@ -6,7 +6,7 @@
                 <div class="l_2" >{{item.intro}}</div>
                 <div class="l_3">
                     <el-button type="primary" size="small" @click="tobuy(item)">立即购买</el-button>
-                    <span class="l_3_d">剩余：{{item.surplus}}{{item.unit}}</span>
+                    <span class="l_3_d">剩余：{{item.surplus || 0}} {{item.unit}}</span>
                 </div>
             </li>
             <!-- <li>

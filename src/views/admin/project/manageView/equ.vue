@@ -2,15 +2,18 @@
     <div style="padding:20px;border:1px solid #ebeef5">
         <div class="filter-container">
             <el-button class="filter-item" style="" @click="handleAdd" size="small" type="primary">添加设备</el-button>
-            <el-button class="filter-item" style="" @click="handleGroup" size="small" type="primary" icon="edit" >分组管理</el-button>
+            <!-- <el-button class="filter-item" style="" @click="handleGroup" size="small" type="primary" icon="edit" >分组管理</el-button> -->
             <el-button class="pull-right" type="primary" size="small" v-waves  @click="handleFilter">搜索</el-button>
             <el-input @keyup.enter.native="handleFilter" style="width: 150px;" size="small" suffix-icon="el-icon-search" class="pull-right" placeholder="设备名称" v-model="listQuery.name"></el-input>
-            <el-select v-model="filterDeviceGroup" clearable class="pull-right" placeholder="按所在分组筛选" style="width:150px!important;margin-right:10px" size="small"  @change="handleFilter">
+            <el-select v-model="listQuery.groupId" clearable class="pull-right" placeholder="按所在分组筛选" style="width:150px!important;margin-right:10px" size="small"  @change="handleFilter">
                 <el-option
-                v-for="item in groupOptions_"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value">
+                v-for="item in groupOptions"
+                :key="item.id"
+                :label="item.name"
+                :value="item.id"
+                :disabled="item.parentId == 0">
+                    <span v-if="item.parentId == 0  || item.id == 0">{{ item.name }}</span>
+                    <span v-else style="padding-left:20px;">{{ item.name }}</span>
                 </el-option>
             </el-select>
         </div>
@@ -133,7 +136,7 @@
   import personnel from "./equ/personnel";
   import device from "./equ/device";
   import {mapGetters} from "vuex";
-  import {delObj, fetchList, getAlarmObj, getConfigObj, getNotifyObj, getSensorObj, updataObj} from "@/api/project_equ";
+  import {delObj, fetchList,getGroupObj, getAlarmObj, getConfigObj, getNotifyObj, getSensorObj, updataObj} from "@/api/project_equ";
 
   export default {
     components:{
@@ -182,11 +185,12 @@
             device_btn_notice :false,
             device_btn_personnel :false,
             device_btn_config :false,
-            groupOptions_:[],
+            groupOptions:[]
         }
     },
     created() {
         this.getList()
+        this.getGroupList()
     },
     mounted() {
         this.device_btn_edit = this.permissions["device_btn_edit"];
@@ -199,7 +203,7 @@
         this.device_btn_config = this.permissions["device_btn_config"];
     },
     computed: {
-        ...mapGetters(["permissions","groupOptions"])
+        ...mapGetters(["permissions"])
     },
     methods:{
         handleAdd(){
@@ -211,8 +215,6 @@
             this.groupVisible = true
         },
         getList(){
-            this.groupOptions_ = this.groupOptions.concat()
-            this.groupOptions_.unshift({value:0,label:'全部分组'})
             this.listLoading = true
             this.listQuery.projectId = this.projectInfo.id
             fetchList(this.listQuery).then(res => {
@@ -226,10 +228,22 @@
                 // });
             })
         },
+        getGroupList(){
+            let data = {
+                projectId:this.projectInfo.id,
+                page_index: 1,
+                page_size: 999,
+                sort_by: 'sort',
+                direction: 'asc',
+            }
+            getGroupObj(data).then(res => {
+                this.groupOptions = res.data.result.items
+                this.groupOptions.unshift({id:0,name:'全部分组'})
+            })
+        },
         handleFilter(){
             if(this.listQuery.name == '') delete this.listQuery.name
-            this.listQuery.deviceGroup = this.filterDeviceGroup
-            if(this.filterDeviceGroup == '') delete this.listQuery.deviceGroup
+            if(this.listQuery.groupId == '') delete this.listQuery.groupId
             this.listQuery.page_index = 1;
             this.getList()
         },
@@ -263,7 +277,8 @@
             this.$parent.$refs.addEqu.flag = 'update'
             if(!row.product) row.product = {id:'暂无产品'}
             this.$parent.$refs.addEqu.form = Object.assign({},row)
-            this.$parent.$refs.addEqu.form.deviceGroup = {id:row.deviceGroup.id}
+            this.$parent.$refs.addEqu.deviceGroup = row.deviceGroup.name
+            this.$parent.$refs.addEqu.productName = row.product.name
             this.$parent.$refs.addEqu.disabled = true
         },
         handleCommand(command){
@@ -302,10 +317,7 @@
         },
     },
     watch:{
-        groupOptions(val,oldVal){
-            this.groupOptions_ = this.groupOptions.concat()
-            this.groupOptions_.unshift({value:0,label:'全部'})
-        }
+
     }
 }
 </script>

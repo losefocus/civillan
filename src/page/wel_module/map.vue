@@ -43,16 +43,19 @@ export default {
             fetchList(this.listQuery).then(response => {
                 let datas = response.data.result.items;
                 datas.forEach(data => {
-                    let item = {
-                        position:[data.position.split(',')[0],data.position.split(',')[1]],
-                        title:data.name,
-                        beginAt:data.beginAt,
-                        endAt:data.endAt,
-                        adminer:data.adminer,
-                        data:data
+                    if(data.position != ''){
+                        let item = {
+                            position:[data.position.split(',')[0],data.position.split(',')[1]],
+                            title:data.name,
+                            beginAt:data.beginAt,
+                            endAt:data.endAt,
+                            adminer:data.adminer,
+                            data:data
+                        }
+                        let position = [data.position.split(',')[0],data.position.split(',')[1]]
+                        markers.push(item)
                     }
-                    let position = [data.position.split(',')[0],data.position.split(',')[1]]
-                    markers.push(item)
+                    
                 })
                 markers.forEach((item,index) => {
                     let marker = new AMap.Marker({

@@ -125,9 +125,9 @@
                         <el-select v-model="form.parentId" size="small" :loading='listLoading' placeholder="请选择" :disabled="flag=='edit'">
                             <el-option
                             v-for="item in parentIdOptions"
-                            :key="item.value"
-                            :label="item.label"
-                            :value="item.value">
+                            :key="item.id"
+                            :label="item.name"
+                            :value="item.id">
                             </el-option>
                         </el-select>
                     </el-form-item>
@@ -213,10 +213,11 @@
             <el-tree
             style="margin-top:-30px"
             ref="tree_c"
-            :data="data"
+            :data="treeData"
             default-expand-all
             show-checkbox
             node-key="id"
+            :default-checked-keys="checkedKeys"
             :props="defaultProps"
             @check-change="handleCheckChange">
             </el-tree>
@@ -226,8 +227,10 @@
 
 <script>
   import {getToken} from "@/util/auth";
+  import {toTree} from "@/util/util";
   import waves from "@/directive/waves/index.js"; // 水波纹指令
-  import {addObj, delObj, editObj, fetchAdminList, fetchList, uploadImg} from "@/api/project";
+  import {addObj, delObj, editObj,getObj, fetchAdminList, fetchList, uploadImg} from "@/api/project";
+  import {fetchCategoryList} from "@/api/product";
   import {mapGetters} from "vuex";
   import mapView from "./map";
   import projectManage from "./manage";
@@ -273,36 +276,13 @@
             }
         };
         return {
-            data: [{
-                id: 1,
-                label: '一级 1',
-                children: [{
-                    id: 4,
-                    label: '二级 1-1',
-                    children: [{
-                    id: 9,
-                    label: '三级 1-1-1'
-                    }, {
-                    id: 10,
-                    label: '三级 1-1-2'
-                    }]
-                    }]
-                },{
-                id: 2,
-                label: '一级 2',
-                    children: [{
-                        id: 5,
-                        label: '二级 2-1'
-                    }, {
-                        id: 6,
-                        label: '二级 2-2'
-                    }]
-                }
-            ],
+            treeData: [],
+            categoryMap:{},
+            checkedKeys:[],
             defaultProps: {
                 children: 'children',
-                label: 'label',
-                value:'value'
+                label: 'name',
+                value:'id'
             },
             proCategoryVisible:false,
             productCategoryIds:'',
@@ -365,11 +345,13 @@
             project_btn_doc:false,
             cardVisibel:false,
             expandRow:null,
+            
         }
     },
     created() {
         this.getList();
         this.getRoleList();
+        this.getProductCategoryList()
     },
     mounted() {
         this.project_btn_add = this.permissions["project_btn_add"];
@@ -387,13 +369,27 @@
         ...mapGetters(["permissions","adminerHash","projectState"])
     },
     methods:{
+        getProductCategoryList(){
+            let data = {
+                page_index: 1,
+                page_size: 999
+            }
+            fetchCategoryList(data).then(res => {
+                this.treeData = this.arrayToJson(res.data.result.items)
+                this.treeData.forEach(r => {
+                    this.categoryMap[r.id] = r.name
+                })
+                console.log(this.categoryMap)
+            })
+        },
         proCategoryPicker(){
             this.proCategoryVisible = true
         },
         handleCheckChange(data){
-            console.log(this.$refs.tree_c.getCheckedKeys().concat(this.$refs.tree_c.getHalfCheckedKeys()))
+            let node = this.$refs.tree_c.getCheckedNodes().concat(this.$refs.tree_c.getHalfCheckedNodes())
             this.form.productCategoryIds = this.$refs.tree_c.getCheckedKeys().concat(this.$refs.tree_c.getHalfCheckedKeys()).join()
-            console.log(this.form.productCategoryIds)
+            this.productCategoryIds = node.map(res => res.name).join()
+            console.log(node.map(res => res.id).join())
         },
         toInfo(info){
             this.showView = 'manage'
@@ -416,6 +412,7 @@
                 comment:'',
                 status:true,
             }
+            this.productCategoryIds=''
             this.tm=[]
             this.imageName=''
             this.createLoading = false
@@ -480,7 +477,9 @@
                 let datas = response.data.result.items;
                 this.mapList = datas
                 this.list = this.arrayToJson(datas);
-
+                let [...list_] = this.list
+                list_.unshift({id:0,name:'无'})
+                this.parentIdOptions = list_
                 //对子项目重新排序
                 this.list.forEach(res => {
                     res.children = res.children.sort(compare('createdAt'))
@@ -494,16 +493,12 @@
         arrayToJson(treeArray){
             var r = [];
             var tmpMap ={};
-            let options = []
-            options.push({value:0,label:'无'})
             for (let i=0; i<treeArray.length; i++) {
                 treeArray[i].children = [];
                 if("parentId" in treeArray[i] && treeArray[i].parentId == 0){
                     tmpMap[treeArray[i].id]= treeArray[i]; 
-                    options.push({value:treeArray[i].id,label:treeArray[i].name})
                 }
             } 
-            this.parentIdOptions = options
             for (let i=0; i<treeArray.length; i++) {
                 if("parentId" in treeArray[i]) {
                     var key=tmpMap[treeArray[i].parentId];
@@ -592,10 +587,19 @@
         updataForm(row){
             this.flag = 'edit'
             this.cardVisibel = true
-            this.form = Object.assign({},row)
-            this.form.status = row.status == 1?true:false
-            this.form.adminer = parseInt(row.adminer) 
-            this.tm = [new Date(row.beginAt*1000),new Date(row.endAt*1000)]
+            getObj(row.id).then(res => {
+                this.form = res.data.result
+                this.form.status = this.form.status == 1?true:false
+                this.form.adminer = parseInt(this.form.adminer)
+                this.tm = [new Date(this.form.beginAt*1000),new Date(this.form.endAt*1000)]
+                this.checkedKeys = this.form.productCategoryIds.split(',')
+                let arr = []
+                this.checkedKeys.forEach(r => {
+                    arr.push(this.categoryMap[r])
+                })
+                this.productCategoryIds = arr.join()
+            })
+
         },
         handleUpdata(formName){ 
             this.$refs[formName].validate((valid) => {
@@ -635,6 +639,7 @@
                 status:true,
             }
             this.tm=[]
+            this.productCategoryIds=''
             this.imageName=''
             this.createLoading = false
             this.uploadLoaing = false

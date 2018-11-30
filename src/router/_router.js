@@ -72,6 +72,11 @@ export default [{
     component: _import('admin/serve/myserve/sms', 'views')
   },
   {
+    path: '/serve/myserve/oss',
+    name: '数据存储',
+    component: _import('admin/serve/myserve/oss', 'views')
+  },
+  {
     path: '/serve/myserve/pay',
     name: '支付',
     component: _import('admin/serve/myserve/pay', 'views')

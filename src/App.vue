@@ -19,6 +19,9 @@ export default {
 };
 </script>
 <style lang="scss">
+.block .el-input-number{
+    width: 120px !important
+}
 #app {
   width: 100%;
   height: 100%;

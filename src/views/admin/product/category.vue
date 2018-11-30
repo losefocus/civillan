@@ -5,9 +5,9 @@
                 <el-select v-model="form.parentId" size="mini" placeholder="请选择上级分类">
                     <el-option
                     v-for="item in categoryOptions"
-                    :key="item.value"
-                    :label="item.label"
-                    :value="item.value">
+                    :key="item.id"
+                    :label="item.name"
+                    :value="item.id">
                     </el-option>
                 </el-select>
             </el-form-item>
@@ -64,7 +64,8 @@
                 </el-table-column>
                 <el-table-column align="center" label="上级分类">
                     <template slot-scope="scope">
-                        <span>{{categoryHash.get(scope.row.parentId)}}</span>
+                        <span v-if="'parentCategory' in scope.row">{{scope.row.parentCategory.name}}</span>
+                        <span v-else>无</span>
                     </template>
                 </el-table-column>
                 <el-table-column align="center" label="标识" width="80">
@@ -144,7 +145,7 @@
             params:{component :'project'},
             uploadLoaing:false,
             form:{
-                parentId:0,
+                parentId:'',
                 name:'',
                 sort:0,
                 status:true,
@@ -219,8 +220,8 @@
         },
         getList(){
             this.listLoading = true
-            this.listQuery.sort_by = 'sort'
-            this.listQuery.direction = 'asc' //desc
+            // this.listQuery.sort_by = 'sort'
+            // this.listQuery.direction = 'asc' //desc
             fetchList(this.listQuery).then(res => {
                 this.list = res.data.result.items
                 this.total = res.data.result.total
@@ -230,12 +231,26 @@
                 for (let i=0; i<this.list.length; i++) {
                     newMap.set(this.list[i].id,this.list[i].name)
                 }
-                this.categoryHash = newMap
-                this.categoryOptions = toTree(this.list)
-                let baseOptions = toTree(this.list)
-                this.$emit('showCategoryOptions',baseOptions);
-                this.categoryOptions.unshift({value:0,label:'无'})
-                this.$emit('showCategoryHash',this.categoryHash);
+                // this.categoryHash = newMap
+                let [...list_] = this.list
+                this.categoryOptions = list_
+                // let baseOptions = list_
+                // this.$emit('showCategoryOptions',baseOptions);
+                this.categoryOptions.unshift({id:'',name:'无'})
+                // this.$emit('showCategoryHash',this.categoryHash);
+            })
+        },
+        getAlllList(){
+            let query = {
+                page_index: 1,
+                page_size: 999
+            }
+            // this.listQuery.sort_by = 'sort'
+            // this.listQuery.direction = 'asc' //desc
+            fetchList(query).then(res => {
+                let list = res.data.result.items
+                this.$emit('showCategoryOptions',list);
+
             })
         },
         updateList(row){

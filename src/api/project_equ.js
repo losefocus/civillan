@@ -9,14 +9,15 @@ export function fetchList(query) {
   })  
 }
 
-  /* 所有产品列表 */
-export function fetchProductList(query) {
+/* 产品分类列表 */
+export function productCategoryList(query) {
   return request({
-    url: '/product/product/list',
+    url: '/product/product/list_category',
     method: 'get',
     params: query
   })
 }
+
   /* 所有项目列表 */
 export function projectList(query) {
   return request({

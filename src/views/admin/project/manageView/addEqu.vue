@@ -2,39 +2,45 @@
     <div>
         <div class="tit"><h3>{{(flag == 'add')?'添加':'修改'}}设备</h3><span>{{(flag == 'add')?'Add':'Edit'}} Equipment</span></div>
         <el-form label-width="55px" :model="form"  ref="form" :rules="rules" label-position="left">
+            <el-form-item label="分组" prop="deviceGroup.id">
+                <el-select v-model="deviceGroup" size="small" placeholder="请选择分组" no-data-text="请先添加设备分组" @change="changeGroup" :disabled="disabled">
+                    <el-option
+                    v-for="item in groupOptions"
+                    :key="item.id"
+                    :label="item.name"
+                    :value="item.id+'_'+ item.code"
+                    :disabled="item.parentId == 0">
+                        <span v-if="item.parentId == 0">{{ item.name }}</span>
+                        <span v-else style="padding-left:20px;">{{ item.name }}</span>
+                    </el-option>
+                </el-select>
+                <!-- <el-cascader
+                    size="small" placeholder="请选择分组"
+                    :options="groupOptions"
+                    :props="props"
+                    v-model="deviceGroups"
+                    :show-all-levels="false"
+                    change-on-select
+                    @change="changeGroup">
+                </el-cascader> -->
+            </el-form-item>
             <el-form-item label="产品" prop="product.id">
-                <el-select v-model="form.product.id" filterable :filter-method="productSearch" size="small" placeholder="请选择产品" :disabled="disabled" no-data-text="请先添加产品">
+                <el-select v-model="productName" filterable :filter-method="productSearch" size="small" placeholder="请选择产品" :disabled="disabled" no-data-text="请先添加产品" @change="changeProduct">
                     <el-option
                     v-for="item in productOptions"
                     :key="item.value"
                     :label="item.label"
                     :value="item.value">
                     </el-option>
-                    <el-pagination layout="prev, pager, next"
+                    <!-- <el-pagination layout="prev, pager, next"
                     @current-change="productCurrentChange"
                     :current-page="productListQuery.page_index"
                     :page-size="productListQuery.page_size"
                     :total="productTotal">
-                    </el-pagination>
+                    </el-pagination> -->
                 </el-select>
             </el-form-item>
-            <el-form-item label="分组" prop="deviceGroup.id">
-                <el-select v-model="form.deviceGroup.id" size="small" placeholder="请选择分组" no-data-text="请先添加设备分组">
-                    <el-option
-                    v-for="item in groupOptions"
-                    :key="item.value"
-                    :label="item.label"
-                    :value="item.value">
-                    </el-option>
-                </el-select>
-                <!-- <el-cascader
-                    size="small" placeholder="请选择分组"
-                    :options="groupOptions"
-                    v-model="form.deviceGroup.id"
-                    :show-all-levels="false"
-                    change-on-select>
-                </el-cascader> -->
-            </el-form-item>
+            
             <el-form-item label="名称" prop="name">
                 <el-input v-model="form.name" size="small" placeholder="请输入设备显示名称"></el-input>
             </el-form-item>
@@ -91,7 +97,7 @@
   import {mapGetters} from "vuex";
   import {getToken} from "@/util/auth";
   import {toTree} from "@/util/util";
-  import {addObj, fetchProductList, getGroupObj, updataObj} from "@/api/project_equ";
+  import {addObj, productCategoryList, getGroupObj, updataObj} from "@/api/project_equ";
   import mapPosition from "../mapPosition";
 
   export default {
@@ -102,13 +108,13 @@
     data(){
         var validataProductId = (rule, value, callback) => {
             if(value === '' || value== undefined){
-                callback(new Error('请选择项目'));
+                callback(new Error('请选择产品'));
             }else{
                 callback()
             }
         }
         var validataGroupId = (rule, value, callback) => {
-            if(value === '' || value== undefined){
+            if(value.length === '' || value== undefined){
                 callback(new Error('请选择分组'));
             }else{
                 callback()
@@ -165,6 +171,8 @@
                     id:''
                 }
             },
+            deviceGroup:'',
+            productName:'',
             positionVisible:false,
             disabled:false,
             productHash:{},
@@ -184,11 +192,16 @@
             groupListQuery:{
                 page_index: 1,
                 page_size: 999
+            },
+            groupOptions:[],
+            deviceGroups:[],
+            props:{
+                label:'name',
+                value:'id'
             }
         }
     },
     created() {
-        this.getProductList()
         this.getGroupList()
         this.device_btn_add = this.permissions["device_btn_add"];
     },
@@ -196,7 +209,7 @@
 
     },
     computed: {
-        ...mapGetters(["permissions","groupOptions"])
+        ...mapGetters(["permissions"])
     },
     methods:{
         beforeUpload(file){
@@ -223,8 +236,8 @@
             this.uploadLoaing = false
         },
         getProductList(){
-            fetchProductList(this.productListQuery).then(res => {
-                let data = res.data.result.items
+            productCategoryList(this.productListQuery).then(res => {
+                let data = res.data.result.items[0].productList
                 this.productTotal = res.data.result.total
                 this.productOptions = []
                 data.forEach(ele => {
@@ -248,9 +261,16 @@
             this.groupListQuery.sort_by = 'sort'
             this.groupListQuery.direction = 'asc'
             getGroupObj(this.groupListQuery).then(res => {
-                let groupOptions = toTree(res.data.result.items)
-                this.$store.commit("SET_GROUPOPTIONS", groupOptions);
+                this.groupOptions = res.data.result.items
             })
+        },
+        changeGroup(val){
+            this.form.deviceGroup={id:val.split('_')[0]}
+            this.productListQuery.code = val.split('_')[1]
+            this.getProductList()
+        },
+        changeProduct(val){
+            this.form.product={id:val}
         },
         positionPicker(){
             this.positionVisible = true
@@ -326,6 +346,7 @@
                 status:0,
                 deviceGroup:{id:''}
             }
+            this.deviceGroup=''
             this.disabled = false
             this.$refs.form.resetFields()
         }

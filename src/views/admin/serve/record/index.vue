@@ -126,16 +126,11 @@ export default {
     },
     created() {
         remote_p("bill_type").then(res => {
-            // [...this.typeOptions] = res.data.result
-            // this.typeOptions.unshift({value:'',label:'所有类别'})
             this.typeMap = new Map()
             res.data.result.forEach(ele => {
                 this.typeMap.set(ele.value,ele.label)
             });
         });
-        this.statusMap.set('0','未开票')
-        this.statusMap.set('1','已开票')
-        this.statusMap.set('2','已邮寄')
     },
     mounted() {
         this.getList()

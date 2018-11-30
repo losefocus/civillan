@@ -359,24 +359,3 @@ export const listParents = (tree, node)=>{
     }
   }
 }
-
-
-// /**
-//  * 递归寻找子类及父类id
-//  */
-// export const findAllParentId = (menu, id) => {
-//   let ids = [id]
-//   for (let i = 0; i < menu.length; i++) {
-//     if (menu[i].children.length !== 0) {
-//       for (let j = 0; j < menu[i].children.length; j++) {
-//         if (menu[i].children[j].id === id) {
-//           return menu[i]
-//         } else {
-//           if (menu[i].children[j].children && menu[i].children[j].children.length !== 0) {
-//             return findAllParent(menu[i].children[j].children, id)
-//           }
-//         }
-//       }
-//     }
-//   }
-// }
