@@ -43,6 +43,9 @@
                     <el-table-column
                         prop="amount"
                         label="数量">
+                        <template slot-scope="scope">
+                            {{scope.row.amount}} {{scope.row.unit}}
+                        </template>
                     </el-table-column>
                     <el-table-column
                         prop="price"

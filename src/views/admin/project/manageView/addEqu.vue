@@ -2,32 +2,19 @@
     <div>
         <div class="tit"><h3>{{(flag == 'add')?'添加':'修改'}}设备</h3><span>{{(flag == 'add')?'Add':'Edit'}} Equipment</span></div>
         <el-form label-width="55px" :model="form"  ref="form" :rules="rules" label-position="left">
-            <el-form-item label="产品" prop="product.id">
-                <el-select v-model="form.product.id" filterable :filter-method="productSearch" size="small" placeholder="请选择产品" :disabled="disabled" no-data-text="请先添加产品">
-                    <el-option
-                    v-for="item in productOptions"
-                    :key="item.value"
-                    :label="item.label"
-                    :value="item.value">
-                    </el-option>
-                    <el-pagination layout="prev, pager, next"
-                    @current-change="productCurrentChange"
-                    :current-page="productListQuery.page_index"
-                    :page-size="productListQuery.page_size"
-                    :total="productTotal">
-                    </el-pagination>
-                </el-select>
-            </el-form-item>
             <el-form-item label="分组" prop="deviceGroup.id">
-                <!-- <el-select v-model="form.deviceGroup.id" size="small" placeholder="请选择分组" no-data-text="请先添加设备分组">
+                <el-select v-model="deviceGroup" size="small" placeholder="请选择分组" no-data-text="请先添加设备分组" @change="changeGroup" :disabled="disabled">
                     <el-option
                     v-for="item in groupOptions"
-                    :key="item.value"
-                    :label="item.label"
-                    :value="item.value">
+                    :key="item.id"
+                    :label="item.name"
+                    :value="item.id+'_'+ item.code"
+                    :disabled="item.parentId == 0">
+                        <span v-if="item.parentId == 0">{{ item.name }}</span>
+                        <span v-else style="padding-left:20px;">{{ item.name }}</span>
                     </el-option>
-                </el-select> -->
-                <el-cascader
+                </el-select>
+                <!-- <el-cascader
                     size="small" placeholder="请选择分组"
                     :options="groupOptions"
                     :props="props"
@@ -35,8 +22,25 @@
                     :show-all-levels="false"
                     change-on-select
                     @change="changeGroup">
-                </el-cascader>
+                </el-cascader> -->
             </el-form-item>
+            <el-form-item label="产品" prop="product.id">
+                <el-select v-model="productName" filterable :filter-method="productSearch" size="small" placeholder="请选择产品" :disabled="disabled" no-data-text="请先添加产品" @change="changeProduct">
+                    <el-option
+                    v-for="item in productOptions"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value">
+                    </el-option>
+                    <!-- <el-pagination layout="prev, pager, next"
+                    @current-change="productCurrentChange"
+                    :current-page="productListQuery.page_index"
+                    :page-size="productListQuery.page_size"
+                    :total="productTotal">
+                    </el-pagination> -->
+                </el-select>
+            </el-form-item>
+            
             <el-form-item label="名称" prop="name">
                 <el-input v-model="form.name" size="small" placeholder="请输入设备显示名称"></el-input>
             </el-form-item>
@@ -93,7 +97,7 @@
   import {mapGetters} from "vuex";
   import {getToken} from "@/util/auth";
   import {toTree} from "@/util/util";
-  import {addObj, fetchProductList, getGroupObj, updataObj} from "@/api/project_equ";
+  import {addObj, productCategoryList, getGroupObj, updataObj} from "@/api/project_equ";
   import mapPosition from "../mapPosition";
 
   export default {
@@ -104,7 +108,7 @@
     data(){
         var validataProductId = (rule, value, callback) => {
             if(value === '' || value== undefined){
-                callback(new Error('请选择项目'));
+                callback(new Error('请选择产品'));
             }else{
                 callback()
             }
@@ -167,6 +171,8 @@
                     id:''
                 }
             },
+            deviceGroup:'',
+            productName:'',
             positionVisible:false,
             disabled:false,
             productHash:{},
@@ -196,7 +202,6 @@
         }
     },
     created() {
-        this.getProductList()
         this.getGroupList()
         this.device_btn_add = this.permissions["device_btn_add"];
     },
@@ -231,8 +236,8 @@
             this.uploadLoaing = false
         },
         getProductList(){
-            fetchProductList(this.productListQuery).then(res => {
-                let data = res.data.result.items
+            productCategoryList(this.productListQuery).then(res => {
+                let data = res.data.result.items[0].productList
                 this.productTotal = res.data.result.total
                 this.productOptions = []
                 data.forEach(ele => {
@@ -256,33 +261,16 @@
             this.groupListQuery.sort_by = 'sort'
             this.groupListQuery.direction = 'asc'
             getGroupObj(this.groupListQuery).then(res => {
-                this.groupOptions = this.arrayToJson(res.data.result.items)
+                this.groupOptions = res.data.result.items
             })
         },
         changeGroup(val){
-            this.form.deviceGroup={id:val[val.length-1]}
+            this.form.deviceGroup={id:val.split('_')[0]}
+            this.productListQuery.code = val.split('_')[1]
+            this.getProductList()
         },
-        //数组转为树结构
-        arrayToJson(treeArray){
-            var r = [];
-            var tmpMap ={};
-            for (let i=0; i<treeArray.length; i++) {
-                treeArray[i].children = [];
-                if("parentId" in treeArray[i] && treeArray[i].parentId == 0){
-                    tmpMap[treeArray[i].id]= treeArray[i]; 
-                }
-            } 
-            for (let i=0; i<treeArray.length; i++) {
-                if("parentId" in treeArray[i]) {
-                    var key=tmpMap[treeArray[i].parentId];
-                    if (key) {
-                        key["children"].push(treeArray[i]);
-                    } else {
-                        r.push(treeArray[i]);
-                    }
-                }
-            }
-            return r      
+        changeProduct(val){
+            this.form.product={id:val}
         },
         positionPicker(){
             this.positionVisible = true
@@ -358,6 +346,7 @@
                 status:0,
                 deviceGroup:{id:''}
             }
+            this.deviceGroup=''
             this.disabled = false
             this.$refs.form.resetFields()
         }

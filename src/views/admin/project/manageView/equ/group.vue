@@ -330,7 +330,7 @@
                     let data = Object.assign({},this.form)
                     data.sort = parseInt(data.sort)
                     data.status = data.status?1:0
-                    delete data.projectDevices
+                    delete data.children
                     editObj(data).then(res => {
                         this.getList()
                         this.$notify({

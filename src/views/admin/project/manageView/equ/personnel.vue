@@ -48,9 +48,7 @@
             fetchUserList(this.listQuery).then(res => {
                 let lists = res.data.result.items
                 this.list = lists.filter( li => li.userRole[0].projectRole.alias == 'worker')
-                this.list.forEach(ele => {
-                    this.checkAllList.push(ele.id)
-                });
+                this.checkAllList = this.list.map(r => r.id)
                 this.listLoading = false
             })
         },

@@ -8,12 +8,15 @@
                 <el-button  size="small" type="primary" @click="dictTemplatVisible=true">参数字典</el-button>
                 <el-button class="pull-right" type="primary" size="small" v-waves @click="handleFilter">搜索</el-button>
                 <el-input @keyup.enter.native="handleFilter" style="width: 200px;" size="small" suffix-icon="el-icon-search" class="pull-right" placeholder="产品名称   " v-model="listQuery.name"></el-input>
-                <el-select v-model="listQuery.productCategory" clearable class="pull-right" placeholder="按分类筛选" style="width:150px !important;margin-right:10px" size="small"  @change="handleCategoryFilter">
+                <el-select v-model="listQuery.category" clearable class="pull-right" placeholder="按分类筛选" style="width:150px !important;margin-right:10px" size="small"  @change="handleCategoryFilter">
                     <el-option
                     v-for="item in categoryOptions_"
-                    :key="item.value"
-                    :label="item.label"
-                    :value="item.value">
+                    :key="item.id"
+                    :label="item.name"
+                    :value="item.id"
+                    :disabled="item.parentId == 0">
+                        <span v-if="item.parentId == 0 || item.id == ''">{{ item.name }}</span>
+                        <span v-else style="padding-left:20px;">{{ item.name }}</span>
                     </el-option>
                 </el-select>
             </div>
@@ -90,13 +93,16 @@
         <el-card class="addNewProject" :style="cardHeight" :class="{'show':cardVisibel}">
             <div class="tit"><h3>{{(flag == 'add')?'添加':'修改'}}产品</h3><span>{{(flag == 'add')?'Add':'Edit'}} Product</span><i class="closeBtn el-icon-close" @click="cardVisibel = false"></i></div>
             <el-form label-width="40px" :model="form" :rules="rules" ref="form" label-position="left">
-                <el-form-item label="分类" prop="productCategory.id">
-                    <el-select v-model="form.productCategory.id" size="small" placeholder="请选择产品分类" no-data-text="请先添加产品分类">
+                <el-form-item label="分类" prop="category">
+                    <el-select v-model="form.category" size="small" placeholder="请选择产品分类" no-data-text="请先添加产品分类">
                         <el-option
                         v-for="item in categoryOptions"
-                        :key="item.value"
-                        :label="item.label"
-                        :value="item.value">
+                        :key="item.id"
+                        :label="item.name"
+                        :value="item.id"
+                        :disabled="item.parentId == 0">
+                            <span v-if="item.parentId == 0 || item.id == ''">{{ item.name }}</span>
+                            <span v-else style="padding-left:20px;">{{ item.name }}</span>
                         </el-option>
                     </el-select>
                 </el-form-item>
@@ -200,7 +206,7 @@
                 alias: [
                     { validator: validateAlias, message: '请输入产品型号', trigger: 'blur' },
                 ],
-                'productCategory.id': [
+                category: [
                     { validator: validateCategory, message: '请选择产品分类', trigger: 'change' },
                 ],
 
@@ -216,7 +222,7 @@
             form:{
                 name:'',
                 alias:'',
-                productCategory:{id:null},
+                category:null,
                 thumbnailPath:'',
                 thumbnailUrl:'',
                 status:true
@@ -272,7 +278,7 @@
             this.form = {
                 name:'',
                 alias:'',
-                productCategory:{id:null},
+                category:null,
                 thumbnailPath:'',
                 thumbnailUrl:'',
                 status:true
@@ -280,7 +286,11 @@
         },
         getAllList(){
             this.listLoading = true
-            Promise.all([fetchList(this.listQuery),fetchCategoryList()]).then(results => {
+            let query = {
+                page_index:1,
+                page_size:999,
+            }
+            Promise.all([fetchList(this.listQuery),fetchCategoryList(query)]).then(results => {
                 let res1 = results[0],res2 = results[1]
                 //产品列表
                 this.list = res1.data.result.items
@@ -293,9 +303,11 @@
                     newMap.set(data[i].id,data[i].name)
                 }
                 this.categoryHash = newMap
-                this.categoryOptions = toTree(data)
-                this.categoryOptions_ = toTree(data)
-                this.categoryOptions_.unshift({value:0,label:'全部分类'})
+                this.categoryOptions = data
+                console.log(this.categoryOptions)
+                let [...data_] = data
+                this.categoryOptions_ = data_
+                this.categoryOptions_.unshift({id:'',name:'全部分类'})
                 this.listLoading = false
             });
         },
@@ -423,7 +435,7 @@
             this.form = {
                 name:'',
                 alias:'',
-                productCategory:{id:null},
+                category:null,
                 thumbnailPath:'',
                 thumbnailUrl:'',
                 status:true

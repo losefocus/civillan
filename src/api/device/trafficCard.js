@@ -3,7 +3,7 @@ import request from '@/router/axios'
 /*  */
 export function getObj(id) {
   return request({
-    url: '/device/device_sim/get?projectDevice.id='+id,
+    url: '/device/device_sim/get?deviceId='+id,
     method: 'get',
     // params: query
   })

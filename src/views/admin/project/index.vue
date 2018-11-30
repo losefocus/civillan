@@ -125,9 +125,9 @@
                         <el-select v-model="form.parentId" size="small" :loading='listLoading' placeholder="请选择" :disabled="flag=='edit'">
                             <el-option
                             v-for="item in parentIdOptions"
-                            :key="item.value"
-                            :label="item.label"
-                            :value="item.value">
+                            :key="item.id"
+                            :label="item.name"
+                            :value="item.id">
                             </el-option>
                         </el-select>
                     </el-form-item>
@@ -468,7 +468,9 @@
                 let datas = response.data.result.items;
                 this.mapList = datas
                 this.list = this.arrayToJson(datas);
-
+                let [...list_] = this.list
+                list_.unshift({id:0,name:'无'})
+                this.parentIdOptions = list_
                 //对子项目重新排序
                 this.list.forEach(res => {
                     res.children = res.children.sort(compare('createdAt'))
@@ -482,16 +484,12 @@
         arrayToJson(treeArray){
             var r = [];
             var tmpMap ={};
-            let options = []
-            options.push({value:0,label:'无'})
             for (let i=0; i<treeArray.length; i++) {
                 treeArray[i].children = [];
                 if("parentId" in treeArray[i] && treeArray[i].parentId == 0){
                     tmpMap[treeArray[i].id]= treeArray[i]; 
-                    options.push({value:treeArray[i].id,label:treeArray[i].name})
                 }
             } 
-            this.parentIdOptions = options
             for (let i=0; i<treeArray.length; i++) {
                 if("parentId" in treeArray[i]) {
                     var key=tmpMap[treeArray[i].parentId];

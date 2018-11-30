@@ -5,9 +5,12 @@
                 <el-select v-model="form.categoryId" size="mini" placeholder="请选择分类" no-data-text="请先添加产品分类" >
                     <el-option
                     v-for="item in categoryOptions"
-                    :key="item.value"
-                    :label="item.label"
-                    :value="item.value">
+                    :key="item.id"
+                    :label="item.name"
+                    :value="item.id"
+                    :disabled="item.parentId == 0">
+                        <span v-if="item.parentId == 0">{{ item.name }}</span>
+                        <span v-else style="padding-left:20px;">{{ item.name }}</span>
                     </el-option>
                 </el-select>
             </el-form-item>
@@ -29,12 +32,24 @@
                 <el-checkbox v-model="form.status" class="pull-right">已启用</el-checkbox>
             </el-form-item>
         </el-form>
-        <div class="filterCategory clearfix">
-            <div>
-                <el-radio-group v-model="categoryId" size="mini" @change="handleCategoryChange">
-                    <el-radio-button v-for="item in categoryOptions_" :label="item.value" :key="item.value">{{item.label}}</el-radio-button>
-                </el-radio-group>
+        <div class="filterCategory clearfix" style="margin-top:-20px;">
+            <span class="pull-left" style="margin-right:20px;">按分类筛选</span>
+            <div class="pull-left" style="width:150px">
+                <el-select v-model="listQuery.categoryId" size="mini" placeholder="请选择分类" no-data-text="请先添加产品分类" @change="handleCategoryChange">
+                    <el-option
+                    v-for="item in categoryOptions"
+                    :key="item.id"
+                    :label="item.name"
+                    :value="item.id"
+                    :disabled="item.parentId == 0">
+                        <span v-if="item.parentId == 0">{{ item.name }}</span>
+                        <span v-else style="padding-left:20px;">{{ item.name }}</span>
+                    </el-option>
+                </el-select>
             </div>
+            <!-- <el-radio-group v-model="categoryId" size="mini" @change="handleCategoryChange">
+                <el-radio-button v-for="item in categoryOptions_" :label="item.id" :key="item.id">{{item.name}}</el-radio-button>
+            </el-radio-group> -->
         </div>
         <div v-loading="listLoading">
             <el-table :data="list" border fit highlight-current-row style="width: 100%;margin-bottom:20px;margin-top:10px">
@@ -144,9 +159,9 @@
         getCategoryList(){
             let query = {
                 page_index: 1,
-                page_size: 10,
-                sort_by: 'sort',
-                direction: 'asc',
+                page_size: 999,
+                // sort_by: 'sort',
+                // direction: 'asc',
             }
             categoryList(query).then(res => {
                 let list = res.data.result.items
@@ -155,16 +170,13 @@
                     newMap.set(list[i].id,list[i].name)
                 }
                 this.categoryHash = newMap
-                this.categoryOptions = toTree(list)
-                this.categoryOptions_ = toTree(list)
-                this.categoryOptions_.unshift({value:0,label:'全部分类'})
+                this.categoryOptions = list
+                let [...list_] = list
+                this.categoryOptions_ = list_
+                this.categoryOptions_.unshift({id:'',name:'全部分类'})
             })
         },
         handleCategoryChange(){
-            this.listQuery.categoryId = this.categoryId
-            if(this.categoryId == 0){
-                delete this.listQuery.categoryId
-            }
             this.listQuery.page_index = 1;
             this.getList()
         },

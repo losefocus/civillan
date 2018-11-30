@@ -57,6 +57,7 @@
             let type = this.dataInfo.type
             fetchDeviceList(type).then(res => {
                 this.list = res.data.result
+                this.checkAllList = this.list.map(r => r.id)
                 this.listLoading = false
             })
         },
