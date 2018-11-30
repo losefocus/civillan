@@ -160,7 +160,7 @@
                     <el-form-item label="位置" prop="position">
                         <el-input v-model="form.position" size="small" readonly placeholder="点击打开地图选点" @focus="positionPicker"></el-input>
                     </el-form-item>
-                    <el-form-item label="分类" prop="productCategoryIds" v-if="flag == 'add'">
+                    <el-form-item label="分类" prop="productCategoryIds">
                         <el-input v-model="productCategoryIds" size="small" readonly placeholder="点击选择产品分类" @focus="proCategoryPicker"></el-input>
                     </el-form-item>
                     <el-form-item label="图片" prop="thumbnailPath">
@@ -217,6 +217,7 @@
             default-expand-all
             show-checkbox
             node-key="id"
+            :default-checked-keys="checkedKeys"
             :props="defaultProps"
             @check-change="handleCheckChange">
             </el-tree>
@@ -228,7 +229,7 @@
   import {getToken} from "@/util/auth";
   import {toTree} from "@/util/util";
   import waves from "@/directive/waves/index.js"; // 水波纹指令
-  import {addObj, delObj, editObj, fetchAdminList, fetchList, uploadImg} from "@/api/project";
+  import {addObj, delObj, editObj,getObj, fetchAdminList, fetchList, uploadImg} from "@/api/project";
   import {fetchCategoryList} from "@/api/product";
   import {mapGetters} from "vuex";
   import mapView from "./map";
@@ -276,6 +277,8 @@
         };
         return {
             treeData: [],
+            categoryMap:{},
+            checkedKeys:[],
             defaultProps: {
                 children: 'children',
                 label: 'name',
@@ -342,6 +345,7 @@
             project_btn_doc:false,
             cardVisibel:false,
             expandRow:null,
+            
         }
     },
     created() {
@@ -372,6 +376,10 @@
             }
             fetchCategoryList(data).then(res => {
                 this.treeData = this.arrayToJson(res.data.result.items)
+                this.treeData.forEach(r => {
+                    this.categoryMap[r.id] = r.name
+                })
+                console.log(this.categoryMap)
             })
         },
         proCategoryPicker(){
@@ -381,6 +389,7 @@
             let node = this.$refs.tree_c.getCheckedNodes().concat(this.$refs.tree_c.getHalfCheckedNodes())
             this.form.productCategoryIds = this.$refs.tree_c.getCheckedKeys().concat(this.$refs.tree_c.getHalfCheckedKeys()).join()
             this.productCategoryIds = node.map(res => res.name).join()
+            console.log(node.map(res => res.id).join())
         },
         toInfo(info){
             this.showView = 'manage'
@@ -576,13 +585,21 @@
             })   
         },
         updataForm(row){
-            console.log(row)
             this.flag = 'edit'
             this.cardVisibel = true
-            this.form = Object.assign({},row)
-            this.form.status = row.status == 1?true:false
-            this.form.adminer = parseInt(row.adminer) 
-            this.tm = [new Date(row.beginAt*1000),new Date(row.endAt*1000)]
+            getObj(row.id).then(res => {
+                this.form = res.data.result
+                this.form.status = this.form.status == 1?true:false
+                this.form.adminer = parseInt(this.form.adminer)
+                this.tm = [new Date(this.form.beginAt*1000),new Date(this.form.endAt*1000)]
+                this.checkedKeys = this.form.productCategoryIds.split(',')
+                let arr = []
+                this.checkedKeys.forEach(r => {
+                    arr.push(this.categoryMap[r])
+                })
+                this.productCategoryIds = arr.join()
+            })
+
         },
         handleUpdata(formName){ 
             this.$refs[formName].validate((valid) => {
