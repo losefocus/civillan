@@ -93,6 +93,7 @@
         toProjectIndex(){
             this.$parent.showView = 'index'
             this.tabView = null
+            this.cardVisibel = false
         },
     },
     watch:{

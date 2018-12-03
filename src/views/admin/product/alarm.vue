@@ -30,10 +30,38 @@
                 <el-form-item label="恢复内容" prop="recoverMessage" style="width: 310px;margin-left:30px">
                     <el-input v-model="form.recoverMessage" size="mini" auto-complete="off" placeholder="请输入恢复内容"></el-input>
                 </el-form-item>
-                <el-form-item label="触发条件" prop="condition" style="width: 310px;">
+                <!-- <el-form-item label="触发条件" prop="condition" style="width: 310px;">
                     <el-input v-model="form.condition" type="textarea" :rows="2" resize="none" size="mini" auto-complete="off" placeholder="请输入触发条件"></el-input>
-                </el-form-item>
-                <el-form-item label="报警级别" prop="level" style="width: 310px;;margin-left:30px;margin-bottom:38px">
+                </el-form-item> -->
+
+                <el-form-item label="触发条件" prop="condition" style="width: 650px;">
+                        <!-- <el-input v-model="form.condition" type="textarea" :rows="2" size="mini" auto-complete="off"></el-input> -->
+                        <div style="width:150px;margin-right:20px;" class="pull-left">
+                            <el-select v-model="triggerForm.label" placeholder="选择变量" size="mini" no-data-text="请添加变量" @change="changeTrigger">
+                                <el-option
+                                v-for="item in sensorOption"
+                                :key="item.id"
+                                :label="item.name"
+                                :value="item.label">
+                                </el-option>
+                            </el-select>
+                        </div>
+                        <div style="width:150px;margin-right:20px;" class="pull-left">
+                            <el-select v-model="triggerForm.trigger" placeholder="触发条件" size="mini" style="width:100%" no-data-text="触发条件" @change="changeTrigger">
+                                <el-option
+                                v-for="item in triggerOption"
+                                :key="item.value"
+                                :label="item.label"
+                                :value="item.value">
+                                </el-option>
+                            </el-select>
+                        </div>
+                        <el-input v-model="triggerForm.value1" class="pull-left" style="width:110px;margin-right:20px;" size="mini" auto-complete="off" @change="changeTrigger"></el-input>
+                        <el-input v-model="triggerForm.value2" v-if="triggerForm.trigger == 'between'" class="pull-left" style="width:110px" size="mini" auto-complete="off" @change="changeTrigger"></el-input>
+                        <el-input v-model="form.condition" type="textarea" style="margin-top:10px;" :rows="2" size="mini" auto-complete="off"></el-input>
+                    </el-form-item>
+
+                <el-form-item label="报警级别" prop="level" style="width: 310px;margin-bottom:38px">
                     <el-select v-model="form.level" placeholder="请选择报警级别" size="mini">
                         <el-option
                         v-for="item in alarmDicts"
@@ -175,6 +203,22 @@
             }
         };
         return {
+            sensorOption:[],
+            triggerOption:[
+                {label:'=',value:'='},
+                {label:'>',value:'>'},
+                {label:'>=',value:'>='},
+                {label:'<',value:'<'},
+                {label:'<=',value:'<='},
+                {label:'between',value:'between'},
+            ],
+            triggerForm:{
+                label:'',
+                trigger:'',
+                value1:'',
+                value2:'',
+            },
+
             header:[
                 {label:'报警标题',prop:'title'},
                 {label:'报警内容',prop:'triggerMessage'},
@@ -207,9 +251,11 @@
             params:{product_id:this.productInfo.id},
             form:{
                 title:'',
+                cycle:'1',
                 condition:'',
                 triggerMessage:'',
-                recoverMessage:'',
+                recoverMessage:'已恢复',
+                level:'1',
                 comment:'',
                 status:true
             },
@@ -232,6 +278,13 @@
     },
     computed: {},
     methods:{
+        changeTrigger(){
+            if(this.triggerForm.trigger != 'between'){
+                this.form.condition =  '{' + this.triggerForm.label + '}' + this.triggerForm.trigger + this.triggerForm.value1
+            }else{
+                this.form.condition =   '{' +this.triggerForm.label + '}' + '<' +this.triggerForm.value1 + ',' + '{' + this.triggerForm.label + '}' +  '>' + this.triggerForm.value2
+            }
+        },
         handleSizeChange(val) {
             this.listQuery.page_size = val;
             this.getList();
@@ -343,11 +396,19 @@
         resetTem(){
             this.form={
                 title:'',
+                cycle:'1',
                 condition:'',
                 triggerMessage:'',
-                recoverMessage:'',
+                recoverMessage:'已恢复',
+                level:'1',
                 comment:'',
                 status:true
+            }
+            this.triggerForm = {
+                label:'',
+                trigger:'',
+                value1:'',
+                value2:'',
             }
             this.createdLoading = false
             this.isshow = false

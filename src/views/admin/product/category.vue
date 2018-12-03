@@ -145,7 +145,7 @@
             params:{component :'project'},
             uploadLoaing:false,
             form:{
-                parentId:'',
+                parentId:0,
                 name:'',
                 sort:0,
                 status:true,
@@ -167,6 +167,7 @@
     },
     created() {
         this.getList();
+        this.getAlllList()
     },
     mounted() {
 
@@ -226,18 +227,6 @@
                 this.list = res.data.result.items
                 this.total = res.data.result.total
                 this.listLoading = false
-                let newMap = new Map();
-                newMap.set(0,'无')
-                for (let i=0; i<this.list.length; i++) {
-                    newMap.set(this.list[i].id,this.list[i].name)
-                }
-                // this.categoryHash = newMap
-                let [...list_] = this.list
-                this.categoryOptions = list_
-                // let baseOptions = list_
-                // this.$emit('showCategoryOptions',baseOptions);
-                this.categoryOptions.unshift({id:'',name:'无'})
-                // this.$emit('showCategoryHash',this.categoryHash);
             })
         },
         getAlllList(){
@@ -249,7 +238,21 @@
             // this.listQuery.direction = 'asc' //desc
             fetchList(query).then(res => {
                 let list = res.data.result.items
-                this.$emit('showCategoryOptions',list);
+                let arr = [],allArr = []
+                list.forEach(r => {
+                    if(r.parentId == 0){
+                        arr.push(r)
+                        allArr.push(r)
+                        if(r.childrenList.length !=0){
+                            r.childrenList.forEach(l => {
+                                allArr.push(l)
+                            })
+                        }
+                    }
+                })
+                this.categoryOptions = arr
+                this.categoryOptions.unshift({id:0,name:'无'})
+                this.$emit('showCategoryOptions',allArr);
 
             })
         },
@@ -271,6 +274,7 @@
                 delObj(row.id).then(res => {
                     this.getList()
                     this.$parent.$parent.alertNotify('删除')
+                    this.getAlllList()
                 })
             })
         },
@@ -284,6 +288,7 @@
                     addObj(data).then(res => {
                         this.getList()
                         this.$parent.$parent.alertNotify('添加')
+                        this.getAlllList()
                         this.resetTem()
                     }).catch(err => {
                         this.createdLoading = false
@@ -301,6 +306,7 @@
                     editObj(data).then(res => {
                         this.getList()
                         this.$parent.$parent.alertNotify('修改')
+                        this.getAlllList()
                         this.cancelEdit()
                     }).catch(err => {
                         this.createdLoading = false

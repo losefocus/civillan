@@ -143,7 +143,6 @@ export default {
             this.getList()
         },
         handleChange(){
-            console.log(123123)
             this.listQuery.page_index = 1;
             this.getList();
         },
@@ -188,6 +187,9 @@ export default {
         formatJson(filterVal, jsonData) {
             return jsonData.map(v => filterVal.map(j => v[j]))
         }
+    },
+    watch(){
+        
     }
 }
 </script>
