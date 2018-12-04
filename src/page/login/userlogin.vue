@@ -57,7 +57,7 @@
     };
     return {
       loginForm: {
-        domain:'',
+        domain:'civillan',
         username: "admin",
         password: "123456",
         code: "",

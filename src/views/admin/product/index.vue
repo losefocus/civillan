@@ -303,9 +303,20 @@
                     newMap.set(data[i].id,data[i].name)
                 }
                 this.categoryHash = newMap
-                this.categoryOptions = data
-                console.log(this.categoryOptions)
-                let [...data_] = data
+
+                let arr = []
+                data.forEach(r => {
+                    if(r.parentId == 0){
+                        arr.push(r)
+                        if(r.childrenList.length !=0){
+                            r.childrenList.forEach(l => {
+                                arr.push(l)
+                            })
+                        }
+                    }
+                })
+                this.categoryOptions = arr
+                let [...data_] = arr
                 this.categoryOptions_ = data_
                 this.categoryOptions_.unshift({id:'',name:'全部分类'})
                 this.listLoading = false
@@ -313,6 +324,8 @@
         },
         getParentOptions(msg) {
             this.categoryOptions = msg
+            this.categoryOptions_ = [...msg]
+            this.categoryOptions_.unshift({id:'',name:'全部分类'})
         },
         getParentHash(msg) {
             this.categoryHash = msg
@@ -373,6 +386,8 @@
                 if (valid) {
                     this.createLoading = true
                     let data = Object.assign({},this.form)
+                    delete data.productCategory
+                    delete data.productTemplate
                     data.status = data.status?1:0
                     updataObj(data).then(res => {
                         this.getList();

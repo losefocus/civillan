@@ -151,10 +151,10 @@
                 phone: [
                     { validator: validataPhone, trigger: 'blur' },
                 ],
-                // username: [
-                //     { validator: validateUserName, trigger: 'blur'},
-                //     { min: 6, max: 20, message: "长度在 6 到 20 个字符", trigger: "blur"}
-                // ],
+                username: [
+                    { validator: validateUserName, trigger: 'blur'},
+                    { min: 6, max: 20, message: "长度在 6 到 20 个字符", trigger: "blur"}
+                ],
                 // password: [
                 //     { validator: validatePass, trigger: 'blur'},
                 //     { min: 6, max: 50, message: "长度在 6 到 50 个字符", trigger: "blur"}

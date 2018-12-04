@@ -379,7 +379,6 @@
                 this.treeData.forEach(r => {
                     this.categoryMap[r.id] = r.name
                 })
-                console.log(this.categoryMap)
             })
         },
         proCategoryPicker(){
@@ -412,6 +411,7 @@
                 comment:'',
                 status:true,
             }
+            this.checkedKeys = []
             this.productCategoryIds=''
             this.tm=[]
             this.imageName=''
@@ -638,6 +638,7 @@
                 comment:'',
                 status:true,
             }
+            this.checkedKeys = []
             this.tm=[]
             this.productCategoryIds=''
             this.imageName=''

@@ -237,7 +237,20 @@
                 direction: 'asc',
             }
             getGroupObj(data).then(res => {
-                this.groupOptions = res.data.result.items
+                // this.groupOptions = res.data.result.items
+                // this.groupOptions.unshift({id:0,name:'全部分组'})
+                let arr = []
+                res.data.result.items.forEach(r => {
+                    if(r.parentId == 0){
+                        arr.push(r)
+                        if(r.childrenList.length !=0){
+                            r.childrenList.forEach(l => {
+                                arr.push(l)
+                            })
+                        }
+                    }
+                })
+                this.groupOptions = arr
                 this.groupOptions.unshift({id:0,name:'全部分组'})
             })
         },
