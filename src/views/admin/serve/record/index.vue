@@ -188,9 +188,6 @@ export default {
             return jsonData.map(v => filterVal.map(j => v[j]))
         }
     },
-    watch(){
-        
-    }
 }
 </script>
 <style lang="scss" scoped>

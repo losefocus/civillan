@@ -7,9 +7,12 @@
                 <el-select v-model="form.typeId" size="small" placeholder="请选择产品分类" @change="changeType" no-data-text="请先添加产品分类">
                     <el-option
                     v-for="item in typeOptions"
-                    :key="item.value"
-                    :label="item.label"
-                    :value="item.value">
+                    :key="item.id"
+                    :label="item.name"
+                    :value="item.id"
+                    :disabled="item.parentId == 0">
+                        <span v-if="item.parentId == 0 || item.id == ''">{{ item.name }}</span>
+                        <span v-else style="padding-left:20px;">{{ item.name }}</span>
                     </el-option>
                 </el-select>
             </el-form-item>
@@ -179,9 +182,18 @@
         getCategoryList(){
             categoryList(this.allListQuery).then(res => {
                 let list = res.data.result.items
-                this.typeOptions = list.map(item => {
-                    return { value: item.id, label: item.name };
-                });
+                let arr = []
+                list.forEach(r => {
+                    if(r.parentId == 0){
+                        arr.push(r)
+                        if(r.childrenList.length !=0){
+                            r.childrenList.forEach(l => {
+                                arr.push(l)
+                            })
+                        }
+                    }
+                })
+                this.typeOptions = arr
             })
         },
         getParamsList(){

@@ -14,9 +14,24 @@
                 :value="item.value">
                 </el-option>
             </el-select> -->
-            <el-radio-group v-model="filterType" size="small" @change="changeTypeFilter"  style="margin-right:20px;">
+            <!-- <el-radio-group v-model="filterType" size="small" @change="changeTypeFilter"  style="margin-right:20px;">
                 <el-radio-button v-for="item in typeOptions" :label="item.value" :key="item.value">{{item.label}}</el-radio-button>
-            </el-radio-group>
+            </el-radio-group> -->
+
+            <div class="pull-right" style="width:150px; margin-right:20px;">
+                <el-select v-model="filterType" size="small" placeholder="请选择分类" no-data-text="请先添加产品分类" @change="changeTypeFilter">
+                    <el-option
+                    v-for="item in typeOptions"
+                    :key="item.id"
+                    :label="item.name"
+                    :value="item.id"
+                    :disabled="item.parentId == 0">
+                        <span v-if="item.parentId == 0 || item.id == ''">{{ item.name }}</span>
+                        <span v-else style="padding-left:20px;">{{ item.name }}</span>
+                    </el-option>
+                </el-select>
+            </div>
+            
         </div>
         <el-table :data="list" v-loading="listLoading" ref="multipleTable" fit highlight-current-row style="width: 99%;margin-bottom:20px;" @selection-change="handleSelectionChange">
             <el-table-column type="selection" min-width="55"></el-table-column>
@@ -73,10 +88,13 @@
             <div class="clearfix" v-loading="uploading">
                 <el-select v-model="params.typeId" size="small" placeholder="请选择类型" style="width:100%;">
                     <el-option
-                    v-for="item in typeOptions"
-                    :key="item.value"
-                    :label="item.label"
-                    :value="item.value">
+                    v-for="item in typeOptions_"
+                    :key="item.id"
+                    :label="item.name"
+                    :value="item.id"
+                    :disabled="item.parentId == 0">
+                        <span v-if="item.parentId == 0 || item.id == ''">{{ item.name }}</span>
+                        <span v-else style="padding-left:20px;">{{ item.name }}</span>
                     </el-option>
                 </el-select>
                 <el-upload
@@ -149,6 +167,7 @@
             },
             configTemplateVisible:false,
             typeOptions:[],
+            typeOptions_:[],
             allChecked:false,
             valueType:'',
         }
@@ -262,14 +281,24 @@
             this.listLoading = true
             categoryList(this.allListQuery).then(res => {
                 let list = res.data.result.items
+                let arr = []
+                list.forEach(r => {
+                    if(r.parentId == 0){
+                        arr.push(r)
+                        if(r.childrenList.length !=0){
+                            r.childrenList.forEach(l => {
+                                arr.push(l)
+                            })
+                        }
+                    }
+                })
                 this.typeMap = new Map()
                 for (let i=0; i<list.length; i++) {
                     this.typeMap.set(list[i].id,list[i].name)
                 }
-                this.typeOptions = list.map(item => {
-                    return { value: item.id, label: item.name };
-                });
-                this.typeOptions.unshift({value:0,label:'全部类型'})
+                this.typeOptions = arr
+                this.typeOptions_ = [...arr]
+                this.typeOptions.unshift({id:'',name:'全部类型'})
                 this.listLoading = false
             })
         },
