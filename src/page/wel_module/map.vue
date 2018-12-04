@@ -16,7 +16,11 @@ export default {
         return {
             mapHeight:{height:'500px'},
             map:null,
-            markersArry:[]
+            markersArry:[],
+            listQuery:{
+                page_index: 1,
+                page_size: 999
+            }
         }
     },
     created() {},
