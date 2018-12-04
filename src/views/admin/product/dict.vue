@@ -37,12 +37,12 @@
             <div class="pull-left" style="width:150px">
                 <el-select v-model="listQuery.categoryId" size="mini" placeholder="请选择分类" no-data-text="请先添加产品分类" @change="handleCategoryChange">
                     <el-option
-                    v-for="item in categoryOptions"
+                    v-for="item in categoryOptions_"
                     :key="item.id"
                     :label="item.name"
                     :value="item.id"
                     :disabled="item.parentId == 0">
-                        <span v-if="item.parentId == 0">{{ item.name }}</span>
+                        <span v-if="item.parentId == 0 || item.id == ''">{{ item.name }}</span>
                         <span v-else style="padding-left:20px;">{{ item.name }}</span>
                     </el-option>
                 </el-select>
@@ -61,6 +61,11 @@
                 <el-table-column align="center" label="标识">
                     <template slot-scope="scope">
                         <span>{{scope.row.code}}</span>
+                    </template>
+                </el-table-column>
+                <el-table-column align="center" label="分类">
+                    <template slot-scope="scope">
+                        <span>{{scope.row.category.name}}</span>
                     </template>
                 </el-table-column>
                 <el-table-column align="center" label="排序" width="60">
@@ -169,10 +174,20 @@
                 for (let i=0; i<list.length; i++) {
                     newMap.set(list[i].id,list[i].name)
                 }
+                let arr = []
+                list.forEach(r => {
+                    if(r.parentId == 0){
+                        arr.push(r)
+                        if(r.childrenList.length !=0){
+                            r.childrenList.forEach(l => {
+                                arr.push(l)
+                            })
+                        }
+                    }
+                })
                 this.categoryHash = newMap
-                this.categoryOptions = list
-                let [...list_] = list
-                this.categoryOptions_ = list_
+                this.categoryOptions = arr
+                this.categoryOptions_ = [...arr]
                 this.categoryOptions_.unshift({id:'',name:'全部分类'})
             })
         },
@@ -243,6 +258,7 @@
                     let data = Object.assign({},this.form)
                     data.sort = parseInt(data.sort)
                     data.status = data.status?1:0
+                    delete data.category
                     editObj(data).then(res => {
                         this.getList()
                         this.$parent.$parent.alertNotify('修改')

@@ -47,6 +47,22 @@
                 <el-checkbox v-model="form.status" class="pull-right">已启用</el-checkbox>
             </el-form-item>
         </el-form>
+
+        <div class="filterCategory clearfix">
+            <span class="pull-left" style="margin-right:20px;">按分类筛选</span>
+            <div class="pull-left" style="width:150px">
+                <el-select v-model="listQuery.parentId" size="mini" placeholder="请选择分类" no-data-text="请先添加产品分类" @change="handleCategoryChange">
+                    <el-option
+                    v-for="item in categoryOptions_"
+                    :key="item.id"
+                    :label="item.name"
+                    :value="item.id">
+                        <span v-if="item.parentId == 0 || item.id == ''">{{ item.name }}</span>
+                        <span v-else style="padding-left:20px;">{{ item.name }}</span>
+                    </el-option>
+                </el-select>
+            </div>
+        </div>
         <div v-loading="listLoading">
             <el-table :data="list" border fit highlight-current-row style="width: 100%;margin-bottom:20px;margin-top:10px">
                 <el-table-column align="center" label="缩略图" width="80">
@@ -160,6 +176,7 @@
             total:null,
             list:null,
             categoryOptions:[],
+            categoryOptions_:[],
             categoryHash:{0:'无'},
             isName:false,
             isCode:false,
@@ -211,6 +228,10 @@
             }
             this.uploadLoaing = false
         },
+        handleCategoryChange(){
+            this.listQuery.page_index = 1;
+            this.getList()
+        },
         handleSizeChange(val) {
             this.listQuery.page_size = val;
             this.getList();
@@ -221,8 +242,8 @@
         },
         getList(){
             this.listLoading = true
-            // this.listQuery.sort_by = 'sort'
-            // this.listQuery.direction = 'asc' //desc
+            this.listQuery.sort_by = 'sort'
+            this.listQuery.direction = 'asc' //desc
             fetchList(this.listQuery).then(res => {
                 this.list = res.data.result.items
                 this.total = res.data.result.total
@@ -232,10 +253,11 @@
         getAlllList(){
             let query = {
                 page_index: 1,
-                page_size: 999
+                page_size: 999,
+                sort_by:'sort',
+                direction:'asc',
+                parentId:0,
             }
-            // this.listQuery.sort_by = 'sort'
-            // this.listQuery.direction = 'asc' //desc
             fetchList(query).then(res => {
                 let list = res.data.result.items
                 let arr = [],allArr = []
@@ -250,8 +272,10 @@
                         }
                     }
                 })
-                this.categoryOptions = arr
+                this.categoryOptions = arr 
+                this.categoryOptions_ = [...arr]
                 this.categoryOptions.unshift({id:0,name:'无'})
+                this.categoryOptions_.unshift({id:'',name:'全部分类'})
                 this.$emit('showCategoryOptions',allArr);
 
             })
@@ -303,6 +327,8 @@
                     let data = Object.assign({},this.form)
                     data.sort = parseInt(data.sort)
                     data.status = data.status?1:0
+                    delete data.parentCategory
+                    delete data.childrenList
                     editObj(data).then(res => {
                         this.getList()
                         this.$parent.$parent.alertNotify('修改')

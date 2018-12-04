@@ -275,6 +275,13 @@
                 callback();
             }
         };
+        var validateCategoryIds = (rule, value, callback) => {
+            if (value === '' || value== undefined) {
+                callback(new Error('请选择产品分类'));
+            } else {
+                callback();
+            }
+        };
         return {
             treeData: [],
             categoryMap:{},
@@ -299,6 +306,9 @@
                 adminer: [
                     { validator: validateAdminer, message: '请选择管理员', trigger: 'change' }
                 ],
+                productCategoryIds:[
+                    { validator: validateCategoryIds, message: '请选择产品分类', trigger: 'change' }
+                ]
             },
             sys_user_upd:true,
             sys_user_del:true,
@@ -376,7 +386,7 @@
             }
             fetchCategoryList(data).then(res => {
                 this.treeData = this.arrayToJson(res.data.result.items)
-                this.treeData.forEach(r => {
+                res.data.result.items.forEach(r => {
                     this.categoryMap[r.id] = r.name
                 })
             })
@@ -388,7 +398,6 @@
             let node = this.$refs.tree_c.getCheckedNodes().concat(this.$refs.tree_c.getHalfCheckedNodes())
             this.form.productCategoryIds = this.$refs.tree_c.getCheckedKeys().concat(this.$refs.tree_c.getHalfCheckedKeys()).join()
             this.productCategoryIds = node.map(res => res.name).join()
-            console.log(node.map(res => res.id).join())
         },
         toInfo(info){
             this.showView = 'manage'
