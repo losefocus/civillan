@@ -66,8 +66,8 @@ export default {
             let id = this.$route.query.id
             getObj(id).then(res => {
                 this.item = res.data.result.orderServe
-                this.surplus = res.data.result.surplus
-                this.surplus_ = res.data.result.surplus
+                this.surplus = res.data.result.surplus || 0;
+                this.surplus_ = res.data.result.surplus || 0;
                 this.loading = false
             })
         },
@@ -75,7 +75,6 @@ export default {
             this.surplus = parseInt(this.surplus_)+parseInt(this.amount)
         },
         toPay(){
-            console.log(this.item)
             let data = Object.assign({amount:this.amount},this.item)
             this.$router.push({path:'/serve/myserve/pay',query:data})
         }

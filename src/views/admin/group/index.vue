@@ -226,7 +226,7 @@
               duration: 2000
             })
           })
-        })
+        }).catch(() => {});
       },
       update() {
         if(this.form.id == this.form.parentId){

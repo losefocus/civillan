@@ -591,7 +591,7 @@
                         this.alertNotify('删除')
                     })
                 }
-            })   
+            }).catch(() => {});
         },
         updataForm(row){
             this.flag = 'edit'

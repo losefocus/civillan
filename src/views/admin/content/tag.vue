@@ -132,7 +132,7 @@
                     this.getList()
                     this.alertNotify('删除')
                 })
-            })
+            }).catch(() => {});
         },
         handleAdd(){
             this.$refs.form.validate((valid) => {

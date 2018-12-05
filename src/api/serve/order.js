@@ -18,7 +18,7 @@ export function payment(id) {
   })
 }
 
-/* 列表 */
+/* 订单列表 */
 export function fetchList(query) {
   return request({
     url: '/order/list',
@@ -35,11 +35,19 @@ export function orderList(ids) {
   })
 }
 
-/* 列表 */
+/* 服务列表 */
 export function serviceList(query) {
   return request({
     url: '/order/service/list',
     method: 'get',
     params: query
+  })
+}
+
+/* 取消订单 */
+export function cancelObj(id) {
+  return request({
+    url: '/order/cancel?id='+id,
+    method: 'get',
   })
 }

@@ -239,7 +239,7 @@
                     this.getList(this.listQuery)
                     this.$parent.alertNotify('删除')
                 })
-            })
+            }).catch(() => {});
         },
         handleAdd(formName){
             this.$refs.form.validate(valid => {

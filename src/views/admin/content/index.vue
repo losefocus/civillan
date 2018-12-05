@@ -330,7 +330,7 @@ export default {
                         duration: 2000
                     });
                 })
-            })
+            }).catch(() => {});
         },
         onSubmit(formName) {
             this.form.content = this.$refs.myeditor.content

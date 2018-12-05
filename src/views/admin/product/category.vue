@@ -300,7 +300,7 @@
                     this.$parent.$parent.alertNotify('删除')
                     this.getAlllList()
                 })
-            })
+            }).catch(() => {});
         },
         handleAdd(){
             this.$refs.form.validate((valid) => {

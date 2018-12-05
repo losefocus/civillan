@@ -231,7 +231,7 @@
                     this.getList()
                     this.$parent.$parent.alertNotify('删除')
                 })
-            })
+            }).catch(() => {});
             
         },
         getRoleList(){
@@ -315,7 +315,7 @@
                     this.getRoleList()
                     this.$parent.$parent.alertNotify('删除')
                 })
-            })
+            }).catch(() => {});
             
         },
         cancelEdit(){

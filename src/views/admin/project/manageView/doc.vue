@@ -118,7 +118,7 @@
                     this.getList()
                     this.$parent.$parent.alertNotify('删除')
                 })
-            })
+            }).catch(() => {});
         },
         updataDoc(row){
             this.$parent.cardVisibel = true

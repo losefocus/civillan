@@ -237,7 +237,7 @@
               duration: 2000
             })
           })
-        })
+        }).catch(() => {});
       },
       update() {
         putObj(this.form).then(() => {

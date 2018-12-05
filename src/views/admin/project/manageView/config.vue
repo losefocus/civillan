@@ -357,7 +357,7 @@
                     this.getList()
                     this.$parent.$parent.alertNotify('删除')
                 })
-            })
+            }).catch(() => {});
         },
         updataObj(row){
             this.$parent.cardVisibel = true

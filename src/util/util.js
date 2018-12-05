@@ -69,7 +69,7 @@ export const encryption = (params) => {
  * 设置浏览器头部标题
  */
 export const setTitle = function (title) {
-  title = title ? `${title}——智慧云平台管理系统` : '智慧云平台管理系统';
+  title = (title && title!='/') ? `${title}——智慧云平台管理系统` : '智慧云平台管理系统';
   window.document.title = title
 }
 /**
@@ -358,4 +358,28 @@ export const listParents = (tree, node)=>{
         return _list(tree, tree[node.parentId].node).concat([node])
     }
   }
+}
+
+
+//数组转为树结构
+export const arrayToJson = (treeArray) => {
+  var r = [];
+  var tmpMap ={};
+  for (let i=0; i<treeArray.length; i++) {
+      treeArray[i].children = [];
+      if("parentId" in treeArray[i] && treeArray[i].parentId == 0){
+          tmpMap[treeArray[i].id]= treeArray[i]; 
+      }
+  } 
+  for (let i=0; i<treeArray.length; i++) {
+      if("parentId" in treeArray[i]) {
+          var key=tmpMap[treeArray[i].parentId];
+          if (key) {
+              key["children"].push(treeArray[i]);
+          } else {
+              r.push(treeArray[i]);
+          }
+      }
+  }
+  return r      
 }

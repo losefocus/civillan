@@ -304,7 +304,7 @@
                         type: 'success'
                     });
                 })
-            })
+            }).catch(() => {});
         },
         updataEqu(row){
             this.cardVisibel = true

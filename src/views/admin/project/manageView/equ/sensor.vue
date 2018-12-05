@@ -282,7 +282,7 @@
                         duration: 2000
                     });
                 })
-            })
+            }).catch(() => {});
             
         },
         handleAdd(){
