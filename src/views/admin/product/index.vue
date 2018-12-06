@@ -13,7 +13,8 @@
                     v-for="item in categoryOptions_"
                     :key="item.id"
                     :label="item.name"
-                    :value="item.id">
+                    :value="item.id"
+                    :disabled="item.parentId == 0">
                         <span v-if="item.parentId == 0 || item.id == ''">{{ item.name }}</span>
                         <span v-else style="padding-left:20px;">{{ item.name }}</span>
                     </el-option>

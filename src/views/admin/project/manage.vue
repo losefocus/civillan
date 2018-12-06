@@ -5,13 +5,13 @@
                 <el-button @click="toProjectIndex" size="small" class="pull-left">返回项目列表</el-button>
                 <span style="margin-left:20px;" class="pull-left projectName">项目名称: {{viewData.name}}</span>
                 <el-radio-group v-model="tabView" size="small" class="pull-right" @change="cardVisibel=false">
-                    <el-radio-button label="info" :disabled="'children' in viewData && viewData.children.length != 0">项目详情</el-radio-button>
+                    <el-radio-button label="info" :disabled="'childrenList' in viewData && viewData.childrenList.length != 0">项目详情</el-radio-button>
                     <el-radio-button label="org">机构设置</el-radio-button>
                     <el-radio-button label="per">人员管理</el-radio-button>
-                    <el-radio-button label="equ" :disabled="'children' in viewData && viewData.children.length != 0">设备管理</el-radio-button>
+                    <el-radio-button label="equ" :disabled="'childrenList' in viewData && viewData.childrenList.length != 0">设备管理</el-radio-button>
                     <el-radio-button label="doc">文档资料</el-radio-button>
                     <el-radio-button label="media">现场影像</el-radio-button>
-                    <el-radio-button label="config" :disabled="'children' in viewData && viewData.children.length != 0">作业配置</el-radio-button>
+                    <el-radio-button label="config" :disabled="'childrenList' in viewData && viewData.childrenList.length != 0">作业配置</el-radio-button>
                     <el-radio-button label="monitoring">视频监控</el-radio-button>
                 </el-radio-group>
             </div>

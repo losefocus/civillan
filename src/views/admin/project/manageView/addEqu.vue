@@ -310,6 +310,7 @@
             this.$refs[formName].validate((valid) => {
                 if (valid) {
                     let data = Object.assign({},this.form)
+                    delete data.product.productCategory
                     this.createLoading = true
                     updataObj(data).then(res => {
                             this.cancel()
@@ -341,7 +342,7 @@
                 product:{id:''},
                 name:'',
                 position:'',
-                firmware:'',
+                firmware:'V1.0',
                 thumbnailPath:'',
                 thumbnailBaseUrl:'',
                 comment:'',
@@ -349,6 +350,7 @@
                 deviceGroup:{id:''}
             }
             this.deviceGroup=''
+            this.productName='',
             this.disabled = false
             this.$refs.form.resetFields()
         }

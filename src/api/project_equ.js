@@ -52,6 +52,15 @@ export function updataObj(obj) {
   })
 }
 
+/* 设备离场 */
+export function departureObj(obj) {
+  return request({
+    url: '/device/device/departure',
+    method: 'post',
+    params: obj
+  })
+}
+
   /* 分组信息 */
   export function getGroupObj(query) {
     return request({
