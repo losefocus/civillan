@@ -8,9 +8,12 @@
             <el-select v-model="listQuery.projectId" filterable clearable :filter-method="projectSearch" size="small" class="pull-right" style="width: 150px !important;margin-right:20px" placeholder="按项目筛选" @change="changeProject" @visible-change="visiblechange">
                 <el-option
                 v-for="item in projectOptions"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value">
+                :key="item.id"
+                :label="item.name"
+                :value="item.id"
+                :disabled="item.parentId==0">
+                    <span v-if="item.parentId == 0">{{ item.name }}</span>
+                    <span v-else style="padding-left:20px;">{{ item.name }}</span>
                 </el-option>
                 <el-pagination layout="prev, pager, next"
                 @current-change="projectCurrentChange"
@@ -88,6 +91,7 @@
                             <el-dropdown-item  v-if="device_btn_alert" :command="composeValue('alarmVisible',scope.row)">警报管理</el-dropdown-item>
                             <el-dropdown-item  v-if="device_btn_notice" :command="composeValue('notifyVisible',scope.row)">通知管理</el-dropdown-item>
                             <el-dropdown-item  v-if="device_btn_personnel" :command="composeValue('personnelVisible',scope.row)">操作人员</el-dropdown-item>
+                            <el-dropdown-item  v-if="device_btn_personnel" :command="composeValue('deviceVisible',scope.row)">设备关联</el-dropdown-item>
                             <el-dropdown-item  v-if="device_btn_certificate" :command="composeValue('certiVisible',scope.row)">证书下载</el-dropdown-item>
                             <el-dropdown-item divided v-if="device_btn_edit" :command="composeValue('edit',scope.row)">修改设备</el-dropdown-item>
                             <el-dropdown-item v-if="device_btn_del" :command="composeValue('del',scope.row)">删除设备</el-dropdown-item>
@@ -124,12 +128,15 @@
         <el-dialog title="操作人员—绑定用户"  :visible.sync="personnelVisible" width='690px'>
             <personnel v-if="personnelVisible" :data-info="dataInfo" ref="personnel"></personnel>
         </el-dialog>
+        <el-dialog title="设备关联—绑定关系"  :visible.sync="deviceVisible" width='690px'>
+            <device v-if="deviceVisible" :data-info="dataInfo" ref="device"></device>
+        </el-dialog>
         <!-- <el-dialog title="分组管理"  :visible.sync="groupVisible" width='690px'>
             <group v-if="groupVisible" ref="group"></group>
         </el-dialog> -->
         <el-card class="pull-right addNewContainer" :class="{'show':cardVisibel}" >
             <i class="closeBtn el-icon-close" @click="cardVisibel = false"></i>
-            <add-device ref="addEqu"></add-device>
+            <add-devicea ref="addEqu"></add-devicea>
         </el-card>
     </div>
 </template>
@@ -143,7 +150,9 @@
   import notify from "../project/manageView/equ/notify";
   import personnel from "../project/manageView/equ/personnel";
   import group from "../project/manageView/equ/group";
+  import device from "../project/manageView/equ/device";
   import addDevice from "./equ/addDevice";
+  import addDevicea from "./equ/addDevicea";
   import {mapGetters} from "vuex";
   import {delObj, fetchList, updataObj,projectList} from "@/api/project_equ";
 
@@ -160,7 +169,9 @@
         notify,
         group,
         personnel,
-        addDevice
+        device,
+        addDevice,
+        addDevicea,
     },
     data(){
         return {
@@ -168,7 +179,7 @@
             list:[],
             listQuery: {
                 page_index: 1,
-                page_size: 20
+                page_size: 10
             },
             total:null,
             projectOptions:[],
@@ -187,6 +198,7 @@
             alarmVisible:false,//报警
             notifyVisible:false,//通知
             personnelVisible:false,//人员
+            deviceVisible:false,//设备关联
             groupVisible:false,
             dataInfo:null,
             listInfoQuery:{
@@ -233,13 +245,8 @@
         },
         getprojectList(){
             projectList(this.projectListQuery).then(res => {
-                let data = res.data.result.items
+                this.projectOptions = res.data.result.items
                 this.projectTotal = res.data.result.total
-                this.projectOptions = []
-                data.forEach(ele => {
-                    let item = {value:ele.id, label:ele.name}
-                    this.projectOptions.push(item)
-                });
             })
         },
         getList(){
@@ -307,12 +314,14 @@
             }).catch(() => {});
         },
         updataEqu(row){
+            console.log(row)
             this.cardVisibel = true
             this.$refs.addEqu.flag = 'updata'
             this.$refs.addEqu.form = Object.assign({},row)
-            this.$refs.addEqu.form.deviceGroup = {id:row.deviceGroup.id}
+            this.$refs.addEqu.deviceGroup = row.deviceGroup.name
+            this.$refs.addEqu.productName = row.product.name
             this.$refs.addEqu.disabled = true
-            this.$refs.addEqu.getGroupList(row.projectId)
+            // this.$refs.addEqu.getGroupList(row.projectId)
         },
         handleCommand(command){
             if(command.value == 'edit') this.updataEqu(command.row)
