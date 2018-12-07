@@ -295,7 +295,7 @@
                     this.getList()
                     this.$parent.$parent.alertNotify('删除')
                 })
-            })
+            }).catch(() => {});
             
         },
         getCategoryList(){
@@ -376,7 +376,7 @@
                     this.getCategoryList()
                     this.$parent.$parent.alertNotify('删除')
                 })
-            })
+            }).catch(() => {});
             
         },
         cancelEdit(){

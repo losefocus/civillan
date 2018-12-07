@@ -222,7 +222,7 @@
                     });
                     this.getList()
                 })
-            })
+            }).catch(() => {});
         },
         onSubmit(formName) {
             this.$refs[formName].validate((valid) => {

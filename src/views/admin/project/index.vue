@@ -20,7 +20,7 @@
                     <el-table :data="list" fit style="width: 100%;margin-bottom:25px;margin-top:15px;" :row-class-name="setClassName" ref="projectTable">
                         <el-table-column type="expand">
                             <template slot-scope="scope">
-                                <el-table :data="scope.row.children" ref="subTable" id="subTable" size="mini">
+                                <el-table :data="scope.row.childrenList" ref="subTable" id="subTable" size="mini">
                                     <el-table-column align="left" label="项目名称">
                                         <template slot-scope="pro">
                                             <div style="white-space:nowrap;width:100%;height:45px;padding-left:20px;">
@@ -73,8 +73,8 @@
                                     <img v-else style="width:60px;height:45px" class="pull-left" src="../../../assets/img/no_pic.png">
                                     <el-tooltip class="item" effect="dark" :content="scope.row.name" placement="top-start" :open-delay="300">
                                         <span style="white-space:nowrap;">
-                                            <span v-if="scope.row.children==0" style="cursor: pointer;overflow: hidden;text-overflow:ellipsis;line-height:45px;padding:0 10px;width:calc(100% - 80px)" @click="toInfo(scope.row)">{{scope.row.name}}</span>
-                                            <span v-else style="cursor: pointer;overflow: hidden;text-overflow:ellipsis;line-height:45px;padding:0 10px;width:calc(100% - 80px)" @click="expendTableRow(scope.row)">{{scope.row.name}}</span>
+                                            <span v-if="scope.row.childrenList==0" style="cursor: pointer;overflow: hidden;text-overflow:ellipsis;line-height:45px;padding:0 10px;width:calc(100% - 80px)" @click="toInfo(scope.row)">{{scope.row.name}}</span>
+                                            <span v-else style="cursor: pointer;overflow: hidden;text-overflow:ellipsis;line-height:45px;padding:0 10px;width:calc(100% - 80px)" @click="expendTableRow(scope.row)">{{scope.row.name}}<span style="color:#b7b7b7;margin-left:10px;">(包含{{scope.row.childrenList.length}}个子项目)</span></span>
                                         </span>
                                     </el-tooltip>
                                 </div>
@@ -97,13 +97,13 @@
                                         操作<i class="el-icon-arrow-down el-icon--right"></i>
                                     </span >
                                     <el-dropdown-menu slot="dropdown">
-                                        <el-dropdown-item :disabled="pro.row.children.length!=0" :command="composeValue('info',pro.row)">项目详情</el-dropdown-item>
+                                        <el-dropdown-item :disabled="pro.row.childrenList.length!=0" :command="composeValue('info',pro.row)">项目详情</el-dropdown-item>
                                         <el-dropdown-item v-if="project_btn_institutions" :command="composeValue('org',pro.row)">机构设置</el-dropdown-item>
                                         <el-dropdown-item v-if="project_btn_personnel" :command="composeValue('per',pro.row)">人员管理</el-dropdown-item>
-                                        <el-dropdown-item v-if="project_btn_device" :disabled="pro.row.children.length!=0" :command="composeValue('equ',pro.row)">设备管理</el-dropdown-item>
+                                        <el-dropdown-item v-if="project_btn_device" :disabled="pro.row.childrenList.length!=0" :command="composeValue('equ',pro.row)">设备管理</el-dropdown-item>
                                         <el-dropdown-item v-if="project_btn_doc" :command="composeValue('doc',pro.row)">文档资料</el-dropdown-item>
                                         <el-dropdown-item v-if="project_btn_doc" :command="composeValue('media',pro.row)">现场影像</el-dropdown-item>
-                                        <el-dropdown-item v-if="project_btn_doc" :disabled="pro.row.children.length!=0" :command="composeValue('config',pro.row)">作业配置</el-dropdown-item>
+                                        <el-dropdown-item v-if="project_btn_doc" :disabled="pro.row.childrenList.length!=0" :command="composeValue('config',pro.row)">作业配置</el-dropdown-item>
                                         <el-dropdown-item divided v-if="project_btn_add" :command="composeValue('add',pro.row)">添加子项</el-dropdown-item>
                                         <el-dropdown-item v-if="project_btn_edit" :command="composeValue('edit',pro.row)">修改项目</el-dropdown-item>
                                         <el-dropdown-item v-if="project_btn_del" :command="composeValue('del',pro.row)">删除项目</el-dropdown-item>
@@ -315,7 +315,8 @@
             adminer_:'',
             listQuery: {
                 page_index: 1,
-                page_size: 20
+                page_size: 10,
+                parentId:0
             },
             listLoading:false,
             mapList:[],
@@ -360,6 +361,7 @@
     },
     created() {
         this.getList();
+        this.getAllList();
         this.getRoleList();
         this.getProductCategoryList()
     },
@@ -382,7 +384,7 @@
         getProductCategoryList(){
             let data = {
                 page_index: 1,
-                page_size: 999
+                page_size: 999,
             }
             fetchCategoryList(data).then(res => {
                 this.treeData = this.arrayToJson(res.data.result.items)
@@ -430,7 +432,7 @@
             //this.$refs.projectTable.toggleRowExpansion(this.expandRow,true);
         },
         setClassName({row, index}){
-            return row.children.length != 0 ? '' : 'expand';
+            return row.childrenList.length != 0 ? '' : 'expand';
         },
         //管理员列表
         getRoleList(){
@@ -461,6 +463,19 @@
                 this.adminerOptionsloading = false
             })
         },
+        getAllList(){
+            let query = {
+                page_index: 1,
+                page_size: 999,
+                parentId:0
+            }
+            fetchList(query).then(response => {
+                let datas = response.data.result.items;
+                this.mapList = datas
+                this.parentIdOptions = [...datas]
+                this.parentIdOptions.unshift({id:0,name:'无'})
+            })
+        },
         //项目列表
         getList(){
             var compare = function (prop) {
@@ -483,16 +498,17 @@
 
             this.listLoading = true
             fetchList(this.listQuery).then(response => {
-                let datas = response.data.result.items;
-                this.mapList = datas
-                this.list = this.arrayToJson(datas);
-                let [...list_] = this.list
-                list_.unshift({id:0,name:'无'})
-                this.parentIdOptions = list_
-                //对子项目重新排序
-                this.list.forEach(res => {
-                    res.children = res.children.sort(compare('createdAt'))
-                })
+                // let datas = response.data.result.items;
+                // this.mapList = datas
+                // this.list = this.arrayToJson(datas);
+                // let [...list_] = this.list
+                // list_.unshift({id:0,name:'无'})
+                // this.parentIdOptions = list_
+                // //对子项目重新排序
+                // this.list.forEach(res => {
+                //     res.children = res.children.sort(compare('createdAt'))
+                // })
+                this.list = response.data.result.items;
                 this.list.expand = true
                 this.total = response.data.result.total;
                 this.listLoading = false;
@@ -578,7 +594,7 @@
                 type: "warning"
                 }
             ).then(() => {
-                if(row.children && row.children.length>0){
+                if(row.childrenList && row.childrenList.length>0){
                     this.$notify({
                         title: "错误",
                         message: "请先删除子项目",
@@ -591,7 +607,7 @@
                         this.alertNotify('删除')
                     })
                 }
-            })   
+            }).catch(() => {});
         },
         updataForm(row){
             this.flag = 'edit'
@@ -618,8 +634,6 @@
                     data.beginAt = Math.round(new Date(this.tm[0]).getTime()/1000);
                     data.endAt = Math.round(new Date(this.tm[1]).getTime()/1000);
                     data.status = data.status?1:0
-                    delete data.children
-                    // delete data.tm
                     editObj(data).then(res => {
                         this.createLoading = false
                         this.getList()
@@ -676,7 +690,7 @@
         },
         //地图
         toProjectMap(){ 
-            this.showView = 'mapView'
+            this.showView = 'mapView'          
         },
         handleCommand(command){
             if(command.value == 'add') this.handleAdd(command.row)

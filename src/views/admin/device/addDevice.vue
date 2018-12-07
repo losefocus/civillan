@@ -2,8 +2,40 @@
     <div class="addNewDevice">
         <div class="tit"><h3>{{(flag == 'add')?'添加':'修改'}}设备</h3><span>{{(flag == 'add')?'Add':'Edit'}} Equipment</span></div>
         <el-form label-width="55px" :model="form"  ref="form" :rules="rules" label-position="left">
+            <el-form-item label="项目" prop="projectId">
+                <el-select v-model="form.projectId" filterable :filter-method="projectSearch" size="small" placeholder="请选择项目" @change="changeProject" no-data-text="请先添加项目" :disabled="disabled">
+                    <el-option
+                    v-for="item in projectOptions"
+                    :key="item.id"
+                    :label="item.name"
+                    :value="item.id"
+                    :disabled="item.parentId==0">
+                        <span v-if="item.parentId == 0">{{ item.name }}</span>
+                        <span v-else style="padding-left:20px;">{{ item.name }}</span>
+                    </el-option>
+                    <el-pagination layout="prev, pager, next"
+                    @current-change="projectCurrentChange"
+                    :current-page="projectListQuery.page_index"
+                    :page-size="projectListQuery.page_size"
+                    :total="projectTotal">
+                    </el-pagination>
+                </el-select>
+            </el-form-item>
+            <el-form-item label="分组" prop="deviceGroup.id">
+                <el-select v-model="deviceGroup" size="small" placeholder="请选择分组" no-data-text="请先添加项目分组" @change="changeGroup" :disabled="disabled">
+                    <el-option
+                    v-for="item in groupOptions"
+                    :key="item.id"
+                    :label="item.name"
+                    :value="item.id+'_'+ item.code"
+                    :disabled="item.parentId==0">
+                        <span v-if="item.parentId == 0">{{ item.name }}</span>
+                        <span v-else style="padding-left:20px;">{{ item.name }}</span>
+                    </el-option>
+                </el-select>
+            </el-form-item>
             <el-form-item label="产品" prop="product.id">
-                <el-select v-model="form.product.id" filterable :filter-method="productSearch" size="small" placeholder="请选择产品" :disabled="disabled" no-data-text="请先添加产品">
+                <el-select v-model="productName" filterable :filter-method="productSearch" size="small" placeholder="请选择产品" :disabled="disabled" no-data-text="请先添加产品" @change="changeProduct">
                     <el-option
                     v-for="item in productOptions"
                     :key="item.value"
@@ -18,37 +50,8 @@
                     </el-pagination>
                 </el-select>
             </el-form-item>
-            <el-form-item label="项目" prop="projectId">
-                <el-select v-model="form.projectId" filterable :filter-method="projectSearch" size="small" placeholder="请选择项目" @change="changeProject" no-data-text="请先添加项目">
-                    <el-option
-                    v-for="item in projectOptions"
-                    :key="item.value"
-                    :label="item.label"
-                    :value="item.value">
-                    </el-option>
-                    <el-pagination layout="prev, pager, next"
-                    @current-change="projectCurrentChange"
-                    :current-page="projectListQuery.page_index"
-                    :page-size="projectListQuery.page_size"
-                    :total="projectTotal">
-                    </el-pagination>
-                </el-select>
-            </el-form-item>
-            <el-form-item label="分组" prop="deviceGroup.id">
-                <el-select v-model="form.deviceGroup.id" size="small" placeholder="请选择分组" no-data-text="请先添加项目分组">
-                    <el-option
-                    v-for="item in groupOptions"
-                    :key="item.value"
-                    :label="item.label"
-                    :value="item.value">
-                    </el-option>
-                </el-select>
-            </el-form-item>
             <el-form-item label="名称" prop="name">
                 <el-input v-model="form.name" size="small" placeholder="请输入设备显示名称"></el-input>
-            </el-form-item>
-            <el-form-item label="固件" prop="firmware">
-                <el-input v-model="form.firmware" size="small" placeholder="请输入固件版本号"></el-input>
             </el-form-item>
             <el-form-item label="key" prop="key">
                 <el-input v-model="form.key" size="small" placeholder="请输入设备唯一标识"></el-input>
@@ -100,8 +103,8 @@
   import {mapGetters} from "vuex";
   import {getToken} from "@/util/auth";
   import {toTree} from "@/util/util";
-  import {addObj, fetchProductList, getGroupObj, projectList, updataObj} from "@/api/project_equ";
-  import mapPosition from "../../project/mapPosition";
+  import {addObj, fetchProductList,productCategoryList, getGroupObj, projectList, updataObj} from "@/api/project_equ";
+  import mapPosition from "../project/mapPosition";
 
   export default {
     components:{
@@ -139,7 +142,7 @@
         }
         return {
             rules: {
-                'product.id': [
+                'projectId': [
                     { validator: validataProductId, trigger: 'change' },
                 ],
                 'deviceGroup.id': [
@@ -165,7 +168,7 @@
                 product:{id:''},
                 name:'',
                 position:'',
-                firmware:'',
+                firmware:'V1.0',
                 thumbnailPath:'',
                 thumbnailBaseUrl:'',
                 comment:'',
@@ -174,6 +177,8 @@
                     id:''
                 }
             },
+            deviceGroup:'',
+            productName:'',
             positionVisible:false,
             disabled:false,
             imageName:'',
@@ -204,7 +209,7 @@
         }
     },
     created() {
-        this.getProductList();
+        // this.getProductList();
         this.getprojectList();
     },
     mounted() {
@@ -236,10 +241,8 @@
             projectList(this.projectListQuery).then(res => {
                 let data = res.data.result.items
                 this.projectTotal = res.data.result.total
-                this.projectOptions = []
+                this.projectOptions = data
                 data.forEach(ele => {
-                    let item = {value:ele.id, label:ele.name}
-                    this.projectOptions.push(item)
                     this.projectHash[ele.id] = ele.name
                 });
             })
@@ -247,16 +250,44 @@
         changeProject(val){
             this.getGroupList(val)
         },
+        getGroupList(id){
+            this.groupListQuery.projectId = id
+            this.groupListQuery.parentId = 0
+            this.groupListQuery.sort_by = 'sort'
+            this.groupListQuery.direction = 'asc'
+            getGroupObj(this.groupListQuery).then(res => {
+                let arr = []
+                res.data.result.items.forEach(r => {
+                    if(r.parentId == 0){
+                        arr.push(r)
+                        if(r.childrenList.length !=0){
+                            r.childrenList.forEach(l => {
+                                arr.push(l)
+                            })
+                        }
+                    }
+                })
+                this.groupOptions = arr
+            })
+        },
+        changeGroup(val){
+            this.form.deviceGroup={id:val.split('_')[0]}
+            this.productListQuery.code = val.split('_')[1]
+            this.getProductList()
+        },
         getProductList(){
-            fetchProductList(this.productListQuery).then(res => {
-                let data = res.data.result.items
+            productCategoryList(this.productListQuery).then(res => {
+                let data = res.data.result.items[0].productList
                 this.productTotal = res.data.result.total
                 this.productOptions = []
                 data.forEach(ele => {
-                    let item = {value:ele.id, label:ele.name}
+                    let item = {value:ele.id, label:ele.name+'('+ele.alias+')'}
                     this.productOptions.push(item)
                 });
             })
+        },
+        changeProduct(val){
+            this.form.product={id:val}
         },
         productSearch(val){
             this.productListQuery.name = val;
@@ -276,14 +307,6 @@
             this.projectListQuery.page_index = val;
             this.getprojectList()
         },
-        getGroupList(id){
-            this.groupListQuery.projectId = id
-            this.groupListQuery.sort_by = 'sort'
-            this.groupListQuery.direction = 'asc'
-            getGroupObj(this.groupListQuery).then(res => {
-                this.groupOptions = toTree(res.data.result.items)
-            })
-        },
         positionPicker(){
             this.positionVisible = true
         },
@@ -291,9 +314,9 @@
             let data = Object.assign({},this.form)
             data.protocol = "string"
             data.passage = "string"
-            this.createLoading = true
             this.$refs[formName].validate((valid) => {
                 if (valid) {
+                    this.createLoading = true
                     addObj(data).then( res => {
                         this.cancel()
                         if(res.data.success == true){
@@ -320,6 +343,7 @@
             this.$refs[formName].validate((valid) => {
                 if (valid) {
                     let data = Object.assign({},this.form)
+                    delete data.product.productCategory
                     this.createLoading = true
                     updataObj(data).then(res => {
                             this.cancel()
@@ -353,13 +377,15 @@
                 product:{id:''},
                 name:'',
                 position:'',
-                firmware:'',
+                firmware:'V1.0',
                 thumbnailPath:'',
                 thumbnailBaseUrl:'',
                 comment:'',
                 status:0,
                 deviceGroup:{id:''}
             }
+            this.deviceGroup=''
+            this.productName='',
             this.groupOptions = []
             this.disabled = false
             this.$refs.form.resetFields()

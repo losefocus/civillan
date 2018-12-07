@@ -304,7 +304,7 @@
                         duration: 2000
                     });
                 })
-            })
+            }).catch(() => {});
         },
         handleAdd(){
             this.$refs.form.validate((valid) => {

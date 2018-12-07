@@ -444,7 +444,7 @@
           //     duration: 2000
           //   });
           // });
-      });
+      }).catch(() => {});
     },
     resetTemp() {
       this.form = {

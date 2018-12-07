@@ -24,7 +24,7 @@ export default {
     },
     goHome() {
       this.$router.push({
-        name: "/"
+        path: "/wel/index"
       });
     }
   }

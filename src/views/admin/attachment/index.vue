@@ -407,6 +407,7 @@ export default {
           //     duration: 2000
           //   });
           // });
+      }).catch(() => {
       });
     },
     // 批量删除文件
@@ -445,6 +446,7 @@ export default {
             //     duration: 2000
             //   });
             // });
+        }).catch(() => {
         });
       }
     },

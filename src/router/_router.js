@@ -45,7 +45,8 @@ export default [{
     path: 'index',
     name: '修改信息',
     component: _import('admin/user/info', 'views')
-  },{
+  },
+  {
     path: '/serve/myserve',
     name: '我的服务',
     component: _import('admin/serve/myserve/index', 'views'),

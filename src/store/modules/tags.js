@@ -39,12 +39,9 @@ const navs = {
     mutations: {
         ADD_TAG: (state, action) => {
             state.tag = action;
-            let arr = action.value.split('')
-            let arry = []
-            arr.forEach(e => {
-                if(e == '/') arry.push(e)
-            })
-            if(arry.length <3){
+            let arr = action.value.split('/')
+            let lastStr = arr[arr.length-1]
+            if(lastStr != 'sms' && lastStr != 'oss' && lastStr != 'pay' && lastStr != 'invoice'){
                 setStore({ name: 'tag', content: state.tag,type:'session' })
                 if (state.tagList.some(a => a.value === action.value)) return
                 state.tagList.push({
@@ -55,8 +52,6 @@ const navs = {
                 state.tagList = setFistTag(state.tagList);
                 setStore({ name: 'tagList', content: state.tagList,type:'session' })
             }
-
-            
         },
         SET_TAG_CURRENT: (state, tagCurrent) => {
             state.tagCurrent = tagCurrent;

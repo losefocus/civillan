@@ -120,6 +120,7 @@
           clearTimeout(this.t)
           this.$router.push({ path: "/login" });
         });
+      }).catch(() => {
       });
     }
   }

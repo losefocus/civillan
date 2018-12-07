@@ -112,7 +112,7 @@
                         width="150">
                         <template slot-scope="scope" >  
                             <el-button size="mini" v-if="scope.row.status == 1" type="primary" plain @click="toPay(scope.row)" style="margin-left:0px">支付</el-button>
-                            <el-button size="mini" v-if="scope.row.status == 1" type="" plain style="margin-left:0px">取消</el-button>
+                            <el-button size="mini" v-if="scope.row.status == 1" type="" plain style="margin-left:0px" @click="cancelOrder(scope.row)">取消</el-button>
                         </template>
                     </el-table-column>
                 </el-table>
@@ -133,7 +133,7 @@
 </template>
 
 <script>
-import { fetchList,payment,orderList,serviceList} from "@/api/serve/order";
+import { fetchList,payment,orderList,serviceList,cancelObj} from "@/api/serve/order";
 import {remote_p} from "@/api/dict";
 import {parseTime} from "@/filters/index";
 
@@ -141,15 +141,14 @@ export default {
     data(){
         return {
             service:'',
-            serviceOptions:[{value:'1',label:'所有产品'}],
-            statusOptions:[{value:'',label:'所有状态'},{value:0,label:'已取消'},{value:1,label:'未付款'},{value:2,label:'已付款'},
-                {value:3,label:'已开票'},{value:4,label:'已过期'}],
+            serviceOptions:[],
+            statusOptions:[],
             time:[],
             list:[],
             list_export:[],
             listQuery:{
                 page_index:1,
-                page_size:5,
+                page_size:20,
                 sort_by:'createdAt',
                 direction:'desc',
             },
@@ -253,8 +252,31 @@ export default {
             }
              this.$router.push({ path:'/serve/myserve/pay',query:query});
         },
+        cancelOrder(row){
+            this.$confirm('确认取消订单, 是否继续?', '提示', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning'
+            }).then(() => {
+                cancelObj(row.id).then(res => {
+                    if(res.data.success){
+                        this.$notify({
+                            title: '成功',
+                            message: '取消订单成功',
+                            type: 'success'
+                        });
+                        this.getList()
+                    }
+                })
+            }).catch(() => {
+         
+            });
+
+
+            
+        },
         toSetting(){
-            this.$router.push({ path:'/serve/setting'});
+            this.$router.push({ path:'/admin/serve/setting'});
         },
         getInvoice(){
             if(this.orderIds == '') {

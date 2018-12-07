@@ -238,7 +238,7 @@ export default {
                         this.$parent.$parent.alertNotify('删除')
                     }
                 })
-            })
+            }).catch(() => {});
         
         },
         // 得到机构类型列表
@@ -309,7 +309,7 @@ export default {
                         this.$parent.$parent.alertNotify('删除')
                     }
                 })
-            })
+            }).catch(() => {});
             
         },
         updateType(row){

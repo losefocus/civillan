@@ -14,18 +14,9 @@
                         <span v-else style="padding-left:20px;">{{ item.name }}</span>
                     </el-option>
                 </el-select>
-                <!-- <el-cascader
-                    size="small" placeholder="请选择分组"
-                    :options="groupOptions"
-                    :props="props"
-                    v-model="deviceGroups"
-                    :show-all-levels="false"
-                    change-on-select
-                    @change="changeGroup">
-                </el-cascader> -->
             </el-form-item>
             <el-form-item label="产品" prop="product.id">
-                <el-select v-model="productName" filterable :filter-method="productSearch" size="small" placeholder="请选择产品" :disabled="disabled" no-data-text="请先添加产品" @change="changeProduct">
+                <el-select v-model="productName" size="small" placeholder="请选择产品" :disabled="disabled" no-data-text="请先添加产品" @change="changeProduct">
                     <el-option
                     v-for="item in productOptions"
                     :key="item.value"
@@ -243,7 +234,7 @@
                 data.forEach(ele => {
                     let item = {value:ele.id, label:ele.name+'('+ele.alias+')'}
                     this.productOptions.push(item)
-                    this.productHash[ele.id] = ele.alias
+                    // this.productHash[ele.id] = ele.alias
                 });
             })
         },
@@ -319,6 +310,7 @@
             this.$refs[formName].validate((valid) => {
                 if (valid) {
                     let data = Object.assign({},this.form)
+                    delete data.product.productCategory
                     this.createLoading = true
                     updataObj(data).then(res => {
                             this.cancel()
@@ -350,7 +342,7 @@
                 product:{id:''},
                 name:'',
                 position:'',
-                firmware:'',
+                firmware:'V1.0',
                 thumbnailPath:'',
                 thumbnailBaseUrl:'',
                 comment:'',
@@ -358,6 +350,7 @@
                 deviceGroup:{id:''}
             }
             this.deviceGroup=''
+            this.productName='',
             this.disabled = false
             this.$refs.form.resetFields()
         }
