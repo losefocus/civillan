@@ -384,7 +384,7 @@
         getProductCategoryList(){
             let data = {
                 page_index: 1,
-                page_size: 999
+                page_size: 999,
             }
             fetchCategoryList(data).then(res => {
                 this.treeData = this.arrayToJson(res.data.result.items)
