@@ -103,8 +103,8 @@
                             <el-dropdown-item  v-if="device_btn_personnel" :command="composeValue('deviceVisible',scope.row)">设备关联</el-dropdown-item>
                             <el-dropdown-item  v-if="device_btn_certificate" :command="composeValue('certiVisible',scope.row)">证书下载</el-dropdown-item>
                             <el-dropdown-item divided v-if="device_btn_edit" :command="composeValue('edit',scope.row)">修改设备</el-dropdown-item>
-                            <el-dropdown-item v-if="device_btn_del" :command="composeValue('del',scope.row)">删除设备</el-dropdown-item>
                             <el-dropdown-item :command="composeValue('remove',scope.row)"  :disabled="scope.row.status == 2">设备离场</el-dropdown-item>
+                            <el-dropdown-item v-if="device_btn_del" :command="composeValue('del',scope.row)">删除设备</el-dropdown-item>
                         </el-dropdown-menu>
                     </el-dropdown>
                     <!-- <el-button size="small" type="success" plain @click="updataEqu(scope.row)" style="margin-left:0px" v-if="device_btn_edit">修改</el-button>
