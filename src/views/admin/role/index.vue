@@ -42,7 +42,7 @@
           </el-button>
           <el-button size="mini" type="" v-if="roleManager_btn_del" @click="handleDelete(scope.row)" style="margin-left:0" :disabled="scope.row.createdBy === 0">删除
           </el-button>
-          <el-button size="mini" type="" plain @click="handlePermission(scope.row)" v-if="roleManager_btn_perm" style="margin-left:0" :disabled="scope.row.createdBy === 0 && scope.row.roleCode!='ROLE_PROJECT_ADMIN'">权限
+          <el-button size="mini" type="" plain @click="handlePermission(scope.row)" v-if="roleManager_btn_perm" style="margin-left:0" :disabled="scope.row.createdBy === 0 && scope.row.roleCode =='ROLE_TENANT_ADMIN'">权限
           </el-button>
         </template>
       </el-table-column>

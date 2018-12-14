@@ -5,7 +5,7 @@
             <!-- <el-button class="filter-item" style="" @click="handleGroup" size="small" type="primary" icon="edit" >分组管理</el-button> -->
             <el-button class="pull-right" type="primary" size="small" v-waves  @click="handleFilter">搜索</el-button>
             <el-input @keyup.enter.native="handleFilter" style="width: 150px;" size="small" suffix-icon="el-icon-search" class="pull-right" placeholder="设备名称" v-model="listQuery.name"></el-input>
-            <el-select v-model="listQuery.projectId" filterable clearable :filter-method="projectSearch" size="small" class="pull-right" style="width: 150px !important;margin-right:20px" placeholder="按项目筛选" @change="handleFilter" @visible-change="visiblechange">
+            <el-select v-model="listQuery.projectId" filterable clearable :filter-method="projectSearch" size="small" class="pull-right" style="width: 150px !important;margin-right:20px" placeholder="按状态筛选" @change="handleFilter" @visible-change="visiblechange">
                 <el-option
                 v-for="item in projectOptions_"
                 :key="item.id"
